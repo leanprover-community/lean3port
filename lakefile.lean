@@ -3,34 +3,54 @@ open Lake DSL System
 
 def tag : String := "nightly-2021-11-17"
 def releaseRepo : String := "leanprover-community/mathport"
-def tarName : String := "lean3-binport.tar.gz"
+def oleanTarName : String := "lean3-binport.tar.gz"
+def leanTarName : String := "lean3-synport.tar.gz"
 
-def fetchOleans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
+-- Should be two tasks, one for oleans, one for leans. See https://github.com/leanprover/lake/issues/30
+def fetchStuff (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
   fetch := async do
     IO.FS.createDirAll libDir
     let oldTrace := Hash.ofString (← Git.headRevision dir)
-    buildFileUnlessUpToDate (libDir / tarName) oldTrace do
+    let trace ← buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
       downloadOleans
       untarOleans
+    IO.FS.createDirAll srcDir
+    buildFileUnlessUpToDate (srcDir / leanTarName) trace do
+      downloadLeans
+      untarLeans
 
   downloadOleans : BuildM PUnit := Lake.proc {
       cmd := "wget",
-      args := #[s!"https://github.com/{releaseRepo}/releases/download/{tag}/{tarName}"]
+      args := #[s!"https://github.com/{releaseRepo}/releases/download/{tag}/{oleanTarName}"]
       cwd := libDir.toString
     }
 
   untarOleans : BuildM PUnit := Lake.proc {
       cmd := "tar",
-      args := #["-xzvf", tarName]
+      args := #["-xzvf", oleanTarName]
       cwd := libDir.toString
     }
 
   libDir : FilePath := dir / "build" / "lib"
 
+  downloadLeans : BuildM PUnit := Lake.proc {
+      cmd := "wget",
+      args := #[s!"https://github.com/{releaseRepo}/releases/download/{tag}/{leanTarName}"]
+      cwd := srcDir.toString
+    }
+
+  untarLeans : BuildM PUnit := Lake.proc {
+      cmd := "tar",
+      args := #["-xzvf", leanTarName]
+      cwd := srcDir.toString
+    }
+
+  srcDir : FilePath := dir
+
 package lean3port (dir) {
   libRoots := #[]
   libGlobs := #[`Leanbin]
-  extraDepTarget := fetchOleans dir
+  extraDepTarget := fetchStuff dir
   defaultFacet := PackageFacet.oleans
   dependencies := #[{
     name := "mathlib",

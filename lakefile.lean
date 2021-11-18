@@ -27,7 +27,7 @@ def fetchOleans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch }
 
   libDir : FilePath := dir / "build" / "lib"
 
-package lean3-port (dir) {
+package lean3port (dir) {
   libRoots := #[]
   libGlobs := #[`Leanbin]
   extraDepTarget := fetchOleans dir

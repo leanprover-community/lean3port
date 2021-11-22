@@ -6,17 +6,16 @@ def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
 def leanTarName : String := "lean3-synport.tar.gz"
 
-def download (url : String) (to : FilePath) : BuildM PUnit := Lake.proc {
-      cmd := "wget",
-      args := #[url]
-      cwd := to
-    }
+def download (url : String) (to : FilePath) : BuildM PUnit := Lake.proc
+{ -- We use `curl -O` to ensure we clobber any existing file.
+  cmd := "curl",
+  args := #["-L", "-O", url]
+  cwd := to }
 
-def untar (file : FilePath) : BuildM PUnit := Lake.proc {
-      cmd := "tar",
-      args := #["-xzvf", file.fileName.getD "."] -- really should throw an error if `file.fileName = none`
-      cwd := file.parent
-    }
+def untar (file : FilePath) : BuildM PUnit := Lake.proc
+{ cmd := "tar",
+  args := #["-xzvf", file.fileName.getD "."] -- really should throw an error if `file.fileName = none`
+  cwd := file.parent }
 
 def getReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM PUnit :=
 download s!"https://github.com/{repo}/releases/download/{tag}/{artifact}" to

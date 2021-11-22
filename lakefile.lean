@@ -6,51 +6,47 @@ def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
 def leanTarName : String := "lean3-synport.tar.gz"
 
--- Should be two tasks, one for oleans, one for leans. See https://github.com/leanprover/lake/issues/30
-def fetchStuff (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
+def download (url : String) (to : FilePath) : BuildM PUnit := Lake.proc {
+      cmd := "wget",
+      args := #[url]
+      cwd := to
+    }
+
+def untar (file : FilePath) : BuildM PUnit := Lake.proc {
+      cmd := "tar",
+      args := #["-xzvf", file.fileName.getD "."] -- really should throw an error if `file.fileName = none`
+      cwd := file.parent
+    }
+
+def getReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM PUnit :=
+download s!"https://github.com/{repo}/releases/download/{tag}/{artifact}" to
+
+def untarReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM PUnit := do
+  getReleaseArtifact repo tag artifact to
+  untar (to / artifact)
+
+def fetchOleans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
   fetch := async do
     IO.FS.createDirAll libDir
     let oldTrace := Hash.ofString (← Git.headRevision dir)
-    let trace ← buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
-      downloadOleans
-      untarOleans
-    IO.FS.createDirAll srcDir
-    buildFileUnlessUpToDate (srcDir / leanTarName) trace do
-      downloadLeans
-      untarLeans
-
-  downloadOleans : BuildM PUnit := Lake.proc {
-      cmd := "wget",
-      args := #[s!"https://github.com/{releaseRepo}/releases/download/{tag}/{oleanTarName}"]
-      cwd := libDir.toString
-    }
-
-  untarOleans : BuildM PUnit := Lake.proc {
-      cmd := "tar",
-      args := #["-xzvf", oleanTarName]
-      cwd := libDir.toString
-    }
+    buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
+      untarReleaseArtifact releaseRepo tag oleanTarName libDir
 
   libDir : FilePath := dir / "build" / "lib"
 
-  downloadLeans : BuildM PUnit := Lake.proc {
-      cmd := "wget",
-      args := #[s!"https://github.com/{releaseRepo}/releases/download/{tag}/{leanTarName}"]
-      cwd := srcDir.toString
-    }
-
-  untarLeans : BuildM PUnit := Lake.proc {
-      cmd := "tar",
-      args := #["-xzvf", leanTarName]
-      cwd := srcDir.toString
-    }
+def fetchLeans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
+  fetch := async do
+    IO.FS.createDirAll srcDir
+    let oldTrace := Hash.ofString (← Git.headRevision dir)
+    buildFileUnlessUpToDate (srcDir / leanTarName) oldTrace do
+      untarReleaseArtifact releaseRepo tag leanTarName srcDir
 
   srcDir : FilePath := dir
 
 package lean3port (dir) {
   libRoots := #[]
   libGlobs := #[`Leanbin]
-  extraDepTarget := fetchStuff dir
+  extraDepTarget := Target.collectOpaqueList [fetchLeans dir, fetchOleans dir]
   defaultFacet := PackageFacet.oleans
   dependencies := #[{
     name := "mathlib",

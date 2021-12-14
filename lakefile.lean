@@ -1,7 +1,7 @@
 import Lake
 open Lake DSL System
 
-def tag : String := "nightly-2021-11-28"
+def tag : String := "nightly-2021-12-13"
 def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
 def leanTarName : String := "lean3-synport.tar.gz"
@@ -49,6 +49,7 @@ package lean3port (dir) {
   defaultFacet := PackageFacet.oleans
   dependencies := #[{
     name := "mathlib",
-    src := Source.git "https://github.com/leanprover-community/mathlib4.git" "9a944b6fd27daebf0393b376e4a89cc4644d18c2"
+    -- This git commit here should be the same commit as in the `lakefile.lean` for `mathport`.
+    src := Source.git "https://github.com/leanprover-community/mathlib4.git" "b9d13f475727bb0aea3e7cf257810b488ad53804"
   }]
 }

@@ -95,6 +95,6 @@ unsafe def has_reflect_derive_handler :=
 unsafe def has_sizeof_derive_handler :=
   instance_derive_handler `` SizeOf mk_has_sizeof_instance
 
--- error in Init.Meta.Derive: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler has_reflect
-attribute [derive #[expr has_reflect]] bool prod sum option interactive.loc pos
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler has_reflect
+deriving instance [anonymous] for Bool, Prod, Sum, Option, Interactive.Loc, Pos
 

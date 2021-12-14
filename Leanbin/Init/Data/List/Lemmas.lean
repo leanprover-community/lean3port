@@ -145,12 +145,16 @@ theorem mem_append_left {a : α} {l₁ : List α} (l₂ : List α) (h : a ∈ l�
 theorem mem_append_right {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l₂) : a ∈ l₁ ++ l₂ :=
   mem_append.2 (Or.inr h)
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » @nil α)
 theorem not_bex_nil (p : α → Prop) : ¬∃ (x : _)(_ : x ∈ @nil α), p x :=
   fun ⟨x, hx, px⟩ => hx
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » @nil α)
 theorem ball_nil (p : α → Prop) : ∀ x _ : x ∈ @nil α, p x :=
   fun x => False.elim
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » «expr :: »(a, l))
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » l)
 theorem bex_cons (p : α → Prop) (a : α) (l : List α) :
   (∃ (x : _)(_ : x ∈ a :: l), p x) ↔ p a ∨ ∃ (x : _)(_ : x ∈ l), p x :=
   ⟨fun ⟨x, h, px⟩ =>
@@ -164,6 +168,8 @@ theorem bex_cons (p : α → Prop) (a : α) (l : List α) :
           exact Or.inr ⟨x, h, px⟩,
     fun o => o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » «expr :: »(a, l))
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » l)
 theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀ x _ : x ∈ a :: l, p x) ↔ p a ∧ ∀ x _ : x ∈ l, p x :=
   ⟨fun al => ⟨al a (mem_cons_self _ _), fun x h => al x (mem_cons_of_mem _ h)⟩,
     fun ⟨pa, al⟩ x o => o.elim (fun e => e.symm ▸ pa) (al x)⟩

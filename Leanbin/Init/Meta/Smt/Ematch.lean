@@ -86,7 +86,7 @@ unsafe def to_hinst_lemmas_core (m : transparency) : Bool → List Name → hins
                 let new_hs ← to_hinst_lemmas_core tt eqns hs 
                 to_hinst_lemmas_core as_simp ns new_hs
 
-unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : exprcommand :=
+unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : command :=
   do 
     let t := quote.1 (user_attribute hinst_lemmas)
     let v :=
@@ -105,7 +105,7 @@ unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : exprco
     add_decl (declaration.defn attr_name [] t v ReducibilityHints.abbrev ff)
     attribute.register attr_name
 
-unsafe def mk_hinst_lemma_attrs_core (as_simp : Bool) : List Name → exprcommand
+unsafe def mk_hinst_lemma_attrs_core (as_simp : Bool) : List Name → command
 | [] => skip
 | n :: ns =>
   mk_hinst_lemma_attr_core n as_simp >> mk_hinst_lemma_attrs_core ns <|>
@@ -132,7 +132,7 @@ yet. Moreover, the hinst_lemmas for attr_name will be the union of the lemmas ta
 For the ones in simp_attr_names, we use the left-hand-side of the conclusion as the pattern.
 -/
 unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name) (simp_attr_names : List Name) :
-  exprcommand :=
+  command :=
   do 
     mk_hinst_lemma_attrs_core ff attr_names 
     mk_hinst_lemma_attrs_core tt simp_attr_names 

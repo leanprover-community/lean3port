@@ -8,8 +8,7 @@ universe u v
 
 axiom choice {α : Sort u} : Nonempty α → α
 
-@[irreducible]
-noncomputable def indefinite_description {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
+noncomputable irreducible_def indefinite_description {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
   choice$
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
@@ -42,6 +41,7 @@ private theorem u : Prop :=
 private theorem v : Prop :=
   some exV
 
+-- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option type_context.unfold_lemmas
 set_option type_context.unfold_lemmas true
 
 private theorem u_def : U u :=
@@ -102,8 +102,7 @@ noncomputable def type_decidable (α : Sort u) : Psum α (α → False) :=
   | is_true hp => Psum.inl (@Inhabited.default _ (inhabited_of_nonempty hp))
   | is_false hn => Psum.inr fun a => absurd (Nonempty.intro a) hn
 
-@[irreducible]
-noncomputable def strong_indefinite_description {α : Sort u} (p : α → Prop) (h : Nonempty α) :
+noncomputable irreducible_def strong_indefinite_description {α : Sort u} (p : α → Prop) (h : Nonempty α) :
   { x : α // (∃ y : α, p y) → p x } :=
   if hp : ∃ x : α, p x then
     let xp := indefinite_description _ hp

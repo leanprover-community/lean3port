@@ -25,7 +25,7 @@ def untarReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM P
   untar (to / artifact)
 
 def fetchOleans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
-  fetch := async do
+  fetch := async (m := BuildM) do
     IO.FS.createDirAll libDir
     let oldTrace := Hash.ofString (← Git.headRevision dir)
     buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
@@ -34,7 +34,7 @@ def fetchOleans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch }
   libDir : FilePath := dir / "build" / "lib"
 
 def fetchLeans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
-  fetch := async do
+  fetch := async (m := BuildM) do
     IO.FS.createDirAll srcDir
     let oldTrace := Hash.ofString (← Git.headRevision dir)
     buildFileUnlessUpToDate (srcDir / leanTarName) oldTrace do

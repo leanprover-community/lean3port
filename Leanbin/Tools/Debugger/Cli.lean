@@ -2,12 +2,12 @@ import Leanbin.Tools.Debugger.Util
 
 namespace Debugger
 
--- error in Tools.Debugger.Cli: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler decidable_eq
-@[derive #[expr decidable_eq]] inductive mode
-| init
-| step
-| run
-| done
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler decidable_eq
+inductive mode
+  | init
+  | step
+  | run
+  | done deriving [anonymous]
 
 structure State where 
   md : mode 

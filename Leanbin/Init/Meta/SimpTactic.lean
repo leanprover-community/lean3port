@@ -427,7 +427,7 @@ unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
     let S' ← S.add_simp n ff 
     to_simp_lemmas S' ns
 
-unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : exprcommand :=
+unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : command :=
   do 
     let t := quote.1 (user_attribute simp_lemmas)
     let v :=

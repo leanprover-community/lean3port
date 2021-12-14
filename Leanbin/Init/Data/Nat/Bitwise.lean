@@ -56,17 +56,18 @@ theorem bodd_mul (m n : ℕ) : bodd (m*n) = (bodd m && bodd n) :=
       simp [mul_succ, IH]
       cases bodd m <;> cases bodd n <;> rfl
 
--- error in Init.Data.Nat.Bitwise: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem mod_two_of_bodd (n : exprℕ()) : «expr = »(«expr % »(n, 2), cond (bodd n) 1 0) :=
-begin
-  have [] [] [":=", expr congr_arg bodd (mod_add_div n 2)],
-  simp [] [] [] ["[", expr bnot, "]"] [] ["at", ident this],
-  rw ["[", expr show ∀
-   b, «expr = »(«expr && »(ff, b), ff), by intros []; cases [expr b] []; refl, ",", expr show ∀
-   b, «expr = »(bxor b ff, b), by intros []; cases [expr b] []; refl, "]"] ["at", ident this],
-  rw ["[", "<-", expr this, "]"] [],
-  cases [expr mod_two_eq_zero_or_one n] ["with", ident h, ident h]; rw [expr h] []; refl
-end
+theorem mod_two_of_bodd (n : ℕ) : n % 2 = cond (bodd n) 1 0 :=
+  by 
+    have  := congr_argₓ bodd (mod_add_div n 2)
+    simp [bnot] at this 
+    rw
+      [show ∀ b, (ff && b) = ff by 
+        intros  <;> cases b <;> rfl,
+      show ∀ b, bxor b ff = b by 
+        intros  <;> cases b <;> rfl] at
+      this 
+    rw [←this]
+    cases' mod_two_eq_zero_or_one n with h h <;> rw [h] <;> rfl
 
 @[simp]
 theorem div2_zero : div2 0 = 0 :=
@@ -158,17 +159,22 @@ def shiftr : ℕ → ℕ → ℕ
 def test_bit (m n : ℕ) : Bool :=
   bodd (shiftr m n)
 
--- error in Init.Data.Nat.Bitwise: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-def binary_rec {C : nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) : ∀ n, C n
-| n := if n0 : «expr = »(n, 0) then by rw [expr n0] []; exact [expr z] else let n' := div2 n in
-have «expr < »(n', n), begin
-  change [expr «expr < »(div2 n, n)] [] [],
-  rw [expr div2_val] [],
-  apply [expr (div_lt_iff_lt_mul _ _ (succ_pos 1)).2],
-  have [] [] [":=", expr nat.mul_lt_mul_of_pos_left (lt_succ_self 1) (lt_of_le_of_ne n.zero_le (ne.symm n0))],
-  rwa [expr nat.mul_one] ["at", ident this]
-end,
-by rw ["[", "<-", expr show «expr = »(bit (bodd n) n', n), from bit_decomp n, "]"] []; exact [expr f (bodd n) n' (binary_rec n')]
+def binary_rec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) : ∀ n, C n
+| n =>
+  if n0 : n = 0 then
+    by 
+      rw [n0] <;> exact z
+  else
+    let n' := div2 n 
+    have  : n' < n :=
+      by 
+        change div2 n < n 
+        rw [div2_val]
+        apply (div_lt_iff_lt_mul _ _ (succ_pos 1)).2
+        have  := Nat.mul_lt_mul_of_pos_leftₓ (lt_succ_self 1) (lt_of_le_of_neₓ n.zero_le (Ne.symm n0))
+        rwa [Nat.mul_one] at this 
+    by 
+      rw [←show bit (bodd n) n' = n from bit_decomp n] <;> exact f (bodd n) n' (binary_rec n')
 
 def size : ℕ → ℕ :=
   binary_rec 0 fun _ _ => succ
@@ -244,33 +250,30 @@ theorem test_bit_succ m b n : test_bit (bit b n) (succ m) = test_bit n m :=
   by 
     rw [←shiftr_add, Nat.add_comm] at this <;> exact this
 
--- error in Init.Data.Nat.Bitwise: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem binary_rec_eq
-{C : nat → Sort u}
-{z : C 0}
-{f : ∀ b n, C n → C (bit b n)}
-(h : «expr = »(f ff 0 z, z))
-(b n) : «expr = »(binary_rec z f (bit b n), f b n (binary_rec z f n)) :=
-begin
-  rw ["[", expr binary_rec, "]"] [],
-  with_cases { by_cases [expr «expr = »(bit b n, 0)] },
-  case [ident pos, ":", ident h'] { simp [] [] [] ["[", expr dif_pos h', "]"] [] [],
-    generalize [] [":"] [expr «expr = »(binary_rec._main._pack._proof_1 (bit b n) h', e)],
-    revert [ident e],
-    have [ident bf] [] [":=", expr bodd_bit b n],
-    have [ident n0] [] [":=", expr div2_bit b n],
-    rw [expr h'] ["at", ident bf, ident n0],
-    simp [] [] [] [] [] ["at", ident bf, ident n0],
-    rw ["[", "<-", expr bf, ",", "<-", expr n0, ",", expr binary_rec_zero, "]"] [],
-    intros [],
-    exact [expr h.symm] },
-  case [ident neg, ":", ident h'] { simp [] [] [] ["[", expr dif_neg h', "]"] [] [],
-    generalize [] [":"] [expr «expr = »(binary_rec._main._pack._proof_2 (bit b n), e)],
-    revert [ident e],
-    rw ["[", expr bodd_bit, ",", expr div2_bit, "]"] [],
-    intros [],
-    refl }
-end
+theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)} (h : f ff 0 z = z) b n :
+  binary_rec z f (bit b n) = f b n (binary_rec z f n) :=
+  by 
+    rw [binary_rec]
+    withCases 
+      byCases' bit b n = 0
+    case pos h' => 
+      simp [dif_pos h']
+      generalize binary_rec._main._pack._proof_1 (bit b n) h' = e 
+      revert e 
+      have bf := bodd_bit b n 
+      have n0 := div2_bit b n 
+      rw [h'] at bf n0 
+      simp  at bf n0 
+      rw [←bf, ←n0, binary_rec_zero]
+      intros 
+      exact h.symm 
+    case neg h' => 
+      simp [dif_neg h']
+      generalize binary_rec._main._pack._proof_2 (bit b n) = e 
+      revert e 
+      rw [bodd_bit, div2_bit]
+      intros 
+      rfl
 
 theorem bitwise_bit_aux {f : Bool → Bool → Bool} (h : f ff ff = ff) :
   (@binary_rec (fun _ => ℕ) (cond (f tt ff) (bit ff 0) 0) fun b n _ => bit (f ff b) (cond (f ff tt) n 0)) =

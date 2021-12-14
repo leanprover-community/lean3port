@@ -39,7 +39,7 @@ def extfun (α : Sort u) (β : α → Sort v) : Sort imax u v :=
 
 /-- The map from functions into the qquotient by pointwise equality. -/
 def fun_to_extfun (f : ∀ x : α, β x) : extfun α β :=
-  «expr⟦ ⟧» f
+  ⟦f⟧
 
 /-- From an element of `extfun` we can retrieve an actual function. -/
 def extfun_app (f : extfun α β) : ∀ x : α, β x :=
@@ -53,7 +53,7 @@ attribute [local instance] fun_setoid
 
 /-- Function extensionality, proven using quotients. -/
 theorem funext {f₁ f₂ : ∀ x : α, β x} (h : ∀ x, f₁ x = f₂ x) : f₁ = f₂ :=
-  show extfun_app («expr⟦ ⟧» f₁) = extfun_app («expr⟦ ⟧» f₂) from congr_argₓ extfun_app (sound h)
+  show extfun_app (⟦f₁⟧) = extfun_app (⟦f₂⟧) from congr_argₓ extfun_app (sound h)
 
 attribute [intro!] funext
 

@@ -45,44 +45,43 @@ variable {r : α → α → Prop}
 
 variable {β : Quot r → Sort v}
 
--- error in Init.Data.Quot: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-local notation `⟦`:max a `⟧` := quot.mk r a
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+local notation:999 "⟦" a "⟧" => Quot.mk r a
 
 @[reducible]
-protected def indep (f : ∀ a, β («expr⟦ ⟧» a)) (a : α) : Psigma β :=
-  ⟨«expr⟦ ⟧» a, f a⟩
+protected def indep (f : ∀ a, β (⟦a⟧)) (a : α) : Psigma β :=
+  ⟨⟦a⟧, f a⟩
 
-protected theorem indep_coherent (f : ∀ a, β («expr⟦ ⟧» a))
-  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β («expr⟦ ⟧» b)) = f b) :
+protected theorem indep_coherent (f : ∀ a, β (⟦a⟧))
+  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) = f b) :
   ∀ a b, r a b → Quot.indepₓ f a = Quot.indepₓ f b :=
   fun a b e => Psigma.eq (sound e) (h a b e)
 
-protected theorem lift_indep_pr1 (f : ∀ a, β («expr⟦ ⟧» a))
-  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β («expr⟦ ⟧» b)) = f b) (q : Quot r) :
+protected theorem lift_indep_pr1 (f : ∀ a, β (⟦a⟧))
+  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) = f b) (q : Quot r) :
   (lift (Quot.indepₓ f) (Quot.indep_coherent f h) q).1 = q :=
   Quot.ind (fun a : α => Eq.refl (Quot.indepₓ f a).1) q
 
 @[reducible, elab_as_eliminator]
-protected def rec (f : ∀ a, β («expr⟦ ⟧» a))
-  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β («expr⟦ ⟧» b)) = f b) (q : Quot r) : β q :=
+protected def rec (f : ∀ a, β (⟦a⟧)) (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) = f b)
+  (q : Quot r) : β q :=
   Eq.recOnₓ (Quot.lift_indep_pr1 f h q) (lift (Quot.indepₓ f) (Quot.indep_coherent f h) q).2
 
 @[reducible, elab_as_eliminator]
-protected def rec_on (q : Quot r) (f : ∀ a, β («expr⟦ ⟧» a))
-  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β («expr⟦ ⟧» b)) = f b) : β q :=
+protected def rec_on (q : Quot r) (f : ∀ a, β (⟦a⟧))
+  (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) = f b) : β q :=
   Quot.recₓ f h q
 
 @[reducible, elab_as_eliminator]
-protected def rec_on_subsingleton [h : ∀ a, Subsingleton (β («expr⟦ ⟧» a))] (q : Quot r) (f : ∀ a, β («expr⟦ ⟧» a)) :
-  β q :=
+protected def rec_on_subsingleton [h : ∀ a, Subsingleton (β (⟦a⟧))] (q : Quot r) (f : ∀ a, β (⟦a⟧)) : β q :=
   Quot.recₓ f (fun a b h => Subsingleton.elimₓ _ (f b)) q
 
 @[reducible, elab_as_eliminator]
-protected def hrec_on (q : Quot r) (f : ∀ a, β («expr⟦ ⟧» a)) (c : ∀ a b : α p : r a b, HEq (f a) (f b)) : β q :=
+protected def hrec_on (q : Quot r) (f : ∀ a, β (⟦a⟧)) (c : ∀ a b : α p : r a b, HEq (f a) (f b)) : β q :=
   Quot.recOnₓ q f
     fun a b p =>
       eq_of_heq
-        (calc HEq (Eq.ndrec (f a) (sound p) : β («expr⟦ ⟧» b)) (f a) := eq_rec_heqₓ (sound p) (f a)
+        (calc HEq (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) (f a) := eq_rec_heqₓ (sound p) (f a)
           HEq _ (f b) := c a b p
           )
 
@@ -98,10 +97,10 @@ namespace Quotientₓ
 protected def mk {α : Sort u} [s : Setoidₓ α] (a : α) : Quotientₓ s :=
   Quot.mk Setoidₓ.R a
 
--- error in Init.Data.Quot: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-notation `⟦`:max a `⟧`:0 := quotient.mk a
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+notation:999 "⟦" a "⟧" => Quotientₓ.mk a
 
-theorem sound {α : Sort u} [s : Setoidₓ α] {a b : α} : a ≈ b → «expr⟦ ⟧» a = «expr⟦ ⟧» b :=
+theorem sound {α : Sort u} [s : Setoidₓ α] {a b : α} : a ≈ b → ⟦a⟧ = ⟦b⟧ :=
   Quot.sound
 
 @[reducible, elab_as_eliminator]
@@ -110,7 +109,7 @@ protected def lift {α : Sort u} {β : Sort v} [s : Setoidₓ α] (f : α → β
   Quot.lift f
 
 @[elab_as_eliminator]
-protected theorem ind {α : Sort u} [s : Setoidₓ α] {β : Quotientₓ s → Prop} : (∀ a, β («expr⟦ ⟧» a)) → ∀ q, β q :=
+protected theorem ind {α : Sort u} [s : Setoidₓ α] {β : Quotientₓ s → Prop} : (∀ a, β (⟦a⟧)) → ∀ q, β q :=
   Quot.ind
 
 @[reducible, elab_as_eliminator]
@@ -120,10 +119,10 @@ protected def lift_on {α : Sort u} {β : Sort v} [s : Setoidₓ α] (q : Quotie
 
 @[elab_as_eliminator]
 protected theorem induction_on {α : Sort u} [s : Setoidₓ α] {β : Quotientₓ s → Prop} (q : Quotientₓ s)
-  (h : ∀ a, β («expr⟦ ⟧» a)) : β q :=
+  (h : ∀ a, β (⟦a⟧)) : β q :=
   Quot.induction_on q h
 
-theorem exists_rep {α : Sort u} [s : Setoidₓ α] (q : Quotientₓ s) : ∃ a : α, «expr⟦ ⟧» a = q :=
+theorem exists_rep {α : Sort u} [s : Setoidₓ α] (q : Quotientₓ s) : ∃ a : α, ⟦a⟧ = q :=
   Quot.exists_rep q
 
 section 
@@ -134,22 +133,21 @@ variable [s : Setoidₓ α]
 
 variable {β : Quotientₓ s → Sort v}
 
-protected def rec (f : ∀ a, β («expr⟦ ⟧» a))
-  (h : ∀ a b : α p : a ≈ b, (Eq.ndrec (f a) (Quotientₓ.sound p) : β («expr⟦ ⟧» b)) = f b) (q : Quotientₓ s) : β q :=
+protected def rec (f : ∀ a, β (⟦a⟧)) (h : ∀ a b : α p : a ≈ b, (Eq.ndrec (f a) (Quotientₓ.sound p) : β (⟦b⟧)) = f b)
+  (q : Quotientₓ s) : β q :=
   Quot.recₓ f h q
 
 @[reducible, elab_as_eliminator]
-protected def rec_on (q : Quotientₓ s) (f : ∀ a, β («expr⟦ ⟧» a))
-  (h : ∀ a b : α p : a ≈ b, (Eq.ndrec (f a) (Quotientₓ.sound p) : β («expr⟦ ⟧» b)) = f b) : β q :=
+protected def rec_on (q : Quotientₓ s) (f : ∀ a, β (⟦a⟧))
+  (h : ∀ a b : α p : a ≈ b, (Eq.ndrec (f a) (Quotientₓ.sound p) : β (⟦b⟧)) = f b) : β q :=
   Quot.recOnₓ q f h
 
 @[reducible, elab_as_eliminator]
-protected def rec_on_subsingleton [h : ∀ a, Subsingleton (β («expr⟦ ⟧» a))] (q : Quotientₓ s)
-  (f : ∀ a, β («expr⟦ ⟧» a)) : β q :=
+protected def rec_on_subsingleton [h : ∀ a, Subsingleton (β (⟦a⟧))] (q : Quotientₓ s) (f : ∀ a, β (⟦a⟧)) : β q :=
   @Quot.recOnSubsingletonₓ _ _ _ h q f
 
 @[reducible, elab_as_eliminator]
-protected def hrec_on (q : Quotientₓ s) (f : ∀ a, β («expr⟦ ⟧» a)) (c : ∀ a b : α p : a ≈ b, HEq (f a) (f b)) : β q :=
+protected def hrec_on (q : Quotientₓ s) (f : ∀ a, β (⟦a⟧)) (c : ∀ a b : α p : a ≈ b, HEq (f a) (f b)) : β q :=
   Quot.hrecOnₓ q f c
 
 end 
@@ -182,19 +180,18 @@ protected def lift_on₂ (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (f 
   Quotientₓ.lift₂ f c q₁ q₂
 
 @[elab_as_eliminator]
-protected theorem ind₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Prop} (h : ∀ a b, φ («expr⟦ ⟧» a) («expr⟦ ⟧» b))
-  (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) : φ q₁ q₂ :=
+protected theorem ind₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Prop} (h : ∀ a b, φ (⟦a⟧) (⟦b⟧)) (q₁ : Quotientₓ s₁)
+  (q₂ : Quotientₓ s₂) : φ q₁ q₂ :=
   Quotientₓ.ind (fun a₁ => Quotientₓ.ind (fun a₂ => h a₁ a₂) q₂) q₁
 
 @[elab_as_eliminator]
 protected theorem induction_on₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Prop} (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂)
-  (h : ∀ a b, φ («expr⟦ ⟧» a) («expr⟦ ⟧» b)) : φ q₁ q₂ :=
+  (h : ∀ a b, φ (⟦a⟧) (⟦b⟧)) : φ q₁ q₂ :=
   Quotientₓ.ind (fun a₁ => Quotientₓ.ind (fun a₂ => h a₁ a₂) q₂) q₁
 
 @[elab_as_eliminator]
 protected theorem induction_on₃ [s₃ : Setoidₓ φ] {δ : Quotientₓ s₁ → Quotientₓ s₂ → Quotientₓ s₃ → Prop}
-  (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (q₃ : Quotientₓ s₃)
-  (h : ∀ a b c, δ («expr⟦ ⟧» a) («expr⟦ ⟧» b) («expr⟦ ⟧» c)) : δ q₁ q₂ q₃ :=
+  (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (q₃ : Quotientₓ s₃) (h : ∀ a b c, δ (⟦a⟧) (⟦b⟧) (⟦c⟧)) : δ q₁ q₂ q₃ :=
   Quotientₓ.ind (fun a₁ => Quotientₓ.ind (fun a₂ => Quotientₓ.ind (fun a₃ => h a₁ a₂ a₃) q₃) q₂) q₁
 
 end 
@@ -222,7 +219,7 @@ private theorem rel.refl : ∀ q : Quotientₓ s, q ~ q :=
 private theorem eq_imp_rel {q₁ q₂ : Quotientₓ s} : q₁ = q₂ → q₁ ~ q₂ :=
   fun h => Eq.recOnₓ h (rel.refl q₁)
 
-theorem exact {a b : α} : «expr⟦ ⟧» a = «expr⟦ ⟧» b → a ≈ b :=
+theorem exact {a b : α} : ⟦a⟧ = ⟦b⟧ → a ≈ b :=
   fun h => eq_imp_rel h
 
 end Exact
@@ -239,8 +236,8 @@ include s₁ s₂
 
 @[reducible, elab_as_eliminator]
 protected def rec_on_subsingleton₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Sort u_c}
-  [h : ∀ a b, Subsingleton (φ («expr⟦ ⟧» a) («expr⟦ ⟧» b))] (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂)
-  (f : ∀ a b, φ («expr⟦ ⟧» a) («expr⟦ ⟧» b)) : φ q₁ q₂ :=
+  [h : ∀ a b, Subsingleton (φ (⟦a⟧) (⟦b⟧))] (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (f : ∀ a b, φ (⟦a⟧) (⟦b⟧)) :
+  φ q₁ q₂ :=
   @Quotientₓ.recOnSubsingleton _ s₁ (fun q => φ q q₂) (fun a => Quotientₓ.ind (fun b => h a b) q₂) q₁
     fun a => Quotientₓ.recOnSubsingleton q₂ fun b => f a b
 

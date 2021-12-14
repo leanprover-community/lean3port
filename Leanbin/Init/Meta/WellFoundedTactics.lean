@@ -63,6 +63,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
 | quote.1 (Psigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
 | _ => failed
 
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
 unsafe def process_lex : tactic Unit → tactic Unit
 | tac =>
   do 
@@ -98,6 +100,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
         | _ => return s
       else return s
 
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
 private unsafe def unfold_sizeof_loop : tactic Unit :=
   do 
     dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
@@ -145,6 +148,8 @@ private unsafe def num_small_lt (a b : expr) : Bool :=
 private unsafe def sort_args (args : List expr) : List expr :=
   args.qsort num_small_lt
 
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
 unsafe def cancel_nat_add_lt : tactic Unit :=
   do 
     let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target 
@@ -171,6 +176,9 @@ unsafe def check_target_is_value_lt : tactic Unit :=
     let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target 
     guardₓ lhs.is_numeral
 
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>

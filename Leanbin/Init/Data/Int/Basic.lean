@@ -4,10 +4,10 @@ import Leanbin.Init.Data.Nat.Gcd
 
 open Nat
 
--- error in Init.Data.Int.Basic: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler decidable_eq
-@[derive #[expr decidable_eq]] inductive int : Type
-| of_nat : nat → int
-| neg_succ_of_nat : nat → int
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler decidable_eq
+inductive Int : Type
+  | of_nat : Nat → Int
+  | neg_succ_of_nat : Nat → Int deriving [anonymous]
 
 instance : Coe Nat Int :=
   ⟨Int.ofNat⟩
@@ -26,7 +26,7 @@ instance : HasToString Int :=
 
 namespace Int
 
-protected theorem coe_nat_eq (n : ℕ) : «expr↑ » n = Int.ofNat n :=
+protected theorem coe_nat_eq (n : ℕ) : ↑n = Int.ofNat n :=
   rfl
 
 protected def zero : ℤ :=
@@ -120,34 +120,34 @@ theorem neg_of_nat_of_succ (n : ℕ) : -of_nat (succ n) = -[1+ n] :=
 theorem neg_neg_of_nat_succ (n : ℕ) : - -[1+ n] = of_nat (succ n) :=
   rfl
 
-theorem of_nat_eq_coe (n : ℕ) : of_nat n = «expr↑ » n :=
+theorem of_nat_eq_coe (n : ℕ) : of_nat n = ↑n :=
   rfl
 
-theorem neg_succ_of_nat_coe (n : ℕ) : -[1+ n] = -«expr↑ » (n+1) :=
+theorem neg_succ_of_nat_coe (n : ℕ) : -[1+ n] = -↑n+1 :=
   rfl
 
-protected theorem coe_nat_add (m n : ℕ) : («expr↑ » (m+n) : ℤ) = «expr↑ » m+«expr↑ » n :=
+protected theorem coe_nat_add (m n : ℕ) : (↑m+n : ℤ) = (↑m)+↑n :=
   rfl
 
-protected theorem coe_nat_mul (m n : ℕ) : («expr↑ » (m*n) : ℤ) = «expr↑ » m*«expr↑ » n :=
+protected theorem coe_nat_mul (m n : ℕ) : (↑m*n : ℤ) = (↑m)*↑n :=
   rfl
 
-protected theorem coe_nat_zero : «expr↑ » (0 : ℕ) = (0 : ℤ) :=
+protected theorem coe_nat_zero : ↑(0 : ℕ) = (0 : ℤ) :=
   rfl
 
-protected theorem coe_nat_one : «expr↑ » (1 : ℕ) = (1 : ℤ) :=
+protected theorem coe_nat_one : ↑(1 : ℕ) = (1 : ℤ) :=
   rfl
 
-protected theorem coe_nat_succ (n : ℕ) : («expr↑ » (succ n) : ℤ) = «expr↑ » n+1 :=
+protected theorem coe_nat_succ (n : ℕ) : (↑succ n : ℤ) = (↑n)+1 :=
   rfl
 
-protected theorem coe_nat_add_out (m n : ℕ) : («expr↑ » m+«expr↑ » n) = (m+n : ℤ) :=
+protected theorem coe_nat_add_out (m n : ℕ) : ((↑m)+↑n) = (m+n : ℤ) :=
   rfl
 
-protected theorem coe_nat_mul_out (m n : ℕ) : («expr↑ » m*«expr↑ » n) = («expr↑ » (m*n) : ℤ) :=
+protected theorem coe_nat_mul_out (m n : ℕ) : ((↑m)*↑n) = (↑m*n : ℤ) :=
   rfl
 
-protected theorem coe_nat_add_one_out (n : ℕ) : («expr↑ » n+(1 : ℤ)) = «expr↑ » (succ n) :=
+protected theorem coe_nat_add_one_out (n : ℕ) : ((↑n)+(1 : ℤ)) = ↑succ n :=
   rfl
 
 theorem of_nat_add_of_nat (m n : Nat) : (of_nat m+of_nat n) = of_nat (m+n) :=
@@ -178,13 +178,13 @@ attribute [local simp] of_nat_add_of_nat of_nat_mul_of_nat neg_of_nat_zero neg_o
   of_nat_add_neg_succ_of_nat neg_succ_of_nat_add_of_nat neg_succ_of_nat_add_neg_succ_of_nat of_nat_mul_neg_succ_of_nat
   neg_succ_of_nat_of_nat mul_neg_succ_of_nat_neg_succ_of_nat
 
-protected theorem coe_nat_inj {m n : ℕ} (h : («expr↑ » m : ℤ) = «expr↑ » n) : m = n :=
+protected theorem coe_nat_inj {m n : ℕ} (h : (↑m : ℤ) = ↑n) : m = n :=
   Int.ofNat.injₓ h
 
 theorem of_nat_eq_of_nat_iff (m n : ℕ) : of_nat m = of_nat n ↔ m = n :=
   Iff.intro Int.ofNat.injₓ (congr_argₓ _)
 
-protected theorem coe_nat_eq_coe_nat_iff (m n : ℕ) : («expr↑ » m : ℤ) = «expr↑ » n ↔ m = n :=
+protected theorem coe_nat_eq_coe_nat_iff (m n : ℕ) : (↑m : ℤ) = ↑n ↔ m = n :=
   of_nat_eq_of_nat_iff m n
 
 theorem neg_succ_of_nat_inj_iff {m n : ℕ} : neg_succ_of_nat m = neg_succ_of_nat n ↔ m = n :=
@@ -208,30 +208,28 @@ protected theorem neg_inj {a b : ℤ} (h : -a = -b) : a = b :=
 protected theorem sub_eq_add_neg {a b : ℤ} : a - b = a+-b :=
   rfl
 
--- error in Init.Data.Int.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem sub_nat_nat_elim
-(m n : exprℕ())
-(P : exprℕ() → exprℕ() → exprℤ() → exprProp())
-(hp : ∀ i n, P «expr + »(n, i) n (of_nat i))
-(hn : ∀ i m, P m «expr + »(«expr + »(m, i), 1) «expr-[1+ ]»(i)) : P m n (sub_nat_nat m n) :=
-begin
-  have [ident H] [":", expr ∀
-   k, «expr = »(«expr - »(n, m), k) → P m n (nat.cases_on k (of_nat «expr - »(m, n)) (λ a, «expr-[1+ ]»(a)))] [],
-  { intro [ident k],
-    cases [expr k] [],
-    { intro [ident e],
-      cases [expr nat.le.dest (nat.le_of_sub_eq_zero e)] ["with", ident k, ident h],
-      rw ["[", expr h.symm, ",", expr nat.add_sub_cancel_left, "]"] [],
-      apply [expr hp] },
-    { intro [ident heq],
-      have [ident h] [":", expr «expr ≤ »(m, n)] [],
-      { exact [expr nat.le_of_lt (nat.lt_of_sub_eq_succ heq)] },
-      rw ["[", expr nat.sub_eq_iff_eq_add h, "]"] ["at", ident heq],
-      rw ["[", expr heq, ",", expr nat.add_comm, "]"] [],
-      apply [expr hn] } },
-  delta [ident sub_nat_nat] [],
-  exact [expr H _ rfl]
-end
+theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ i n, P (n+i) n (of_nat i))
+  (hn : ∀ i m, P m ((m+i)+1) -[1+ i]) : P m n (sub_nat_nat m n) :=
+  by 
+    have H : ∀ k, n - m = k → P m n (Nat.casesOn k (of_nat (m - n)) fun a => -[1+ a])
+    ·
+      intro k 
+      cases k
+      ·
+        intro e 
+        cases' Nat.Le.dest (Nat.le_of_sub_eq_zeroₓ e) with k h 
+        rw [h.symm, Nat.add_sub_cancel_left]
+        apply hp
+      ·
+        intro heq 
+        have h : m ≤ n
+        ·
+          exact Nat.le_of_ltₓ (Nat.lt_of_sub_eq_succₓ HEq)
+        rw [Nat.sub_eq_iff_eq_addₓ h] at heq 
+        rw [HEq, Nat.add_comm]
+        apply hn 
+    delta' sub_nat_nat 
+    exact H _ rfl
 
 theorem sub_nat_nat_add_left {m n : ℕ} : sub_nat_nat (m+n) m = of_nat n :=
   by 
@@ -281,7 +279,7 @@ def nat_abs : ℤ → ℕ
 | of_nat m => m
 | -[1+ m] => succ m
 
-theorem nat_abs_of_nat (n : ℕ) : nat_abs («expr↑ » n) = n :=
+theorem nat_abs_of_nat (n : ℕ) : nat_abs (↑n) = n :=
   rfl
 
 theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, nat_abs a = 0 → a = 0
@@ -297,7 +295,7 @@ theorem nat_abs_zero : nat_abs (0 : Int) = (0 : Nat) :=
 theorem nat_abs_one : nat_abs (1 : Int) = (1 : Nat) :=
   rfl
 
-theorem nat_abs_mul_self : ∀ {a : ℤ}, «expr↑ » (nat_abs a*nat_abs a) = a*a
+theorem nat_abs_mul_self : ∀ {a : ℤ}, (↑nat_abs a*nat_abs a) = a*a
 | of_nat m => rfl
 | -[1+ m'] => rfl
 
@@ -405,44 +403,40 @@ theorem sub_nat_nat_sub {m n : ℕ} (h : n ≤ m) (k : ℕ) : sub_nat_nat (m - n
       rw [Nat.sub_add_cancelₓ h]
     
 
--- error in Init.Data.Int.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem sub_nat_nat_add
-(m n k : exprℕ()) : «expr = »(sub_nat_nat «expr + »(m, n) k, «expr + »(of_nat m, sub_nat_nat n k)) :=
-begin
-  have [ident h] [] [":=", expr le_or_lt k n],
-  cases [expr h] ["with", ident h', ident h'],
-  { rw ["[", expr sub_nat_nat_of_le h', "]"] [],
-    have [ident h₂] [":", expr «expr ≤ »(k, «expr + »(m, n))] [],
-    exact [expr le_trans h' (nat.le_add_left _ _)],
-    rw ["[", expr sub_nat_nat_of_le h₂, "]"] [],
-    simp [] [] [] [] [] [],
-    rw [expr nat.add_sub_assoc h'] [] },
-  rw ["[", expr sub_nat_nat_of_lt h', "]"] [],
-  simp [] [] [] [] [] [],
-  rw ["[", expr succ_pred_eq_of_pos (nat.sub_pos_of_lt h'), "]"] [],
-  transitivity [],
-  rw ["[", "<-", expr nat.sub_add_cancel (le_of_lt h'), "]"] [],
-  apply [expr sub_nat_nat_add_add]
-end
+theorem sub_nat_nat_add (m n k : ℕ) : sub_nat_nat (m+n) k = of_nat m+sub_nat_nat n k :=
+  by 
+    have h := le_or_ltₓ k n 
+    cases' h with h' h'
+    ·
+      rw [sub_nat_nat_of_le h']
+      have h₂ : k ≤ m+n 
+      exact le_transₓ h' (Nat.le_add_leftₓ _ _)
+      rw [sub_nat_nat_of_le h₂]
+      simp 
+      rw [Nat.add_sub_assocₓ h']
+    rw [sub_nat_nat_of_lt h']
+    simp 
+    rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h')]
+    trans 
+    rw [←Nat.sub_add_cancelₓ (le_of_ltₓ h')]
+    apply sub_nat_nat_add_add
 
--- error in Init.Data.Int.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem sub_nat_nat_add_neg_succ_of_nat
-(m n k : exprℕ()) : «expr = »(«expr + »(sub_nat_nat m n, «expr-[1+ ]»(k)), sub_nat_nat m «expr + »(n, succ k)) :=
-begin
-  have [ident h] [] [":=", expr le_or_lt n m],
-  cases [expr h] ["with", ident h', ident h'],
-  { rw ["[", expr sub_nat_nat_of_le h', "]"] [],
-    simp [] [] [] [] [] [],
-    rw ["[", expr sub_nat_nat_sub h', ",", expr nat.add_comm, "]"] [] },
-  have [ident h₂] [":", expr «expr < »(m, «expr + »(n, succ k))] [],
-  exact [expr nat.lt_of_lt_of_le h' (nat.le_add_right _ _)],
-  have [ident h₃] [":", expr «expr ≤ »(m, «expr + »(n, k))] [],
-  exact [expr le_of_succ_le_succ h₂],
-  rw ["[", expr sub_nat_nat_of_lt h', ",", expr sub_nat_nat_of_lt h₂, "]"] [],
-  simp [] [] [] ["[", expr nat.add_comm, "]"] [] [],
-  rw ["[", "<-", expr add_succ, ",", expr succ_pred_eq_of_pos (nat.sub_pos_of_lt h'), ",", expr add_succ, ",", expr succ_sub h₃, ",", expr pred_succ, "]"] [],
-  rw ["[", expr nat.add_comm n, ",", expr nat.add_sub_assoc (le_of_lt h'), "]"] []
-end
+theorem sub_nat_nat_add_neg_succ_of_nat (m n k : ℕ) : (sub_nat_nat m n+-[1+ k]) = sub_nat_nat m (n+succ k) :=
+  by 
+    have h := le_or_ltₓ n m 
+    cases' h with h' h'
+    ·
+      rw [sub_nat_nat_of_le h']
+      simp 
+      rw [sub_nat_nat_sub h', Nat.add_comm]
+    have h₂ : m < n+succ k 
+    exact Nat.lt_of_lt_of_leₓ h' (Nat.le_add_rightₓ _ _)
+    have h₃ : m ≤ n+k 
+    exact le_of_succ_le_succ h₂ 
+    rw [sub_nat_nat_of_lt h', sub_nat_nat_of_lt h₂]
+    simp [Nat.add_comm]
+    rw [←add_succ, succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h'), add_succ, succ_sub h₃, pred_succ]
+    rw [Nat.add_comm n, Nat.add_sub_assocₓ (le_of_ltₓ h')]
 
 theorem add_assoc_aux1 (m n : ℕ) : ∀ c : ℤ, ((of_nat m+of_nat n)+c) = of_nat m+of_nat n+c
 | of_nat k =>
@@ -577,33 +571,32 @@ theorem neg_of_nat_eq_sub_nat_nat_zero : ∀ n, neg_of_nat n = sub_nat_nat 0 n
 | 0 => rfl
 | succ n => rfl
 
--- error in Init.Data.Int.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem of_nat_mul_sub_nat_nat
-(m n k : exprℕ()) : «expr = »(«expr * »(of_nat m, sub_nat_nat n k), sub_nat_nat «expr * »(m, n) «expr * »(m, k)) :=
-begin
-  have [ident h₀] [":", expr «expr ∨ »(«expr > »(m, 0), «expr = »(0, m))] [],
-  exact [expr decidable.lt_or_eq_of_le m.zero_le],
-  cases [expr h₀] ["with", ident h₀, ident h₀],
-  { have [ident h] [] [":=", expr nat.lt_or_ge n k],
-    cases [expr h] ["with", ident h, ident h],
-    { have [ident h'] [":", expr «expr < »(«expr * »(m, n), «expr * »(m, k))] [],
-      exact [expr nat.mul_lt_mul_of_pos_left h h₀],
-      rw ["[", expr sub_nat_nat_of_lt h, ",", expr sub_nat_nat_of_lt h', "]"] [],
-      simp [] [] [] [] [] [],
-      rw ["[", expr succ_pred_eq_of_pos (nat.sub_pos_of_lt h), "]"] [],
-      rw ["[", "<-", expr neg_of_nat_of_succ, ",", expr nat.mul_sub_left_distrib, "]"] [],
-      rw ["[", "<-", expr succ_pred_eq_of_pos (nat.sub_pos_of_lt h'), "]"] [],
-      reflexivity },
-    have [ident h'] [":", expr «expr ≤ »(«expr * »(m, k), «expr * »(m, n))] [],
-    exact [expr nat.mul_le_mul_left _ h],
-    rw ["[", expr sub_nat_nat_of_le h, ",", expr sub_nat_nat_of_le h', "]"] [],
-    simp [] [] [] [] [] [],
-    rw ["[", expr nat.mul_sub_left_distrib, "]"] [] },
-  have [ident h₂] [":", expr «expr = »(of_nat 0, 0)] [],
-  exact [expr rfl],
-  subst [expr h₀],
-  simp [] [] [] ["[", expr h₂, ",", expr int.zero_mul, ",", expr nat.zero_mul, "]"] [] []
-end
+theorem of_nat_mul_sub_nat_nat (m n k : ℕ) : (of_nat m*sub_nat_nat n k) = sub_nat_nat (m*n) (m*k) :=
+  by 
+    have h₀ : m > 0 ∨ 0 = m 
+    exact Decidable.lt_or_eq_of_leₓ m.zero_le 
+    cases' h₀ with h₀ h₀
+    ·
+      have h := Nat.lt_or_geₓ n k 
+      cases' h with h h
+      ·
+        have h' : (m*n) < m*k 
+        exact Nat.mul_lt_mul_of_pos_leftₓ h h₀ 
+        rw [sub_nat_nat_of_lt h, sub_nat_nat_of_lt h']
+        simp 
+        rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h)]
+        rw [←neg_of_nat_of_succ, Nat.mul_sub_left_distrib]
+        rw [←succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h')]
+        rfl 
+      have h' : (m*k) ≤ m*n 
+      exact Nat.mul_le_mul_leftₓ _ h 
+      rw [sub_nat_nat_of_le h, sub_nat_nat_of_le h']
+      simp 
+      rw [Nat.mul_sub_left_distrib]
+    have h₂ : of_nat 0 = 0 
+    exact rfl 
+    subst h₀ 
+    simp [h₂, Int.zero_mul, Nat.zero_mul]
 
 theorem neg_of_nat_add (m n : ℕ) : (neg_of_nat m+neg_of_nat n) = neg_of_nat (m+n) :=
   by 
@@ -622,31 +615,28 @@ theorem neg_of_nat_add (m n : ℕ) : (neg_of_nat m+neg_of_nat n) = neg_of_nat (m
     simp [Nat.succ_add]
     rfl
 
--- error in Init.Data.Int.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem neg_succ_of_nat_mul_sub_nat_nat
-(m
- n
- k : exprℕ()) : «expr = »(«expr * »(«expr-[1+ ]»(m), sub_nat_nat n k), sub_nat_nat «expr * »(succ m, k) «expr * »(succ m, n)) :=
-begin
-  have [ident h] [] [":=", expr nat.lt_or_ge n k],
-  cases [expr h] ["with", ident h, ident h],
-  { have [ident h'] [":", expr «expr < »(«expr * »(succ m, n), «expr * »(succ m, k))] [],
-    exact [expr nat.mul_lt_mul_of_pos_left h (nat.succ_pos m)],
-    rw ["[", expr sub_nat_nat_of_lt h, ",", expr sub_nat_nat_of_le (le_of_lt h'), "]"] [],
-    simp [] [] [] ["[", expr succ_pred_eq_of_pos (nat.sub_pos_of_lt h), ",", expr nat.mul_sub_left_distrib, "]"] [] [] },
-  have [ident h'] [":", expr «expr ∨ »(«expr > »(n, k), «expr = »(k, n))] [],
-  exact [expr decidable.lt_or_eq_of_le h],
-  cases [expr h'] ["with", ident h', ident h'],
-  { have [ident h₁] [":", expr «expr > »(«expr * »(succ m, n), «expr * »(succ m, k))] [],
-    exact [expr nat.mul_lt_mul_of_pos_left h' (nat.succ_pos m)],
-    rw ["[", expr sub_nat_nat_of_le h, ",", expr sub_nat_nat_of_lt h₁, "]"] [],
-    simp [] [] [] ["[", expr nat.mul_sub_left_distrib, ",", expr nat.mul_comm, "]"] [] [],
-    rw ["[", expr nat.mul_comm k, ",", expr nat.mul_comm n, ",", "<-", expr succ_pred_eq_of_pos (nat.sub_pos_of_lt h₁), ",", "<-", expr neg_of_nat_of_succ, "]"] [],
-    reflexivity },
-  subst [expr h'],
-  simp [] [] [] [] [] [],
-  reflexivity
-end
+theorem neg_succ_of_nat_mul_sub_nat_nat (m n k : ℕ) : (-[1+ m]*sub_nat_nat n k) = sub_nat_nat (succ m*k) (succ m*n) :=
+  by 
+    have h := Nat.lt_or_geₓ n k 
+    cases' h with h h
+    ·
+      have h' : (succ m*n) < succ m*k 
+      exact Nat.mul_lt_mul_of_pos_leftₓ h (Nat.succ_posₓ m)
+      rw [sub_nat_nat_of_lt h, sub_nat_nat_of_le (le_of_ltₓ h')]
+      simp [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h), Nat.mul_sub_left_distrib]
+    have h' : n > k ∨ k = n 
+    exact Decidable.lt_or_eq_of_leₓ h 
+    cases' h' with h' h'
+    ·
+      have h₁ : (succ m*n) > succ m*k 
+      exact Nat.mul_lt_mul_of_pos_leftₓ h' (Nat.succ_posₓ m)
+      rw [sub_nat_nat_of_le h, sub_nat_nat_of_lt h₁]
+      simp [Nat.mul_sub_left_distrib, Nat.mul_comm]
+      rw [Nat.mul_comm k, Nat.mul_comm n, ←succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h₁), ←neg_of_nat_of_succ]
+      rfl 
+    subst h' 
+    simp 
+    rfl
 
 attribute [local simp] of_nat_mul_sub_nat_nat neg_of_nat_add neg_succ_of_nat_mul_sub_nat_nat
 
@@ -724,17 +714,17 @@ protected theorem neg_add {a b : ℤ} : (-a+b) = (-a)+-b :=
       rw [Int.add_left_neg, Int.zero_add]
     
 
-theorem neg_succ_of_nat_coe' (n : ℕ) : -[1+ n] = -«expr↑ » n - 1 :=
+theorem neg_succ_of_nat_coe' (n : ℕ) : -[1+ n] = -↑n - 1 :=
   by 
     rw [Int.sub_eq_add_neg, ←Int.neg_add] <;> rfl
 
-protected theorem coe_nat_sub {n m : ℕ} : n ≤ m → («expr↑ » (m - n) : ℤ) = «expr↑ » m - «expr↑ » n :=
+protected theorem coe_nat_sub {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑m - ↑n :=
   of_nat_sub
 
 attribute [local simp] Int.sub_eq_add_neg
 
-protected theorem sub_nat_nat_eq_coe {m n : ℕ} : sub_nat_nat m n = «expr↑ » m - «expr↑ » n :=
-  sub_nat_nat_elim m n (fun m n i => i = «expr↑ » m - «expr↑ » n)
+protected theorem sub_nat_nat_eq_coe {m n : ℕ} : sub_nat_nat m n = ↑m - ↑n :=
+  sub_nat_nat_elim m n (fun m n i => i = ↑m - ↑n)
     (fun i n =>
       by 
         simp [Int.coe_nat_add, Int.add_left_comm, Int.add_assoc, Int.add_right_neg]

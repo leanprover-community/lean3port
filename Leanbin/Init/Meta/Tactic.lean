@@ -2046,8 +2046,8 @@ unsafe def subst (h : expr) : tactic Unit :=
 
 end Tactic
 
--- error in Init.Meta.Tactic: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-notation `command`:max := tactic unit
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+notation:999 "command" => tactic Unit
 
 open Tactic
 

@@ -4,6 +4,7 @@ import Leanbin.Init.Meta.Default
 import Leanbin.Init.Algebra.Classes 
 import Leanbin.Init.IteSimp
 
+-- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option default_priority
 set_option default_priority 100
 
 universe u
@@ -51,7 +52,7 @@ theorem cmp_using_eq_gt [IsStrictOrder α lt] (a b : α) : (cmpUsing lt a b = Or
       exact fun h => h.2
     ·
       intro hba 
-      split 
+      constructor
       ·
         intro hab 
         exact absurd (trans hab hba) (irrefl a)

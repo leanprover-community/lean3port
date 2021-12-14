@@ -40,6 +40,7 @@ variable {α β : Type u} (p : α → Prop) [DecidablePred p]
 instance bin_tree_to_list : Coe (BinTree α) (List α) :=
   ⟨BinTree.toList⟩
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » l)
 instance decidable_bex : ∀ l : List α, Decidable (∃ (x : _)(_ : x ∈ l), p x)
 | [] =>
   is_false
@@ -68,6 +69,8 @@ instance decidable_bex : ∀ l : List α, Decidable (∃ (x : _)(_ : x ∈ l), p
             refine' absurd _ h₂ 
             exact ⟨y, h, hp⟩)
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » l)
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (x «expr ∈ » l)
 instance decidable_ball (l : List α) : Decidable (∀ x _ : x ∈ l, p x) :=
   if h : ∃ (x : _)(_ : x ∈ l), ¬p x then
     is_false$

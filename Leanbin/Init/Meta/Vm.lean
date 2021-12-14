@@ -5,22 +5,22 @@ import Leanbin.Init.Meta.MkDecEqInstance
 
 unsafe axiom vm_obj : Type
 
--- error in Init.Meta.Vm: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler decidable_eq
-@[derive #[expr decidable_eq]] inductive vm_obj_kind
-| simple
-| constructor
-| closure
-| native_closure
-| mpz
-| name
-| level
-| expr
-| declaration
-| environment
-| tactic_state
-| format
-| options
-| other
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler decidable_eq
+inductive VmObjKind
+  | simple
+  | constructor
+  | closure
+  | native_closure
+  | mpz
+  | Name
+  | level
+  | expr
+  | declaration
+  | environment
+  | tactic_state
+  | format
+  | options
+  | other deriving [anonymous]
 
 namespace VmObj
 

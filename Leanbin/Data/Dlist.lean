@@ -18,16 +18,20 @@ open Function
 
 variable {α : Type u}
 
--- error in Data.Dlist: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-local notation `♯`:max := by abstract [] { intros [], simp [] [] [] [] [] [] }
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+local notation:999 "♯" =>
+  by 
+    abstract 
+      intros 
+      simp 
 
 /-- Convert a list to a dlist -/
 def of_list (l : List α) : Dlist α :=
-  ⟨append l, «expr♯»⟩
+  ⟨append l, ♯⟩
 
 /-- Convert a lazily-evaluated list to a dlist -/
 def lazy_of_list (l : Thunkₓ (List α)) : Dlist α :=
-  ⟨fun xs => l () ++ xs, «expr♯»⟩
+  ⟨fun xs => l () ++ xs, ♯⟩
 
 /-- Convert a dlist to a list -/
 def to_list : Dlist α → List α
@@ -35,21 +39,21 @@ def to_list : Dlist α → List α
 
 /--  Create a dlist containing no elements -/
 def Empty : Dlist α :=
-  ⟨id, «expr♯»⟩
+  ⟨id, ♯⟩
 
--- error in Data.Dlist: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-local notation a `::_`:max := list.cons a
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+local notation:999 a "::_" => List.cons a
 
 /-- Create dlist with a single element -/
 def singleton (x : α) : Dlist α :=
-  ⟨«expr ::_» x, «expr♯»⟩
+  ⟨x::_, ♯⟩
 
 attribute [local simp] Function.comp
 
 /-- `O(1)` Prepend a single element to a dlist -/
 def cons (x : α) : Dlist α → Dlist α
 | ⟨xs, h⟩ =>
-  ⟨«expr ::_» x ∘ xs,
+  ⟨x::_ ∘ xs,
     by 
       abstract 
         intros 
@@ -59,7 +63,7 @@ def cons (x : α) : Dlist α → Dlist α
 /-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α
 | ⟨xs, h⟩ =>
-  ⟨xs ∘ «expr ::_» x,
+  ⟨xs ∘ x::_,
     by 
       abstract 
         intros 
@@ -86,16 +90,15 @@ theorem to_list_of_list (l : List α) : to_list (of_list l) = l :=
   by 
     cases l <;> simp 
 
--- error in Data.Dlist: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem of_list_to_list (l : dlist α) : «expr = »(of_list (to_list l), l) :=
-begin
-  cases [expr l] ["with", ident xs],
-  have [ident h] [":", expr «expr = »(append (xs «expr[ , ]»([])), xs)] [],
-  { intros [],
-    funext [ident x],
-    simp [] [] [] ["[", expr l_invariant x, "]"] [] [] },
-  simp [] [] [] ["[", expr h, "]"] [] []
-end
+theorem of_list_to_list (l : Dlist α) : of_list (to_list l) = l :=
+  by 
+    cases' l with xs 
+    have h : append (xs []) = xs
+    ·
+      intros 
+      funext x 
+      simp [l_invariant x]
+    simp [h]
 
 theorem to_list_empty : to_list (@Empty α) = [] :=
   by 

@@ -50,6 +50,7 @@ def Name.updatePrefix : Name → Name → Name
 | mk_string s p, new_p => mk_string s new_p
 | mk_numeral s p, new_p => mk_numeral s new_p
 
+-- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option eqn_compiler.ite
 set_option eqn_compiler.ite false
 
 def Name.toStringWithSep (sep : Stringₓ) : Name → Stringₓ

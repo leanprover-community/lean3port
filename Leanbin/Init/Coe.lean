@@ -87,14 +87,17 @@ def coeSortₓ {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 /-! ### Notation -/
 
 
--- error in Init.Coe: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-notation `↑`:max x:max := coe x
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+notation:999 "↑" x:999 => coeₓ x
 
--- error in Init.Coe: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-notation `⇑`:max x:max := coe_fn x
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+notation:999 "⇑" x:999 => coeFn x
 
--- error in Init.Coe: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-notation `↥`:max x:max := coe_sort x
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+notation:999 "↥" x:999 => coeSortₓ x
 
 universe u₁ u₂ u₃
 
@@ -183,28 +186,28 @@ universe ua ua₁ ua₂ ub ub₁ ub₂
    problem does not have a solution. -/
 instance liftFn {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLift a₂ a₁] [HasLiftT b₁ b₂] :
   HasLift (a₁ → b₁) (a₂ → b₂) :=
-  ⟨fun f x => «expr↑ » (f («expr↑ » x))⟩
+  ⟨fun f x => ↑f (↑x)⟩
 
 instance liftFnRange {a : Sort ua} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLiftT b₁ b₂] : HasLift (a → b₁) (a → b₂) :=
-  ⟨fun f x => «expr↑ » (f x)⟩
+  ⟨fun f x => ↑f x⟩
 
 /-- A dependent version of `lift_fn_range`. -/
 instance liftPiRange {α : Sort u} {A : α → Sort ua} {B : α → Sort ub} [∀ i, HasLiftT (A i) (B i)] :
   HasLift (∀ i, A i) (∀ i, B i) :=
-  ⟨fun f i => «expr↑ » (f i)⟩
+  ⟨fun f i => ↑f i⟩
 
 instance liftFnDom {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b : Sort ub} [HasLift a₂ a₁] : HasLift (a₁ → b) (a₂ → b) :=
-  ⟨fun f x => f («expr↑ » x)⟩
+  ⟨fun f x => f (↑x)⟩
 
 instance liftPair {a₁ : Type ua₁} {a₂ : Type ub₂} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT a₁ a₂] [HasLiftT b₁ b₂] :
   HasLift (a₁ × b₁) (a₂ × b₂) :=
-  ⟨fun p => Prod.casesOn p fun x y => («expr↑ » x, «expr↑ » y)⟩
+  ⟨fun p => Prod.casesOn p fun x y => (↑x, ↑y)⟩
 
 instance liftPair₁ {a₁ : Type ua₁} {a₂ : Type ua₂} {b : Type ub} [HasLiftT a₁ a₂] : HasLift (a₁ × b) (a₂ × b) :=
-  ⟨fun p => Prod.casesOn p fun x y => («expr↑ » x, y)⟩
+  ⟨fun p => Prod.casesOn p fun x y => (↑x, y)⟩
 
 instance liftPair₂ {a : Type ua} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT b₁ b₂] : HasLift (a × b₁) (a × b₂) :=
-  ⟨fun p => Prod.casesOn p fun x y => (x, «expr↑ » y)⟩
+  ⟨fun p => Prod.casesOn p fun x y => (x, ↑y)⟩
 
 instance liftList {a : Type u} {b : Type v} [HasLift a b] : HasLift (List a) (List b) :=
   ⟨fun l => List.map coeₓ l⟩

@@ -4,12 +4,14 @@ import Leanbin.Init.Classical
 import Leanbin.Init.Meta.Name 
 import Leanbin.Init.Algebra.Classes
 
+-- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option default_priority
 set_option default_priority 100
 
 universe u
 
 variable {α : Type u}
 
+-- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option auto_param.check_exists
 set_option auto_param.check_exists false
 
 section Preorderₓ

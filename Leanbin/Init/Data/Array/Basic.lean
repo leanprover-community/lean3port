@@ -89,88 +89,78 @@ protected def beq_aux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : 
 protected def beq [∀ i, DecidableEq (α i)] (a b : DArray n α) : Bool :=
   DArray.beqAux a b n (le_reflₓ _)
 
--- error in Init.Data.Array.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem of_beq_aux_eq_tt
-[∀ i, decidable_eq (α i)]
-{a
- b : d_array n α} : ∀
-(i : nat)
-(h : «expr ≤ »(i, n)), «expr = »(d_array.beq_aux a b i h, tt) → ∀
-(j : nat)
-(h' : «expr < »(j, i)), «expr = »(a.read ⟨j, lt_of_lt_of_le h' h⟩, b.read ⟨j, lt_of_lt_of_le h' h⟩)
-| 0, h₁, h₂, j, h₃ := absurd h₃ (nat.not_lt_zero _)
-| «expr + »(i, 1), h₁, h₂, j, h₃ := begin
-  have [ident h₂'] [":", expr «expr ∧ »(«expr = »(read a ⟨i, h₁⟩, read b ⟨i, h₁⟩), «expr = »(d_array.beq_aux a b i _, tt))] [],
-  { simp [] [] [] ["[", expr d_array.beq_aux, "]"] [] ["at", ident h₂],
-    assumption },
-  have [ident h₁'] [":", expr «expr ≤ »(i, n)] [],
-  from [expr le_of_lt h₁],
-  have [ident ih] [":", expr ∀
-   (j : nat)
-   (h' : «expr < »(j, i)), «expr = »(a.read ⟨j, lt_of_lt_of_le h' h₁'⟩, b.read ⟨j, lt_of_lt_of_le h' h₁'⟩)] [],
-  from [expr of_beq_aux_eq_tt i h₁' h₂'.2],
-  by_cases [expr hji, ":", expr «expr = »(j, i)],
-  { subst [expr hji],
-    exact [expr h₂'.1] },
-  { have [ident j_lt_i] [":", expr «expr < »(j, i)] [],
-    from [expr lt_of_le_of_ne (nat.le_of_lt_succ h₃) hji],
-    exact [expr ih j j_lt_i] }
-end
+theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
+  ∀ i : Nat h : i ≤ n,
+    DArray.beqAux a b i h = tt →
+      ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
+| 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zeroₓ _)
+| i+1, h₁, h₂, j, h₃ =>
+  by 
+    have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt
+    ·
+      simp [DArray.beqAux] at h₂ 
+      assumption 
+    have h₁' : i ≤ n 
+    exact le_of_ltₓ h₁ 
+    have ih : ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩
+    exact of_beq_aux_eq_tt i h₁' h₂'.2
+    byCases' hji : j = i
+    ·
+      subst hji 
+      exact h₂'.1
+    ·
+      have j_lt_i : j < i 
+      exact lt_of_le_of_neₓ (Nat.le_of_lt_succₓ h₃) hji 
+      exact ih j j_lt_i
 
--- error in Init.Data.Array.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem of_beq_eq_tt [∀ i, decidable_eq (α i)] {a b : d_array n α} : «expr = »(d_array.beq a b, tt) → «expr = »(a, b) :=
-begin
-  unfold [ident d_array.beq] [],
-  intro [ident h],
-  have [] [":", expr ∀ (j : nat) (h : «expr < »(j, n)), «expr = »(a.read ⟨j, h⟩, b.read ⟨j, h⟩)] [],
-  from [expr of_beq_aux_eq_tt n (le_refl _) h],
-  apply [expr d_array.ext' this]
-end
+theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b :=
+  by 
+    unfold DArray.beq 
+    intro h 
+    have  : ∀ j : Nat h : j < n, a.read ⟨j, h⟩ = b.read ⟨j, h⟩
+    exact of_beq_aux_eq_tt n (le_reflₓ _) h 
+    apply DArray.ext' this
 
--- error in Init.Data.Array.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem of_beq_aux_eq_ff
-[∀ i, decidable_eq (α i)]
-{a
- b : d_array n α} : ∀
-(i : nat)
-(h : «expr ≤ »(i, n)), «expr = »(d_array.beq_aux a b i h, ff) → «expr∃ , »((j : nat)
- (h' : «expr < »(j, i)), «expr ≠ »(a.read ⟨j, lt_of_lt_of_le h' h⟩, b.read ⟨j, lt_of_lt_of_le h' h⟩))
-| 0, h₁, h₂ := begin
-  simp [] [] [] ["[", expr d_array.beq_aux, "]"] [] ["at", ident h₂],
-  contradiction
-end
-| «expr + »(i, 1), h₁, h₂ := begin
-  have [ident h₂'] [":", expr «expr ∨ »(«expr ≠ »(read a ⟨i, h₁⟩, read b ⟨i, h₁⟩), «expr = »(d_array.beq_aux a b i _, ff))] [],
-  { simp [] [] [] ["[", expr d_array.beq_aux, "]"] [] ["at", ident h₂],
-    assumption },
-  cases [expr h₂'] ["with", ident h, ident h],
-  { existsi [expr i],
-    existsi [expr nat.lt_succ_self _],
-    exact [expr h] },
-  { have [ident h₁'] [":", expr «expr ≤ »(i, n)] [],
-    from [expr le_of_lt h₁],
-    have [ident ih] [":", expr «expr∃ , »((j : nat)
-      (h' : «expr < »(j, i)), «expr ≠ »(a.read ⟨j, lt_of_lt_of_le h' h₁'⟩, b.read ⟨j, lt_of_lt_of_le h' h₁'⟩))] [],
-    from [expr of_beq_aux_eq_ff i h₁' h],
-    cases [expr ih] ["with", ident j, ident ih],
-    cases [expr ih] ["with", ident h', ident ih],
-    existsi [expr j],
-    existsi [expr nat.lt_succ_of_lt h'],
-    exact [expr ih] }
-end
+theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
+  ∀ i : Nat h : i ≤ n,
+    DArray.beqAux a b i h = ff →
+      ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
+| 0, h₁, h₂ =>
+  by 
+    simp [DArray.beqAux] at h₂ 
+    contradiction
+| i+1, h₁, h₂ =>
+  by 
+    have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff
+    ·
+      simp [DArray.beqAux] at h₂ 
+      assumption 
+    cases' h₂' with h h
+    ·
+      exists i 
+      exists Nat.lt_succ_selfₓ _ 
+      exact h
+    ·
+      have h₁' : i ≤ n 
+      exact le_of_ltₓ h₁ 
+      have ih : ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩
+      exact of_beq_aux_eq_ff i h₁' h 
+      cases' ih with j ih 
+      cases' ih with h' ih 
+      exists j 
+      exists Nat.lt_succ_of_ltₓ h' 
+      exact ih
 
--- error in Init.Data.Array.Basic: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem of_beq_eq_ff [∀ i, decidable_eq (α i)] {a b : d_array n α} : «expr = »(d_array.beq a b, ff) → «expr ≠ »(a, b) :=
-begin
-  unfold [ident d_array.beq] [],
-  intros [ident h, ident hne],
-  have [] [":", expr «expr∃ , »((j : nat) (h' : «expr < »(j, n)), «expr ≠ »(a.read ⟨j, h'⟩, b.read ⟨j, h'⟩))] [],
-  from [expr of_beq_aux_eq_ff n (le_refl _) h],
-  cases [expr this] ["with", ident j, ident this],
-  cases [expr this] ["with", ident h', ident this],
-  subst [expr hne],
-  contradiction
-end
+theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b :=
+  by 
+    unfold DArray.beq 
+    intro h hne 
+    have  : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩
+    exact of_beq_aux_eq_ff n (le_reflₓ _) h 
+    cases' this with j this 
+    cases' this with h' this 
+    subst hne 
+    contradiction
 
 instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) :=
   fun a b =>
@@ -245,6 +235,7 @@ theorem pop_back_idx {j n} (h : j < n) : j < n+1 :=
 def pop_back (a : Arrayₓ (n+1) α) : Arrayₓ n α :=
   { data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩ }
 
+-- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (i «expr ≤ » n)
 /-- Auxilliary function for monadically mapping a function over an array. -/
 @[inline]
 def mmap_core {β : Type v} {m : Type v → Type w} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) :

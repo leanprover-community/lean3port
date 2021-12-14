@@ -142,22 +142,22 @@ theorem bnot_eq_ff_eq_eq_tt (a : Bool) : (bnot a = ff) = (a = tt) :=
     cases a <;> simp 
 
 @[simp]
-theorem coe_ff : «expr↑ » ff = False :=
+theorem coe_ff : ↑ff = False :=
   show (ff = tt) = False by 
     simp 
 
 @[simp]
-theorem coe_tt : «expr↑ » tt = True :=
+theorem coe_tt : ↑tt = True :=
   show (tt = tt) = True by 
     simp 
 
 @[simp]
-theorem coe_sort_ff : «expr↥ » ff = False :=
+theorem coe_sort_ff : ↥ff = False :=
   show (ff = tt) = False by 
     simp 
 
 @[simp]
-theorem coe_sort_tt : «expr↥ » tt = True :=
+theorem coe_sort_tt : ↥tt = True :=
   show (tt = tt) = True by 
     simp 
 

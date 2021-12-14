@@ -47,32 +47,33 @@ def mkStdGenₓ (s : Nat := 0) : StdGen :=
   let s2 := q % 2147483398
   ⟨s1+1, s2+1⟩
 
--- error in System.Random: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-private
-def rand_nat_aux
-{gen : Type u}
-[random_gen gen]
-(gen_lo gen_mag : nat)
-(h : «expr > »(gen_mag, 0)) : nat → nat → gen → «expr × »(nat, gen)
-| 0, v, g := (v, g)
-| r'@«expr + »(r, 1), v, g := let (x, g') := random_gen.next g,
-    v' := «expr + »(«expr * »(v, gen_mag), «expr - »(x, gen_lo)) in
-have «expr < »(«expr - »(«expr / »(r', gen_mag), 1), r'), begin
-  by_cases [expr h, ":", expr «expr = »(«expr / »(«expr + »(r, 1), gen_mag), 0)],
-  { rw ["[", expr h, "]"] [],
-    simp [] [] [] [] [] [],
-    apply [expr nat.zero_lt_succ] },
-  { have [] [":", expr «expr > »(«expr / »(«expr + »(r, 1), gen_mag), 0)] [],
-    from [expr nat.pos_of_ne_zero h],
-    have [ident h₁] [":", expr «expr < »(«expr - »(«expr / »(«expr + »(r, 1), gen_mag), 1), «expr / »(«expr + »(r, 1), gen_mag))] [],
-    { apply [expr nat.sub_lt],
-      assumption,
-      tactic.comp_val },
-    have [ident h₂] [":", expr «expr ≤ »(«expr / »(«expr + »(r, 1), gen_mag), «expr + »(r, 1))] [],
-    { apply [expr nat.div_le_self] },
-    exact [expr lt_of_lt_of_le h₁ h₂] }
-end,
-rand_nat_aux «expr - »(«expr / »(r', gen_mag), 1) v' g'
+private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (h : gen_mag > 0) :
+  Nat → Nat → gen → Nat × gen
+| 0, v, g => (v, g)
+| r'@(r+1), v, g =>
+  let (x, g') := RandomGen.next g 
+  let v' := (v*gen_mag)+x - gen_lo 
+  have  : r' / gen_mag - 1 < r' :=
+    by 
+      byCases' h : (r+1) / gen_mag = 0
+      ·
+        rw [h]
+        simp 
+        apply Nat.zero_lt_succₓ
+      ·
+        have  : (r+1) / gen_mag > 0 
+        exact Nat.pos_of_ne_zeroₓ h 
+        have h₁ : (r+1) / gen_mag - 1 < (r+1) / gen_mag
+        ·
+          apply Nat.sub_ltₓ 
+          assumption 
+          runTac 
+            tactic.comp_val 
+        have h₂ : (r+1) / gen_mag ≤ r+1
+        ·
+          apply Nat.div_le_selfₓ 
+        exact lt_of_lt_of_leₓ h₁ h₂ 
+  rand_nat_aux (r' / gen_mag - 1) v' g'
 
 /-- Generate a random natural number in the interval [lo, hi]. -/
 def randNatₓ {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen :=

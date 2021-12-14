@@ -30,37 +30,27 @@ parameter {r : α → α → Prop}{s : ∀ a : α, β a → β a → Prop}
 
 local infixl:50 "≺" => lex r s
 
--- error in Init.Data.Sigma.Lex: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem lex_accessible {a} (aca : acc r a) (acb : ∀ a, well_founded (s a)) : ∀ b : β a, acc (lex r s) ⟨a, b⟩ :=
-acc.rec_on aca (λ
- (xa aca)
- (iha : ∀
-  y, r y xa → ∀
-  b : β y, acc (lex r s) ⟨y, b⟩), λ
- b : β xa, acc.rec_on (well_founded.apply (acb xa) b) (λ
-  (xb acb)
-  (ihb : ∀
-   y : β xa, s xa y xb → acc (lex r s) ⟨xa, y⟩), acc.intro ⟨xa, xb⟩ (λ
-   (p)
-   (lt : «expr ≺ »(p, ⟨xa, xb⟩)), have aux : «expr = »(xa, xa) → «expr == »(xb, xb) → acc (lex r s) p, from @psigma.lex.rec_on α β r s (λ
-    p₁
-    p₂, «expr = »(p₂.1, xa) → «expr == »(p₂.2, xb) → acc (lex r s) p₁) p ⟨xa, xb⟩ lt (λ
-    (a₁ : α)
-    (b₁ : β a₁)
-    (a₂ : α)
-    (b₂ : β a₂)
-    (h : r a₁ a₂)
-    (eq₂ : «expr = »(a₂, xa))
-    (eq₃ : «expr == »(b₂, xb)), begin
-      subst [expr eq₂],
-      exact [expr iha a₁ h b₁]
-    end) (λ (a : α) (b₁ b₂ : β a) (h : s a b₁ b₂) (eq₂ : «expr = »(a, xa)) (eq₃ : «expr == »(b₂, xb)), begin
-      subst [expr eq₂],
-      have [ident new_eq₃] [] [":=", expr eq_of_heq eq₃],
-      subst [expr new_eq₃],
-      exact [expr ihb b₁ h]
-    end),
-   aux rfl (heq.refl xb))))
+theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : ∀ b : β a, Acc (lex r s) ⟨a, b⟩ :=
+  Acc.recOnₓ aca
+    fun xa aca iha : ∀ y, r y xa → ∀ b : β y, Acc (lex r s) ⟨y, b⟩ =>
+      fun b : β xa =>
+        Acc.recOnₓ (WellFounded.apply (acb xa) b)
+          fun xb acb ihb : ∀ y : β xa, s xa y xb → Acc (lex r s) ⟨xa, y⟩ =>
+            Acc.intro ⟨xa, xb⟩
+              fun p lt : p≺⟨xa, xb⟩ =>
+                have aux : xa = xa → HEq xb xb → Acc (lex r s) p :=
+                  @Psigma.Lex.rec_on α β r s (fun p₁ p₂ => p₂.1 = xa → HEq p₂.2 xb → Acc (lex r s) p₁) p ⟨xa, xb⟩ lt
+                    (fun a₁ : α b₁ : β a₁ a₂ : α b₂ : β a₂ h : r a₁ a₂ eq₂ : a₂ = xa eq₃ : HEq b₂ xb =>
+                      by 
+                        subst eq₂ 
+                        exact iha a₁ h b₁)
+                    fun a : α b₁ b₂ : β a h : s a b₁ b₂ eq₂ : a = xa eq₃ : HEq b₂ xb =>
+                      by 
+                        subst eq₂ 
+                        have new_eq₃ := eq_of_heq eq₃ 
+                        subst new_eq₃ 
+                        exact ihb b₁ h 
+                aux rfl (HEq.refl xb)
 
 theorem lex_wf (ha : WellFounded r) (hb : ∀ x, WellFounded (s x)) : WellFounded (lex r s) :=
   WellFounded.intro$ fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b

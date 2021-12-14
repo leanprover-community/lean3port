@@ -18,14 +18,13 @@ protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 :=
 protected theorem zero_ne_neg_of_ne {a : ℤ} (h : 0 ≠ a) : 0 ≠ -a :=
   Ne.symm (Int.neg_ne_zero_of_ne (Ne.symm h))
 
--- error in Init.Data.Int.CompLemmas: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem neg_ne_of_pos {a b : exprℤ()} : «expr < »(0, a) → «expr < »(0, b) → «expr ≠ »(«expr- »(a), b) :=
-λ h₁ h₂ h, begin
-  rw ["[", "<-", expr h, "]"] ["at", ident h₂],
-  change [expr «expr < »(0, a)] [] ["at", ident h₁],
-  have [] [] [":=", expr le_of_lt h₁],
-  exact [expr absurd (le_of_lt h₁) (not_le_of_gt (int.neg_of_neg_pos h₂))]
-end
+protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b :=
+  fun h₁ h₂ h =>
+    by 
+      rw [←h] at h₂ 
+      change 0 < a at h₁ 
+      have  := le_of_ltₓ h₁ 
+      exact absurd (le_of_ltₓ h₁) (not_le_of_gtₓ (Int.neg_of_neg_pos h₂))
 
 protected theorem ne_neg_of_pos {a b : ℤ} : 0 < a → 0 < b → a ≠ -b :=
   fun h₁ h₂ => Ne.symm (Int.neg_ne_of_pos h₂ h₁)

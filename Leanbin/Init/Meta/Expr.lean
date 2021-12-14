@@ -284,8 +284,6 @@ unsafe def reflected.subst {α : Sort v} {β : α → Sort u} {f : ∀ a : α, �
   reflected f → reflected a → reflected (f a) :=
   expr.subst
 
-attribute [irreducible] reflected reflected.subst reflected.to_expr
-
 @[instance]
 protected unsafe axiom expr.reflect (e : expr elab) : reflected e
 

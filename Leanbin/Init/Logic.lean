@@ -789,8 +789,8 @@ class Inhabited (α : Sort u) where
 
 export Inhabited(default)
 
-@[inline, irreducible]
-def arbitraryₓ (α : Sort u) [Inhabited α] : α :=
+@[inline]
+irreducible_def arbitraryₓ (α : Sort u) [Inhabited α] : α :=
   default α
 
 instance Prop.inhabited : Inhabited Prop :=

@@ -17,6 +17,7 @@ open Lean.Parser
 
 open Native
 
+-- ././Mathport/Syntax/Translate/Basic.lean:1273:35: warning: unsupported: precedence command
 local postfix:9001 "?" => optionalₓ
 
 local postfix:9001 "*" => many
@@ -326,8 +327,11 @@ unsafe def to_expr' (p : pexpr) : tactic expr :=
       return new_e
   | _ => i_to_expr p
 
--- error in Init.Meta.Interactive: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler has_reflect
-@[derive #[expr has_reflect]] meta structure rw_rule := (pos : pos) (symm : bool) (rule : pexpr)
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler has_reflect
+unsafe structure rw_rule where 
+  Pos : Pos 
+  symm : Bool 
+  rule : pexpr deriving [anonymous]
 
 unsafe def get_rule_eqn_lemmas (r : rw_rule) : tactic (List Name) :=
   let aux (n : Name) : tactic (List Name) :=
@@ -383,8 +387,10 @@ private unsafe def rw_hyp (cfg : rewrite_cfg) : List rw_rule → expr → tactic
 unsafe def rw_rule_p (ep : parser pexpr) : parser rw_rule :=
   rw_rule.mk <$> cur_pos <*> Option.isSome <$> (with_desc "←" (tk "←" <|> tk "<-"))? <*> ep
 
--- error in Init.Meta.Interactive: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler has_reflect
-@[derive #[expr has_reflect]] meta structure rw_rules_t := (rules : list rw_rule) (end_pos : option pos)
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler has_reflect
+unsafe structure rw_rules_t where 
+  rules : List rw_rule 
+  end_pos : Option Pos deriving [anonymous]
 
 unsafe def rw_rules : parser rw_rules_t :=
   tk "[" *> rw_rules_t.mk <$> sep_by (skip_info (tk ",")) (set_goal_info_pos$ rw_rule_p (parser.pexpr 0)) <*>
@@ -559,6 +565,7 @@ private unsafe def set_cases_tags (in_tag : tag) (rs : List (Name × List expr))
             with_enable_tags$
               set_tag g$ (case_tag.from_tag_hyps (n :: in_tag) (new_hyps.map expr.local_uniq_name)).render
 
+-- ././Mathport/Syntax/Translate/Basic.lean:1273:35: warning: unsupported: precedence command
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -1122,12 +1129,12 @@ section MkSimpSet
 
 open Expr Interactive.Types
 
--- error in Init.Meta.Interactive: ././Mathport/Syntax/Translate/Basic.lean:704:9: unsupported derive handler has_reflect
-@[derive #[expr has_reflect]] meta inductive simp_arg_type : Type
-| all_hyps : simp_arg_type
-| except : name → simp_arg_type
-| expr : pexpr → simp_arg_type
-| symm_expr : pexpr → simp_arg_type
+-- ././Mathport/Syntax/Translate/Basic.lean:748:9: unsupported derive handler has_reflect
+unsafe inductive simp_arg_type : Type
+  | all_hyps : simp_arg_type
+  | except : Name → simp_arg_type
+  | expr : pexpr → simp_arg_type
+  | symm_expr : pexpr → simp_arg_type deriving [anonymous]
 
 unsafe instance simp_arg_type_to_tactic_format : has_to_tactic_format simp_arg_type :=
   ⟨fun a =>
@@ -1389,7 +1396,7 @@ unsafe def simp (use_iota_eqn : parse$ (tk "!")?) (trace_lemmas : parse$ (tk "?"
   propagate_tags$
     do 
       let lms ← simp_core cfg.to_simp_config cfg.discharger no_dflt hs attr_names locat 
-      if cfg.trace_lemmas then trace («expr↑ » "Try this: simp only " ++ to_fmt lms.to_list) else skip
+      if cfg.trace_lemmas then trace (↑"Try this: simp only " ++ to_fmt lms.to_list) else skip
 
 /--
 Just construct the simp set and trace it. Used for debugging.
@@ -1794,7 +1801,7 @@ section AddInteractive
 
 open Tactic
 
-private unsafe def add_interactive_aux (new_namespace : Name) : List Name → exprcommand
+private unsafe def add_interactive_aux (new_namespace : Name) : List Name → command
 | [] => return ()
 | n :: ns =>
   do 
@@ -1815,7 +1822,7 @@ Copy a list of meta definitions in the current namespace to tactic.interactive.
 
 This command is useful when we want to update tactic.interactive without closing the current namespace.
 -/
-unsafe def add_interactive (ns : List Name) (p : Name := `tactic.interactive) : exprcommand :=
+unsafe def add_interactive (ns : List Name) (p : Name := `tactic.interactive) : command :=
   add_interactive_aux p ns
 
 unsafe def has_dup : tactic Bool :=
@@ -1850,6 +1857,7 @@ protected unsafe def apply_inj_lemma : tactic Unit :=
     applyc (Name.mk_string "inj" C) { AutoParam := ff, optParam := ff }
     assumption
 
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
 unsafe def mk_inj_eq : tactic Unit :=
   sorry
 

@@ -60,7 +60,7 @@ theorem le.dest {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, (a+n) = b :=
         rw [←h₁, Int.add_comm]
         simp )
 
-theorem le.elim {a b : ℤ} (h : a ≤ b) {P : Prop} (h' : ∀ n : ℕ, (a+«expr↑ » n) = b → P) : P :=
+theorem le.elim {a b : ℤ} (h : a ≤ b) {P : Prop} (h' : ∀ n : ℕ, (a+↑n) = b → P) : P :=
   Exists.elim (le.dest h) h'
 
 protected theorem le_totalₓ (a b : ℤ) : a ≤ b ∨ b ≤ a :=
@@ -72,7 +72,7 @@ protected theorem le_totalₓ (a b : ℤ) : a ≤ b ∨ b ≤ a :=
       show nonneg (a - b) from this ▸ H)
     (nonneg_or_nonneg_neg (b - a))
 
-theorem coe_nat_le_coe_nat_of_le {m n : ℕ} (h : m ≤ n) : («expr↑ » m : ℤ) ≤ «expr↑ » n :=
+theorem coe_nat_le_coe_nat_of_le {m n : ℕ} (h : m ≤ n) : (↑m : ℤ) ≤ ↑n :=
   match Nat.Le.dest h with 
   | ⟨k, (hk : (m+k) = n)⟩ =>
     le.intro
@@ -80,32 +80,32 @@ theorem coe_nat_le_coe_nat_of_le {m n : ℕ} (h : m ≤ n) : («expr↑ » m : �
         rw [←hk]
         rfl)
 
-theorem le_of_coe_nat_le_coe_nat {m n : ℕ} (h : («expr↑ » m : ℤ) ≤ «expr↑ » n) : m ≤ n :=
+theorem le_of_coe_nat_le_coe_nat {m n : ℕ} (h : (↑m : ℤ) ≤ ↑n) : m ≤ n :=
   le.elim h
     fun k =>
-      fun hk : («expr↑ » m+«expr↑ » k) = «expr↑ » n =>
+      fun hk : ((↑m)+↑k) = ↑n =>
         have  : (m+k) = n := Int.coe_nat_inj ((Int.coe_nat_add m k).trans hk)
         Nat.Le.intro this
 
-theorem coe_nat_le_coe_nat_iff (m n : ℕ) : («expr↑ » m : ℤ) ≤ «expr↑ » n ↔ m ≤ n :=
+theorem coe_nat_le_coe_nat_iff (m n : ℕ) : (↑m : ℤ) ≤ ↑n ↔ m ≤ n :=
   Iff.intro le_of_coe_nat_le_coe_nat coe_nat_le_coe_nat_of_le
 
-theorem coe_zero_le (n : ℕ) : 0 ≤ («expr↑ » n : ℤ) :=
+theorem coe_zero_le (n : ℕ) : 0 ≤ (↑n : ℤ) :=
   coe_nat_le_coe_nat_of_le n.zero_le
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-theorem eq_coe_of_zero_le {a : exprℤ()} (h : «expr ≤ »(0, a)) : «expr∃ , »((n : exprℕ()), «expr = »(a, n)) :=
-by { have [ident t] [] [":=", expr le.dest_sub h],
-  simp [] [] [] [] [] ["at", ident t],
-  exact [expr t] }
+theorem eq_coe_of_zero_le {a : ℤ} (h : 0 ≤ a) : ∃ n : ℕ, a = n :=
+  by 
+    have t := le.dest_sub h 
+    simp  at t 
+    exact t
 
 theorem eq_succ_of_zero_lt {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
-  let ⟨n, (h : «expr↑ » (1+n) = a)⟩ := le.dest h
+  let ⟨n, (h : (↑1+n) = a)⟩ := le.dest h
   ⟨n,
     by 
       rw [Nat.add_comm] at h <;> exact h.symm⟩
 
-theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a+«expr↑ » (Nat.succ n) :=
+theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a+↑Nat.succ n :=
   le.intro
     (show ((a+1)+n) = a+Nat.succ n by 
       simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]
@@ -114,7 +114,7 @@ theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a+«expr↑ » (Nat.succ n) :=
 theorem lt.intro {a b : ℤ} {n : ℕ} (h : (a+Nat.succ n) = b) : a < b :=
   h ▸ lt_add_succ a n
 
-theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, (a+«expr↑ » (Nat.succ n)) = b :=
+theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, (a+↑Nat.succ n) = b :=
   le.elim h
     fun n =>
       fun hn : ((a+1)+n) = b =>
@@ -123,18 +123,18 @@ theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, (a+«expr↑ » (Nat.succ
             rw [←hn, Int.add_assoc, Int.add_comm 1]
             rfl)
 
-theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, (a+«expr↑ » (Nat.succ n)) = b → P) : P :=
+theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, (a+↑Nat.succ n) = b → P) : P :=
   Exists.elim (lt.dest h) h'
 
-theorem coe_nat_lt_coe_nat_iff (n m : ℕ) : («expr↑ » n : ℤ) < «expr↑ » m ↔ n < m :=
+theorem coe_nat_lt_coe_nat_iff (n m : ℕ) : (↑n : ℤ) < ↑m ↔ n < m :=
   by 
     rw [lt_iff_add_one_le, ←Int.coe_nat_succ, coe_nat_le_coe_nat_iff]
     rfl
 
-theorem lt_of_coe_nat_lt_coe_nat {m n : ℕ} (h : («expr↑ » m : ℤ) < «expr↑ » n) : m < n :=
+theorem lt_of_coe_nat_lt_coe_nat {m n : ℕ} (h : (↑m : ℤ) < ↑n) : m < n :=
   (coe_nat_lt_coe_nat_iff _ _).mp h
 
-theorem coe_nat_lt_coe_nat_of_lt {m n : ℕ} (h : m < n) : («expr↑ » m : ℤ) < «expr↑ » n :=
+theorem coe_nat_lt_coe_nat_of_lt {m n : ℕ} (h : m < n) : (↑m : ℤ) < ↑n :=
   (coe_nat_lt_coe_nat_iff _ _).mpr h
 
 protected theorem le_reflₓ (a : ℤ) : a ≤ a :=
@@ -159,10 +159,10 @@ protected theorem le_antisymmₓ {a b : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ a) :
         le.elim h₂
           fun m =>
             fun hm : (b+m) = a =>
-              have  : (a+«expr↑ » (n+m)) = a+0 :=
+              have  : (a+↑n+m) = a+0 :=
                 by 
                   rw [Int.coe_nat_add, ←Int.add_assoc, hn, hm, Int.add_zero a]
-              have  : («expr↑ » (n+m) : ℤ) = 0 := Int.add_left_cancel this 
+              have  : (↑n+m : ℤ) = 0 := Int.add_left_cancel this 
               have  : (n+m) = 0 := Int.coe_nat_inj this 
               have  : n = 0 := Nat.eq_zero_of_add_eq_zero_right this 
               show a = b by 
@@ -235,7 +235,7 @@ protected theorem mul_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a
           fun m =>
             fun hm =>
               le.intro
-                (show (0+«expr↑ » n*«expr↑ » m) = a*b by 
+                (show (0+(↑n)*↑m) = a*b by 
                   rw [←hn, ←hm]
                   simp [Int.zero_add])
 
@@ -247,7 +247,7 @@ protected theorem mul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a*b :=
           fun m =>
             fun hm =>
               lt.intro
-                (show (0+«expr↑ » (Nat.succ ((Nat.succ n*m)+n))) = a*b by 
+                (show (0+↑Nat.succ ((Nat.succ n*m)+n)) = a*b by 
                   rw [←hn, ←hm]
                   simp [Int.coe_nat_zero]
                   rw [←Int.coe_nat_mul]
@@ -259,10 +259,10 @@ protected theorem zero_lt_one : (0 : ℤ) < 1 :=
 protected theorem lt_iff_le_not_leₓ {a b : ℤ} : a < b ↔ a ≤ b ∧ ¬b ≤ a :=
   by 
     simp [Int.lt_iff_le_and_ne]
-    split  <;> intro h
+    constructor <;> intro h
     ·
       cases' h with hab hn 
-      split 
+      constructor
       ·
         assumption
       ·
@@ -271,7 +271,7 @@ protected theorem lt_iff_le_not_leₓ {a b : ℤ} : a < b ↔ a ≤ b ∧ ¬b �
         contradiction
     ·
       cases' h with hab hn 
-      split 
+      constructor
       ·
         assumption
       ·
@@ -561,193 +561,125 @@ protected theorem neg_pos_of_neg {a : ℤ} (h : a < 0) : 0 < -a :=
   by 
     rwa [Int.neg_zero] at this
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem le_neg_of_le_neg {a b : exprℤ()} (h : «expr ≤ »(a, «expr- »(b))) : «expr ≤ »(b, «expr- »(a)) :=
-begin
-  have [ident h] [] [":=", expr int.neg_le_neg h],
-  rwa [expr int.neg_neg] ["at", ident h]
-end
+protected theorem le_neg_of_le_neg {a b : ℤ} (h : a ≤ -b) : b ≤ -a :=
+  by 
+    have h := Int.neg_le_neg h 
+    rwa [Int.neg_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem neg_le_of_neg_le {a b : exprℤ()} (h : «expr ≤ »(«expr- »(a), b)) : «expr ≤ »(«expr- »(b), a) :=
-begin
-  have [ident h] [] [":=", expr int.neg_le_neg h],
-  rwa [expr int.neg_neg] ["at", ident h]
-end
+protected theorem neg_le_of_neg_le {a b : ℤ} (h : -a ≤ b) : -b ≤ a :=
+  by 
+    have h := Int.neg_le_neg h 
+    rwa [Int.neg_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem lt_neg_of_lt_neg {a b : exprℤ()} (h : «expr < »(a, «expr- »(b))) : «expr < »(b, «expr- »(a)) :=
-begin
-  have [ident h] [] [":=", expr int.neg_lt_neg h],
-  rwa [expr int.neg_neg] ["at", ident h]
-end
+protected theorem lt_neg_of_lt_neg {a b : ℤ} (h : a < -b) : b < -a :=
+  by 
+    have h := Int.neg_lt_neg h 
+    rwa [Int.neg_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem neg_lt_of_neg_lt {a b : exprℤ()} (h : «expr < »(«expr- »(a), b)) : «expr < »(«expr- »(b), a) :=
-begin
-  have [ident h] [] [":=", expr int.neg_lt_neg h],
-  rwa [expr int.neg_neg] ["at", ident h]
-end
+protected theorem neg_lt_of_neg_lt {a b : ℤ} (h : -a < b) : -b < a :=
+  by 
+    have h := Int.neg_lt_neg h 
+    rwa [Int.neg_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem sub_nonneg_of_le {a b : exprℤ()} (h : «expr ≤ »(b, a)) : «expr ≤ »(0, «expr - »(a, b)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h «expr- »(b)],
-  rwa [expr int.add_right_neg] ["at", ident h]
-end
+protected theorem sub_nonneg_of_le {a b : ℤ} (h : b ≤ a) : 0 ≤ a - b :=
+  by 
+    have h := Int.add_le_add_right h (-b)
+    rwa [Int.add_right_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem le_of_sub_nonneg {a b : exprℤ()} (h : «expr ≤ »(0, «expr - »(a, b))) : «expr ≤ »(b, a) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h b],
-  rwa ["[", expr int.sub_add_cancel, ",", expr int.zero_add, "]"] ["at", ident h]
-end
+protected theorem le_of_sub_nonneg {a b : ℤ} (h : 0 ≤ a - b) : b ≤ a :=
+  by 
+    have h := Int.add_le_add_right h b 
+    rwa [Int.sub_add_cancel, Int.zero_add] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem sub_nonpos_of_le {a b : exprℤ()} (h : «expr ≤ »(a, b)) : «expr ≤ »(«expr - »(a, b), 0) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h «expr- »(b)],
-  rwa [expr int.add_right_neg] ["at", ident h]
-end
+protected theorem sub_nonpos_of_le {a b : ℤ} (h : a ≤ b) : a - b ≤ 0 :=
+  by 
+    have h := Int.add_le_add_right h (-b)
+    rwa [Int.add_right_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem le_of_sub_nonpos {a b : exprℤ()} (h : «expr ≤ »(«expr - »(a, b), 0)) : «expr ≤ »(a, b) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h b],
-  rwa ["[", expr int.sub_add_cancel, ",", expr int.zero_add, "]"] ["at", ident h]
-end
+protected theorem le_of_sub_nonpos {a b : ℤ} (h : a - b ≤ 0) : a ≤ b :=
+  by 
+    have h := Int.add_le_add_right h b 
+    rwa [Int.sub_add_cancel, Int.zero_add] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem sub_pos_of_lt {a b : exprℤ()} (h : «expr < »(b, a)) : «expr < »(0, «expr - »(a, b)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h «expr- »(b)],
-  rwa [expr int.add_right_neg] ["at", ident h]
-end
+protected theorem sub_pos_of_lt {a b : ℤ} (h : b < a) : 0 < a - b :=
+  by 
+    have h := Int.add_lt_add_right h (-b)
+    rwa [Int.add_right_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem lt_of_sub_pos {a b : exprℤ()} (h : «expr < »(0, «expr - »(a, b))) : «expr < »(b, a) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h b],
-  rwa ["[", expr int.sub_add_cancel, ",", expr int.zero_add, "]"] ["at", ident h]
-end
+protected theorem lt_of_sub_pos {a b : ℤ} (h : 0 < a - b) : b < a :=
+  by 
+    have h := Int.add_lt_add_right h b 
+    rwa [Int.sub_add_cancel, Int.zero_add] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem sub_neg_of_lt {a b : exprℤ()} (h : «expr < »(a, b)) : «expr < »(«expr - »(a, b), 0) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h «expr- »(b)],
-  rwa [expr int.add_right_neg] ["at", ident h]
-end
+protected theorem sub_neg_of_lt {a b : ℤ} (h : a < b) : a - b < 0 :=
+  by 
+    have h := Int.add_lt_add_right h (-b)
+    rwa [Int.add_right_neg] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected theorem lt_of_sub_neg {a b : exprℤ()} (h : «expr < »(«expr - »(a, b), 0)) : «expr < »(a, b) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h b],
-  rwa ["[", expr int.sub_add_cancel, ",", expr int.zero_add, "]"] ["at", ident h]
-end
+protected theorem lt_of_sub_neg {a b : ℤ} (h : a - b < 0) : a < b :=
+  by 
+    have h := Int.add_lt_add_right h b 
+    rwa [Int.sub_add_cancel, Int.zero_add] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem add_le_of_le_neg_add
-{a b c : exprℤ()}
-(h : «expr ≤ »(b, «expr + »(«expr- »(a), c))) : «expr ≤ »(«expr + »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_left h a],
-  rwa [expr int.add_neg_cancel_left] ["at", ident h]
-end
+protected theorem add_le_of_le_neg_add {a b c : ℤ} (h : b ≤ (-a)+c) : (a+b) ≤ c :=
+  by 
+    have h := Int.add_le_add_left h a 
+    rwa [Int.add_neg_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem le_neg_add_of_add_le
-{a b c : exprℤ()}
-(h : «expr ≤ »(«expr + »(a, b), c)) : «expr ≤ »(b, «expr + »(«expr- »(a), c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_left h «expr- »(a)],
-  rwa [expr int.neg_add_cancel_left] ["at", ident h]
-end
+protected theorem le_neg_add_of_add_le {a b c : ℤ} (h : (a+b) ≤ c) : b ≤ (-a)+c :=
+  by 
+    have h := Int.add_le_add_left h (-a)
+    rwa [Int.neg_add_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem add_le_of_le_sub_left {a b c : exprℤ()} (h : «expr ≤ »(b, «expr - »(c, a))) : «expr ≤ »(«expr + »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_left h a],
-  rwa ["[", "<-", expr int.add_sub_assoc, ",", expr int.add_comm a c, ",", expr int.add_sub_cancel, "]"] ["at", ident h]
-end
+protected theorem add_le_of_le_sub_left {a b c : ℤ} (h : b ≤ c - a) : (a+b) ≤ c :=
+  by 
+    have h := Int.add_le_add_left h a 
+    rwa [←Int.add_sub_assoc, Int.add_comm a c, Int.add_sub_cancel] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem le_sub_left_of_add_le {a b c : exprℤ()} (h : «expr ≤ »(«expr + »(a, b), c)) : «expr ≤ »(b, «expr - »(c, a)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h «expr- »(a)],
-  rwa ["[", expr int.add_comm a b, ",", expr int.add_neg_cancel_right, "]"] ["at", ident h]
-end
+protected theorem le_sub_left_of_add_le {a b c : ℤ} (h : (a+b) ≤ c) : b ≤ c - a :=
+  by 
+    have h := Int.add_le_add_right h (-a)
+    rwa [Int.add_comm a b, Int.add_neg_cancel_right] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem add_le_of_le_sub_right {a b c : exprℤ()} (h : «expr ≤ »(a, «expr - »(c, b))) : «expr ≤ »(«expr + »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h b],
-  rwa [expr int.sub_add_cancel] ["at", ident h]
-end
+protected theorem add_le_of_le_sub_right {a b c : ℤ} (h : a ≤ c - b) : (a+b) ≤ c :=
+  by 
+    have h := Int.add_le_add_right h b 
+    rwa [Int.sub_add_cancel] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem le_sub_right_of_add_le {a b c : exprℤ()} (h : «expr ≤ »(«expr + »(a, b), c)) : «expr ≤ »(a, «expr - »(c, b)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h «expr- »(b)],
-  rwa [expr int.add_neg_cancel_right] ["at", ident h]
-end
+protected theorem le_sub_right_of_add_le {a b c : ℤ} (h : (a+b) ≤ c) : a ≤ c - b :=
+  by 
+    have h := Int.add_le_add_right h (-b)
+    rwa [Int.add_neg_cancel_right] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem le_add_of_neg_add_le
-{a b c : exprℤ()}
-(h : «expr ≤ »(«expr + »(«expr- »(b), a), c)) : «expr ≤ »(a, «expr + »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_left h b],
-  rwa [expr int.add_neg_cancel_left] ["at", ident h]
-end
+protected theorem le_add_of_neg_add_le {a b c : ℤ} (h : ((-b)+a) ≤ c) : a ≤ b+c :=
+  by 
+    have h := Int.add_le_add_left h b 
+    rwa [Int.add_neg_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem neg_add_le_of_le_add
-{a b c : exprℤ()}
-(h : «expr ≤ »(a, «expr + »(b, c))) : «expr ≤ »(«expr + »(«expr- »(b), a), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_left h «expr- »(b)],
-  rwa [expr int.neg_add_cancel_left] ["at", ident h]
-end
+protected theorem neg_add_le_of_le_add {a b c : ℤ} (h : a ≤ b+c) : ((-b)+a) ≤ c :=
+  by 
+    have h := Int.add_le_add_left h (-b)
+    rwa [Int.neg_add_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem le_add_of_sub_left_le {a b c : exprℤ()} (h : «expr ≤ »(«expr - »(a, b), c)) : «expr ≤ »(a, «expr + »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h b],
-  rwa ["[", expr int.sub_add_cancel, ",", expr int.add_comm, "]"] ["at", ident h]
-end
+protected theorem le_add_of_sub_left_le {a b c : ℤ} (h : a - b ≤ c) : a ≤ b+c :=
+  by 
+    have h := Int.add_le_add_right h b 
+    rwa [Int.sub_add_cancel, Int.add_comm] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem sub_left_le_of_le_add {a b c : exprℤ()} (h : «expr ≤ »(a, «expr + »(b, c))) : «expr ≤ »(«expr - »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h «expr- »(b)],
-  rwa ["[", expr int.add_comm b c, ",", expr int.add_neg_cancel_right, "]"] ["at", ident h]
-end
+protected theorem sub_left_le_of_le_add {a b c : ℤ} (h : a ≤ b+c) : a - b ≤ c :=
+  by 
+    have h := Int.add_le_add_right h (-b)
+    rwa [Int.add_comm b c, Int.add_neg_cancel_right] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem le_add_of_sub_right_le {a b c : exprℤ()} (h : «expr ≤ »(«expr - »(a, c), b)) : «expr ≤ »(a, «expr + »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h c],
-  rwa [expr int.sub_add_cancel] ["at", ident h]
-end
+protected theorem le_add_of_sub_right_le {a b c : ℤ} (h : a - c ≤ b) : a ≤ b+c :=
+  by 
+    have h := Int.add_le_add_right h c 
+    rwa [Int.sub_add_cancel] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem sub_right_le_of_le_add {a b c : exprℤ()} (h : «expr ≤ »(a, «expr + »(b, c))) : «expr ≤ »(«expr - »(a, c), b) :=
-begin
-  have [ident h] [] [":=", expr int.add_le_add_right h «expr- »(c)],
-  rwa [expr int.add_neg_cancel_right] ["at", ident h]
-end
+protected theorem sub_right_le_of_le_add {a b c : ℤ} (h : a ≤ b+c) : a - c ≤ b :=
+  by 
+    have h := Int.add_le_add_right h (-c)
+    rwa [Int.add_neg_cancel_right] at h
 
 protected theorem le_add_of_neg_add_le_left {a b c : ℤ} (h : ((-b)+a) ≤ c) : a ≤ b+c :=
   by 
@@ -772,15 +704,10 @@ protected theorem neg_add_le_right_of_le_add {a b c : ℤ} (h : a ≤ b+c) : ((-
 protected theorem le_add_of_neg_le_sub_left {a b c : ℤ} (h : -a ≤ b - c) : c ≤ a+b :=
   Int.le_add_of_neg_add_le_left (Int.add_le_of_le_sub_right h)
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem neg_le_sub_left_of_le_add
-{a b c : exprℤ()}
-(h : «expr ≤ »(c, «expr + »(a, b))) : «expr ≤ »(«expr- »(a), «expr - »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.le_neg_add_of_add_le (int.sub_left_le_of_le_add h)],
-  rwa [expr int.add_comm] ["at", ident h]
-end
+protected theorem neg_le_sub_left_of_le_add {a b c : ℤ} (h : c ≤ a+b) : -a ≤ b - c :=
+  by 
+    have h := Int.le_neg_add_of_add_le (Int.sub_left_le_of_le_add h)
+    rwa [Int.add_comm] at h
 
 protected theorem le_add_of_neg_le_sub_right {a b c : ℤ} (h : -b ≤ a - c) : c ≤ a+b :=
   Int.le_add_of_sub_right_le (Int.add_le_of_le_sub_left h)
@@ -800,109 +727,65 @@ protected theorem sub_le_sub_right {a b : ℤ} (h : a ≤ b) (c : ℤ) : a - c �
 protected theorem sub_le_sub {a b c d : ℤ} (hab : a ≤ b) (hcd : c ≤ d) : a - d ≤ b - c :=
   Int.add_le_add hab (Int.neg_le_neg hcd)
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem add_lt_of_lt_neg_add
-{a b c : exprℤ()}
-(h : «expr < »(b, «expr + »(«expr- »(a), c))) : «expr < »(«expr + »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_left h a],
-  rwa [expr int.add_neg_cancel_left] ["at", ident h]
-end
+protected theorem add_lt_of_lt_neg_add {a b c : ℤ} (h : b < (-a)+c) : (a+b) < c :=
+  by 
+    have h := Int.add_lt_add_left h a 
+    rwa [Int.add_neg_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem lt_neg_add_of_add_lt
-{a b c : exprℤ()}
-(h : «expr < »(«expr + »(a, b), c)) : «expr < »(b, «expr + »(«expr- »(a), c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_left h «expr- »(a)],
-  rwa [expr int.neg_add_cancel_left] ["at", ident h]
-end
+protected theorem lt_neg_add_of_add_lt {a b c : ℤ} (h : (a+b) < c) : b < (-a)+c :=
+  by 
+    have h := Int.add_lt_add_left h (-a)
+    rwa [Int.neg_add_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem add_lt_of_lt_sub_left {a b c : exprℤ()} (h : «expr < »(b, «expr - »(c, a))) : «expr < »(«expr + »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_left h a],
-  rwa ["[", "<-", expr int.add_sub_assoc, ",", expr int.add_comm a c, ",", expr int.add_sub_cancel, "]"] ["at", ident h]
-end
+protected theorem add_lt_of_lt_sub_left {a b c : ℤ} (h : b < c - a) : (a+b) < c :=
+  by 
+    have h := Int.add_lt_add_left h a 
+    rwa [←Int.add_sub_assoc, Int.add_comm a c, Int.add_sub_cancel] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem lt_sub_left_of_add_lt {a b c : exprℤ()} (h : «expr < »(«expr + »(a, b), c)) : «expr < »(b, «expr - »(c, a)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h «expr- »(a)],
-  rwa ["[", expr int.add_comm a b, ",", expr int.add_neg_cancel_right, "]"] ["at", ident h]
-end
+protected theorem lt_sub_left_of_add_lt {a b c : ℤ} (h : (a+b) < c) : b < c - a :=
+  by 
+    have h := Int.add_lt_add_right h (-a)
+    rwa [Int.add_comm a b, Int.add_neg_cancel_right] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem add_lt_of_lt_sub_right {a b c : exprℤ()} (h : «expr < »(a, «expr - »(c, b))) : «expr < »(«expr + »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h b],
-  rwa [expr int.sub_add_cancel] ["at", ident h]
-end
+protected theorem add_lt_of_lt_sub_right {a b c : ℤ} (h : a < c - b) : (a+b) < c :=
+  by 
+    have h := Int.add_lt_add_right h b 
+    rwa [Int.sub_add_cancel] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem lt_sub_right_of_add_lt {a b c : exprℤ()} (h : «expr < »(«expr + »(a, b), c)) : «expr < »(a, «expr - »(c, b)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h «expr- »(b)],
-  rwa [expr int.add_neg_cancel_right] ["at", ident h]
-end
+protected theorem lt_sub_right_of_add_lt {a b c : ℤ} (h : (a+b) < c) : a < c - b :=
+  by 
+    have h := Int.add_lt_add_right h (-b)
+    rwa [Int.add_neg_cancel_right] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem lt_add_of_neg_add_lt
-{a b c : exprℤ()}
-(h : «expr < »(«expr + »(«expr- »(b), a), c)) : «expr < »(a, «expr + »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_left h b],
-  rwa [expr int.add_neg_cancel_left] ["at", ident h]
-end
+protected theorem lt_add_of_neg_add_lt {a b c : ℤ} (h : ((-b)+a) < c) : a < b+c :=
+  by 
+    have h := Int.add_lt_add_left h b 
+    rwa [Int.add_neg_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem neg_add_lt_of_lt_add
-{a b c : exprℤ()}
-(h : «expr < »(a, «expr + »(b, c))) : «expr < »(«expr + »(«expr- »(b), a), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_left h «expr- »(b)],
-  rwa [expr int.neg_add_cancel_left] ["at", ident h]
-end
+protected theorem neg_add_lt_of_lt_add {a b c : ℤ} (h : a < b+c) : ((-b)+a) < c :=
+  by 
+    have h := Int.add_lt_add_left h (-b)
+    rwa [Int.neg_add_cancel_left] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem lt_add_of_sub_left_lt {a b c : exprℤ()} (h : «expr < »(«expr - »(a, b), c)) : «expr < »(a, «expr + »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h b],
-  rwa ["[", expr int.sub_add_cancel, ",", expr int.add_comm, "]"] ["at", ident h]
-end
+protected theorem lt_add_of_sub_left_lt {a b c : ℤ} (h : a - b < c) : a < b+c :=
+  by 
+    have h := Int.add_lt_add_right h b 
+    rwa [Int.sub_add_cancel, Int.add_comm] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem sub_left_lt_of_lt_add {a b c : exprℤ()} (h : «expr < »(a, «expr + »(b, c))) : «expr < »(«expr - »(a, b), c) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h «expr- »(b)],
-  rwa ["[", expr int.add_comm b c, ",", expr int.add_neg_cancel_right, "]"] ["at", ident h]
-end
+protected theorem sub_left_lt_of_lt_add {a b c : ℤ} (h : a < b+c) : a - b < c :=
+  by 
+    have h := Int.add_lt_add_right h (-b)
+    rwa [Int.add_comm b c, Int.add_neg_cancel_right] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem lt_add_of_sub_right_lt {a b c : exprℤ()} (h : «expr < »(«expr - »(a, c), b)) : «expr < »(a, «expr + »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h c],
-  rwa [expr int.sub_add_cancel] ["at", ident h]
-end
+protected theorem lt_add_of_sub_right_lt {a b c : ℤ} (h : a - c < b) : a < b+c :=
+  by 
+    have h := Int.add_lt_add_right h c 
+    rwa [Int.sub_add_cancel] at h
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem sub_right_lt_of_lt_add {a b c : exprℤ()} (h : «expr < »(a, «expr + »(b, c))) : «expr < »(«expr - »(a, c), b) :=
-begin
-  have [ident h] [] [":=", expr int.add_lt_add_right h «expr- »(c)],
-  rwa [expr int.add_neg_cancel_right] ["at", ident h]
-end
+protected theorem sub_right_lt_of_lt_add {a b c : ℤ} (h : a < b+c) : a - c < b :=
+  by 
+    have h := Int.add_lt_add_right h (-c)
+    rwa [Int.add_neg_cancel_right] at h
 
 protected theorem lt_add_of_neg_add_lt_left {a b c : ℤ} (h : ((-b)+a) < c) : a < b+c :=
   by 
@@ -927,15 +810,10 @@ protected theorem neg_add_lt_right_of_lt_add {a b c : ℤ} (h : a < b+c) : ((-c)
 protected theorem lt_add_of_neg_lt_sub_left {a b c : ℤ} (h : -a < b - c) : c < a+b :=
   Int.lt_add_of_neg_add_lt_left (Int.add_lt_of_lt_sub_right h)
 
--- error in Init.Data.Int.Order: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-protected
-theorem neg_lt_sub_left_of_lt_add
-{a b c : exprℤ()}
-(h : «expr < »(c, «expr + »(a, b))) : «expr < »(«expr- »(a), «expr - »(b, c)) :=
-begin
-  have [ident h] [] [":=", expr int.lt_neg_add_of_add_lt (int.sub_left_lt_of_lt_add h)],
-  rwa [expr int.add_comm] ["at", ident h]
-end
+protected theorem neg_lt_sub_left_of_lt_add {a b c : ℤ} (h : c < a+b) : -a < b - c :=
+  by 
+    have h := Int.lt_neg_add_of_add_lt (Int.sub_left_lt_of_lt_add h)
+    rwa [Int.add_comm] at h
 
 protected theorem lt_add_of_neg_lt_sub_right {a b c : ℤ} (h : -b < a - c) : c < a+b :=
   Int.lt_add_of_sub_right_lt (Int.add_lt_of_lt_sub_left h)

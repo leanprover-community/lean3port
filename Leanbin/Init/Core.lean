@@ -254,8 +254,8 @@ inductive List (T : Type u)
   | nil : List
   | cons (hd : T) (tl : List) : List
 
--- error in Init.Core: ././Mathport/Syntax/Translate/Basic.lean:1096:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
-notation `[` l:(foldr `, ` (h t, list.cons h t) list.nil `]`) := l
+-- ././Mathport/Syntax/Translate/Basic.lean:1148:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
+notation3  "["  => l
 
 inductive Nat
   | zero : Nat
@@ -458,8 +458,8 @@ def Std.Prec.arrow : Nat :=
 def Std.Prec.maxPlus : Nat :=
   Std.Prec.max + 10
 
--- error in Init.Core: ././Mathport/Syntax/Translate/Basic.lean:265:9: unsupported: advanced prec syntax
-postfix `⁻¹`:std.prec.max_plus := has_inv.inv
+-- ././Mathport/Syntax/Translate/Basic.lean:308:9: unsupported: advanced prec syntax
+postfix:999 "⁻¹" => HasInv.inv
 
 class SizeOf (α : Sort u) where 
   sizeof : α → Nat

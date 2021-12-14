@@ -54,8 +54,8 @@ and stored and can be retrieved with `user_attribute.get_param`.
 unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Unit) where 
   Name : Name 
   descr : Stringₓ 
-  after_set : Option (∀ decl : _root_.name prio : Nat persistent : Bool, exprcommand) := none 
-  before_unset : Option (∀ decl : _root_.name persistent : Bool, exprcommand) := none 
+  after_set : Option (∀ decl : _root_.name prio : Nat persistent : Bool, command) := none 
+  before_unset : Option (∀ decl : _root_.name persistent : Bool, command) := none 
   cache_cfg : user_attribute_cache_cfg cache_ty :=  by 
   runTac 
     user_attribute.dflt_cache_cfg
@@ -66,7 +66,7 @@ unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Un
 
 /-- Registers a new user-defined attribute. The argument must be the name of a definition of type
    `user_attribute α β`. Once registered, you may tag declarations with this attribute. -/
-unsafe def attribute.register (decl : Name) : exprcommand :=
+unsafe def attribute.register (decl : Name) : command :=
   tactic.set_basic_attribute `` user_attribute decl tt
 
 /-- Returns the attribute cache for the given user attribute. -/
@@ -101,7 +101,7 @@ unsafe def get_attribute_cache_dyn {α : Type} [reflected α] (attr_decl_name : 
     let t ← eval_expr (tactic α) e 
     t
 
-unsafe def mk_name_set_attr (attr_name : Name) : exprcommand :=
+unsafe def mk_name_set_attr (attr_name : Name) : command :=
   do 
     let t := quote.1 (user_attribute name_set)
     let v :=

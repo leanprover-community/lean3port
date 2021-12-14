@@ -32,16 +32,16 @@ private theorem sublt {a b n : Nat} (h : a < n) : a - b < n :=
 protected def sub : Finₓ n → Finₓ n → Finₓ n
 | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a+n - b) % n, mlt h⟩
 
--- error in Init.Data.Fin.Ops: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-private theorem modlt {a b n : nat} (h₁ : «expr < »(a, n)) (h₂ : «expr < »(b, n)) : «expr < »(«expr % »(a, b), n) :=
-begin
-  cases [expr b] ["with", ident b],
-  { simp [] [] [] ["[", expr mod_zero, "]"] [] [],
-    assumption },
-  { have [ident h] [":", expr «expr < »(«expr % »(a, succ b), succ b)] [],
-    apply [expr nat.mod_lt _ (nat.zero_lt_succ _)],
-    exact [expr lt_trans h h₂] }
-end
+private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n :=
+  by 
+    cases' b with b
+    ·
+      simp [mod_zero]
+      assumption
+    ·
+      have h : a % succ b < succ b 
+      apply Nat.mod_ltₓ _ (Nat.zero_lt_succₓ _)
+      exact lt_transₓ h h₂
 
 protected def mod : Finₓ n → Finₓ n → Finₓ n
 | ⟨a, h₁⟩, ⟨b, h₂⟩ => ⟨a % b, modlt h₁ h₂⟩
@@ -113,16 +113,17 @@ theorem le_def (a b : Finₓ n) : (a ≤ b) = (a.val ≤ b.val) :=
 theorem val_zero : (0 : Finₓ (succ n)).val = 0 :=
   rfl
 
--- error in Init.Data.Fin.Ops: ././Mathport/Syntax/Translate/Basic.lean:177:17: failed to parenthesize: parenthesize: uncaught backtrack exception
-def pred {n : nat} : ∀ i : fin (succ n), «expr ≠ »(i, 0) → fin n
-| ⟨a, h₁⟩, h₂ := ⟨a.pred, begin
-   have [ident this] [":", expr «expr ≠ »(a, 0)] [],
-   { have [ident aux₁] [] [":=", expr vne_of_ne h₂],
-     dsimp [] [] [] ["at", ident aux₁],
-     rw [expr val_zero] ["at", ident aux₁],
-     exact [expr aux₁] },
-   exact [expr nat.pred_lt_pred this h₁]
- end⟩
+def pred {n : Nat} : ∀ i : Finₓ (succ n), i ≠ 0 → Finₓ n
+| ⟨a, h₁⟩, h₂ =>
+  ⟨a.pred,
+    by 
+      have this : a ≠ 0
+      ·
+        have aux₁ := vne_of_ne h₂ 
+        dsimp  at aux₁ 
+        rw [val_zero] at aux₁ 
+        exact aux₁ 
+      exact Nat.pred_lt_predₓ this h₁⟩
 
 end Finₓ
 

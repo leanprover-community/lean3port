@@ -20,6 +20,10 @@ theorem max_def (a b : α) : max a b = if b ≤ a then a else b :=
   by 
     rw [congr_funₓ LinearOrderₓ.max_def a, maxDefault]
 
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
 private unsafe def min_tac_step : tactic Unit :=
   solve1$ intros >> sorry >> try sorry >> try sorry >> try sorry
 

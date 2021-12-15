@@ -572,25 +572,25 @@ theorem Exists.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₁ : ∃ x, p 
 def ExistsUnique {α : Sort u} (p : α → Prop) :=
   ∃ x, p x ∧ ∀ y, p y → y = x
 
-notation3  "∃!" (...) ", " r:(scoped P => ExistsUnique P) => r
+notation3 "∃! " (...) ", " r:(scoped P => ExistsUnique P) => r
 
 @[intro]
-theorem ExistsUnique.intro {α : Sort u} {p : α → Prop} (w : α) (h₁ : p w) (h₂ : ∀ y, p y → y = w) : ∃!x, p x :=
+theorem ExistsUnique.intro {α : Sort u} {p : α → Prop} (w : α) (h₁ : p w) (h₂ : ∀ y, p y → y = w) : ∃! x, p x :=
   Exists.introₓ w ⟨h₁, h₂⟩
 
 @[recursor 4]
-theorem ExistsUnique.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₂ : ∃!x, p x)
+theorem ExistsUnique.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₂ : ∃! x, p x)
   (h₁ : ∀ x, p x → (∀ y, p y → y = x) → b) : b :=
   Exists.elim h₂ fun w hw => h₁ w (And.left hw) (And.right hw)
 
 theorem exists_unique_of_exists_of_unique {α : Sort u} {p : α → Prop} (hex : ∃ x, p x)
-  (hunique : ∀ y₁ y₂, p y₁ → p y₂ → y₁ = y₂) : ∃!x, p x :=
+  (hunique : ∀ y₁ y₂, p y₁ → p y₂ → y₁ = y₂) : ∃! x, p x :=
   Exists.elim hex fun x px => ExistsUnique.intro x px fun y => fun this : p y => hunique y x this px
 
-theorem exists_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃!x, p x) : ∃ x, p x :=
+theorem exists_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) : ∃ x, p x :=
   Exists.elim h fun x hx => ⟨x, And.left hx⟩
 
-theorem unique_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃!x, p x) {y₁ y₂ : α} (py₁ : p y₁) (py₂ : p y₂) :
+theorem unique_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) {y₁ y₂ : α} (py₁ : p y₁) (py₂ : p y₂) :
   y₁ = y₂ :=
   ExistsUnique.elim h
     fun x =>
@@ -609,7 +609,7 @@ theorem exists_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) 
   Iff.intro (exists_imp_exists fun a => Iff.mp (h a)) (exists_imp_exists fun a => Iff.mpr (h a))
 
 @[congr]
-theorem exists_unique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) : ExistsUnique p₁ ↔ ∃!x, p₂ x :=
+theorem exists_unique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) : ExistsUnique p₁ ↔ ∃! x, p₂ x :=
   exists_congr fun x => and_congr (h x) (forall_congrₓ fun y => imp_congr (h y) Iff.rfl)
 
 theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x) → ∀ x, ¬p x :=

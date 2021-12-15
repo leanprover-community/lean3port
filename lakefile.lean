@@ -50,6 +50,6 @@ package lean3port (dir) {
   dependencies := #[{
     name := "mathlib",
     -- This git commit here should be the same commit as in the `lakefile.lean` for `mathport`.
-    src := Source.git "https://github.com/leanprover-community/mathlib4.git" "5c7f349f8fb75c53901dd0405543e02052fd55f1"
+    src := Source.git "https://github.com/leanprover-community/mathlib4.git" "80905943d92abcd01ec69b6054f6dbc2a718c76d"
   }]
 }

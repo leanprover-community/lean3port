@@ -2,7 +2,7 @@
 universe u w
 
 def Buffer (α : Type u) :=
-  Σn, Arrayₓ n α
+  Σ n, Arrayₓ n α
 
 def mkBuffer {α : Type u} : Buffer α :=
   ⟨0, { data := fun i => Finₓ.elim0 i }⟩

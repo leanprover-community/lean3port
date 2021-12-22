@@ -1,5 +1,5 @@
-prelude 
-import Leanbin.Init.Data.Unsigned.Basic 
+prelude
+import Leanbin.Init.Data.Unsigned.Basic
 import Leanbin.Init.Data.Fin.Ops
 
 namespace Unsigned

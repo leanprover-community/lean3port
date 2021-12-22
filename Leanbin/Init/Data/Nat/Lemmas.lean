@@ -1,7 +1,7 @@
-prelude 
-import Leanbin.Init.Data.Nat.Basic 
-import Leanbin.Init.Data.Nat.Div 
-import Leanbin.Init.Meta.Default 
+prelude
+import Leanbin.Init.Data.Nat.Basic
+import Leanbin.Init.Data.Nat.Div
+import Leanbin.Init.Meta.Default
 import Leanbin.Init.Algebra.Functions
 
 universe u
@@ -14,22 +14,402 @@ attribute [pre_smt] nat_zero_eq_zero
 
 
 protected theorem add_comm : ∀ n m : ℕ, (n+m) = m+n
-| n, 0 => Eq.symm (Nat.zero_add n)
-| n, m+1 =>
-  suffices succ (n+m) = succ (m+n) from Eq.symm (succ_add m n) ▸ this 
-  congr_argₓ succ (add_comm n m)
+  | n, 0 => Eq.symm (Nat.zero_add n)
+  | n, m+1 =>
+    suffices succ (n+m) = succ (m+n) from Eq.symm (succ_add m n) ▸ this
+    congr_argₓ succ (add_comm n m)
 
 protected theorem add_assoc : ∀ n m k : ℕ, ((n+m)+k) = n+m+k
-| n, m, 0 => rfl
-| n, m, succ k =>
-  by 
+  | n, m, 0 => rfl
+  | n, m, succ k => by
     rw [add_succ, add_succ, add_assoc] <;> rfl
 
 protected theorem add_left_comm : ∀ n m k : ℕ, (n+m+k) = m+n+k :=
   left_comm Nat.add Nat.add_comm Nat.add_assoc
 
--- failed to parenthesize: parenthesize: uncaught backtrack exception
--- failed to format: format: uncaught backtrack exception
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+ (Command.declModifiers [] [] [(Command.protected "protected")] [] [] [])
+ (Command.theorem
+  "theorem"
+  (Command.declId `add_left_cancel [])
+  (Command.declSig
+   []
+   (Term.typeSpec
+    ":"
+    (Term.forall
+     "∀"
+     [(Term.implicitBinder "{" [`n `m `k] [":" (termℕ "ℕ")] "}")]
+     ","
+     (Term.arrow
+      («term_=_» (Init.Logic.«term_+_» `n "+" `m) "=" (Init.Logic.«term_+_» `n "+" `k))
+      "→"
+      («term_=_» `m "=" `k)))))
+  (Command.declValEqns
+   (Term.matchAltsWhereDecls
+    (Term.matchAlts
+     [(Term.matchAlt
+       "|"
+       [(numLit "0") "," `m "," `k]
+       "=>"
+       (Term.byTactic
+        "by"
+        (Tactic.tacticSeq
+         (Tactic.tacticSeq1Indented
+          [(group
+            (Tactic.simp
+             "simp"
+             ["("
+              "config"
+              ":="
+              (Term.structInst
+               "{"
+               []
+               [(group
+                 (Term.structInstField (Term.structInstLVal `contextual []) ":=" `Bool.true._@._internal._hyg.0)
+                 [])]
+               (Term.optEllipsis [])
+               []
+               "}")
+              ")"]
+             []
+             ["[" [(Tactic.simpLemma [] [] `Nat.zero_add)] "]"]
+             [])
+            [])]))))
+      (Term.matchAlt
+       "|"
+       [(Term.app `succ [`n]) "," `m "," `k]
+       "=>"
+       (Term.fun
+        "fun"
+        (Term.basicFun
+         [(Term.simpleBinder [`h] [])]
+         "=>"
+         (Term.have
+          "have"
+          (Term.haveDecl
+           (Term.haveIdDecl
+            []
+            [(Term.typeSpec ":" («term_=_» (Init.Logic.«term_+_» `n "+" `m) "=" (Init.Logic.«term_+_» `n "+" `k)))]
+            ":="
+            (Term.byTactic
+             "by"
+             (Tactic.tacticSeq
+              (Tactic.tacticSeq1Indented
+               [(group
+                 (Tactic.simp
+                  "simp"
+                  []
+                  []
+                  ["[" [(Tactic.simpLemma [] [] `succ_add)] "]"]
+                  [(Tactic.location "at" (Tactic.locationHyp [`h] []))])
+                 [])
+                (group (Tactic.assumption "assumption") [])])))))
+          []
+          (Term.app `add_left_cancel [`this])))))])
+    []))
+  []
+  []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declaration', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declaration', expected 'Lean.Parser.Command.declaration.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.theorem.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValEqns.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.matchAltsWhereDecls', expected 'Lean.Parser.Term.matchAltsWhereDecls.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.matchAlts', expected 'Lean.Parser.Term.matchAlts.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.matchAlt', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.matchAlt', expected 'Lean.Parser.Term.matchAlt.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Term.fun
+   "fun"
+   (Term.basicFun
+    [(Term.simpleBinder [`h] [])]
+    "=>"
+    (Term.have
+     "have"
+     (Term.haveDecl
+      (Term.haveIdDecl
+       []
+       [(Term.typeSpec ":" («term_=_» (Init.Logic.«term_+_» `n "+" `m) "=" (Init.Logic.«term_+_» `n "+" `k)))]
+       ":="
+       (Term.byTactic
+        "by"
+        (Tactic.tacticSeq
+         (Tactic.tacticSeq1Indented
+          [(group
+            (Tactic.simp
+             "simp"
+             []
+             []
+             ["[" [(Tactic.simpLemma [] [] `succ_add)] "]"]
+             [(Tactic.location "at" (Tactic.locationHyp [`h] []))])
+            [])
+           (group (Tactic.assumption "assumption") [])])))))
+     []
+     (Term.app `add_left_cancel [`this]))))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.fun', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.fun', expected 'Lean.Parser.Term.fun.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.basicFun', expected 'Lean.Parser.Term.basicFun.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Term.have
+   "have"
+   (Term.haveDecl
+    (Term.haveIdDecl
+     []
+     [(Term.typeSpec ":" («term_=_» (Init.Logic.«term_+_» `n "+" `m) "=" (Init.Logic.«term_+_» `n "+" `k)))]
+     ":="
+     (Term.byTactic
+      "by"
+      (Tactic.tacticSeq
+       (Tactic.tacticSeq1Indented
+        [(group
+          (Tactic.simp
+           "simp"
+           []
+           []
+           ["[" [(Tactic.simpLemma [] [] `succ_add)] "]"]
+           [(Tactic.location "at" (Tactic.locationHyp [`h] []))])
+          [])
+         (group (Tactic.assumption "assumption") [])])))))
+   []
+   (Term.app `add_left_cancel [`this]))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.have', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.have', expected 'Lean.Parser.Term.have.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Term.app `add_left_cancel [`this])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.app', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `this
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+  `add_left_cancel
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none, [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.haveDecl', expected 'Lean.Parser.Term.haveDecl.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.haveIdDecl', expected 'Lean.Parser.Term.haveIdDecl.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, term))
+  (Term.byTactic
+   "by"
+   (Tactic.tacticSeq
+    (Tactic.tacticSeq1Indented
+     [(group
+       (Tactic.simp
+        "simp"
+        []
+        []
+        ["[" [(Tactic.simpLemma [] [] `succ_add)] "]"]
+        [(Tactic.location "at" (Tactic.locationHyp [`h] []))])
+       [])
+      (group (Tactic.assumption "assumption") [])])))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.byTactic', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.byTactic', expected 'Lean.Parser.Term.byTactic.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq', expected 'Lean.Parser.Tactic.tacticSeq.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeqBracketed.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeqBracketed'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeq1Indented.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'group', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Tactic.assumption "assumption")
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.assumption', expected 'antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'group', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, tactic))
+  (Tactic.simp
+   "simp"
+   []
+   []
+   ["[" [(Tactic.simpLemma [] [] `succ_add)] "]"]
+   [(Tactic.location "at" (Tactic.locationHyp [`h] []))])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simp', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.location', expected 'optional.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.locationHyp', expected 'Lean.Parser.Tactic.locationWildcard'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `h
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«]»', expected 'optional.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simpLemma', expected 'sepBy.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simpLemma', expected 'Lean.Parser.Tactic.simpStar'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simpLemma', expected 'Lean.Parser.Tactic.simpErase'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `succ_add
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 0, tactic) <=? (none, term)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.typeSpec', expected 'optional.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.typeSpec', expected 'Lean.Parser.Term.typeSpec.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  («term_=_» (Init.Logic.«term_+_» `n "+" `m) "=" (Init.Logic.«term_+_» `n "+" `k))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term_=_»', expected 'antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Init.Logic.«term_+_» `n "+" `k)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Logic.«term_+_»', expected 'antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `k
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+  `n
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 51 >? 1022, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 50, term))
+  (Init.Logic.«term_+_» `n "+" `m)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Logic.«term_+_»', expected 'antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `m
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+  `n
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 51 >? 1022, (some 0, term) <=? (some 50, term)
+[PrettyPrinter.parenthesize] parenthesized: (Term.paren "(" [(Init.Logic.«term_+_» `n "+" `m) []] ")")
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 50, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.strictImplicitBinder.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.strictImplicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.implicitBinder.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.implicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.instBinder.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.instBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.simpleBinder', expected 'Lean.Parser.Term.simpleBinder.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'sepBy.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `k
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'sepBy.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `m
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.app', expected 'sepBy.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Term.app `succ [`n])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.app', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `n
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+  `succ
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none, [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.matchAlt', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.matchAlt', expected 'Lean.Parser.Term.matchAlt.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Term.byTactic
+   "by"
+   (Tactic.tacticSeq
+    (Tactic.tacticSeq1Indented
+     [(group
+       (Tactic.simp
+        "simp"
+        ["("
+         "config"
+         ":="
+         (Term.structInst
+          "{"
+          []
+          [(group (Term.structInstField (Term.structInstLVal `contextual []) ":=" `Bool.true._@._internal._hyg.0) [])]
+          (Term.optEllipsis [])
+          []
+          "}")
+         ")"]
+        []
+        ["[" [(Tactic.simpLemma [] [] `Nat.zero_add)] "]"]
+        [])
+       [])])))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.byTactic', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.byTactic', expected 'Lean.Parser.Term.byTactic.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq', expected 'Lean.Parser.Tactic.tacticSeq.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeqBracketed.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeqBracketed'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeq1Indented.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'group', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Tactic.simp
+   "simp"
+   ["("
+    "config"
+    ":="
+    (Term.structInst
+     "{"
+     []
+     [(group (Term.structInstField (Term.structInstLVal `contextual []) ":=" `Bool.true._@._internal._hyg.0) [])]
+     (Term.optEllipsis [])
+     []
+     "}")
+    ")"]
+   []
+   ["[" [(Tactic.simpLemma [] [] `Nat.zero_add)] "]"]
+   [])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simp', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«]»', expected 'optional.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simpLemma', expected 'sepBy.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simpLemma', expected 'Lean.Parser.Tactic.simpStar'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.simpLemma', expected 'Lean.Parser.Tactic.simpErase'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `Nat.zero_add
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«)»', expected 'optional.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«)»', expected 'Lean.Parser.Tactic.discharger'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.constant.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.constant'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
 protected
   theorem
     add_left_cancel
@@ -38,34 +418,27 @@ protected
       | succ n , m , k => fun h => have : n + m = n + k := by simp [ succ_add ] at h assumption add_left_cancel this
 
 protected theorem add_right_cancel {n m k : ℕ} (h : (n+m) = k+m) : n = k :=
-  have  : (m+n) = m+k :=
-    by 
-      rwa [Nat.add_comm n m, Nat.add_comm k m] at h 
+  have : (m+n) = m+k := by
+    rwa [Nat.add_comm n m, Nat.add_comm k m] at h
   Nat.add_left_cancel this
 
-theorem succ_ne_zero (n : ℕ) : succ n ≠ 0 :=
-  fun h => Nat.noConfusion h
+theorem succ_ne_zero (n : ℕ) : succ n ≠ 0 := fun h => Nat.noConfusion h
 
 theorem succ_ne_self : ∀ n : ℕ, succ n ≠ n
-| 0, h => absurd h (Nat.succ_ne_zero 0)
-| n+1, h => succ_ne_self n (Nat.noConfusion h fun h => h)
+  | 0, h => absurd h (Nat.succ_ne_zero 0)
+  | n+1, h => succ_ne_self n (Nat.noConfusion h fun h => h)
 
-protected theorem one_ne_zero : 1 ≠ (0 : ℕ) :=
-  fun h => Nat.noConfusion h
+protected theorem one_ne_zero : 1 ≠ (0 : ℕ) := fun h => Nat.noConfusion h
 
-protected theorem zero_ne_one : 0 ≠ (1 : ℕ) :=
-  fun h => Nat.noConfusion h
+protected theorem zero_ne_one : 0 ≠ (1 : ℕ) := fun h => Nat.noConfusion h
 
 protected theorem eq_zero_of_add_eq_zero_right : ∀ {n m : ℕ}, (n+m) = 0 → n = 0
-| 0, m =>
-  by 
+  | 0, m => by
     simp [Nat.zero_add]
-| n+1, m =>
-  fun h =>
-    by 
-      exfalso 
-      rw [add_one, succ_add] at h 
-      apply succ_ne_zero _ h
+  | n+1, m => fun h => by
+    exfalso
+    rw [add_one, succ_add] at h
+    apply succ_ne_zero _ h
 
 protected theorem eq_zero_of_add_eq_zero_left {n m : ℕ} (h : (n+m) = 0) : m = 0 :=
   @Nat.eq_zero_of_add_eq_zero_right m n (Nat.add_comm n m ▸ h)
@@ -86,72 +459,61 @@ theorem mul_succ (n m : ℕ) : (n*succ m) = (n*m)+n :=
   rfl
 
 protected theorem zero_mul : ∀ n : ℕ, (0*n) = 0
-| 0 => rfl
-| succ n =>
-  by 
+  | 0 => rfl
+  | succ n => by
     rw [mul_succ, zero_mul]
 
--- ././Mathport/Syntax/Translate/Basic.lean:686:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
 private unsafe def sort_add :=
   sorry
 
 theorem succ_mul : ∀ n m : ℕ, (succ n*m) = (n*m)+m
-| n, 0 => rfl
-| n, succ m =>
-  by 
+  | n, 0 => rfl
+  | n, succ m => by
     simp [mul_succ, add_succ, succ_mul n m]
-    runTac 
+    run_tac
       sort_add
 
 protected theorem right_distrib : ∀ n m k : ℕ, ((n+m)*k) = (n*k)+m*k
-| n, m, 0 => rfl
-| n, m, succ k =>
-  by 
+  | n, m, 0 => rfl
+  | n, m, succ k => by
     simp [mul_succ, right_distrib n m k]
-    runTac 
+    run_tac
       sort_add
 
 protected theorem left_distrib : ∀ n m k : ℕ, (n*m+k) = (n*m)+n*k
-| 0, m, k =>
-  by 
+  | 0, m, k => by
     simp [Nat.zero_mul]
-| succ n, m, k =>
-  by 
+  | succ n, m, k => by
     simp [succ_mul, left_distrib n m k]
-    runTac 
+    run_tac
       sort_add
 
 protected theorem mul_comm : ∀ n m : ℕ, (n*m) = m*n
-| n, 0 =>
-  by 
+  | n, 0 => by
     rw [Nat.zero_mul, Nat.mul_zero]
-| n, succ m =>
-  by 
+  | n, succ m => by
     simp [mul_succ, succ_mul, mul_comm n m]
 
 protected theorem mul_assoc : ∀ n m k : ℕ, ((n*m)*k) = n*m*k
-| n, m, 0 => rfl
-| n, m, succ k =>
-  by 
+  | n, m, 0 => rfl
+  | n, m, succ k => by
     simp [mul_succ, Nat.left_distrib, mul_assoc n m k]
 
 protected theorem mul_one : ∀ n : ℕ, (n*1) = n :=
   Nat.zero_add
 
-protected theorem one_mul (n : ℕ) : (1*n) = n :=
-  by 
-    rw [Nat.mul_comm, Nat.mul_one]
+protected theorem one_mul (n : ℕ) : (1*n) = n := by
+  rw [Nat.mul_comm, Nat.mul_one]
 
-theorem succ_add_eq_succ_add (n m : ℕ) : (succ n+m) = n+succ m :=
-  by 
-    simp [succ_add, add_succ]
+theorem succ_add_eq_succ_add (n m : ℕ) : (succ n+m) = n+succ m := by
+  simp [succ_add, add_succ]
 
 theorem eq_zero_of_mul_eq_zero : ∀ {n m : ℕ}, (n*m) = 0 → n = 0 ∨ m = 0
-| 0, m => fun h => Or.inl rfl
-| succ n, m =>
-  by 
+  | 0, m => fun h => Or.inl rfl
+  | succ n, m => by
     rw [succ_mul]
-    intro h 
+    intro h
     exact Or.inr (Nat.eq_zero_of_add_eq_zero_left h)
 
 /-! properties of inequality -/
@@ -172,11 +534,10 @@ protected theorem le_of_ltₓ {n m : ℕ} (h : n < m) : n ≤ m :=
 theorem lt.step {n m : ℕ} : n < m → n < succ m :=
   less_than_or_equal.step
 
-protected theorem eq_zero_or_pos (n : ℕ) : n = 0 ∨ 0 < n :=
-  by 
-    cases n 
-    exact Or.inl rfl 
-    exact Or.inr (succ_pos _)
+protected theorem eq_zero_or_pos (n : ℕ) : n = 0 ∨ 0 < n := by
+  cases n
+  exact Or.inl rfl
+  exact Or.inr (succ_pos _)
 
 protected theorem pos_of_ne_zero {n : Nat} : n ≠ 0 → 0 < n :=
   Or.resolve_left n.eq_zero_or_pos
@@ -197,14 +558,14 @@ protected theorem le_antisymmₓ {n m : ℕ} (h₁ : n ≤ m) : m ≤ n → n = 
   less_than_or_equal.cases_on h₁ (fun a => rfl) fun a b c => absurd (Nat.lt_of_le_of_ltₓ b c) (Nat.lt_irreflₓ n)
 
 protected theorem lt_or_geₓ : ∀ a b : ℕ, a < b ∨ b ≤ a
-| a, 0 => Or.inr a.zero_le
-| a, b+1 =>
-  match lt_or_geₓ a b with 
-  | Or.inl h => Or.inl (le_succ_of_le h)
-  | Or.inr h =>
-    match Nat.eq_or_lt_of_leₓ h with 
-    | Or.inl h1 => Or.inl (h1 ▸ lt_succ_self b)
-    | Or.inr h1 => Or.inr h1
+  | a, 0 => Or.inr a.zero_le
+  | a, b+1 =>
+    match lt_or_geₓ a b with
+    | Or.inl h => Or.inl (le_succ_of_le h)
+    | Or.inr h =>
+      match Nat.eq_or_lt_of_leₓ h with
+      | Or.inl h1 => Or.inl (h1 ▸ lt_succ_self b)
+      | Or.inr h1 => Or.inr h1
 
 protected theorem le_totalₓ {m n : ℕ} : m ≤ n ∨ n ≤ m :=
   Or.imp_left Nat.le_of_ltₓ (Nat.lt_or_geₓ m n)
@@ -213,13 +574,20 @@ protected theorem lt_of_le_and_ne {m n : ℕ} (h1 : m ≤ n) : m ≠ n → m < n
   Or.resolve_right (Or.swap (Nat.eq_or_lt_of_leₓ h1))
 
 protected theorem lt_iff_le_not_leₓ {m n : ℕ} : m < n ↔ m ≤ n ∧ ¬n ≤ m :=
-  ⟨fun hmn => ⟨Nat.le_of_ltₓ hmn, fun hnm => Nat.lt_irreflₓ _ (Nat.lt_of_le_of_ltₓ hnm hmn)⟩,
-    fun ⟨hmn, hnm⟩ => Nat.lt_of_le_and_neₓ hmn fun heq => hnm (HEq ▸ Nat.le_reflₓ _)⟩
+  ⟨fun hmn => ⟨Nat.le_of_ltₓ hmn, fun hnm => Nat.lt_irreflₓ _ (Nat.lt_of_le_of_ltₓ hnm hmn)⟩, fun ⟨hmn, hnm⟩ =>
+    Nat.lt_of_le_and_neₓ hmn fun heq => hnm (HEq ▸ Nat.le_reflₓ _)⟩
 
-instance : LinearOrderₓ ℕ :=
-  { le := Nat.LessThanOrEqual, le_refl := @Nat.le_reflₓ, le_trans := @Nat.le_transₓ, le_antisymm := @Nat.le_antisymmₓ,
-    le_total := @Nat.le_totalₓ, lt := Nat.Lt, lt_iff_le_not_le := @Nat.lt_iff_le_not_leₓ,
-    decidableLt := Nat.decidableLt, decidableLe := Nat.decidableLe, DecidableEq := Nat.decidableEq }
+instance : LinearOrderₓ ℕ where
+  le := Nat.LessThanOrEqual
+  le_refl := @Nat.le_reflₓ
+  le_trans := @Nat.le_transₓ
+  le_antisymm := @Nat.le_antisymmₓ
+  le_total := @Nat.le_totalₓ
+  lt := Nat.Lt
+  lt_iff_le_not_le := @Nat.lt_iff_le_not_leₓ
+  decidableLt := Nat.decidableLt
+  decidableLe := Nat.decidableLe
+  DecidableEq := Nat.decidableEq
 
 protected theorem eq_zero_of_le_zero {n : Nat} (h : n ≤ 0) : n = 0 :=
   le_antisymmₓ h n.zero_le
@@ -234,9 +602,9 @@ theorem lt_of_succ_lt_succ {a b : ℕ} : succ a < succ b → a < b :=
   le_of_succ_le_succ
 
 theorem pred_lt_pred : ∀ {n m : ℕ}, n ≠ 0 → n < m → pred n < pred m
-| 0, _, h₁, h => absurd rfl h₁
-| n, 0, h₁, h => absurd h n.not_lt_zero
-| succ n, succ m, _, h => lt_of_succ_lt_succ h
+  | 0, _, h₁, h => absurd rfl h₁
+  | n, 0, h₁, h => absurd h n.not_lt_zero
+  | succ n, succ m, _, h => lt_of_succ_lt_succ h
 
 theorem lt_of_succ_le {a b : ℕ} (h : succ a ≤ b) : a < b :=
   h
@@ -245,61 +613,58 @@ theorem succ_le_of_lt {a b : ℕ} (h : a < b) : succ a ≤ b :=
   h
 
 protected theorem le_add_right : ∀ n k : ℕ, n ≤ n+k
-| n, 0 => Nat.le_reflₓ n
-| n, k+1 => le_succ_of_le (le_add_right n k)
+  | n, 0 => Nat.le_reflₓ n
+  | n, k+1 => le_succ_of_le (le_add_right n k)
 
 protected theorem le_add_left (n m : ℕ) : n ≤ m+n :=
   Nat.add_comm n m ▸ n.le_add_right m
 
 theorem le.dest : ∀ {n m : ℕ}, n ≤ m → ∃ k, (n+k) = m
-| n, _, less_than_or_equal.refl => ⟨0, rfl⟩
-| n, _, less_than_or_equal.step h =>
-  match le.dest h with 
-  | ⟨w, hw⟩ => ⟨succ w, hw ▸ add_succ n w⟩
+  | n, _, less_than_or_equal.refl => ⟨0, rfl⟩
+  | n, _, less_than_or_equal.step h =>
+    match le.dest h with
+    | ⟨w, hw⟩ => ⟨succ w, hw ▸ add_succ n w⟩
 
 protected theorem le.intro {n m k : ℕ} (h : (n+k) = m) : n ≤ m :=
   h ▸ n.le_add_right k
 
 protected theorem add_le_add_left {n m : ℕ} (h : n ≤ m) (k : ℕ) : (k+n) ≤ k+m :=
-  match le.dest h with 
+  match le.dest h with
   | ⟨w, hw⟩ =>
     @le.intro _ _ w
-      (by 
+      (by
         rw [Nat.add_assoc, hw])
 
-protected theorem add_le_add_right {n m : ℕ} (h : n ≤ m) (k : ℕ) : (n+k) ≤ m+k :=
-  by 
-    rw [Nat.add_comm n k, Nat.add_comm m k]
-    apply Nat.add_le_add_leftₓ h
+protected theorem add_le_add_right {n m : ℕ} (h : n ≤ m) (k : ℕ) : (n+k) ≤ m+k := by
+  rw [Nat.add_comm n k, Nat.add_comm m k]
+  apply Nat.add_le_add_leftₓ h
 
 protected theorem le_of_add_le_add_left {k n m : ℕ} (h : (k+n) ≤ k+m) : n ≤ m :=
-  match le.dest h with 
+  match le.dest h with
   | ⟨w, hw⟩ =>
     @le.intro _ _ w
-      (by 
-        rw [Nat.add_assoc] at hw 
+      (by
+        rw [Nat.add_assoc] at hw
         apply Nat.add_left_cancel hw)
 
-protected theorem le_of_add_le_add_right {k n m : ℕ} : ((n+k) ≤ m+k) → n ≤ m :=
-  by 
-    rw [Nat.add_comm _ k, Nat.add_comm _ k]
-    apply Nat.le_of_add_le_add_leftₓ
+protected theorem le_of_add_le_add_right {k n m : ℕ} : ((n+k) ≤ m+k) → n ≤ m := by
+  rw [Nat.add_comm _ k, Nat.add_comm _ k]
+  apply Nat.le_of_add_le_add_leftₓ
 
 protected theorem add_le_add_iff_le_right (k n m : ℕ) : ((n+k) ≤ m+k) ↔ n ≤ m :=
   ⟨Nat.le_of_add_le_add_rightₓ, fun h => Nat.add_le_add_rightₓ h _⟩
 
 protected theorem lt_of_add_lt_add_left {k n m : ℕ} (h : (k+n) < k+m) : n < m :=
-  let h' := Nat.le_of_ltₓ h 
-  Nat.lt_of_le_and_neₓ (Nat.le_of_add_le_add_leftₓ h')
-    fun heq =>
-      Nat.lt_irreflₓ (k+m)
-        (by 
-          rw [HEq] at h 
-          assumption)
+  let h' := Nat.le_of_ltₓ h
+  Nat.lt_of_le_and_neₓ (Nat.le_of_add_le_add_leftₓ h') fun heq =>
+    Nat.lt_irreflₓ (k+m)
+      (by
+        rw [HEq] at h
+        assumption)
 
 protected theorem lt_of_add_lt_add_right {a b c : ℕ} (h : (a+b) < c+b) : a < c :=
-  Nat.lt_of_add_lt_add_leftₓ$
-    show (b+a) < b+c by 
+  Nat.lt_of_add_lt_add_leftₓ $
+    show (b+a) < b+c by
       rwa [Nat.add_comm b a, Nat.add_comm b c]
 
 protected theorem add_lt_add_left {n m : ℕ} (h : n < m) (k : ℕ) : (k+n) < k+m :=
@@ -311,9 +676,8 @@ protected theorem add_lt_add_right {n m : ℕ} (h : n < m) (k : ℕ) : (n+k) < m
 protected theorem lt_add_of_pos_right {n k : ℕ} (h : 0 < k) : n < n+k :=
   Nat.add_lt_add_leftₓ h n
 
-protected theorem lt_add_of_pos_left {n k : ℕ} (h : 0 < k) : n < k+n :=
-  by 
-    rw [Nat.add_comm] <;> exact Nat.lt_add_of_pos_rightₓ h
+protected theorem lt_add_of_pos_left {n k : ℕ} (h : 0 < k) : n < k+n := by
+  rw [Nat.add_comm] <;> exact Nat.lt_add_of_pos_rightₓ h
 
 protected theorem add_lt_add {a b c d : ℕ} (h₁ : a < b) (h₂ : c < d) : (a+c) < b+d :=
   lt_transₓ (Nat.add_lt_add_rightₓ h₁ c) (Nat.add_lt_add_leftₓ h₂ b)
@@ -325,11 +689,10 @@ protected theorem zero_lt_one : 0 < (1 : Nat) :=
   zero_lt_succ 0
 
 protected theorem mul_le_mul_left {n m : ℕ} (k : ℕ) (h : n ≤ m) : (k*n) ≤ k*m :=
-  match le.dest h with 
+  match le.dest h with
   | ⟨l, hl⟩ =>
-    have  : ((k*n)+k*l) = k*m :=
-      by 
-        rw [←Nat.left_distrib, hl]
+    have : ((k*n)+k*l) = k*m := by
+      rw [← Nat.left_distrib, hl]
     le.intro this
 
 protected theorem mul_le_mul_right {n m : ℕ} (k : ℕ) (h : n ≤ m) : (n*k) ≤ m*k :=
@@ -342,10 +705,9 @@ protected theorem mul_lt_mul_of_pos_right {n m k : ℕ} (h : n < m) (hk : 0 < k)
   Nat.mul_comm k m ▸ Nat.mul_comm k n ▸ Nat.mul_lt_mul_of_pos_leftₓ h hk
 
 protected theorem le_of_mul_le_mul_left {a b c : ℕ} (h : (c*a) ≤ c*b) (hc : 0 < c) : a ≤ b :=
-  not_ltₓ.1
-    fun h1 : b < a =>
-      have h2 : (c*b) < c*a := Nat.mul_lt_mul_of_pos_leftₓ h1 hc 
-      not_le_of_gtₓ h2 h
+  not_ltₓ.1 fun h1 : b < a =>
+    have h2 : (c*b) < c*a := Nat.mul_lt_mul_of_pos_leftₓ h1 hc
+    not_le_of_gtₓ h2 h
 
 theorem le_of_lt_succ {m n : Nat} : m < succ n → m ≤ n :=
   le_of_succ_le_succ
@@ -354,9 +716,9 @@ protected theorem eq_of_mul_eq_mul_left {m k n : ℕ} (Hn : 0 < n) (H : (n*m) = 
   le_antisymmₓ (Nat.le_of_mul_le_mul_leftₓ (le_of_eqₓ H) Hn) (Nat.le_of_mul_le_mul_leftₓ (le_of_eqₓ H.symm) Hn)
 
 protected theorem mul_pos {a b : ℕ} (ha : 0 < a) (hb : 0 < b) : 0 < a*b :=
-  have h : (0*b) < a*b := Nat.mul_lt_mul_of_pos_rightₓ ha hb 
-  by 
-    rwa [Nat.zero_mul] at h
+  have h : (0*b) < a*b := Nat.mul_lt_mul_of_pos_rightₓ ha hb
+  by
+  rwa [Nat.zero_mul] at h
 
 theorem le_succ_of_pred_le {n m : ℕ} : pred n ≤ m → n ≤ succ m :=
   Nat.casesOn n less_than_or_equal.step fun a => succ_le_succ
@@ -388,40 +750,37 @@ theorem lt_succ_of_lt {a b : Nat} (h : a < b) : a < succ b :=
 theorem one_pos : 0 < 1 :=
   Nat.zero_lt_oneₓ
 
-protected theorem mul_le_mul_of_nonneg_left {a b c : ℕ} (h₁ : a ≤ b) : (c*a) ≤ c*b :=
-  by 
-    byCases' hba : b ≤ a
-    ·
-      simp [le_antisymmₓ hba h₁]
-    byCases' hc0 : c ≤ 0
-    ·
-      simp [le_antisymmₓ hc0 c.zero_le, Nat.zero_mul]
-    exact
-      (le_not_le_of_ltₓ (Nat.mul_lt_mul_of_pos_leftₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ c.zero_le hc0))).left
+protected theorem mul_le_mul_of_nonneg_left {a b c : ℕ} (h₁ : a ≤ b) : (c*a) ≤ c*b := by
+  by_cases' hba : b ≤ a
+  ·
+    simp [le_antisymmₓ hba h₁]
+  by_cases' hc0 : c ≤ 0
+  ·
+    simp [le_antisymmₓ hc0 c.zero_le, Nat.zero_mul]
+  exact (le_not_le_of_ltₓ (Nat.mul_lt_mul_of_pos_leftₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ c.zero_le hc0))).left
 
-protected theorem mul_le_mul_of_nonneg_right {a b c : ℕ} (h₁ : a ≤ b) : (a*c) ≤ b*c :=
-  by 
-    byCases' hba : b ≤ a
-    ·
-      simp [le_antisymmₓ hba h₁]
-    byCases' hc0 : c ≤ 0
-    ·
-      simp [le_antisymmₓ hc0 c.zero_le, Nat.mul_zero]
-    exact
-      (le_not_le_of_ltₓ (Nat.mul_lt_mul_of_pos_rightₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ c.zero_le hc0))).left
+protected theorem mul_le_mul_of_nonneg_right {a b c : ℕ} (h₁ : a ≤ b) : (a*c) ≤ b*c := by
+  by_cases' hba : b ≤ a
+  ·
+    simp [le_antisymmₓ hba h₁]
+  by_cases' hc0 : c ≤ 0
+  ·
+    simp [le_antisymmₓ hc0 c.zero_le, Nat.mul_zero]
+  exact
+    (le_not_le_of_ltₓ (Nat.mul_lt_mul_of_pos_rightₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ c.zero_le hc0))).left
 
 protected theorem mul_lt_mul {a b c d : ℕ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b) : (a*b) < c*d :=
-  calc (a*b) < c*b := Nat.mul_lt_mul_of_pos_rightₓ hac pos_b 
+  calc (a*b) < c*b := Nat.mul_lt_mul_of_pos_rightₓ hac pos_b
     _ ≤ c*d := Nat.mul_le_mul_of_nonneg_leftₓ hbd
     
 
 protected theorem mul_lt_mul' {a b c d : ℕ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 < c) : (a*b) < c*d :=
-  calc (a*b) ≤ c*b := Nat.mul_le_mul_of_nonneg_rightₓ h1 
+  calc (a*b) ≤ c*b := Nat.mul_le_mul_of_nonneg_rightₓ h1
     _ < c*d := Nat.mul_lt_mul_of_pos_leftₓ h2 h3
     
 
 protected theorem mul_le_mul {a b c d : ℕ} (hac : a ≤ c) (hbd : b ≤ d) : (a*b) ≤ c*d :=
-  calc (a*b) ≤ c*b := Nat.mul_le_mul_of_nonneg_rightₓ hac 
+  calc (a*b) ≤ c*b := Nat.mul_le_mul_of_nonneg_rightₓ hac
     _ ≤ c*d := Nat.mul_le_mul_of_nonneg_leftₓ hbd
     
 
@@ -435,76 +794,65 @@ protected theorem bit1_succ_eq (n : ℕ) : bit1 (succ n) = succ (succ (bit1 n)) 
   Eq.trans (Nat.bit1_eq_succ_bit0 (succ n)) (congr_argₓ succ (Nat.bit0_succ_eq n))
 
 protected theorem bit1_ne_one : ∀ {n : ℕ}, n ≠ 0 → bit1 n ≠ 1
-| 0, h, h1 => absurd rfl h
-| n+1, h, h1 => Nat.noConfusion h1 fun h2 => absurd h2 (succ_ne_zero _)
+  | 0, h, h1 => absurd rfl h
+  | n+1, h, h1 => Nat.noConfusion h1 fun h2 => absurd h2 (succ_ne_zero _)
 
 protected theorem bit0_ne_one : ∀ n : ℕ, bit0 n ≠ 1
-| 0, h => absurd h (Ne.symm Nat.one_ne_zero)
-| n+1, h =>
-  have h1 : succ (succ (n+n)) = 1 := succ_add n n ▸ h 
-  Nat.noConfusion h1 fun h2 => absurd h2 (succ_ne_zero (n+n))
+  | 0, h => absurd h (Ne.symm Nat.one_ne_zero)
+  | n+1, h =>
+    have h1 : succ (succ (n+n)) = 1 := succ_add n n ▸ h
+    Nat.noConfusion h1 fun h2 => absurd h2 (succ_ne_zero (n+n))
 
 protected theorem add_self_ne_one : ∀ n : ℕ, (n+n) ≠ 1
-| 0, h => Nat.noConfusion h
-| n+1, h =>
-  have h1 : succ (succ (n+n)) = 1 := succ_add n n ▸ h 
-  Nat.noConfusion h1 fun h2 => absurd h2 (Nat.succ_ne_zero (n+n))
+  | 0, h => Nat.noConfusion h
+  | n+1, h =>
+    have h1 : succ (succ (n+n)) = 1 := succ_add n n ▸ h
+    Nat.noConfusion h1 fun h2 => absurd h2 (Nat.succ_ne_zero (n+n))
 
 protected theorem bit1_ne_bit0 : ∀ n m : ℕ, bit1 n ≠ bit0 m
-| 0, m, h => absurd h (Ne.symm (Nat.add_self_ne_one m))
-| n+1, 0, h =>
-  have h1 : succ (bit0 (succ n)) = 0 := h 
-  absurd h1 (Nat.succ_ne_zero _)
-| n+1, m+1, h =>
-  have h1 : succ (succ (bit1 n)) = succ (succ (bit0 m)) := Nat.bit0_succ_eq m ▸ Nat.bit1_succ_eq n ▸ h 
-  have h2 : bit1 n = bit0 m := Nat.noConfusion h1 fun h2' => Nat.noConfusion h2' fun h2'' => h2'' 
-  absurd h2 (bit1_ne_bit0 n m)
+  | 0, m, h => absurd h (Ne.symm (Nat.add_self_ne_one m))
+  | n+1, 0, h =>
+    have h1 : succ (bit0 (succ n)) = 0 := h
+    absurd h1 (Nat.succ_ne_zero _)
+  | n+1, m+1, h =>
+    have h1 : succ (succ (bit1 n)) = succ (succ (bit0 m)) := Nat.bit0_succ_eq m ▸ Nat.bit1_succ_eq n ▸ h
+    have h2 : bit1 n = bit0 m := Nat.noConfusion h1 fun h2' => Nat.noConfusion h2' fun h2'' => h2''
+    absurd h2 (bit1_ne_bit0 n m)
 
-protected theorem bit0_ne_bit1 : ∀ n m : ℕ, bit0 n ≠ bit1 m :=
-  fun n m : Nat => Ne.symm (Nat.bit1_ne_bit0 m n)
+protected theorem bit0_ne_bit1 : ∀ n m : ℕ, bit0 n ≠ bit1 m := fun n m : Nat => Ne.symm (Nat.bit1_ne_bit0 m n)
 
 protected theorem bit0_inj : ∀ {n m : ℕ}, bit0 n = bit0 m → n = m
-| 0, 0, h => rfl
-| 0, m+1, h =>
-  by 
+  | 0, 0, h => rfl
+  | 0, m+1, h => by
     contradiction
-| n+1, 0, h =>
-  by 
+  | n+1, 0, h => by
     contradiction
-| n+1, m+1, h =>
-  have  : succ (succ (n+n)) = succ (succ (m+m)) :=
-    by 
-      unfold bit0  at h 
-      simp [add_one, add_succ, succ_add] at h 
-      have aux : (n+n) = m+m := h 
+  | n+1, m+1, h =>
+    have : succ (succ (n+n)) = succ (succ (m+m)) := by
+      unfold bit0  at h
+      simp [add_one, add_succ, succ_add] at h
+      have aux : (n+n) = m+m := h
       rw [aux]
-  have  : (n+n) = m+m :=
-    by 
-      repeat 
-        injection this with this 
-  have  : n = m := bit0_inj this 
-  by 
+    have : (n+n) = m+m := by
+      repeat
+        injection this with this
+    have : n = m := bit0_inj this
+    by
     rw [this]
 
-protected theorem bit1_inj : ∀ {n m : ℕ}, bit1 n = bit1 m → n = m :=
-  fun n m h =>
-    have  : succ (bit0 n) = succ (bit0 m) :=
-      by 
-        simp [Nat.bit1_eq_succ_bit0] at h 
-        rw [h]
-    have  : bit0 n = bit0 m :=
-      by 
-        injection this 
-    Nat.bit0_inj this
+protected theorem bit1_inj : ∀ {n m : ℕ}, bit1 n = bit1 m → n = m := fun n m h =>
+  have : succ (bit0 n) = succ (bit0 m) := by
+    simp [Nat.bit1_eq_succ_bit0] at h
+    rw [h]
+  have : bit0 n = bit0 m := by
+    injection this
+  Nat.bit0_inj this
 
-protected theorem bit0_ne {n m : ℕ} : n ≠ m → bit0 n ≠ bit0 m :=
-  fun h₁ h₂ => absurd (Nat.bit0_inj h₂) h₁
+protected theorem bit0_ne {n m : ℕ} : n ≠ m → bit0 n ≠ bit0 m := fun h₁ h₂ => absurd (Nat.bit0_inj h₂) h₁
 
-protected theorem bit1_ne {n m : ℕ} : n ≠ m → bit1 n ≠ bit1 m :=
-  fun h₁ h₂ => absurd (Nat.bit1_inj h₂) h₁
+protected theorem bit1_ne {n m : ℕ} : n ≠ m → bit1 n ≠ bit1 m := fun h₁ h₂ => absurd (Nat.bit1_inj h₂) h₁
 
-protected theorem zero_ne_bit0 {n : ℕ} : n ≠ 0 → 0 ≠ bit0 n :=
-  fun h => Ne.symm (Nat.bit0_ne_zero h)
+protected theorem zero_ne_bit0 {n : ℕ} : n ≠ 0 → 0 ≠ bit0 n := fun h => Ne.symm (Nat.bit0_ne_zero h)
 
 protected theorem zero_ne_bit1 (n : ℕ) : 0 ≠ bit1 n :=
   Ne.symm (Nat.bit1_ne_zero n)
@@ -512,27 +860,22 @@ protected theorem zero_ne_bit1 (n : ℕ) : 0 ≠ bit1 n :=
 protected theorem one_ne_bit0 (n : ℕ) : 1 ≠ bit0 n :=
   Ne.symm (Nat.bit0_ne_one n)
 
-protected theorem one_ne_bit1 {n : ℕ} : n ≠ 0 → 1 ≠ bit1 n :=
-  fun h => Ne.symm (Nat.bit1_ne_one h)
+protected theorem one_ne_bit1 {n : ℕ} : n ≠ 0 → 1 ≠ bit1 n := fun h => Ne.symm (Nat.bit1_ne_one h)
 
 protected theorem one_lt_bit1 : ∀ {n : Nat}, n ≠ 0 → 1 < bit1 n
-| 0, h =>
-  by 
+  | 0, h => by
     contradiction
-| succ n, h =>
-  by 
+  | succ n, h => by
     rw [Nat.bit1_succ_eq]
-    apply succ_lt_succ 
+    apply succ_lt_succ
     apply zero_lt_succ
 
 protected theorem one_lt_bit0 : ∀ {n : Nat}, n ≠ 0 → 1 < bit0 n
-| 0, h =>
-  by 
+  | 0, h => by
     contradiction
-| succ n, h =>
-  by 
+  | succ n, h => by
     rw [Nat.bit0_succ_eq]
-    apply succ_lt_succ 
+    apply succ_lt_succ
     apply zero_lt_succ
 
 protected theorem bit0_lt {n m : Nat} (h : n < m) : bit0 n < bit0 m :=
@@ -545,24 +888,23 @@ protected theorem bit0_lt_bit1 {n m : Nat} (h : n ≤ m) : bit0 n < bit1 m :=
   lt_succ_of_le (Nat.add_le_addₓ h h)
 
 protected theorem bit1_lt_bit0 : ∀ {n m : Nat}, n < m → bit1 n < bit0 m
-| n, 0, h => absurd h n.not_lt_zero
-| n, succ m, h =>
-  have  : n ≤ m := le_of_lt_succ h 
-  have  : succ (n+n) ≤ succ (m+m) := succ_le_succ (Nat.add_le_addₓ this this)
-  have  : succ (n+n) ≤ succ m+m :=
-    by 
+  | n, 0, h => absurd h n.not_lt_zero
+  | n, succ m, h =>
+    have : n ≤ m := le_of_lt_succ h
+    have : succ (n+n) ≤ succ (m+m) := succ_le_succ (Nat.add_le_addₓ this this)
+    have : succ (n+n) ≤ succ m+m := by
       rw [succ_add]
-      assumption 
-  show succ (n+n) < succ (succ m+m) from lt_succ_of_le this
+      assumption
+    show succ (n+n) < succ (succ m+m) from lt_succ_of_le this
 
 protected theorem one_le_bit1 (n : ℕ) : 1 ≤ bit1 n :=
   show 1 ≤ succ (bit0 n) from succ_le_succ (bit0 n).zero_le
 
 protected theorem one_le_bit0 : ∀ n : ℕ, n ≠ 0 → 1 ≤ bit0 n
-| 0, h => absurd rfl h
-| n+1, h =>
-  suffices 1 ≤ succ (succ (bit0 n)) from Eq.symm (Nat.bit0_succ_eq n) ▸ this 
-  succ_le_succ (bit0 n).succ.zero_le
+  | 0, h => absurd rfl h
+  | n+1, h =>
+    suffices 1 ≤ succ (succ (bit0 n)) from Eq.symm (Nat.bit0_succ_eq n) ▸ this
+    succ_le_succ (bit0 n).succ.zero_le
 
 /-! successor and predecessor -/
 
@@ -578,28 +920,26 @@ theorem pred_succ (n : ℕ) : pred (succ n) = n :=
 theorem add_one_ne_zero (n : ℕ) : (n+1) ≠ 0 :=
   succ_ne_zero _
 
-theorem eq_zero_or_eq_succ_pred (n : ℕ) : n = 0 ∨ n = succ (pred n) :=
-  by 
-    cases n <;> simp 
+theorem eq_zero_or_eq_succ_pred (n : ℕ) : n = 0 ∨ n = succ (pred n) := by
+  cases n <;> simp
 
 theorem exists_eq_succ_of_ne_zero {n : ℕ} (H : n ≠ 0) : ∃ k : ℕ, n = succ k :=
   ⟨_, (eq_zero_or_eq_succ_pred _).resolve_left H⟩
 
-def discriminate {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B :=
-  by 
-    induction' h : n with  <;> [exact H1 h, exact H2 _ h]
+def discriminate {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
+  induction' h : n with <;> [exact H1 h, exact H2 _ h]
 
 theorem one_succ_zero : 1 = succ 0 :=
   rfl
 
 theorem pred_inj : ∀ {a b : Nat}, 0 < a → 0 < b → Nat.pred a = Nat.pred b → a = b
-| succ a, succ b, ha, hb, h =>
-  have  : a = b := h 
-  by 
+  | succ a, succ b, ha, hb, h =>
+    have : a = b := h
+    by
     rw [this]
-| succ a, 0, ha, hb, h => absurd hb (lt_irreflₓ _)
-| 0, succ b, ha, hb, h => absurd ha (lt_irreflₓ _)
-| 0, 0, ha, hb, h => rfl
+  | succ a, 0, ha, hb, h => absurd hb (lt_irreflₓ _)
+  | 0, succ b, ha, hb, h => absurd ha (lt_irreflₓ _)
+  | 0, 0, ha, hb, h => rfl
 
 /-! subtraction
 
@@ -608,15 +948,15 @@ Many lemmas are proven more generally in mathlib `algebra/order/sub` -/
 
 @[simp]
 protected theorem zero_sub : ∀ a : ℕ, 0 - a = 0
-| 0 => rfl
-| a+1 => congr_argₓ pred (zero_sub a)
+  | 0 => rfl
+  | a+1 => congr_argₓ pred (zero_sub a)
 
 theorem sub_lt_succ (a b : ℕ) : a - b < succ a :=
   lt_succ_of_le (a.sub_le b)
 
 protected theorem sub_le_sub_right {n m : ℕ} (h : n ≤ m) : ∀ k, n - k ≤ m - k
-| 0 => h
-| succ z => pred_le_pred (sub_le_sub_right z)
+  | 0 => h
+  | succ z => pred_le_pred (sub_le_sub_right z)
 
 @[simp]
 protected theorem sub_zero (n : ℕ) : n - 0 = n :=
@@ -629,84 +969,71 @@ theorem succ_sub_succ (n m : ℕ) : succ n - succ m = n - m :=
   succ_sub_succ_eq_sub n m
 
 protected theorem sub_self : ∀ n : ℕ, n - n = 0
-| 0 =>
-  by 
+  | 0 => by
     rw [Nat.sub_zero]
-| succ n =>
-  by 
+  | succ n => by
     rw [succ_sub_succ, sub_self n]
 
 @[ematch_lhs]
 protected theorem add_sub_add_right : ∀ n k m : ℕ, ((n+k) - m+k) = n - m
-| n, 0, m =>
-  by 
+  | n, 0, m => by
     rw [Nat.add_zero, Nat.add_zero]
-| n, succ k, m =>
-  by 
+  | n, succ k, m => by
     rw [add_succ, add_succ, succ_sub_succ, add_sub_add_right n k m]
 
 @[ematch_lhs]
-protected theorem add_sub_add_left (k n m : ℕ) : ((k+n) - k+m) = n - m :=
-  by 
-    rw [Nat.add_comm k n, Nat.add_comm k m, Nat.add_sub_add_right]
+protected theorem add_sub_add_left (k n m : ℕ) : ((k+n) - k+m) = n - m := by
+  rw [Nat.add_comm k n, Nat.add_comm k m, Nat.add_sub_add_right]
 
 @[ematch_lhs]
 protected theorem add_sub_cancel (n m : ℕ) : (n+m) - m = n :=
-  suffices ((n+m) - 0+m) = n from
-    by 
-      rwa [Nat.zero_add] at this 
-  by 
-    rw [Nat.add_sub_add_right, Nat.sub_zero]
+  suffices ((n+m) - 0+m) = n from by
+    rwa [Nat.zero_add] at this
+  by
+  rw [Nat.add_sub_add_right, Nat.sub_zero]
 
 @[ematch_lhs]
 protected theorem add_sub_cancel_left (n m : ℕ) : (n+m) - n = m :=
-  show ((n+m) - n+0) = m from
-    by 
-      rw [Nat.add_sub_add_left, Nat.sub_zero]
+  show ((n+m) - n+0) = m from by
+    rw [Nat.add_sub_add_left, Nat.sub_zero]
 
 protected theorem sub_sub : ∀ n m k : ℕ, n - m - k = n - m+k
-| n, m, 0 =>
-  by 
+  | n, m, 0 => by
     rw [Nat.add_zero, Nat.sub_zero]
-| n, m, succ k =>
-  by 
+  | n, m, succ k => by
     rw [add_succ, Nat.sub_succ, Nat.sub_succ, sub_sub n m k]
 
-protected theorem le_of_le_of_sub_le_sub_right {n m k : ℕ} (h₀ : k ≤ m) (h₁ : n - k ≤ m - k) : n ≤ m :=
-  by 
-    revert k m 
-    induction' n with n <;> intro k m h₀ h₁
+protected theorem le_of_le_of_sub_le_sub_right {n m k : ℕ} (h₀ : k ≤ m) (h₁ : n - k ≤ m - k) : n ≤ m := by
+  revert k m
+  induction' n with n <;> intro k m h₀ h₁
+  ·
+    exact m.zero_le
+  ·
+    cases' k with k
     ·
-      exact m.zero_le
+      apply h₁
+    cases' m with m
     ·
-      cases' k with k
-      ·
-        apply h₁ 
-      cases' m with m
-      ·
-        cases not_succ_le_zero _ h₀
-      ·
-        simp [succ_sub_succ] at h₁ 
-        apply succ_le_succ 
-        apply n_ih _ h₁ 
-        apply le_of_succ_le_succ h₀
+      cases not_succ_le_zero _ h₀
+    ·
+      simp [succ_sub_succ] at h₁
+      apply succ_le_succ
+      apply n_ih _ h₁
+      apply le_of_succ_le_succ h₀
 
 protected theorem sub_le_sub_right_iff (n m k : ℕ) (h : k ≤ m) : n - k ≤ m - k ↔ n ≤ m :=
   ⟨Nat.le_of_le_of_sub_le_sub_rightₓ h, fun h => Nat.sub_le_sub_rightₓ h k⟩
 
 protected theorem sub_self_add (n m : ℕ) : (n - n+m) = 0 :=
-  show ((n+0) - n+m) = 0 from
-    by 
-      rw [Nat.add_sub_add_left, Nat.zero_sub]
+  show ((n+0) - n+m) = 0 from by
+    rw [Nat.add_sub_add_left, Nat.zero_sub]
 
-protected theorem add_le_to_le_sub (x : ℕ) {y k : ℕ} (h : k ≤ y) : (x+k) ≤ y ↔ x ≤ y - k :=
-  by 
-    rw [←Nat.add_sub_cancel x k, Nat.sub_le_sub_right_iffₓ _ _ _ h, Nat.add_sub_cancel]
+protected theorem add_le_to_le_sub (x : ℕ) {y k : ℕ} (h : k ≤ y) : (x+k) ≤ y ↔ x ≤ y - k := by
+  rw [← Nat.add_sub_cancel x k, Nat.sub_le_sub_right_iffₓ _ _ _ h, Nat.add_sub_cancel]
 
-protected theorem sub_lt_of_pos_le (a b : ℕ) (h₀ : 0 < a) (h₁ : a ≤ b) : b - a < b :=
-  by 
-    apply Nat.sub_ltₓ _ h₀ 
-    apply lt_of_lt_of_leₓ h₀ h₁
+protected theorem sub_lt_of_pos_le (a b : ℕ) (h₀ : 0 < a) (h₁ : a ≤ b) : b - a < b := by
+  apply Nat.sub_ltₓ _ h₀
+  apply lt_of_lt_of_leₓ h₀ h₁
 
 protected theorem sub_one (n : ℕ) : n - 1 = pred n :=
   rfl
@@ -715,90 +1042,67 @@ theorem succ_sub_one (n : ℕ) : succ n - 1 = n :=
   rfl
 
 theorem succ_pred_eq_of_pos : ∀ {n : ℕ}, 0 < n → succ (pred n) = n
-| 0, h => absurd h (lt_irreflₓ 0)
-| succ k, h => rfl
+  | 0, h => absurd h (lt_irreflₓ 0)
+  | succ k, h => rfl
 
 protected theorem sub_eq_zero_of_le {n m : ℕ} (h : n ≤ m) : n - m = 0 :=
-  Exists.elim (Nat.Le.dest h)
-    fun k =>
-      fun hk : (n+k) = m =>
-        by 
-          rw [←hk, Nat.sub_self_add]
+  Exists.elim (Nat.Le.dest h) fun k => fun hk : (n+k) = m => by
+    rw [← hk, Nat.sub_self_add]
 
 protected theorem le_of_sub_eq_zero : ∀ {n m : ℕ}, n - m = 0 → n ≤ m
-| n, 0, H =>
-  by 
-    rw [Nat.sub_zero] at H 
+  | n, 0, H => by
+    rw [Nat.sub_zero] at H
     simp [H]
-| 0, m+1, H => (m+1).zero_le
-| n+1, m+1, H =>
-  Nat.add_le_add_rightₓ
-    (le_of_sub_eq_zero
-      (by 
-        simp [Nat.add_sub_add_right] at H 
-        exact H))
-    _
+  | 0, m+1, H => (m+1).zero_le
+  | n+1, m+1, H =>
+    Nat.add_le_add_rightₓ
+      (le_of_sub_eq_zero
+        (by
+          simp [Nat.add_sub_add_right] at H
+          exact H))
+      _
 
 protected theorem sub_eq_zero_iff_le {n m : ℕ} : n - m = 0 ↔ n ≤ m :=
   ⟨Nat.le_of_sub_eq_zeroₓ, Nat.sub_eq_zero_of_leₓ⟩
 
 protected theorem add_sub_of_le {n m : ℕ} (h : n ≤ m) : (n+m - n) = m :=
-  Exists.elim (Nat.Le.dest h)
-    fun k =>
-      fun hk : (n+k) = m =>
-        by 
-          rw [←hk, Nat.add_sub_cancel_left]
+  Exists.elim (Nat.Le.dest h) fun k => fun hk : (n+k) = m => by
+    rw [← hk, Nat.add_sub_cancel_left]
 
-protected theorem sub_add_cancel {n m : ℕ} (h : m ≤ n) : ((n - m)+m) = n :=
-  by 
-    rw [Nat.add_comm, Nat.add_sub_of_leₓ h]
+protected theorem sub_add_cancel {n m : ℕ} (h : m ≤ n) : ((n - m)+m) = n := by
+  rw [Nat.add_comm, Nat.add_sub_of_leₓ h]
 
 protected theorem add_sub_assoc {m k : ℕ} (h : k ≤ m) (n : ℕ) : (n+m) - k = n+m - k :=
-  Exists.elim (Nat.Le.dest h)
-    fun l =>
-      fun hl : (k+l) = m =>
-        by 
-          rw [←hl, Nat.add_sub_cancel_left, Nat.add_comm k, ←Nat.add_assoc, Nat.add_sub_cancel]
+  Exists.elim (Nat.Le.dest h) fun l => fun hl : (k+l) = m => by
+    rw [← hl, Nat.add_sub_cancel_left, Nat.add_comm k, ← Nat.add_assoc, Nat.add_sub_cancel]
 
 protected theorem sub_eq_iff_eq_add {a b c : ℕ} (ab : b ≤ a) : a - b = c ↔ a = c+b :=
-  ⟨fun c_eq =>
-      by 
-        rw [c_eq.symm, Nat.sub_add_cancelₓ ab],
-    fun a_eq =>
-      by 
-        rw [a_eq, Nat.add_sub_cancel]⟩
+  ⟨fun c_eq => by
+    rw [c_eq.symm, Nat.sub_add_cancelₓ ab], fun a_eq => by
+    rw [a_eq, Nat.add_sub_cancel]⟩
 
 protected theorem lt_of_sub_eq_succ {m n l : ℕ} (H : m - n = Nat.succ l) : n < m :=
-  not_leₓ.1
-    fun H' : n ≥ m =>
-      by 
-        simp [Nat.sub_eq_zero_of_leₓ H'] at H 
-        contradiction
+  not_leₓ.1 fun H' : n ≥ m => by
+    simp [Nat.sub_eq_zero_of_leₓ H'] at H
+    contradiction
 
-protected theorem sub_le_sub_left {n m : ℕ} k (h : n ≤ m) : k - m ≤ k - n :=
-  by 
-    induction h <;> [rfl, exact le_transₓ (pred_le _) h_ih]
+protected theorem sub_le_sub_left {n m : ℕ} k (h : n ≤ m) : k - m ≤ k - n := by
+  induction h <;> [rfl, exact le_transₓ (pred_le _) h_ih]
 
-theorem succ_sub_sub_succ (n m k : ℕ) : succ n - m - succ k = n - m - k :=
-  by 
-    rw [Nat.sub_sub, Nat.sub_sub, add_succ, succ_sub_succ]
+theorem succ_sub_sub_succ (n m k : ℕ) : succ n - m - succ k = n - m - k := by
+  rw [Nat.sub_sub, Nat.sub_sub, add_succ, succ_sub_succ]
 
-protected theorem sub.right_comm (m n k : ℕ) : m - n - k = m - k - n :=
-  by 
-    rw [Nat.sub_sub, Nat.sub_sub, Nat.add_comm]
+protected theorem sub.right_comm (m n k : ℕ) : m - n - k = m - k - n := by
+  rw [Nat.sub_sub, Nat.sub_sub, Nat.add_comm]
 
 theorem succ_sub {m n : ℕ} (h : n ≤ m) : succ m - n = succ (m - n) :=
-  Exists.elim (Nat.Le.dest h)
-    fun k =>
-      fun hk : (n+k) = m =>
-        by 
-          rw [←hk, Nat.add_sub_cancel_left, ←add_succ, Nat.add_sub_cancel_left]
+  Exists.elim (Nat.Le.dest h) fun k => fun hk : (n+k) = m => by
+    rw [← hk, Nat.add_sub_cancel_left, ← add_succ, Nat.add_sub_cancel_left]
 
 protected theorem sub_pos_of_lt {m n : ℕ} (h : m < n) : 0 < n - m :=
-  have  : (0+m) < (n - m)+m :=
-    by 
-      rw [Nat.zero_add, Nat.sub_add_cancelₓ (le_of_ltₓ h)]
-      exact h 
+  have : (0+m) < (n - m)+m := by
+    rw [Nat.zero_add, Nat.sub_add_cancelₓ (le_of_ltₓ h)]
+    exact h
   Nat.lt_of_add_lt_add_rightₓ this
 
 protected theorem sub_sub_self {n m : ℕ} (h : m ≤ n) : n - (n - m) = m :=
@@ -806,50 +1110,41 @@ protected theorem sub_sub_self {n m : ℕ} (h : m ≤ n) : n - (n - m) = m :=
 
 protected theorem sub_add_comm {n m k : ℕ} (h : k ≤ n) : (n+m) - k = (n - k)+m :=
   (Nat.sub_eq_iff_eq_addₓ (Nat.le_transₓ h (Nat.le_add_rightₓ _ _))).2
-    (by 
+    (by
       rwa [Nat.add_right_comm, Nat.sub_add_cancelₓ])
 
-theorem sub_one_sub_lt {n i} (h : i < n) : n - 1 - i < n :=
-  by 
-    rw [Nat.sub_sub]
-    apply Nat.sub_ltₓ 
-    apply lt_of_lt_of_leₓ (Nat.zero_lt_succₓ _) h 
-    rw [Nat.add_comm]
-    apply Nat.zero_lt_succₓ
+theorem sub_one_sub_lt {n i} (h : i < n) : n - 1 - i < n := by
+  rw [Nat.sub_sub]
+  apply Nat.sub_ltₓ
+  apply lt_of_lt_of_leₓ (Nat.zero_lt_succₓ _) h
+  rw [Nat.add_comm]
+  apply Nat.zero_lt_succₓ
 
 theorem mul_pred_left : ∀ n m : ℕ, (pred n*m) = (n*m) - m
-| 0, m =>
-  by 
+  | 0, m => by
     simp [Nat.zero_sub, pred_zero, Nat.zero_mul]
-| succ n, m =>
-  by 
+  | succ n, m => by
     rw [pred_succ, succ_mul, Nat.add_sub_cancel]
 
-theorem mul_pred_right (n m : ℕ) : (n*pred m) = (n*m) - n :=
-  by 
-    rw [Nat.mul_comm, mul_pred_left, Nat.mul_comm]
+theorem mul_pred_right (n m : ℕ) : (n*pred m) = (n*m) - n := by
+  rw [Nat.mul_comm, mul_pred_left, Nat.mul_comm]
 
 protected theorem mul_sub_right_distrib : ∀ n m k : ℕ, ((n - m)*k) = (n*k) - m*k
-| n, 0, k =>
-  by 
+  | n, 0, k => by
     simp [Nat.sub_zero, Nat.zero_mul]
-| n, succ m, k =>
-  by 
+  | n, succ m, k => by
     rw [Nat.sub_succ, mul_pred_left, mul_sub_right_distrib, succ_mul, Nat.sub_sub]
 
-protected theorem mul_sub_left_distrib (n m k : ℕ) : (n*m - k) = (n*m) - n*k :=
-  by 
-    rw [Nat.mul_comm, Nat.mul_sub_right_distrib, Nat.mul_comm m n, Nat.mul_comm n k]
+protected theorem mul_sub_left_distrib (n m k : ℕ) : (n*m - k) = (n*m) - n*k := by
+  rw [Nat.mul_comm, Nat.mul_sub_right_distrib, Nat.mul_comm m n, Nat.mul_comm n k]
 
-protected theorem mul_self_sub_mul_self_eq (a b : Nat) : ((a*a) - b*b) = (a+b)*a - b :=
-  by 
-    rw [Nat.mul_sub_left_distrib, Nat.right_distrib, Nat.right_distrib, Nat.mul_comm b a, Nat.add_comm (a*a) (a*b),
-      Nat.add_sub_add_left]
+protected theorem mul_self_sub_mul_self_eq (a b : Nat) : ((a*a) - b*b) = (a+b)*a - b := by
+  rw [Nat.mul_sub_left_distrib, Nat.right_distrib, Nat.right_distrib, Nat.mul_comm b a, Nat.add_comm (a*a) (a*b),
+    Nat.add_sub_add_left]
 
-theorem succ_mul_succ_eq (a b : Nat) : (succ a*succ b) = (((a*b)+a)+b)+1 :=
-  by 
-    rw [←add_one, ←add_one]
-    simp [Nat.right_distrib, Nat.left_distrib, Nat.add_left_comm, Nat.mul_one, Nat.one_mul, Nat.add_assoc]
+theorem succ_mul_succ_eq (a b : Nat) : (succ a*succ b) = (((a*b)+a)+b)+1 := by
+  rw [← add_one, ← add_one]
+  simp [Nat.right_distrib, Nat.left_distrib, Nat.add_left_comm, Nat.mul_one, Nat.one_mul, Nat.add_assoc]
 
 /-! min -/
 
@@ -861,577 +1156,505 @@ protected theorem min_zero (a : ℕ) : min a 0 = 0 :=
   min_eq_rightₓ a.zero_le
 
 theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
-  have f : x ≤ y → min (succ x) (succ y) = succ (min x y) :=
-    fun p =>
-      calc min (succ x) (succ y) = succ x := if_pos (succ_le_succ p)
-        _ = succ (min x y) := congr_argₓ succ (Eq.symm (if_pos p))
-        
-  have g : ¬x ≤ y → min (succ x) (succ y) = succ (min x y) :=
-    fun p =>
-      calc min (succ x) (succ y) = succ y := if_neg fun eq => p (pred_le_pred Eq)
-        _ = succ (min x y) := congr_argₓ succ (Eq.symm (if_neg p))
-        
+  have f : x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
+    calc min (succ x) (succ y) = succ x := if_pos (succ_le_succ p)
+      _ = succ (min x y) := congr_argₓ succ (Eq.symm (if_pos p))
+      
+  have g : ¬x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
+    calc min (succ x) (succ y) = succ y := if_neg fun eq => p (pred_le_pred Eq)
+      _ = succ (min x y) := congr_argₓ succ (Eq.symm (if_neg p))
+      
   Decidable.byCases f g
 
 theorem sub_eq_sub_min (n m : ℕ) : n - m = n - min n m :=
-  if h : n ≥ m then
-    by 
-      rw [min_eq_rightₓ h]
-  else
-    by 
-      rw [Nat.sub_eq_zero_of_leₓ (le_of_not_geₓ h), min_eq_leftₓ (le_of_not_geₓ h), Nat.sub_self]
+  if h : n ≥ m then by
+    rw [min_eq_rightₓ h]
+  else by
+    rw [Nat.sub_eq_zero_of_leₓ (le_of_not_geₓ h), min_eq_leftₓ (le_of_not_geₓ h), Nat.sub_self]
 
 @[simp]
-protected theorem sub_add_min_cancel (n m : ℕ) : ((n - m)+min n m) = n :=
-  by 
-    rw [sub_eq_sub_min, Nat.sub_add_cancelₓ (min_le_leftₓ n m)]
+protected theorem sub_add_min_cancel (n m : ℕ) : ((n - m)+min n m) = n := by
+  rw [sub_eq_sub_min, Nat.sub_add_cancelₓ (min_le_leftₓ n m)]
 
 /-! induction principles -/
 
 
 def two_step_induction {P : ℕ → Sort u} (H1 : P 0) (H2 : P 1)
-  (H3 : ∀ n : ℕ IH1 : P n IH2 : P (succ n), P (succ (succ n))) : ∀ a : ℕ, P a
-| 0 => H1
-| 1 => H2
-| succ (succ n) => H3 _ (two_step_induction _) (two_step_induction _)
+    (H3 : ∀ n : ℕ IH1 : P n IH2 : P (succ n), P (succ (succ n))) : ∀ a : ℕ, P a
+  | 0 => H1
+  | 1 => H2
+  | succ (succ n) => H3 _ (two_step_induction _) (two_step_induction _)
 
 def sub_induction {P : ℕ → ℕ → Sort u} (H1 : ∀ m, P 0 m) (H2 : ∀ n, P (succ n) 0)
-  (H3 : ∀ n m, P n m → P (succ n) (succ m)) : ∀ n m : ℕ, P n m
-| 0, m => H1 _
-| succ n, 0 => H2 _
-| succ n, succ m => H3 _ _ (sub_induction n m)
+    (H3 : ∀ n m, P n m → P (succ n) (succ m)) : ∀ n m : ℕ, P n m
+  | 0, m => H1 _
+  | succ n, 0 => H2 _
+  | succ n, succ m => H3 _ _ (sub_induction n m)
 
 protected def strong_rec_on {p : Nat → Sort u} (n : Nat) (h : ∀ n, (∀ m, m < n → p m) → p n) : p n :=
   suffices ∀ n m, m < n → p m from this (succ n) n (lt_succ_self _)
-  by 
-    intro n 
-    induction' n with n ih
+  by
+  intro n
+  induction' n with n ih
+  ·
+    intro m h₁
+    exact absurd h₁ m.not_lt_zero
+  ·
+    intro m h₁
+    apply Or.byCases (Decidable.lt_or_eq_of_leₓ (le_of_lt_succ h₁))
     ·
-      intro m h₁ 
-      exact absurd h₁ m.not_lt_zero
+      intros
+      apply ih
+      assumption
     ·
-      intro m h₁ 
-      apply Or.byCases (Decidable.lt_or_eq_of_leₓ (le_of_lt_succ h₁))
-      ·
-        intros 
-        apply ih 
-        assumption
-      ·
-        intros 
-        subst m 
-        apply h _ ih
+      intros
+      subst m
+      apply h _ ih
 
 protected theorem strong_induction_on {p : Nat → Prop} (n : Nat) (h : ∀ n, (∀ m, m < n → p m) → p n) : p n :=
   Nat.strongRecOn n h
 
 protected theorem case_strong_induction_on {p : Nat → Prop} (a : Nat) (hz : p 0)
-  (hi : ∀ n, (∀ m, m ≤ n → p m) → p (succ n)) : p a :=
-  Nat.strong_induction_onₓ a$
-    fun n =>
-      match n with 
-      | 0 => fun _ => hz
-      | n+1 => fun h₁ => hi n fun m h₂ => h₁ _ (lt_succ_of_le h₂)
+    (hi : ∀ n, (∀ m, m ≤ n → p m) → p (succ n)) : p a :=
+  Nat.strong_induction_onₓ a $ fun n =>
+    match n with
+    | 0 => fun _ => hz
+    | n+1 => fun h₁ => hi n fun m h₂ => h₁ _ (lt_succ_of_le h₂)
 
 /-! mod -/
 
 
-private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat.modCore y f1 x = Nat.modCore y f2 x :=
-  by 
-    cases y
-    ·
-      cases f1 <;> cases f2 <;> rfl 
-    induction' f1 with f1 ih generalizing x f2
-    ·
-      cases h1 
-      cases f2 <;> rfl 
-    cases x
-    ·
-      cases f1 <;> cases f2 <;> rfl 
-    cases f2
-    ·
-      cases h2 
-    refine' if_congr Iff.rfl _ rfl 
-    simp only [succ_sub_succ]
-    exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
+private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat.modCore y f1 x = Nat.modCore y f2 x := by
+  cases y
+  ·
+    cases f1 <;> cases f2 <;> rfl
+  induction' f1 with f1 ih generalizing x f2
+  ·
+    cases h1
+    cases f2 <;> rfl
+  cases x
+  ·
+    cases f1 <;> cases f2 <;> rfl
+  cases f2
+  ·
+    cases h2
+  refine' if_congr Iff.rfl _ rfl
+  simp only [succ_sub_succ]
+  exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
 
-theorem mod_def (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x :=
-  by 
-    cases x
-    ·
-      cases y <;> rfl 
-    cases y
-    ·
-      rfl 
-    refine' if_congr Iff.rfl (mod_core_congr _ _) rfl <;> simp [Nat.sub_leₓ]
+theorem mod_def (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x := by
+  cases x
+  ·
+    cases y <;> rfl
+  cases y
+  ·
+    rfl
+  refine' if_congr Iff.rfl (mod_core_congr _ _) rfl <;> simp [Nat.sub_leₓ]
 
 @[simp]
-theorem mod_zero (a : Nat) : a % 0 = a :=
-  by 
-    rw [mod_def]
-    have h : ¬(0 < 0 ∧ 0 ≤ a)
-    simp [lt_irreflₓ]
-    simp [if_neg, h]
+theorem mod_zero (a : Nat) : a % 0 = a := by
+  rw [mod_def]
+  have h : ¬(0 < 0 ∧ 0 ≤ a)
+  simp [lt_irreflₓ]
+  simp [if_neg, h]
 
-theorem mod_eq_of_lt {a b : Nat} (h : a < b) : a % b = a :=
-  by 
-    rw [mod_def]
-    have h' : ¬(0 < b ∧ b ≤ a)
-    simp [not_le_of_gtₓ h]
-    simp [if_neg, h']
+theorem mod_eq_of_lt {a b : Nat} (h : a < b) : a % b = a := by
+  rw [mod_def]
+  have h' : ¬(0 < b ∧ b ≤ a)
+  simp [not_le_of_gtₓ h]
+  simp [if_neg, h']
 
 @[simp]
-theorem zero_mod (b : Nat) : 0 % b = 0 :=
-  by 
-    rw [mod_def]
-    have h : ¬(0 < b ∧ b ≤ 0)
-    ·
-      intro hn 
-      cases' hn with l r 
-      exact absurd (lt_of_lt_of_leₓ l r) (lt_irreflₓ 0)
-    simp [if_neg, h]
+theorem zero_mod (b : Nat) : 0 % b = 0 := by
+  rw [mod_def]
+  have h : ¬(0 < b ∧ b ≤ 0) := by
+    intro hn
+    cases' hn with l r
+    exact absurd (lt_of_lt_of_leₓ l r) (lt_irreflₓ 0)
+  simp [if_neg, h]
 
 theorem mod_eq_sub_mod {a b : Nat} (h : b ≤ a) : a % b = (a - b) % b :=
   Or.elim b.eq_zero_or_pos
-    (fun b0 =>
-      by 
-        rw [b0, Nat.sub_zero])
-    fun h₂ =>
-      by 
-        rw [mod_def, if_pos (And.intro h₂ h)]
+    (fun b0 => by
+      rw [b0, Nat.sub_zero])
+    fun h₂ => by
+    rw [mod_def, if_pos (And.intro h₂ h)]
 
-theorem mod_lt (x : Nat) {y : Nat} (h : 0 < y) : x % y < y :=
-  by 
-    induction' x using Nat.case_strong_induction_onₓ with x ih
+theorem mod_lt (x : Nat) {y : Nat} (h : 0 < y) : x % y < y := by
+  induction' x using Nat.case_strong_induction_onₓ with x ih
+  ·
+    rw [zero_mod]
+    assumption
+  ·
+    by_cases' h₁ : succ x < y
     ·
-      rw [zero_mod]
-      assumption
+      rwa [mod_eq_of_lt h₁]
     ·
-      byCases' h₁ : succ x < y
-      ·
-        rwa [mod_eq_of_lt h₁]
-      ·
-        have h₁ : succ x % y = (succ x - y) % y := mod_eq_sub_mod (not_ltₓ.1 h₁)
-        have  : succ x - y ≤ x := le_of_lt_succ (Nat.sub_ltₓ (succ_pos x) h)
-        have h₂ : (succ x - y) % y < y := ih _ this 
-        rwa [←h₁] at h₂
+      have h₁ : succ x % y = (succ x - y) % y := mod_eq_sub_mod (not_ltₓ.1 h₁)
+      have : succ x - y ≤ x := le_of_lt_succ (Nat.sub_ltₓ (succ_pos x) h)
+      have h₂ : (succ x - y) % y < y := ih _ this
+      rwa [← h₁] at h₂
 
 @[simp]
-theorem mod_self (n : Nat) : n % n = 0 :=
-  by 
-    rw [mod_eq_sub_mod (le_reflₓ _), Nat.sub_self, zero_mod]
+theorem mod_self (n : Nat) : n % n = 0 := by
+  rw [mod_eq_sub_mod (le_reflₓ _), Nat.sub_self, zero_mod]
 
 @[simp]
 theorem mod_one (n : ℕ) : n % 1 = 0 :=
-  have  : n % 1 < 1 := (mod_lt n) (succ_pos 0)
+  have : n % 1 < 1 := (mod_lt n) (succ_pos 0)
   Nat.eq_zero_of_le_zeroₓ (le_of_lt_succ this)
 
 theorem mod_two_eq_zero_or_one (n : ℕ) : n % 2 = 0 ∨ n % 2 = 1 :=
   match n % 2,
     @Nat.mod_ltₓ n 2
-      (by 
+      (by
         decide) with
-    
   | 0, _ => Or.inl rfl
   | 1, _ => Or.inr rfl
   | k+2, h =>
     absurd h
-      (by 
+      (by
         decide)
 
 theorem mod_le (x y : ℕ) : x % y ≤ x :=
   Or.elim (lt_or_leₓ x y)
-    (fun xlty =>
-      by 
-        rw [mod_eq_of_lt xlty] <;> rfl)
+    (fun xlty => by
+      rw [mod_eq_of_lt xlty] <;> rfl)
     fun ylex =>
-      Or.elim y.eq_zero_or_pos
-        (fun y0 =>
-          by 
-            rw [y0, mod_zero] <;> rfl)
-        fun ypos => le_transₓ (le_of_ltₓ (mod_lt _ ypos)) ylex
+    Or.elim y.eq_zero_or_pos
+      (fun y0 => by
+        rw [y0, mod_zero] <;> rfl)
+      fun ypos => le_transₓ (le_of_ltₓ (mod_lt _ ypos)) ylex
 
 @[simp]
-theorem add_mod_right (x z : ℕ) : (x+z) % z = x % z :=
-  by 
-    rw [mod_eq_sub_mod (Nat.le_add_leftₓ _ _), Nat.add_sub_cancel]
+theorem add_mod_right (x z : ℕ) : (x+z) % z = x % z := by
+  rw [mod_eq_sub_mod (Nat.le_add_leftₓ _ _), Nat.add_sub_cancel]
 
 @[simp]
-theorem add_mod_left (x z : ℕ) : (x+z) % x = z % x :=
-  by 
-    rw [Nat.add_comm, add_mod_right]
+theorem add_mod_left (x z : ℕ) : (x+z) % x = z % x := by
+  rw [Nat.add_comm, add_mod_right]
 
 @[simp]
-theorem add_mul_mod_self_left (x y z : ℕ) : (x+y*z) % y = x % y :=
-  by 
-    induction' z with z ih 
-    rw [Nat.mul_zero, Nat.add_zero]
-    rw [mul_succ, ←Nat.add_assoc, add_mod_right, ih]
+theorem add_mul_mod_self_left (x y z : ℕ) : (x+y*z) % y = x % y := by
+  induction' z with z ih
+  rw [Nat.mul_zero, Nat.add_zero]
+  rw [mul_succ, ← Nat.add_assoc, add_mod_right, ih]
 
 @[simp]
-theorem add_mul_mod_self_right (x y z : ℕ) : (x+y*z) % z = x % z :=
-  by 
-    rw [Nat.mul_comm, add_mul_mod_self_left]
+theorem add_mul_mod_self_right (x y z : ℕ) : (x+y*z) % z = x % z := by
+  rw [Nat.mul_comm, add_mul_mod_self_left]
 
 @[simp]
-theorem mul_mod_right (m n : ℕ) : (m*n) % m = 0 :=
-  by 
-    rw [←Nat.zero_add (m*n), add_mul_mod_self_left, zero_mod]
+theorem mul_mod_right (m n : ℕ) : (m*n) % m = 0 := by
+  rw [← Nat.zero_add (m*n), add_mul_mod_self_left, zero_mod]
 
 @[simp]
-theorem mul_mod_left (m n : ℕ) : (m*n) % n = 0 :=
-  by 
-    rw [Nat.mul_comm, mul_mod_right]
+theorem mul_mod_left (m n : ℕ) : (m*n) % n = 0 := by
+  rw [Nat.mul_comm, mul_mod_right]
 
 theorem mul_mod_mul_left (z x y : ℕ) : ((z*x) % z*y) = z*x % y :=
-  if y0 : y = 0 then
-    by 
-      rw [y0, Nat.mul_zero, mod_zero, mod_zero]
+  if y0 : y = 0 then by
+    rw [y0, Nat.mul_zero, mod_zero, mod_zero]
   else
-    if z0 : z = 0 then
-      by 
-        rw [z0, Nat.zero_mul, Nat.zero_mul, Nat.zero_mul, mod_zero]
+    if z0 : z = 0 then by
+      rw [z0, Nat.zero_mul, Nat.zero_mul, Nat.zero_mul, mod_zero]
     else
-      x.strong_induction_on$
-        fun n IH =>
-          have y0 : y > 0 := Nat.pos_of_ne_zeroₓ y0 
-          have z0 : z > 0 := Nat.pos_of_ne_zeroₓ z0 
-          Or.elim (le_or_ltₓ y n)
-            (fun yn =>
-              by 
-                rw [mod_eq_sub_mod yn, mod_eq_sub_mod (Nat.mul_le_mul_leftₓ z yn), ←Nat.mul_sub_left_distrib] <;>
-                  exact IH _ (Nat.sub_ltₓ (lt_of_lt_of_leₓ y0 yn) y0))
-            fun yn =>
-              by 
-                rw [mod_eq_of_lt yn, mod_eq_of_lt (Nat.mul_lt_mul_of_pos_leftₓ yn z0)]
+      x.strong_induction_on $ fun n IH =>
+        have y0 : y > 0 := Nat.pos_of_ne_zeroₓ y0
+        have z0 : z > 0 := Nat.pos_of_ne_zeroₓ z0
+        Or.elim (le_or_ltₓ y n)
+          (fun yn => by
+            rw [mod_eq_sub_mod yn, mod_eq_sub_mod (Nat.mul_le_mul_leftₓ z yn), ← Nat.mul_sub_left_distrib] <;>
+              exact IH _ (Nat.sub_ltₓ (lt_of_lt_of_leₓ y0 yn) y0))
+          fun yn => by
+          rw [mod_eq_of_lt yn, mod_eq_of_lt (Nat.mul_lt_mul_of_pos_leftₓ yn z0)]
 
-theorem mul_mod_mul_right (z x y : ℕ) : ((x*z) % y*z) = (x % y)*z :=
-  by 
-    rw [Nat.mul_comm x z, Nat.mul_comm y z, Nat.mul_comm (x % y) z] <;> apply mul_mod_mul_left
+theorem mul_mod_mul_right (z x y : ℕ) : ((x*z) % y*z) = (x % y)*z := by
+  rw [Nat.mul_comm x z, Nat.mul_comm y z, Nat.mul_comm (x % y) z] <;> apply mul_mod_mul_left
 
 -- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:367:22: warning: unsupported simp config option: iota_eqn
 -- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:367:22: warning: unsupported simp config option: iota_eqn
-theorem cond_to_bool_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] : cond (@to_bool (x % 2 = 1) d) 1 0 = x % 2 :=
-  by 
-    byCases' h : x % 2 = 1
-    ·
-      simp 
-    ·
-      cases mod_two_eq_zero_or_one x <;> simp [Nat.zero_ne_one]
+theorem cond_to_bool_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] : cond (@to_bool (x % 2 = 1) d) 1 0 = x % 2 := by
+  by_cases' h : x % 2 = 1
+  ·
+    simp
+  ·
+    cases mod_two_eq_zero_or_one x <;> simp [Nat.zero_ne_one]
 
-theorem sub_mul_mod (x k n : ℕ) (h₁ : (n*k) ≤ x) : (x - n*k) % n = x % n :=
-  by 
-    induction' k with k
-    ·
-      rw [Nat.mul_zero, Nat.sub_zero]
-    ·
-      have h₂ : (n*k) ≤ x
-      ·
-        rw [mul_succ] at h₁ 
-        apply Nat.le_transₓ _ h₁ 
-        apply Nat.le_add_rightₓ _ n 
-      have h₄ : (x - n*k) ≥ n
-      ·
-        apply @Nat.le_of_add_le_add_rightₓ (n*k)
-        rw [Nat.sub_add_cancelₓ h₂]
-        simp [mul_succ, Nat.add_comm] at h₁ 
-        simp [h₁]
-      rw [mul_succ, ←Nat.sub_sub, ←mod_eq_sub_mod h₄, k_ih h₂]
+theorem sub_mul_mod (x k n : ℕ) (h₁ : (n*k) ≤ x) : (x - n*k) % n = x % n := by
+  induction' k with k
+  ·
+    rw [Nat.mul_zero, Nat.sub_zero]
+  ·
+    have h₂ : (n*k) ≤ x := by
+      rw [mul_succ] at h₁
+      apply Nat.le_transₓ _ h₁
+      apply Nat.le_add_rightₓ _ n
+    have h₄ : (x - n*k) ≥ n := by
+      apply @Nat.le_of_add_le_add_rightₓ (n*k)
+      rw [Nat.sub_add_cancelₓ h₂]
+      simp [mul_succ, Nat.add_comm] at h₁
+      simp [h₁]
+    rw [mul_succ, ← Nat.sub_sub, ← mod_eq_sub_mod h₄, k_ih h₂]
 
 /-! div -/
 
 
-private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat.divCore y f1 x = Nat.divCore y f2 x :=
-  by 
-    cases y
-    ·
-      cases f1 <;> cases f2 <;> rfl 
-    induction' f1 with f1 ih generalizing x f2
-    ·
-      cases h1 
-      cases f2 <;> rfl 
-    cases x
-    ·
-      cases f1 <;> cases f2 <;> rfl 
-    cases f2
-    ·
-      cases h2 
-    refine' if_congr Iff.rfl _ rfl 
-    simp only [succ_sub_succ]
-    refine' congr_argₓ (·+1) _ 
-    exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
+private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat.divCore y f1 x = Nat.divCore y f2 x := by
+  cases y
+  ·
+    cases f1 <;> cases f2 <;> rfl
+  induction' f1 with f1 ih generalizing x f2
+  ·
+    cases h1
+    cases f2 <;> rfl
+  cases x
+  ·
+    cases f1 <;> cases f2 <;> rfl
+  cases f2
+  ·
+    cases h2
+  refine' if_congr Iff.rfl _ rfl
+  simp only [succ_sub_succ]
+  refine' congr_argₓ (·+1) _
+  exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
 
-theorem div_def (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then ((x - y) / y)+1 else 0 :=
-  by 
-    cases x
-    ·
-      cases y <;> rfl 
-    cases y
-    ·
-      rfl 
-    refine' if_congr Iff.rfl (congr_argₓ (·+1) _) rfl 
-    refine' div_core_congr _ _ <;> simp [Nat.sub_leₓ]
+theorem div_def (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then ((x - y) / y)+1 else 0 := by
+  cases x
+  ·
+    cases y <;> rfl
+  cases y
+  ·
+    rfl
+  refine' if_congr Iff.rfl (congr_argₓ (·+1) _) rfl
+  refine' div_core_congr _ _ <;> simp [Nat.sub_leₓ]
 
-theorem mod_add_div (m k : ℕ) : ((m % k)+k*m / k) = m :=
-  by 
-    apply Nat.strong_induction_onₓ m 
-    clear m 
-    intro m IH 
-    cases' Decidable.em (0 < k ∧ k ≤ m) with h h'
-    ·
-      have h' : m - k < m
-      ·
-        apply Nat.sub_ltₓ _ h.left 
-        apply lt_of_lt_of_leₓ h.left h.right 
-      rw [div_def, mod_def, if_pos h, if_pos h]
-      simp [Nat.left_distrib, IH _ h', Nat.add_comm, Nat.add_left_comm]
-      rw [Nat.add_comm, ←Nat.add_sub_assocₓ h.right, Nat.mul_one, Nat.add_sub_cancel_left]
-    ·
-      rw [div_def, mod_def, if_neg h', if_neg h', Nat.mul_zero, Nat.add_zero]
+theorem mod_add_div (m k : ℕ) : ((m % k)+k*m / k) = m := by
+  apply Nat.strong_induction_onₓ m
+  clear m
+  intro m IH
+  cases' Decidable.em (0 < k ∧ k ≤ m) with h h'
+  ·
+    have h' : m - k < m := by
+      apply Nat.sub_ltₓ _ h.left
+      apply lt_of_lt_of_leₓ h.left h.right
+    rw [div_def, mod_def, if_pos h, if_pos h]
+    simp [Nat.left_distrib, IH _ h', Nat.add_comm, Nat.add_left_comm]
+    rw [Nat.add_comm, ← Nat.add_sub_assocₓ h.right, Nat.mul_one, Nat.add_sub_cancel_left]
+  ·
+    rw [div_def, mod_def, if_neg h', if_neg h', Nat.mul_zero, Nat.add_zero]
 
 @[simp]
 protected theorem div_one (n : ℕ) : n / 1 = n :=
-  have  : ((n % 1)+1*n / 1) = n := mod_add_div _ _ 
-  by 
-    rwa [mod_one, Nat.zero_add, Nat.one_mul] at this
+  have : ((n % 1)+1*n / 1) = n := mod_add_div _ _
+  by
+  rwa [mod_one, Nat.zero_add, Nat.one_mul] at this
 
 @[simp]
-protected theorem div_zero (n : ℕ) : n / 0 = 0 :=
-  by 
-    rw [div_def]
-    simp [lt_irreflₓ]
+protected theorem div_zero (n : ℕ) : n / 0 = 0 := by
+  rw [div_def]
+  simp [lt_irreflₓ]
 
 @[simp]
 protected theorem zero_div (b : ℕ) : 0 / b = 0 :=
-  Eq.trans (div_def 0 b)$ if_neg (And.ndrec not_le_of_gtₓ)
+  Eq.trans (div_def 0 b) $ if_neg (And.ndrec not_le_of_gtₓ)
 
 protected theorem div_le_of_le_mul {m n : ℕ} : ∀ {k}, (m ≤ k*n) → m / k ≤ n
-| 0, h =>
-  by 
+  | 0, h => by
     simp [Nat.div_zeroₓ, n.zero_le]
-| succ k, h =>
-  suffices (succ k*m / succ k) ≤ succ k*n from Nat.le_of_mul_le_mul_leftₓ this (zero_lt_succ _)
-  calc (succ k*m / succ k) ≤ (m % succ k)+succ k*m / succ k := Nat.le_add_leftₓ _ _ 
-    _ = m :=
-    by 
+  | succ k, h =>
+    suffices (succ k*m / succ k) ≤ succ k*n from Nat.le_of_mul_le_mul_leftₓ this (zero_lt_succ _)
+    calc (succ k*m / succ k) ≤ (m % succ k)+succ k*m / succ k := Nat.le_add_leftₓ _ _
+      _ = m := by
       rw [mod_add_div]
-    _ ≤ succ k*n := h
-    
+      _ ≤ succ k*n := h
+      
 
 protected theorem div_le_self : ∀ m n : ℕ, m / n ≤ m
-| m, 0 =>
-  by 
+  | m, 0 => by
     simp [Nat.div_zeroₓ, m.zero_le]
-| m, succ n =>
-  have  : m ≤ succ n*m :=
-    calc m = 1*m :=
-      by 
+  | m, succ n =>
+    have : m ≤ succ n*m :=
+      calc m = 1*m := by
         rw [Nat.one_mul]
-      _ ≤ succ n*m := m.mul_le_mul_right (succ_le_succ n.zero_le)
-      
-  Nat.div_le_of_le_mulₓ this
+        _ ≤ succ n*m := m.mul_le_mul_right (succ_le_succ n.zero_le)
+        
+    Nat.div_le_of_le_mulₓ this
 
-theorem div_eq_sub_div {a b : Nat} (h₁ : 0 < b) (h₂ : b ≤ a) : a / b = ((a - b) / b)+1 :=
-  by 
-    rw [div_def a, if_pos]
-    constructor <;> assumption
+theorem div_eq_sub_div {a b : Nat} (h₁ : 0 < b) (h₂ : b ≤ a) : a / b = ((a - b) / b)+1 := by
+  rw [div_def a, if_pos]
+  constructor <;> assumption
 
-theorem div_eq_of_lt {a b : ℕ} (h₀ : a < b) : a / b = 0 :=
-  by 
-    rw [div_def a, if_neg]
-    intro h₁ 
-    apply not_le_of_gtₓ h₀ h₁.right
+theorem div_eq_of_lt {a b : ℕ} (h₀ : a < b) : a / b = 0 := by
+  rw [div_def a, if_neg]
+  intro h₁
+  apply not_le_of_gtₓ h₀ h₁.right
 
-theorem le_div_iff_mul_le (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ (x*k) ≤ y :=
-  by 
-    revert x 
-    apply Nat.strong_induction_onₓ y _ 
-    clear y 
-    intro y IH x 
-    cases' lt_or_leₓ y k with h h
+theorem le_div_iff_mul_le (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ (x*k) ≤ y := by
+  revert x
+  apply Nat.strong_induction_onₓ y _
+  clear y
+  intro y IH x
+  cases' lt_or_leₓ y k with h h
+  ·
+    rw [div_eq_of_lt h]
+    cases' x with x
     ·
-      rw [div_eq_of_lt h]
-      cases' x with x
-      ·
-        simp [Nat.zero_mul, y.zero_le]
-      ·
-        simp [succ_mul, not_succ_le_zero, Nat.add_comm]
-        apply lt_of_lt_of_leₓ h 
-        apply Nat.le_add_rightₓ
+      simp [Nat.zero_mul, y.zero_le]
     ·
-      rw [div_eq_sub_div Hk h]
-      cases' x with x
-      ·
-        simp [Nat.zero_mul, Nat.zero_leₓ]
-      ·
-        have Hlt : y - k < y
+      simp [succ_mul, not_succ_le_zero, Nat.add_comm]
+      apply lt_of_lt_of_leₓ h
+      apply Nat.le_add_rightₓ
+  ·
+    rw [div_eq_sub_div Hk h]
+    cases' x with x
+    ·
+      simp [Nat.zero_mul, Nat.zero_leₓ]
+    ·
+      have Hlt : y - k < y := by
+        apply Nat.sub_lt_of_pos_leₓ <;> assumption
+      rw [← add_one, Nat.add_le_add_iff_le_rightₓ, IH (y - k) Hlt x, add_one, succ_mul, Nat.add_le_to_le_subₓ _ h]
+
+theorem div_lt_iff_lt_mul (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y*k := by
+  simp [← not_leₓ]
+  apply not_iff_not_of_iff
+  apply le_div_iff_mul_le _ _ Hk
+
+theorem sub_mul_div (x n p : ℕ) (h₁ : (n*p) ≤ x) : (x - n*p) / n = x / n - p := by
+  cases' Nat.eq_zero_or_posₓ n with h₀ h₀
+  ·
+    rw [h₀, Nat.div_zeroₓ, Nat.div_zeroₓ, Nat.zero_sub]
+  ·
+    induction' p with p
+    ·
+      rw [Nat.mul_zero, Nat.sub_zero, Nat.sub_zero]
+    ·
+      have h₂ : (n*p) ≤ x := by
+        trans
         ·
-          apply Nat.sub_lt_of_pos_leₓ <;> assumption 
-        rw [←add_one, Nat.add_le_add_iff_le_rightₓ, IH (y - k) Hlt x, add_one, succ_mul, Nat.add_le_to_le_subₓ _ h]
-
-theorem div_lt_iff_lt_mul (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y*k :=
-  by 
-    simp [←not_leₓ]
-    apply not_iff_not_of_iff 
-    apply le_div_iff_mul_le _ _ Hk
-
-theorem sub_mul_div (x n p : ℕ) (h₁ : (n*p) ≤ x) : (x - n*p) / n = x / n - p :=
-  by 
-    cases' Nat.eq_zero_or_posₓ n with h₀ h₀
-    ·
-      rw [h₀, Nat.div_zeroₓ, Nat.div_zeroₓ, Nat.zero_sub]
-    ·
-      induction' p with p
-      ·
-        rw [Nat.mul_zero, Nat.sub_zero, Nat.sub_zero]
-      ·
-        have h₂ : (n*p) ≤ x
+          apply Nat.mul_le_mul_leftₓ
+          apply le_succ
         ·
-          trans
-          ·
-            apply Nat.mul_le_mul_leftₓ 
-            apply le_succ
-          ·
-            apply h₁ 
-        have h₃ : (x - n*p) ≥ n
-        ·
-          apply Nat.le_of_add_le_add_rightₓ 
-          rw [Nat.sub_add_cancelₓ h₂, Nat.add_comm]
-          rw [mul_succ] at h₁ 
-          apply h₁ 
-        rw [sub_succ, ←p_ih h₂]
-        rw [@div_eq_sub_div (x - n*p) _ h₀ h₃]
-        simp [add_one, pred_succ, mul_succ, Nat.sub_sub]
+          apply h₁
+      have h₃ : (x - n*p) ≥ n := by
+        apply Nat.le_of_add_le_add_rightₓ
+        rw [Nat.sub_add_cancelₓ h₂, Nat.add_comm]
+        rw [mul_succ] at h₁
+        apply h₁
+      rw [sub_succ, ← p_ih h₂]
+      rw [@div_eq_sub_div (x - n*p) _ h₀ h₃]
+      simp [add_one, pred_succ, mul_succ, Nat.sub_sub]
 
 theorem div_mul_le_self : ∀ m n : ℕ, ((m / n)*n) ≤ m
-| m, 0 =>
-  by 
+  | m, 0 => by
     simp [m.zero_le, Nat.zero_mul]
-| m, succ n => (le_div_iff_mul_le _ _ (Nat.succ_posₓ _)).1 (le_reflₓ _)
+  | m, succ n => (le_div_iff_mul_le _ _ (Nat.succ_posₓ _)).1 (le_reflₓ _)
 
 @[simp]
-theorem add_div_right (x : ℕ) {z : ℕ} (H : 0 < z) : (x+z) / z = succ (x / z) :=
-  by 
-    rw [div_eq_sub_div H (Nat.le_add_leftₓ _ _), Nat.add_sub_cancel]
+theorem add_div_right (x : ℕ) {z : ℕ} (H : 0 < z) : (x+z) / z = succ (x / z) := by
+  rw [div_eq_sub_div H (Nat.le_add_leftₓ _ _), Nat.add_sub_cancel]
 
 @[simp]
-theorem add_div_left (x : ℕ) {z : ℕ} (H : 0 < z) : (z+x) / z = succ (x / z) :=
-  by 
-    rw [Nat.add_comm, add_div_right x H]
+theorem add_div_left (x : ℕ) {z : ℕ} (H : 0 < z) : (z+x) / z = succ (x / z) := by
+  rw [Nat.add_comm, add_div_right x H]
 
 @[simp]
-theorem mul_div_right (n : ℕ) {m : ℕ} (H : 0 < m) : (m*n) / m = n :=
-  by 
-    induction n <;> simp [mul_succ, Nat.mul_zero]
+theorem mul_div_right (n : ℕ) {m : ℕ} (H : 0 < m) : (m*n) / m = n := by
+  induction n <;> simp [mul_succ, Nat.mul_zero]
 
 @[simp]
-theorem mul_div_left (m : ℕ) {n : ℕ} (H : 0 < n) : (m*n) / n = m :=
-  by 
-    rw [Nat.mul_comm, mul_div_right _ H]
+theorem mul_div_left (m : ℕ) {n : ℕ} (H : 0 < n) : (m*n) / n = m := by
+  rw [Nat.mul_comm, mul_div_right _ H]
 
 protected theorem div_self {n : ℕ} (H : 0 < n) : n / n = 1 :=
-  let t := add_div_right 0 H 
-  by 
-    rwa [Nat.zero_add, Nat.zero_divₓ] at t
+  let t := add_div_right 0 H
+  by
+  rwa [Nat.zero_add, Nat.zero_divₓ] at t
 
-theorem add_mul_div_left (x z : ℕ) {y : ℕ} (H : 0 < y) : (x+y*z) / y = (x / y)+z :=
-  by 
-    induction' z with z ih
-    ·
-      rw [Nat.mul_zero, Nat.add_zero, Nat.add_zero]
-    ·
-      rw [mul_succ, ←Nat.add_assoc, add_div_right _ H, ih]
-      rfl
+theorem add_mul_div_left (x z : ℕ) {y : ℕ} (H : 0 < y) : (x+y*z) / y = (x / y)+z := by
+  induction' z with z ih
+  ·
+    rw [Nat.mul_zero, Nat.add_zero, Nat.add_zero]
+  ·
+    rw [mul_succ, ← Nat.add_assoc, add_div_right _ H, ih]
+    rfl
 
-theorem add_mul_div_right (x y : ℕ) {z : ℕ} (H : 0 < z) : (x+y*z) / z = (x / z)+y :=
-  by 
-    rw [Nat.mul_comm, add_mul_div_left _ _ H]
+theorem add_mul_div_right (x y : ℕ) {z : ℕ} (H : 0 < z) : (x+y*z) / z = (x / z)+y := by
+  rw [Nat.mul_comm, add_mul_div_left _ _ H]
 
 protected theorem mul_div_cancel (m : ℕ) {n : ℕ} (H : 0 < n) : (m*n) / n = m :=
-  let t := add_mul_div_right 0 m H 
-  by 
-    rwa [Nat.zero_add, Nat.zero_divₓ, Nat.zero_add] at t
+  let t := add_mul_div_right 0 m H
+  by
+  rwa [Nat.zero_add, Nat.zero_divₓ, Nat.zero_add] at t
 
-protected theorem mul_div_cancel_left (m : ℕ) {n : ℕ} (H : 0 < n) : (n*m) / n = m :=
-  by 
-    rw [Nat.mul_comm, Nat.mul_div_cancelₓ _ H]
+protected theorem mul_div_cancel_left (m : ℕ) {n : ℕ} (H : 0 < n) : (n*m) / n = m := by
+  rw [Nat.mul_comm, Nat.mul_div_cancelₓ _ H]
 
-protected theorem div_eq_of_eq_mul_left {m n k : ℕ} (H1 : 0 < n) (H2 : m = k*n) : m / n = k :=
-  by 
-    rw [H2, Nat.mul_div_cancelₓ _ H1]
+protected theorem div_eq_of_eq_mul_left {m n k : ℕ} (H1 : 0 < n) (H2 : m = k*n) : m / n = k := by
+  rw [H2, Nat.mul_div_cancelₓ _ H1]
 
-protected theorem div_eq_of_eq_mul_right {m n k : ℕ} (H1 : 0 < n) (H2 : m = n*k) : m / n = k :=
-  by 
-    rw [H2, Nat.mul_div_cancel_leftₓ _ H1]
+protected theorem div_eq_of_eq_mul_right {m n k : ℕ} (H1 : 0 < n) (H2 : m = n*k) : m / n = k := by
+  rw [H2, Nat.mul_div_cancel_leftₓ _ H1]
 
 protected theorem div_eq_of_lt_le {m n k : ℕ} (lo : (k*n) ≤ m) (hi : m < succ k*n) : m / n = k :=
   have npos : 0 < n :=
-    n.eq_zero_or_pos.resolve_left$
-      fun hn =>
-        by 
-          rw [hn, Nat.mul_zero] at hi lo <;> exact absurd lo (not_le_of_gtₓ hi)
+    n.eq_zero_or_pos.resolve_left $ fun hn => by
+      rw [hn, Nat.mul_zero] at hi lo <;> exact absurd lo (not_le_of_gtₓ hi)
   le_antisymmₓ (le_of_lt_succ ((Nat.div_lt_iff_lt_mulₓ _ _ npos).2 hi)) ((Nat.le_div_iff_mul_leₓ _ _ npos).2 lo)
 
-theorem mul_sub_div (x n p : ℕ) (h₁ : x < n*p) : ((n*p) - succ x) / n = p - succ (x / n) :=
-  by 
-    have npos : 0 < n :=
-      n.eq_zero_or_pos.resolve_left
-        fun n0 =>
-          by 
-            rw [n0, Nat.zero_mul] at h₁ <;> exact Nat.not_lt_zeroₓ _ h₁ 
-    apply Nat.div_eq_of_lt_leₓ
+theorem mul_sub_div (x n p : ℕ) (h₁ : x < n*p) : ((n*p) - succ x) / n = p - succ (x / n) := by
+  have npos : 0 < n :=
+    n.eq_zero_or_pos.resolve_left fun n0 => by
+      rw [n0, Nat.zero_mul] at h₁ <;> exact Nat.not_lt_zeroₓ _ h₁
+  apply Nat.div_eq_of_lt_leₓ
+  ·
+    rw [Nat.mul_sub_right_distrib, Nat.mul_comm]
+    apply Nat.sub_le_sub_leftₓ
+    exact (div_lt_iff_lt_mul _ _ npos).1 (lt_succ_self _)
+  ·
+    change succ (pred ((n*p) - x)) ≤ succ (pred (p - x / n))*n
+    rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h₁), succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ _)]
     ·
       rw [Nat.mul_sub_right_distrib, Nat.mul_comm]
-      apply Nat.sub_le_sub_leftₓ 
-      exact (div_lt_iff_lt_mul _ _ npos).1 (lt_succ_self _)
+      apply Nat.sub_le_sub_leftₓ
+      apply div_mul_le_self
     ·
-      change succ (pred ((n*p) - x)) ≤ succ (pred (p - x / n))*n 
-      rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h₁), succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ _)]
-      ·
-        rw [Nat.mul_sub_right_distrib, Nat.mul_comm]
-        apply Nat.sub_le_sub_leftₓ 
-        apply div_mul_le_self
-      ·
-        apply (div_lt_iff_lt_mul _ _ npos).2
-        rwa [Nat.mul_comm]
+      apply (div_lt_iff_lt_mul _ _ npos).2
+      rwa [Nat.mul_comm]
 
-protected theorem div_div_eq_div_mul (m n k : ℕ) : m / n / k = m / n*k :=
-  by 
-    cases' k.eq_zero_or_pos with k0 kpos
-    ·
-      rw [k0, Nat.mul_zero, Nat.div_zeroₓ, Nat.div_zeroₓ]
-    cases' n.eq_zero_or_pos with n0 npos
-    ·
-      rw [n0, Nat.zero_mul, Nat.div_zeroₓ, Nat.zero_divₓ]
-    apply le_antisymmₓ
-    ·
-      apply (le_div_iff_mul_le _ _ (Nat.mul_posₓ npos kpos)).2
-      rw [Nat.mul_comm n k, ←Nat.mul_assoc]
-      apply (le_div_iff_mul_le _ _ npos).1
-      apply (le_div_iff_mul_le _ _ kpos).1
-      rfl
-    ·
-      apply (le_div_iff_mul_le _ _ kpos).2
-      apply (le_div_iff_mul_le _ _ npos).2
-      rw [Nat.mul_assoc, Nat.mul_comm n k]
-      apply (le_div_iff_mul_le _ _ (Nat.mul_posₓ kpos npos)).1
-      rfl
+protected theorem div_div_eq_div_mul (m n k : ℕ) : m / n / k = m / n*k := by
+  cases' k.eq_zero_or_pos with k0 kpos
+  ·
+    rw [k0, Nat.mul_zero, Nat.div_zeroₓ, Nat.div_zeroₓ]
+  cases' n.eq_zero_or_pos with n0 npos
+  ·
+    rw [n0, Nat.zero_mul, Nat.div_zeroₓ, Nat.zero_divₓ]
+  apply le_antisymmₓ
+  ·
+    apply (le_div_iff_mul_le _ _ (Nat.mul_posₓ npos kpos)).2
+    rw [Nat.mul_comm n k, ← Nat.mul_assoc]
+    apply (le_div_iff_mul_le _ _ npos).1
+    apply (le_div_iff_mul_le _ _ kpos).1
+    rfl
+  ·
+    apply (le_div_iff_mul_le _ _ kpos).2
+    apply (le_div_iff_mul_le _ _ npos).2
+    rw [Nat.mul_assoc, Nat.mul_comm n k]
+    apply (le_div_iff_mul_le _ _ (Nat.mul_posₓ kpos npos)).1
+    rfl
 
-protected theorem mul_div_mul {m : ℕ} (n k : ℕ) (H : 0 < m) : ((m*n) / m*k) = n / k :=
-  by 
-    rw [←Nat.div_div_eq_div_mulₓ, Nat.mul_div_cancel_leftₓ _ H]
+protected theorem mul_div_mul {m : ℕ} (n k : ℕ) (H : 0 < m) : ((m*n) / m*k) = n / k := by
+  rw [← Nat.div_div_eq_div_mulₓ, Nat.mul_div_cancel_leftₓ _ H]
 
-theorem div_lt_self {n m : Nat} : 0 < n → 1 < m → n / m < n :=
-  by 
-    intro h₁ h₂ 
-    have m_pos : 0 < m
-    ·
-      apply lt_transₓ _ h₂ 
-      compVal 
-    suffices  : (1*n) < m*n
-    ·
-      rw [Nat.one_mul, Nat.mul_comm] at this 
-      exact Iff.mpr (Nat.div_lt_iff_lt_mulₓ n n m_pos) this 
-    exact Nat.mul_lt_mulₓ h₂ (le_reflₓ _) h₁
+theorem div_lt_self {n m : Nat} : 0 < n → 1 < m → n / m < n := by
+  intro h₁ h₂
+  have m_pos : 0 < m := by
+    apply lt_transₓ _ h₂
+    comp_val
+  suffices (1*n) < m*n by
+    rw [Nat.one_mul, Nat.mul_comm] at this
+    exact Iff.mpr (Nat.div_lt_iff_lt_mulₓ n n m_pos) this
+  exact Nat.mul_lt_mulₓ h₂ (le_reflₓ _) h₁
 
 /-! dvd -/
 
@@ -1440,144 +1663,120 @@ protected theorem dvd_mul_right (a b : ℕ) : a ∣ a*b :=
   ⟨b, rfl⟩
 
 protected theorem dvd_trans {a b c : ℕ} (h₁ : a ∣ b) (h₂ : b ∣ c) : a ∣ c :=
-  match h₁, h₂ with 
+  match h₁, h₂ with
   | ⟨d, (h₃ : b = a*d)⟩, ⟨e, (h₄ : c = b*e)⟩ =>
     ⟨d*e,
-      show c = a*d*e by 
+      show c = a*d*e by
         simp [h₃, h₄, Nat.mul_assoc]⟩
 
 protected theorem eq_zero_of_zero_dvd {a : ℕ} (h : 0 ∣ a) : a = 0 :=
   Exists.elim h fun c => fun H' : a = 0*c => Eq.trans H' (Nat.zero_mul c)
 
 protected theorem dvd_add {a b c : ℕ} (h₁ : a ∣ b) (h₂ : a ∣ c) : a ∣ b+c :=
-  Exists.elim h₁
-    fun d hd =>
-      Exists.elim h₂
-        fun e he =>
-          ⟨d+e,
-            by 
-              simp [Nat.left_distrib, hd, he]⟩
+  Exists.elim h₁ fun d hd =>
+    Exists.elim h₂ fun e he =>
+      ⟨d+e, by
+        simp [Nat.left_distrib, hd, he]⟩
 
 protected theorem dvd_add_iff_right {k m n : ℕ} (h : k ∣ m) : k ∣ n ↔ k ∣ m+n :=
   ⟨Nat.dvd_add h,
-    Exists.elim h$
-      fun d hd =>
-        match m, hd with 
-        | _, rfl =>
-          fun h₂ =>
-            Exists.elim h₂$
-              fun e he =>
-                ⟨e - d,
-                  by 
-                    rw [Nat.mul_sub_left_distrib, ←he, Nat.add_sub_cancel_left]⟩⟩
+    Exists.elim h $ fun d hd =>
+      match m, hd with
+      | _, rfl => fun h₂ =>
+        Exists.elim h₂ $ fun e he =>
+          ⟨e - d, by
+            rw [Nat.mul_sub_left_distrib, ← he, Nat.add_sub_cancel_left]⟩⟩
 
-protected theorem dvd_add_iff_left {k m n : ℕ} (h : k ∣ n) : k ∣ m ↔ k ∣ m+n :=
-  by 
-    rw [Nat.add_comm] <;> exact Nat.dvd_add_iff_right h
+protected theorem dvd_add_iff_left {k m n : ℕ} (h : k ∣ n) : k ∣ m ↔ k ∣ m+n := by
+  rw [Nat.add_comm] <;> exact Nat.dvd_add_iff_right h
 
 theorem dvd_sub {k m n : ℕ} (H : n ≤ m) (h₁ : k ∣ m) (h₂ : k ∣ n) : k ∣ m - n :=
-  (Nat.dvd_add_iff_left h₂).2$
-    by 
-      rw [Nat.sub_add_cancelₓ H] <;> exact h₁
+  (Nat.dvd_add_iff_left h₂).2 $ by
+    rw [Nat.sub_add_cancelₓ H] <;> exact h₁
 
 theorem dvd_mod_iff {k m n : ℕ} (h : k ∣ n) : k ∣ m % n ↔ k ∣ m :=
   let t := @Nat.dvd_add_iff_left _ (m % n) _ (Nat.dvd_trans h (Nat.dvd_mul_right n (m / n)))
-  by 
-    rwa [mod_add_div] at t
+  by
+  rwa [mod_add_div] at t
 
-theorem le_of_dvd {m n : ℕ} (h : 0 < n) : m ∣ n → m ≤ n :=
-  fun ⟨k, e⟩ =>
-    by 
-      revert h 
-      rw [e]
-      refine' k.cases_on _ _ 
-      exact fun hn => absurd hn (lt_irreflₓ _)
-      exact
-        fun k _ =>
-          let t := m.mul_le_mul_left (succ_pos k)
-          by 
-            rwa [Nat.mul_one] at t
+theorem le_of_dvd {m n : ℕ} (h : 0 < n) : m ∣ n → m ≤ n := fun ⟨k, e⟩ => by
+  revert h
+  rw [e]
+  refine' k.cases_on _ _
+  exact fun hn => absurd hn (lt_irreflₓ _)
+  exact fun k _ =>
+    let t := m.mul_le_mul_left (succ_pos k)
+    by
+    rwa [Nat.mul_one] at t
 
 theorem dvd_antisymm : ∀ {m n : ℕ}, m ∣ n → n ∣ m → m = n
-| m, 0, h₁, h₂ => Nat.eq_zero_of_zero_dvd h₂
-| 0, n, h₁, h₂ => (Nat.eq_zero_of_zero_dvd h₁).symm
-| succ m, succ n, h₁, h₂ => le_antisymmₓ (le_of_dvd (succ_pos _) h₁) (le_of_dvd (succ_pos _) h₂)
+  | m, 0, h₁, h₂ => Nat.eq_zero_of_zero_dvd h₂
+  | 0, n, h₁, h₂ => (Nat.eq_zero_of_zero_dvd h₁).symm
+  | succ m, succ n, h₁, h₂ => le_antisymmₓ (le_of_dvd (succ_pos _) h₁) (le_of_dvd (succ_pos _) h₂)
 
 theorem pos_of_dvd_of_pos {m n : ℕ} (H1 : m ∣ n) (H2 : 0 < n) : 0 < m :=
-  Nat.pos_of_ne_zeroₓ$
-    fun m0 =>
-      by 
-        rw [m0] at H1 <;> rw [Nat.eq_zero_of_zero_dvd H1] at H2 <;> exact lt_irreflₓ _ H2
+  Nat.pos_of_ne_zeroₓ $ fun m0 => by
+    rw [m0] at H1 <;> rw [Nat.eq_zero_of_zero_dvd H1] at H2 <;> exact lt_irreflₓ _ H2
 
 theorem eq_one_of_dvd_one {n : ℕ} (H : n ∣ 1) : n = 1 :=
   le_antisymmₓ
     (le_of_dvd
-      (by 
+      (by
         decide)
       H)
     (pos_of_dvd_of_pos H
-      (by 
+      (by
         decide))
 
 theorem dvd_of_mod_eq_zero {m n : ℕ} (H : n % m = 0) : m ∣ n :=
-  ⟨n / m,
-    by 
-      have t := (mod_add_div n m).symm 
-      rwa [H, Nat.zero_add] at t⟩
+  ⟨n / m, by
+    have t := (mod_add_div n m).symm
+    rwa [H, Nat.zero_add] at t⟩
 
 theorem mod_eq_zero_of_dvd {m n : ℕ} (H : m ∣ n) : n % m = 0 :=
-  Exists.elim H
-    fun z H1 =>
-      by 
-        rw [H1, mul_mod_right]
+  Exists.elim H fun z H1 => by
+    rw [H1, mul_mod_right]
 
 theorem dvd_iff_mod_eq_zero (m n : ℕ) : m ∣ n ↔ n % m = 0 :=
   ⟨mod_eq_zero_of_dvd, dvd_of_mod_eq_zero⟩
 
-instance decidable_dvd : @DecidableRel ℕ (· ∣ ·) :=
-  fun m n =>
-    decidableOfDecidableOfIff
-      (by 
-        infer_instance)
-      (dvd_iff_mod_eq_zero _ _).symm
+instance decidable_dvd : @DecidableRel ℕ (· ∣ ·) := fun m n =>
+  decidableOfDecidableOfIff
+    (by
+      infer_instance)
+    (dvd_iff_mod_eq_zero _ _).symm
 
 protected theorem mul_div_cancel' {m n : ℕ} (H : n ∣ m) : (n*m / n) = m :=
-  let t := mod_add_div m n 
-  by 
-    rwa [mod_eq_zero_of_dvd H, Nat.zero_add] at t
+  let t := mod_add_div m n
+  by
+  rwa [mod_eq_zero_of_dvd H, Nat.zero_add] at t
 
-protected theorem div_mul_cancel {m n : ℕ} (H : n ∣ m) : ((m / n)*n) = m :=
-  by 
-    rw [Nat.mul_comm, Nat.mul_div_cancel'ₓ H]
+protected theorem div_mul_cancel {m n : ℕ} (H : n ∣ m) : ((m / n)*n) = m := by
+  rw [Nat.mul_comm, Nat.mul_div_cancel'ₓ H]
 
 protected theorem mul_div_assoc (m : ℕ) {n k : ℕ} (H : k ∣ n) : (m*n) / k = m*n / k :=
   Or.elim k.eq_zero_or_pos
-    (fun h =>
-      by 
-        rw [h, Nat.div_zeroₓ, Nat.div_zeroₓ, Nat.mul_zero])
+    (fun h => by
+      rw [h, Nat.div_zeroₓ, Nat.div_zeroₓ, Nat.mul_zero])
     fun h =>
-      have  : (m*n) / k = (m*(n / k)*k) / k :=
-        by 
-          rw [Nat.div_mul_cancelₓ H]
-      by 
-        rw [this, ←Nat.mul_assoc, Nat.mul_div_cancelₓ _ h]
+    have : (m*n) / k = (m*(n / k)*k) / k := by
+      rw [Nat.div_mul_cancelₓ H]
+    by
+    rw [this, ← Nat.mul_assoc, Nat.mul_div_cancelₓ _ h]
 
 theorem dvd_of_mul_dvd_mul_left {m n k : ℕ} (kpos : 0 < k) (H : (k*m) ∣ k*n) : m ∣ n :=
-  Exists.elim H
-    fun l H1 =>
-      by 
-        rw [Nat.mul_assoc] at H1 <;> exact ⟨_, Nat.eq_of_mul_eq_mul_leftₓ kpos H1⟩
+  Exists.elim H fun l H1 => by
+    rw [Nat.mul_assoc] at H1 <;> exact ⟨_, Nat.eq_of_mul_eq_mul_leftₓ kpos H1⟩
 
-theorem dvd_of_mul_dvd_mul_right {m n k : ℕ} (kpos : 0 < k) (H : (m*k) ∣ n*k) : m ∣ n :=
-  by 
-    rw [Nat.mul_comm m k, Nat.mul_comm n k] at H <;> exact dvd_of_mul_dvd_mul_left kpos H
+theorem dvd_of_mul_dvd_mul_right {m n k : ℕ} (kpos : 0 < k) (H : (m*k) ∣ n*k) : m ∣ n := by
+  rw [Nat.mul_comm m k, Nat.mul_comm n k] at H <;> exact dvd_of_mul_dvd_mul_left kpos H
 
 /-! iterate -/
 
 
 def iterate {α : Sort u} (op : α → α) : ℕ → α → α
-| 0, a => a
-| succ k, a => iterate k (op a)
+  | 0, a => a
+  | succ k, a => iterate k (op a)
 
 notation f "^[" n "]" => iterate f n
 
@@ -1588,49 +1787,40 @@ section Find
 
 parameter {p : ℕ → Prop}
 
--- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (k «expr ≤ » n)
 private def lbp (m n : ℕ) : Prop :=
-  (m = n+1) ∧ ∀ k _ : k ≤ n, ¬p k
+  (m = n+1) ∧ ∀, ∀ k ≤ n, ∀, ¬p k
 
 parameter [DecidablePred p](H : ∃ n, p n)
 
 private def wf_lbp : WellFounded lbp :=
-  ⟨let ⟨n, pn⟩ := H 
+  ⟨let ⟨n, pn⟩ := H
     suffices ∀ m k, (n ≤ k+m) → Acc lbp k from fun a => this _ _ (Nat.le_add_leftₓ _ _)
     fun m =>
-      Nat.recOn m
-        (fun k kn =>
-          ⟨_,
-            fun y r =>
-              match y, r with 
-              | _, ⟨rfl, a⟩ => absurd pn (a _ kn)⟩)
-        fun m IH k kn =>
-          ⟨_,
-            fun y r =>
-              match y, r with 
-              | _, ⟨rfl, a⟩ =>
-                IH _
-                  (by 
-                    rw [Nat.add_right_comm] <;> exact kn)⟩⟩
+    Nat.recOn m
+      (fun k kn =>
+        ⟨_, fun y r =>
+          match y, r with
+          | _, ⟨rfl, a⟩ => absurd pn (a _ kn)⟩)
+      fun m IH k kn =>
+      ⟨_, fun y r =>
+        match y, r with
+        | _, ⟨rfl, a⟩ =>
+          IH _
+            (by
+              rw [Nat.add_right_comm] <;> exact kn)⟩⟩
 
--- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (n «expr < » k)
--- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (m «expr < » n)
--- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (n «expr ≤ » m)
--- ././Mathport/Syntax/Translate/Basic.lean:452:2: warning: expanding binder collection (m «expr < » n)
-protected def find_x : { n // p n ∧ ∀ m _ : m < n, ¬p m } :=
-  @WellFounded.fix _ (fun k => (∀ n _ : n < k, ¬p n) → { n // p n ∧ ∀ m _ : m < n, ¬p m }) lbp wf_lbp
+protected def find_x : { n // p n ∧ ∀, ∀ m < n, ∀, ¬p m } :=
+  @WellFounded.fix _ (fun k => (∀, ∀ n < k, ∀, ¬p n) → { n // p n ∧ ∀, ∀ m < n, ∀, ¬p m }) lbp wf_lbp
     (fun m IH al =>
-      if pm : p m then ⟨m, pm, al⟩ else
-        have  : ∀ n _ : n ≤ m, ¬p n :=
-          fun n h =>
-            Or.elim (Decidable.lt_or_eq_of_leₓ h) (al n)
-              fun e =>
-                by 
-                  rw [e] <;> exact pm 
-        IH _ ⟨rfl, this⟩ fun n h => this n$ Nat.le_of_succ_le_succₓ h)
+      if pm : p m then ⟨m, pm, al⟩
+      else
+        have : ∀, ∀ n ≤ m, ∀, ¬p n := fun n h =>
+          Or.elim (Decidable.lt_or_eq_of_leₓ h) (al n) fun e => by
+            rw [e] <;> exact pm
+        IH _ ⟨rfl, this⟩ fun n h => this n $ Nat.le_of_succ_le_succₓ h)
     0 fun n h => absurd h (Nat.not_lt_zeroₓ _)
 
-/--
+/-- 
 If `p` is a (decidable) predicate on `ℕ` and `hp : ∃ (n : ℕ), p n` is a proof that
 there exists some natural number satisfying `p`, then `nat.find hp` is the
 smallest natural number satisfying `p`. Note that `nat.find` is protected,

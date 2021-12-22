@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Logic
 
 universe u v

@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Control.Lift
 
 universe u
@@ -8,8 +8,9 @@ def idBind {α β : Type u} (x : α) (f : α → id β) : id β :=
   f x
 
 @[inline]
-instance : Monadₓ.{u, u} id :=
-  { pure := @id, bind := @idBind }
+instance : Monadₓ.{u, u} id where
+  pure := @id
+  bind := @idBind
 
 @[inline]
 instance : MonadRun id id :=

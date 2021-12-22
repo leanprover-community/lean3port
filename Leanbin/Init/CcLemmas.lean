@@ -1,5 +1,5 @@
-prelude 
-import Leanbin.Init.Propext 
+prelude
+import Leanbin.Init.Propext
 import Leanbin.Init.Classical
 
 theorem iff_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a ↔ b) = b :=
@@ -66,7 +66,7 @@ theorem not_eq_of_eq_false {a : Prop} (h : a = False) : Not a = True :=
   h.symm ▸ propext not_false_iff
 
 theorem false_of_a_eq_not_a {a : Prop} (h : a = Not a) : False :=
-  have  : Not a := fun ha => absurd ha (Eq.mp h ha)
+  have : Not a := fun ha => absurd ha (Eq.mp h ha)
   absurd (Eq.mpr h this) this
 
 universe u
@@ -78,7 +78,7 @@ theorem if_eq_of_eq_false {c : Prop} [d : Decidable c] {α : Sort u} (t e : α) 
   if_neg (not_of_eq_false h)
 
 theorem if_eq_of_eq (c : Prop) [d : Decidable c] {α : Sort u} {t e : α} (h : t = e) : @ite α c d t e = t :=
-  match d with 
+  match d with
   | is_true hc => rfl
   | is_false hnc => Eq.symm h
 

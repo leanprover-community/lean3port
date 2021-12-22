@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Logic
 
 axiom propext {a b : Prop} : (a ↔ b) → a = b
@@ -27,10 +27,10 @@ theorem iff_eq_eq {a b : Prop} : (a ↔ b) = (a = b) :=
   propext (Iff.intro (fun h => Iff.to_eq h) fun h => h.to_iff)
 
 theorem eq_falseₓ {a : Prop} : (a = False) = ¬a :=
-  have  : (a ↔ False) = ¬a := propext (iff_falseₓ a)
+  have : (a ↔ False) = ¬a := propext (iff_falseₓ a)
   Eq.subst (@iff_eq_eq a False) this
 
 theorem eq_trueₓ {a : Prop} : (a = True) = a :=
-  have  : (a ↔ True) = a := propext (iff_trueₓ a)
+  have : (a ↔ True) = a := propext (iff_trueₓ a)
   Eq.subst (@iff_eq_eq a True) this
 

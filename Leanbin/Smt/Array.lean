@@ -18,18 +18,15 @@ theorem arrayext (a₁ a₂ : Arrayₓ α β) : (∀ i, select a₁ i = select a
 
 variable [DecidableEq α]
 
-def store (a : Arrayₓ α β) (i : α) (v : β) : Arrayₓ α β :=
-  fun j => if j = i then v else select a j
+def store (a : Arrayₓ α β) (i : α) (v : β) : Arrayₓ α β := fun j => if j = i then v else select a j
 
 @[simp]
-theorem select_store (a : Arrayₓ α β) (i : α) (v : β) : select (store a i v) i = v :=
-  by 
-    unfold Smt.store Smt.select <;> rw [if_pos] <;> rfl
+theorem select_store (a : Arrayₓ α β) (i : α) (v : β) : select (store a i v) i = v := by
+  unfold Smt.store Smt.select <;> rw [if_pos] <;> rfl
 
 @[simp]
-theorem select_store_ne (a : Arrayₓ α β) (i j : α) (v : β) : j ≠ i → select (store a i v) j = select a j :=
-  by 
-    intros  <;> unfold Smt.store Smt.select <;> rw [if_neg] <;> assumption
+theorem select_store_ne (a : Arrayₓ α β) (i j : α) (v : β) : j ≠ i → select (store a i v) j = select a j := by
+  intros <;> unfold Smt.store Smt.select <;> rw [if_neg] <;> assumption
 
 end Smt
 

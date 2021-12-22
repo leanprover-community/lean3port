@@ -1,15 +1,15 @@
-prelude 
-import Leanbin.Init.Data.Ordering.Basic 
-import Leanbin.Init.Coe 
+prelude
+import Leanbin.Init.Data.Ordering.Basic
+import Leanbin.Init.Coe
 import Leanbin.Init.Data.ToString
 
-/-- Reflect a C++ name object. The VM replaces it with the C++ implementation. -/
+/--  Reflect a C++ name object. The VM replaces it with the C++ implementation. -/
 inductive Name
   | anonymous : Name
   | mk_string : Stringₓ → Name → Name
   | mk_numeral : Unsigned → Name → Name
 
-/-- Gadget for automatic parameter support. This is similar to the opt_param gadget, but it uses
+/--  Gadget for automatic parameter support. This is similar to the opt_param gadget, but it uses
     the tactic declaration names tac_name to synthesize the argument.
     Like opt_param, this gadget only affects elaboration.
     For example, the tactic will *not* be invoked during type class resolution. -/
@@ -41,29 +41,29 @@ infixl:65 " <.> " => mkStrName
 open Name
 
 def Name.getPrefix : Name → Name
-| anonymous => anonymous
-| mk_string s p => p
-| mk_numeral s p => p
+  | anonymous => anonymous
+  | mk_string s p => p
+  | mk_numeral s p => p
 
 def Name.updatePrefix : Name → Name → Name
-| anonymous, new_p => anonymous
-| mk_string s p, new_p => mk_string s new_p
-| mk_numeral s p, new_p => mk_numeral s new_p
+  | anonymous, new_p => anonymous
+  | mk_string s p, new_p => mk_string s new_p
+  | mk_numeral s p, new_p => mk_numeral s new_p
 
--- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option eqn_compiler.ite
+-- ././Mathport/Syntax/Translate/Basic.lean:169:9: warning: unsupported option eqn_compiler.ite
 set_option eqn_compiler.ite false
 
 def Name.toStringWithSep (sep : Stringₓ) : Name → Stringₓ
-| anonymous => "[anonymous]"
-| mk_string s anonymous => s
-| mk_numeral v anonymous => reprₓ v
-| mk_string s n => Name.toStringWithSep n ++ sep ++ s
-| mk_numeral v n => Name.toStringWithSep n ++ sep ++ reprₓ v
+  | anonymous => "[anonymous]"
+  | mk_string s anonymous => s
+  | mk_numeral v anonymous => reprₓ v
+  | mk_string s n => Name.toStringWithSep n ++ sep ++ s
+  | mk_numeral v n => Name.toStringWithSep n ++ sep ++ reprₓ v
 
 private def name.components' : Name → List Name
-| anonymous => []
-| mk_string s n => mk_string s anonymous :: name.components' n
-| mk_numeral v n => mk_numeral v anonymous :: name.components' n
+  | anonymous => []
+  | mk_string s n => mk_string s anonymous :: name.components' n
+  | mk_numeral v n => mk_numeral v anonymous :: name.components' n
 
 def Name.components (n : Name) : List Name :=
   (name.components' n).reverse
@@ -93,8 +93,7 @@ unsafe axiom name.is_internal : Name → Bool
 protected unsafe def name.lt (a b : Name) : Prop :=
   name.cmp a b = Ordering.lt
 
-unsafe instance : DecidableRel name.lt :=
-  fun a b => Ordering.decidableEq _ _
+unsafe instance : DecidableRel name.lt := fun a b => Ordering.decidableEq _ _
 
 unsafe instance : LT Name :=
   ⟨name.lt⟩
@@ -104,21 +103,21 @@ attribute [instance] name.has_decidable_eq
 unsafe instance : Append Name :=
   ⟨name.append⟩
 
-/-- `name.append_after n i` return a name of the form n_i -/
+/--  `name.append_after n i` return a name of the form n_i -/
 unsafe axiom name.append_after : Name → Nat → Name
 
 unsafe def name.is_prefix_of : Name → Name → Bool
-| p, Name.anonymous => ff
-| p, n => if p = n then tt else name.is_prefix_of p n.get_prefix
+  | p, Name.anonymous => ff
+  | p, n => if p = n then tt else name.is_prefix_of p n.get_prefix
 
 unsafe def name.is_suffix_of : Name → Name → Bool
-| anonymous, _ => tt
-| mk_string s n, mk_string s' n' => s = s' && name.is_suffix_of n n'
-| mk_numeral v n, mk_numeral v' n' => v = v' && name.is_suffix_of n n'
-| _, _ => ff
+  | anonymous, _ => tt
+  | mk_string s n, mk_string s' n' => s = s' && name.is_suffix_of n n'
+  | mk_numeral v n, mk_numeral v' n' => v = v' && name.is_suffix_of n n'
+  | _, _ => ff
 
 unsafe def name.replace_prefix : Name → Name → Name → Name
-| anonymous, p, p' => anonymous
-| mk_string s c, p, p' => if c = p then mk_string s p' else mk_string s (name.replace_prefix c p p')
-| mk_numeral v c, p, p' => if c = p then mk_numeral v p' else mk_numeral v (name.replace_prefix c p p')
+  | anonymous, p, p' => anonymous
+  | mk_string s c, p, p' => if c = p then mk_string s p' else mk_string s (name.replace_prefix c p p')
+  | mk_numeral v c, p, p' => if c = p then mk_numeral v p' else mk_numeral v (name.replace_prefix c p p')
 

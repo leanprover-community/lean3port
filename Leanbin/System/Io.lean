@@ -48,18 +48,17 @@ def iterate {e α} (a : α) (f : α → IoCore e (Option α)) : IoCore e α :=
   MonadIo.iterate e α a f
 
 def forever {e} (a : IoCore e Unit) : IoCore e Unit :=
-  iterate ()$ fun _ => a >> return (some ())
+  iterate () $ fun _ => a >> return (some ())
 
 def catch {e₁ e₂ α} (a : IoCore e₁ α) (b : e₁ → IoCore e₂ α) : IoCore e₂ α :=
   MonadIo.catch e₁ e₂ α a b
 
-def finally {α e} (a : IoCore e α) (cleanup : IoCore e Unit) : IoCore e α :=
-  do 
-    let res ← catch (Sum.inr <$> a) (return ∘ Sum.inl)
-    cleanup 
-    match res with 
-      | Sum.inr res => return res
-      | Sum.inl error => MonadIo.fail _ _ error
+def finally {α e} (a : IoCore e α) (cleanup : IoCore e Unit) : IoCore e α := do
+  let res ← catch (Sum.inr <$> a) (return ∘ Sum.inl)
+  cleanup
+  match res with
+    | Sum.inr res => return res
+    | Sum.inl error => MonadIo.fail _ _ error
 
 protected def fail {α : Type} (s : Stringₓ) : Io α :=
   MonadIo.fail _ _ (Io.Error.other s)
@@ -77,7 +76,7 @@ def cmdline_args : Io (List Stringₓ) :=
   return (MonadIoTerminal.cmdlineArgs IoCore)
 
 def print {α} [HasToString α] (s : α) : Io Unit :=
-  put_str ∘ toString$ s
+  put_str ∘ toString $ s
 
 def print_ln {α} [HasToString α] (s : α) : Io Unit :=
   print s >> put_str "\n"
@@ -108,11 +107,11 @@ namespace Env
 def get (env_var : Stringₓ) : Io (Option Stringₓ) :=
   MonadIoEnvironment.getEnv env_var
 
-/-- get the current working directory -/
+/--  get the current working directory -/
 def get_cwd : Io Stringₓ :=
   MonadIoEnvironment.getCwd
 
-/-- set the current working directory -/
+/--  set the current working directory -/
 def set_cwd (cwd : Stringₓ) : Io Unit :=
   MonadIoEnvironment.setCwd cwd
 
@@ -160,10 +159,9 @@ def read : handle → Nat → Io CharBuffer :=
 def write : handle → CharBuffer → Io Unit :=
   MonadIoFileSystem.write
 
-def get_char (h : handle) : Io Charₓ :=
-  do 
-    let b ← read h 1
-    if h : b.size = 1 then return$ b.read ⟨0, h.symm ▸ Nat.zero_lt_oneₓ⟩ else Io.fail "get_char failed"
+def get_char (h : handle) : Io Charₓ := do
+  let b ← read h 1
+  if h : b.size = 1 then return $ b.read ⟨0, h.symm ▸ Nat.zero_lt_oneₓ⟩ else Io.fail "get_char failed"
 
 def get_line : handle → Io CharBuffer :=
   MonadIoFileSystem.getLine
@@ -178,19 +176,16 @@ def put_str_ln (h : handle) (s : Stringₓ) : Io Unit :=
   put_str h s >> put_str h "\n"
 
 def read_to_end (h : handle) : Io CharBuffer :=
-  iterate mkBuffer$
-    fun r =>
-      do 
-        let done ← is_eof h 
-        if done then return none else
-            do 
-              let c ← read h 1024
-              return$ some (r ++ c)
+  iterate mkBuffer $ fun r => do
+    let done ← is_eof h
+    if done then return none
+      else do
+        let c ← read h 1024
+        return $ some (r ++ c)
 
-def read_file (s : Stringₓ) (bin := ff) : Io CharBuffer :=
-  do 
-    let h ← mk_file_handle s Io.Mode.read bin 
-    read_to_end h
+def read_file (s : Stringₓ) (bin := ff) : Io CharBuffer := do
+  let h ← mk_file_handle s Io.Mode.read bin
+  read_to_end h
 
 def file_exists : Stringₓ → Io Bool :=
   MonadIoFileSystem.fileExists
@@ -256,20 +251,19 @@ unsafe def pp_using {α : Type} [has_to_format α] (a : α) (o : options) : Io U
 unsafe def pp {α : Type} [has_to_format α] (a : α) : Io Unit :=
   format.print (to_fmt a)
 
-/-- Run the external process specified by `args`.
+/--  Run the external process specified by `args`.
 
     The process will run to completion with its output captured by a pipe, and
     read into `string` which is then returned. -/
-def Io.cmd (args : Io.Process.SpawnArgs) : Io Stringₓ :=
-  do 
-    let child ← Io.Proc.spawn { args with stdout := Io.Process.Stdio.piped }
-    let buf ← Io.Fs.readToEnd child.stdout 
-    Io.Fs.close child.stdout 
-    let exitv ← Io.Proc.wait child 
-    when (exitv ≠ 0)$ Io.fail$ "process exited with status " ++ reprₓ exitv 
-    return buf.to_string
+def Io.cmd (args : Io.Process.SpawnArgs) : Io Stringₓ := do
+  let child ← Io.Proc.spawn { args with stdout := Io.Process.Stdio.piped }
+  let buf ← Io.Fs.readToEnd child.stdout
+  Io.Fs.close child.stdout
+  let exitv ← Io.Proc.wait child
+  when (exitv ≠ 0) $ Io.fail $ "process exited with status " ++ reprₓ exitv
+  return buf.to_string
 
-/--
+/-- 
 This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.
 For this to be safe, the IO computation should be ideally free of side effects and independent of its environment.
 This primitive is used to invoke external tools (e.g., SAT and SMT solvers) from a tactic.
@@ -291,7 +285,7 @@ TODO[Leo]: add `[noinline]` attribute and option `compiler.cse`.
 -/
 unsafe axiom tactic.unsafe_run_io {α : Type} : Io α → tactic α
 
-/--
+/-- 
    Execute the given tactic with a tactic_state object that contains:
    - The current environment in the virtual machine.
    - The current set of options in the virtual machine.

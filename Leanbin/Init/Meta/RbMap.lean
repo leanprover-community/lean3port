@@ -1,8 +1,8 @@
-prelude 
-import Leanbin.Init.Data.Ordering.Basic 
-import Leanbin.Init.Function 
-import Leanbin.Init.Meta.Name 
-import Leanbin.Init.Meta.Format 
+prelude
+import Leanbin.Init.Data.Ordering.Basic
+import Leanbin.Init.Function
+import Leanbin.Init.Meta.Name
+import Leanbin.Init.Meta.Format
 import Leanbin.Init.Control.Monad
 
 open Format
@@ -42,7 +42,7 @@ unsafe def mk (key : Type) [LT key] [DecidableRel (· < · : key → key → Pro
 
 open List
 
-section 
+section
 
 variable {key data : Type}
 
@@ -56,22 +56,22 @@ unsafe def to_list {key : Type} {data : Type} (m : rb_map key data) : List (key 
   fold m [] fun k v res => (k, v) :: res
 
 unsafe def mfold {key data α : Type} {m : Type → Type} [Monadₓ m] (mp : rb_map key data) (a : α)
-  (fn : key → data → α → m α) : m α :=
+    (fn : key → data → α → m α) : m α :=
   mp.fold (return a) fun k d act => act >>= fn k d
 
-end 
+end
 
-section 
+section
 
 variable {key data data' : Type} [LT key] [DecidableRel (· < · : key → key → Prop)]
 
 unsafe def of_list : List (key × data) → rb_map key data
-| [] => mk key data
-| (k, v) :: ls => insert (of_list ls) k v
+  | [] => mk key data
+  | (k, v) :: ls => insert (of_list ls) k v
 
 unsafe def set_of_list : List key → rb_map key Unit
-| [] => mk _ _
-| x :: xs => insert (set_of_list xs) x ()
+  | [] => mk _ _
+  | x :: xs => insert (set_of_list xs) x ()
 
 unsafe def map (f : data → data') (m : rb_map key data) : rb_map key data' :=
   fold m (mk _ _) fun k v res => insert res k (f v)
@@ -80,9 +80,9 @@ unsafe def for (m : rb_map key data) (f : data → data') : rb_map key data' :=
   map f m
 
 unsafe def filter (m : rb_map key data) (f : data → Prop) [DecidablePred f] :=
-  fold m (mk _ _)$ fun a b m' => if f b then insert m' a b else m'
+  fold m (mk _ _) $ fun a b m' => if f b then insert m' a b else m'
 
-end 
+end
 
 end RbMap
 
@@ -95,8 +95,8 @@ unsafe def nat_map (data : Type) :=
 
 namespace NatMap
 
-export RbMap(mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list set_of_list map
-  for filter)
+export
+  RbMap (mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list set_of_list map for filter)
 
 unsafe def mk (data : Type) : nat_map data :=
   rb_map.mk Nat data
@@ -108,7 +108,7 @@ unsafe def mk_nat_map {data : Type} : nat_map data :=
 
 open RbMap Prod
 
-section 
+section
 
 variable {key : Type} {data : Type} [has_to_format key] [has_to_format data]
 
@@ -117,13 +117,13 @@ private unsafe def format_key_data (k : key) (d : data) (first : Bool) : format 
 
 unsafe instance : has_to_format (rb_map key data) :=
   ⟨fun m =>
-      group$
-        to_fmt "⟨" ++ nest 1 (fst (fold m (to_fmt "", tt) fun k d p => (fst p ++ format_key_data k d (snd p), ff))) ++
-          to_fmt "⟩"⟩
+    group $
+      to_fmt "⟨" ++ nest 1 (fst (fold m (to_fmt "", tt) fun k d p => (fst p ++ format_key_data k d (snd p), ff))) ++
+        to_fmt "⟩"⟩
 
-end 
+end
 
-section 
+section
 
 variable {key : Type} {data : Type} [HasToString key] [HasToString data]
 
@@ -133,9 +133,9 @@ private unsafe def key_data_to_string (k : key) (d : data) (first : Bool) : Stri
 unsafe instance : HasToString (rb_map key data) :=
   ⟨fun m => "⟨" ++ fst (fold m ("", tt) fun k d p => (fst p ++ key_data_to_string k d (snd p), ff)) ++ "⟩"⟩
 
-end 
+end
 
-/-- a variant of rb_maps that stores a list of elements for each key.
+/--  a variant of rb_maps that stores a list of elements for each key.
    `find` returns the list of elements in the opposite order that they were inserted. -/
 unsafe def rb_lmap (key : Type) (data : Type) : Type :=
   rb_map key (List data)
@@ -143,11 +143,11 @@ unsafe def rb_lmap (key : Type) (data : Type) : Type :=
 namespace RbLmap
 
 protected unsafe def mk (key : Type) [LT key] [DecidableRel (· < · : key → key → Prop)] (data : Type) :
-  rb_lmap key data :=
+    rb_lmap key data :=
   rb_map.mk key (List data)
 
 unsafe def insert {key : Type} {data : Type} (rbl : rb_lmap key data) (k : key) (d : data) : rb_lmap key data :=
-  match rb_map.find rbl k with 
+  match rb_map.find rbl k with
   | none => rb_map.insert rbl k [d]
   | some l => rb_map.insert (rb_map.erase rbl k) k (d :: l)
 
@@ -158,7 +158,7 @@ unsafe def contains {key : Type} {data : Type} (rbl : rb_lmap key data) (k : key
   rb_map.contains rbl k
 
 unsafe def find {key : Type} {data : Type} (rbl : rb_lmap key data) (k : key) : List data :=
-  match rb_map.find rbl k with 
+  match rb_map.find rbl k with
   | none => []
   | some l => l
 
@@ -198,9 +198,8 @@ unsafe def to_list {key : Type} (s : rb_set key) : List key :=
 
 unsafe instance {key} [has_to_format key] : has_to_format (rb_set key) :=
   ⟨fun m =>
-      group$
-        to_fmt "{" ++ nest 1 (fst (fold m (to_fmt "", tt) fun k p => (fst p ++ format_key k (snd p), ff))) ++
-          to_fmt "}"⟩
+    group $
+      to_fmt "{" ++ nest 1 (fst (fold m (to_fmt "", tt) fun k p => (fst p ++ format_key k (snd p), ff))) ++ to_fmt "}"⟩
 
 end RbSet
 
@@ -214,8 +213,8 @@ unsafe def name_map (data : Type) :=
 
 namespace NameMap
 
-export Native.RbMap(mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list
-  set_of_list map for filter)
+export
+  Native.RbMap (mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list set_of_list map for filter)
 
 unsafe def mk (data : Type) : name_map data :=
   rb_map.mk_core data name.cmp
@@ -225,7 +224,7 @@ end NameMap
 unsafe def mk_name_map {data : Type} : name_map data :=
   name_map.mk data
 
-/-- An rb_map of `name`s. -/
+/--  An rb_map of `name`s. -/
 unsafe axiom name_set : Type
 
 unsafe axiom mk_name_set : name_set
@@ -252,7 +251,7 @@ unsafe def to_list (s : name_set) : List Name :=
 
 unsafe instance : has_to_format name_set :=
   ⟨fun m =>
-      group$ to_fmt "{" ++ nest 1 (fold m (to_fmt "", tt) fun k p => (p.1 ++ format_key k p.2, ff)).1 ++ to_fmt "}"⟩
+    group $ to_fmt "{" ++ nest 1 (fold m (to_fmt "", tt) fun k p => (p.1 ++ format_key k p.2, ff)).1 ++ to_fmt "}"⟩
 
 unsafe def of_list (l : List Name) : name_set :=
   List.foldlₓ name_set.insert mk_name_set l

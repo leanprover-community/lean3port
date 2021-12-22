@@ -1,8 +1,88 @@
 
 universe u w
 
-def Buffer (α : Type u) :=
-  Σ n, Arrayₓ n α
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+ (Command.declModifiers [] [] [] [] [] [])
+ (Command.def
+  "def"
+  (Command.declId `Buffer [])
+  (Command.optDeclSig [(Term.explicitBinder "(" [`α] [":" (Term.type "Type" [`u])] [] ")")] [])
+  (Command.declValSimple
+   ":="
+   (Init.Data.Sigma.Basic.«termΣ_,_»
+    "Σ"
+    (Lean.explicitBinders (Lean.unbracketedExplicitBinders [(Lean.binderIdent `n)] []))
+    ", "
+    (Term.app `Arrayₓ [`n `α]))
+   [])
+  []
+  []
+  []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declaration', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declaration', expected 'Lean.Parser.Command.declaration.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.def.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValSimple.antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Init.Data.Sigma.Basic.«termΣ_,_»
+   "Σ"
+   (Lean.explicitBinders (Lean.unbracketedExplicitBinders [(Lean.binderIdent `n)] []))
+   ", "
+   (Term.app `Arrayₓ [`n `α]))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Data.Sigma.Basic.«termΣ_,_»', expected 'antiquot'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  (Term.app `Arrayₓ [`n `α])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.app', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+  `α
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'many.antiquot_scope'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1024, term))
+  `n
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none, [anonymous]) <=? (some 1024, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+  `Arrayₓ
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'ident.antiquot'
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none, [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.explicitBinders', expected 'Mathlib.ExtendedBinder.extBinders'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.constant.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.constant'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure.antiquot'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+def Buffer ( α : Type u ) := Σ n , Arrayₓ n α
 
 def mkBuffer {α : Type u} : Buffer α :=
   ⟨0, { data := fun i => Finₓ.elim0 i }⟩
@@ -24,31 +104,29 @@ def to_array (b : Buffer α) : Arrayₓ b.size α :=
   b.2
 
 def push_back : Buffer α → α → Buffer α
-| ⟨n, a⟩, v => ⟨n+1, a.push_back v⟩
+  | ⟨n, a⟩, v => ⟨n+1, a.push_back v⟩
 
 def pop_back : Buffer α → Buffer α
-| ⟨0, a⟩ => ⟨0, a⟩
-| ⟨n+1, a⟩ => ⟨n, a.pop_back⟩
+  | ⟨0, a⟩ => ⟨0, a⟩
+  | ⟨n+1, a⟩ => ⟨n, a.pop_back⟩
 
 def read : ∀ b : Buffer α, Finₓ b.size → α
-| ⟨n, a⟩, i => a.read i
+  | ⟨n, a⟩, i => a.read i
 
 def write : ∀ b : Buffer α, Finₓ b.size → α → Buffer α
-| ⟨n, a⟩, i, v => ⟨n, a.write i v⟩
+  | ⟨n, a⟩, i, v => ⟨n, a.write i v⟩
 
 def read' [Inhabited α] : Buffer α → Nat → α
-| ⟨n, a⟩, i => a.read' i
+  | ⟨n, a⟩, i => a.read' i
 
 def write' : Buffer α → Nat → α → Buffer α
-| ⟨n, a⟩, i, v => ⟨n, a.write' i v⟩
+  | ⟨n, a⟩, i, v => ⟨n, a.write' i v⟩
 
-theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) : read b ⟨i, h⟩ = read' b i :=
-  by 
-    cases b <;> unfold read read' <;> simp [Arrayₓ.read_eq_read']
+theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) : read b ⟨i, h⟩ = read' b i := by
+  cases b <;> unfold read read' <;> simp [Arrayₓ.read_eq_read']
 
-theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) : write b ⟨i, h⟩ v = write' b i v :=
-  by 
-    cases b <;> unfold write write' <;> simp [Arrayₓ.write_eq_write']
+theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) : write b ⟨i, h⟩ v = write' b i v := by
+  cases b <;> unfold write write' <;> simp [Arrayₓ.write_eq_write']
 
 def to_list (b : Buffer α) : List α :=
   b.to_array.to_list
@@ -57,8 +135,8 @@ protected def toString (b : Buffer Charₓ) : Stringₓ :=
   b.to_array.to_list.as_string
 
 def append_list {α : Type u} : Buffer α → List α → Buffer α
-| b, [] => b
-| b, v :: vs => append_list (b.push_back v) vs
+  | b, [] => b
+  | b, v :: vs => append_list (b.push_back v) vs
 
 def append_string (b : Buffer Charₓ) (s : Stringₓ) : Buffer Charₓ :=
   b.append_list s.to_list
@@ -70,48 +148,47 @@ theorem lt_aux_2 {n : Nat} (h : 0 < n) : n - 1 < n :=
   Nat.sub_ltₓ h (Nat.succ_posₓ 0)
 
 theorem lt_aux_3 {n i} (h : (i+1) < n) : n - 2 - i < n :=
-  have  : n > 0 := lt_transₓ (Nat.zero_lt_succₓ i) h 
-  have  : n - 2 < n :=
+  have : n > 0 := lt_transₓ (Nat.zero_lt_succₓ i) h
+  have : n - 2 < n :=
     Nat.sub_ltₓ this
-      (by 
+      (by
         decide)
   lt_of_le_of_ltₓ (Nat.sub_leₓ _ _) this
 
 def append_array {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Arrayₓ n α → ∀ i : Nat, i < n → Buffer α
-| ⟨m, b⟩, a, 0, _ =>
-  let i : Finₓ n := ⟨n - 1, lt_aux_2 nz⟩
-  ⟨m+1, b.push_back (a.read i)⟩
-| ⟨m, b⟩, a, j+1, h =>
-  let i : Finₓ n := ⟨n - 2 - j, lt_aux_3 h⟩
-  append_array ⟨m+1, b.push_back (a.read i)⟩ a j (lt_aux_1 h)
+  | ⟨m, b⟩, a, 0, _ =>
+    let i : Finₓ n := ⟨n - 1, lt_aux_2 nz⟩
+    ⟨m+1, b.push_back (a.read i)⟩
+  | ⟨m, b⟩, a, j+1, h =>
+    let i : Finₓ n := ⟨n - 2 - j, lt_aux_3 h⟩
+    append_array ⟨m+1, b.push_back (a.read i)⟩ a j (lt_aux_1 h)
 
 protected def append {α : Type u} : Buffer α → Buffer α → Buffer α
-| b, ⟨0, a⟩ => b
-| b, ⟨n+1, a⟩ => append_array (Nat.zero_lt_succₓ _) b a n (Nat.lt_succ_selfₓ _)
+  | b, ⟨0, a⟩ => b
+  | b, ⟨n+1, a⟩ => append_array (Nat.zero_lt_succₓ _) b a n (Nat.lt_succ_selfₓ _)
 
 def iterate : ∀ b : Buffer α, β → (Finₓ b.size → α → β → β) → β
-| ⟨_, a⟩, b, f => a.iterate b f
+  | ⟨_, a⟩, b, f => a.iterate b f
 
 def foreach : ∀ b : Buffer α, (Finₓ b.size → α → α) → Buffer α
-| ⟨n, a⟩, f => ⟨n, a.foreach f⟩
+  | ⟨n, a⟩, f => ⟨n, a.foreach f⟩
 
-/-- Monadically map a function over the buffer. -/
+/--  Monadically map a function over the buffer. -/
 @[inline]
-def mmap {m} [Monadₓ m] (b : Buffer α) (f : α → m β) : m (Buffer β) :=
-  do 
-    let b' ← b.2.mmap f 
-    return b'.to_buffer
+def mmap {m} [Monadₓ m] (b : Buffer α) (f : α → m β) : m (Buffer β) := do
+  let b' ← b.2.mmap f
+  return b'.to_buffer
 
-/-- Map a function over the buffer. -/
+/--  Map a function over the buffer. -/
 @[inline]
 def map : Buffer α → (α → β) → Buffer β
-| ⟨n, a⟩, f => ⟨n, a.map f⟩
+  | ⟨n, a⟩, f => ⟨n, a.map f⟩
 
 def foldl : Buffer α → β → (α → β → β) → β
-| ⟨_, a⟩, b, f => a.foldl b f
+  | ⟨_, a⟩, b, f => a.foldl b f
 
 def rev_iterate : ∀ b : Buffer α, β → (Finₓ b.size → α → β → β) → β
-| ⟨_, a⟩, b, f => a.rev_iterate b f
+  | ⟨_, a⟩, b, f => a.rev_iterate b f
 
 def take (b : Buffer α) (n : Nat) : Buffer α :=
   if h : n ≤ b.size then ⟨n, b.to_array.take n h⟩ else b
@@ -152,7 +229,7 @@ def List.toBuffer {α : Type u} (l : List α) : Buffer α :=
 def CharBuffer :=
   Buffer Charₓ
 
-/-- Convert a format object into a character buffer with the provided
+/--  Convert a format object into a character buffer with the provided
     formatting options. -/
 unsafe axiom format.to_buffer : format → options → Buffer Charₓ
 

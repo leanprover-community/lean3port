@@ -1,13 +1,13 @@
-prelude 
-import Leanbin.Init.Logic 
-import Leanbin.Init.Data.Repr 
-import Leanbin.Init.Meta.Format 
-import Leanbin.Init.Meta.ContradictionTactic 
-import Leanbin.Init.Meta.ConstructorTactic 
-import Leanbin.Init.Meta.RelationTactics 
+prelude
+import Leanbin.Init.Logic
+import Leanbin.Init.Data.Repr
+import Leanbin.Init.Meta.Format
+import Leanbin.Init.Meta.ContradictionTactic
+import Leanbin.Init.Meta.ConstructorTactic
+import Leanbin.Init.Meta.RelationTactics
 import Leanbin.Init.Meta.InjectionTactic
 
-/--  We can specify the scope of application of some tactics using
+/--   We can specify the scope of application of some tactics using
    the following type.
 
    - all : all occurrences of a given term are considered.
@@ -25,25 +25,25 @@ inductive Occurrences
 open Occurrences
 
 def Occurrences.contains : Occurrences → Nat → Bool
-| all, p => tt
-| Occurrences.pos ps, p => p ∈ ps
-| Occurrences.neg ps, p => p ∉ ps
+  | all, p => tt
+  | Occurrences.pos ps, p => p ∈ ps
+  | Occurrences.neg ps, p => p ∉ ps
 
 instance : Inhabited Occurrences :=
   ⟨all⟩
 
 def occurrencesRepr : Occurrences → Stringₓ
-| Occurrences.all => "*"
-| Occurrences.pos l => reprₓ l
-| Occurrences.neg l => "-" ++ reprₓ l
+  | Occurrences.all => "*"
+  | Occurrences.pos l => reprₓ l
+  | Occurrences.neg l => "-" ++ reprₓ l
 
 instance : HasRepr Occurrences :=
   ⟨occurrencesRepr⟩
 
 unsafe def occurrences_to_format : Occurrences → format
-| Occurrences.all => to_fmt "*"
-| Occurrences.pos l => to_fmt l
-| Occurrences.neg l => to_fmt "-" ++ to_fmt l
+  | Occurrences.all => to_fmt "*"
+  | Occurrences.pos l => to_fmt l
+  | Occurrences.neg l => to_fmt "-" ++ to_fmt l
 
 unsafe instance : has_to_format Occurrences :=
   ⟨occurrences_to_format⟩

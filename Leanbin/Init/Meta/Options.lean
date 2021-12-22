@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Meta.Name
 
 universe u

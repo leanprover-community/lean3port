@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Data.Fin.Basic
 
 open Nat
@@ -23,6 +23,6 @@ def to_nat (c : Unsigned) : Nat :=
 end Unsigned
 
 instance : DecidableEq Unsigned :=
-  have  : DecidableEq (Finₓ unsignedSz) := Finₓ.decidableEq _ 
+  have : DecidableEq (Finₓ unsignedSz) := Finₓ.decidableEq _
   this
 

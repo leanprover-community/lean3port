@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Logic
 
 theorem punit_eq (a b : PUnit) : a = b :=
@@ -13,6 +13,5 @@ instance : Subsingleton PUnit :=
 instance : Inhabited PUnit :=
   ⟨PUnit.unit⟩
 
-instance : DecidableEq PUnit :=
-  fun a b => is_true (punit_eq a b)
+instance : DecidableEq PUnit := fun a b => is_true (punit_eq a b)
 

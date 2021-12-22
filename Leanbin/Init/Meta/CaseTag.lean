@@ -1,4 +1,4 @@
-prelude 
+prelude
 import Leanbin.Init.Meta.Tactic
 
 /-!
@@ -39,7 +39,7 @@ namespace Tactic
 
 namespace Interactive
 
-/--
+/-- 
 A case tag carries the following information:
 
 1. A list of names identifying the case ('case names'). This is usually a list
@@ -124,29 +124,29 @@ inductive case_tag
 
 open CaseTag
 
-section 
+section
 
 open Format
 
 protected unsafe def case_tag.to_format : case_tag → format
-| pi names num_arguments =>
-  join ["(pi ", group$ nest 4$ join$ List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
-| hyps names arguments =>
-  join ["(hyps ", group$ nest 6$ join$ List.intersperse line [names.to_format, arguments.to_format], ")"]
+  | pi names num_arguments =>
+    join ["(pi ", group $ nest 4 $ join $ List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
+  | hyps names arguments =>
+    join ["(hyps ", group $ nest 6 $ join $ List.intersperse line [names.to_format, arguments.to_format], ")"]
 
-end 
+end
 
 protected def case_tag.repr : case_tag → Stringₓ
-| pi names num_arguments => "(pi " ++ names.repr ++ " " ++ num_arguments.repr ++ ")"
-| hyps names arguments => "(hyps " ++ names.repr ++ " " ++ arguments.repr ++ ")"
+  | pi names num_arguments => "(pi " ++ names.repr ++ " " ++ num_arguments.repr ++ ")"
+  | hyps names arguments => "(hyps " ++ names.repr ++ " " ++ arguments.repr ++ ")"
 
 protected def case_tag.to_string : case_tag → Stringₓ
-| pi names num_arguments => "(pi " ++ names.to_string ++ " " ++ toString num_arguments ++ ")"
-| hyps names arguments => "(hyps " ++ names.to_string ++ " " ++ arguments.to_string ++ ")"
+  | pi names num_arguments => "(pi " ++ names.to_string ++ " " ++ toString num_arguments ++ ")"
+  | hyps names arguments => "(hyps " ++ names.to_string ++ " " ++ arguments.to_string ++ ")"
 
 namespace CaseTag
 
-open name(mk_string mk_numeral)
+open name (mk_string mk_numeral)
 
 unsafe instance : has_to_format case_tag :=
   ⟨case_tag.to_format⟩
@@ -157,17 +157,17 @@ instance : HasRepr case_tag :=
 instance : HasToString case_tag :=
   ⟨case_tag.to_string⟩
 
-/--
+/-- 
 The constructor names associated with a case tag.
 -/
 unsafe def case_names : case_tag → List Name
-| pi ns _ => ns
-| hyps ns _ => ns
+  | pi ns _ => ns
+  | hyps ns _ => ns
 
 private unsafe def render_arguments (args : List Name) : List Name :=
   args.map (Name.mk_string "_arg")
 
-/--
+/-- 
 Renders a case tag to a goal tag (i.e. a list of names), according to the
 following schema:
 
@@ -182,10 +182,10 @@ following schema:
   ```
 -/
 unsafe def render : case_tag → List Name
-| pi names num_arguments => mk_numeral (Unsigned.ofNat' num_arguments) `_case.pi :: names
-| hyps names arguments => `_case.hyps :: render_arguments arguments ++ names
+  | pi names num_arguments => mk_numeral (Unsigned.ofNat' num_arguments) `_case.pi :: names
+  | hyps names arguments => `_case.hyps :: render_arguments arguments ++ names
 
-/--
+/-- 
 Creates a `pi` case tag from an input tag `in_tag`. The `names` of the resulting
 tag are the non-internal names in `in_tag` (in the order in which they appear in
 `in_tag`). `num_arguments` is the number of arguments of the resulting tag.
@@ -193,7 +193,7 @@ tag are the non-internal names in `in_tag` (in the order in which they appear in
 unsafe def from_tag_pi (in_tag : tag) (num_arguments : ℕ) : case_tag :=
   pi (in_tag.filter fun n => ¬n.is_internal) num_arguments
 
-/--
+/-- 
 Creates a `hyps` case tag from an input tag `in_tag`. The `names` of the
 resulting tag are the non-internal names in `in_tag` (in the order in which they
 appear in `in_tag`). `arguments` is the list of unique hypothesis names of the
@@ -203,34 +203,32 @@ unsafe def from_tag_hyps (in_tag : tag) (arguments : List Name) : case_tag :=
   hyps (in_tag.filter fun n => ¬n.is_internal) arguments
 
 private unsafe def parse_marker : Name → Option (Option Nat)
-| mk_numeral n `_case.pi => some (some n.to_nat)
-| `_case.hyps => some none
-| _ => none
+  | mk_numeral n `_case.pi => some (some n.to_nat)
+  | `_case.hyps => some none
+  | _ => none
 
 private unsafe def parse_arguments : List Name → List Name × List Name
-| [] => ⟨[], []⟩
-| mk_string "_arg" n :: ns =>
-  let ⟨args, rest⟩ := parse_arguments ns
-  ⟨n :: args, rest⟩
-| ns => ⟨[], ns⟩
+  | [] => ⟨[], []⟩
+  | mk_string "_arg" n :: ns =>
+    let ⟨args, rest⟩ := parse_arguments ns
+    ⟨n :: args, rest⟩
+  | ns => ⟨[], ns⟩
 
-/--
+/-- 
 Parses a case tag from the list of names produced by `render`.
 -/
 unsafe def parse : List Name → Option case_tag
-| [] => none
-| mk_numeral n `_case.pi :: ns =>
-  do 
-    guardₓ$ ns.all fun n => ¬n.is_internal 
-    some$ pi ns n.to_nat
-| `_case.hyps :: ns =>
-  do 
-    let ⟨args, ns⟩ := parse_arguments ns 
-    guardₓ$ ns.all fun n => ¬n.is_internal 
-    some$ hyps ns args
-| _ => none
+  | [] => none
+  | mk_numeral n `_case.pi :: ns => do
+    guardₓ $ ns.all fun n => ¬n.is_internal
+    some $ pi ns n.to_nat
+  | `_case.hyps :: ns => do
+    let ⟨args, ns⟩ := parse_arguments ns
+    guardₓ $ ns.all fun n => ¬n.is_internal
+    some $ hyps ns args
+  | _ => none
 
-/--
+/-- 
 Indicates the result of matching a list of names against the names of a case
 tag. See `match_tag`.
 -/
@@ -243,7 +241,7 @@ open MatchResult
 
 namespace MatchResult
 
-/--
+/-- 
 The 'minimum' of two match results:
 
 - If any of the arguments is `no_match`, the result is `no_match`.
@@ -251,12 +249,12 @@ The 'minimum' of two match results:
 - Otherwise (iff both arguments are `exact_match`), the result is `exact_match`.
 -/
 def combine : match_result → match_result → match_result
-| exact_match, exact_match => exact_match
-| exact_match, fuzzy_match => fuzzy_match
-| exact_match, no_match => no_match
-| fuzzy_match, no_match => no_match
-| fuzzy_match, _ => fuzzy_match
-| no_match, _ => no_match
+  | exact_match, exact_match => exact_match
+  | exact_match, fuzzy_match => fuzzy_match
+  | exact_match, no_match => no_match
+  | fuzzy_match, no_match => no_match
+  | fuzzy_match, _ => fuzzy_match
+  | no_match, _ => no_match
 
 end MatchResult
 
@@ -264,12 +262,12 @@ private unsafe def name_match (suffix : Name) (n : Name) : match_result :=
   if suffix = n then exact_match else if suffix.is_suffix_of n then fuzzy_match else no_match
 
 private unsafe def names_match : List Name → List Name → match_result
-| [], [] => exact_match
-| [], _ => fuzzy_match
-| _ :: _, [] => no_match
-| n :: ns, n' :: ns' => (name_match n n').combine (names_match ns ns')
+  | [], [] => exact_match
+  | [], _ => fuzzy_match
+  | _ :: _, [] => no_match
+  | n :: ns, n' :: ns' => (name_match n n').combine (names_match ns ns')
 
-/--
+/-- 
 Match the `names` of a case tag against a user-supplied list of names `ns`. For
 this purpose, we consider the `names` in reverse order, i.e. in the order in
 which they are displayed to the user. The matching then uses the following

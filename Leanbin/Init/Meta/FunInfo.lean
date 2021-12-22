@@ -1,19 +1,19 @@
-prelude 
-import Leanbin.Init.Meta.Tactic 
-import Leanbin.Init.Meta.Format 
+prelude
+import Leanbin.Init.Meta.Tactic
+import Leanbin.Init.Meta.Format
 import Leanbin.Init.Function
 
-structure ParamInfo where 
-  isImplicit : Bool 
-  isInstImplicit : Bool 
-  isProp : Bool 
-  hasFwdDeps : Bool 
+structure ParamInfo where
+  isImplicit : Bool
+  isInstImplicit : Bool
+  isProp : Bool
+  hasFwdDeps : Bool
   backDeps : List Nat
 
 open Format List Decidable
 
 private unsafe def ppfield {α : Type} [has_to_format α] (fname : Stringₓ) (v : α) : format :=
-  group$ to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length+4) (to_fmt v)
+  group $ to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length+4) (to_fmt v)
 
 private unsafe def concat_fields (f₁ f₂ : format) : format :=
   if is_nil f₁ then f₂ else if is_nil f₂ then f₁ else f₁ ++ to_fmt "," ++ line ++ f₂
@@ -21,27 +21,27 @@ private unsafe def concat_fields (f₁ f₂ : format) : format :=
 local infixl:65 "+++" => concat_fields
 
 unsafe def param_info.to_format : ParamInfo → format
-| ParamInfo.mk i ii p d ds =>
-  group ∘ cbrace$
-    when i
-              "implicit"+++when ii
-              "inst_implicit"+++when p
-            "prop"+++when d "has_fwd_deps"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
+  | ParamInfo.mk i ii p d ds =>
+    group ∘ cbrace $
+      when i
+                "implicit"+++when ii
+                "inst_implicit"+++when p
+              "prop"+++when d "has_fwd_deps"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
 
 unsafe instance : has_to_format ParamInfo :=
   has_to_format.mk param_info.to_format
 
-structure FunInfo where 
-  params : List ParamInfo 
+structure FunInfo where
+  params : List ParamInfo
   resultDeps : List Nat
 
 unsafe def fun_info_to_format : FunInfo → format
-| FunInfo.mk ps ds => group ∘ dcbrace$ ppfield "params" ps+++ppfield "result_deps" ds
+  | FunInfo.mk ps ds => group ∘ dcbrace $ ppfield "params" ps+++ppfield "result_deps" ds
 
 unsafe instance : has_to_format FunInfo :=
   has_to_format.mk fun_info_to_format
 
-/--
+/-- 
   specialized is true if the result of fun_info has been specifialized
   using this argument.
   For example, consider the function
@@ -63,25 +63,25 @@ unsafe instance : has_to_format FunInfo :=
 
    Moreover, we only set is_specialized IF another parameter
    becomes a subsingleton -/
-structure SubsingletonInfo where 
-  specialized : Bool 
+structure SubsingletonInfo where
+  specialized : Bool
   isSubsingleton : Bool
 
 unsafe def subsingleton_info_to_format : SubsingletonInfo → format
-| SubsingletonInfo.mk s ss => group ∘ cbrace$ when s "specialized"+++when ss "subsingleton"
+  | SubsingletonInfo.mk s ss => group ∘ cbrace $ when s "specialized"+++when ss "subsingleton"
 
 unsafe instance : has_to_format SubsingletonInfo :=
   has_to_format.mk subsingleton_info_to_format
 
 namespace Tactic
 
-/-- If nargs is not none, then return information assuming the function has only nargs arguments. -/
+/--  If nargs is not none, then return information assuming the function has only nargs arguments. -/
 unsafe axiom get_fun_info (f : expr) (nargs : Option Nat := none) (md := semireducible) : tactic FunInfo
 
 unsafe axiom get_subsingleton_info (f : expr) (nargs : Option Nat := none) (md := semireducible) :
-  tactic (List SubsingletonInfo)
+    tactic (List SubsingletonInfo)
 
-/-- `get_spec_subsingleton_info t` return subsingleton parameter
+/--  `get_spec_subsingleton_info t` return subsingleton parameter
    information for the function application t of the form
       `f a_1 ... a_n`.
 
@@ -102,19 +102,18 @@ unsafe axiom get_spec_subsingleton_info (t : expr) (md := semireducible) : tacti
 unsafe axiom get_spec_prefix_size (t : expr) (nargs : Nat) (md := semireducible) : tactic Nat
 
 private unsafe def is_next_explicit : List ParamInfo → Bool
-| [] => tt
-| p :: ps => bnot p.is_implicit && bnot p.is_inst_implicit
+  | [] => tt
+  | p :: ps => bnot p.is_implicit && bnot p.is_inst_implicit
 
 unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) : List expr → List ParamInfo → α → tactic α
-| [], _, a => return a
-| e :: es, ps, a =>
-  if is_next_explicit ps then f a e >>= fold_explicit_args_aux es ps.tail else fold_explicit_args_aux es ps.tail a
+  | [], _, a => return a
+  | e :: es, ps, a =>
+    if is_next_explicit ps then f a e >>= fold_explicit_args_aux es ps.tail else fold_explicit_args_aux es ps.tail a
 
 unsafe def fold_explicit_args {α} (e : expr) (a : α) (f : α → expr → tactic α) : tactic α :=
-  if e.is_app then
-    do 
-      let info ← get_fun_info e.get_app_fn (some e.get_app_num_args)
-      fold_explicit_args_aux f e.get_app_args info.params a
+  if e.is_app then do
+    let info ← get_fun_info e.get_app_fn (some e.get_app_num_args)
+    fold_explicit_args_aux f e.get_app_args info.params a
   else return a
 
 end Tactic

@@ -1,5 +1,5 @@
-prelude 
-import Leanbin.Init.Data.Default 
+prelude
+import Leanbin.Init.Data.Default
 import Leanbin.Init.Meta.Float
 
 unsafe inductive json : Type
@@ -36,20 +36,20 @@ protected unsafe axiom parse : Stringₓ → Option json
 protected unsafe axiom unparse : json → Stringₓ
 
 unsafe def to_format : json → format
-| of_string s => Stringₓ.quote s
-| of_int i => toString i
-| of_float f => toString f
-| of_bool tt => "true"
-| of_bool ff => "false"
-| null => "null"
-| object kvs =>
-  "{ " ++
-      (format.group$
-        format.nest 2$
-          format.join$
-            List.intersperse (", " ++ format.line)$ kvs.map$ fun ⟨k, v⟩ => Stringₓ.quote k ++ ":" ++ to_format v) ++
-    "}"
-| Arrayₓ js => list.to_format$ js.map to_format
+  | of_string s => Stringₓ.quote s
+  | of_int i => toString i
+  | of_float f => toString f
+  | of_bool tt => "true"
+  | of_bool ff => "false"
+  | null => "null"
+  | object kvs =>
+    "{ " ++
+        (format.group $
+          format.nest 2 $
+            format.join $
+              List.intersperse (", " ++ format.line) $ kvs.map $ fun ⟨k, v⟩ => Stringₓ.quote k ++ ":" ++ to_format v) ++
+      "}"
+  | Arrayₓ js => list.to_format $ js.map to_format
 
 unsafe instance : has_to_format json :=
   ⟨to_format⟩

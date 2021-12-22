@@ -1,5 +1,5 @@
-prelude 
-import Leanbin.Init.Data.Subtype.Basic 
+prelude
+import Leanbin.Init.Data.Subtype.Basic
 import Leanbin.Init.Funext
 
 namespace Classical
@@ -9,7 +9,7 @@ universe u v
 axiom choice {α : Sort u} : Nonempty α → α
 
 noncomputable irreducible_def indefinite_description {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
-  choice$
+  choice $
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
 
@@ -41,7 +41,7 @@ private theorem u : Prop :=
 private theorem v : Prop :=
   some exV
 
--- ././Mathport/Syntax/Translate/Basic.lean:168:9: warning: unsupported option type_context.unfold_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:169:9: warning: unsupported option type_context.unfold_lemmas
 set_option type_context.unfold_lemmas true
 
 private theorem u_def : U u :=
@@ -55,19 +55,18 @@ private theorem not_uv_or_p : u ≠ v ∨ p :=
     (fun hut : u = True =>
       Or.elim v_def
         (fun hvf : v = False =>
-          have hne : u ≠ v := hvf.symm ▸ hut.symm ▸ true_ne_false 
+          have hne : u ≠ v := hvf.symm ▸ hut.symm ▸ true_ne_false
           Or.inl hne)
         Or.inr)
     Or.inr
 
 private theorem p_implies_uv (hp : p) : u = v :=
   have hpred : U = V :=
-    funext
-      fun x : Prop =>
-        have hl : x = True ∨ p → x = False ∨ p := fun a => Or.inr hp 
-        have hr : x = False ∨ p → x = True ∨ p := fun a => Or.inr hp 
-        show (x = True ∨ p) = (x = False ∨ p) from propext (Iff.intro hl hr)
-  have h₀ : ∀ exU exV, @some _ U exU = @some _ V exV := hpred ▸ fun exU exV => rfl 
+    funext fun x : Prop =>
+      have hl : x = True ∨ p → x = False ∨ p := fun a => Or.inr hp
+      have hr : x = False ∨ p → x = True ∨ p := fun a => Or.inr hp
+      show (x = True ∨ p) = (x = False ∨ p) from propext (Iff.intro hl hr)
+  have h₀ : ∀ exU exV, @some _ U exU = @some _ V exV := hpred ▸ fun exU exV => rfl
   show u = v from h₀ _ _
 
 theorem em : p ∨ ¬p :=
@@ -76,7 +75,7 @@ theorem em : p ∨ ¬p :=
 end Diaconescu
 
 theorem exists_true_of_nonempty {α : Sort u} : Nonempty α → ∃ x : α, True
-| ⟨x⟩ => ⟨x, trivialₓ⟩
+  | ⟨x⟩ => ⟨x, trivialₓ⟩
 
 noncomputable def inhabited_of_nonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
   ⟨choice h⟩
@@ -85,7 +84,7 @@ noncomputable def inhabited_of_exists {α : Sort u} {p : α → Prop} (h : ∃ x
   inhabited_of_nonempty (Exists.elim h fun w hw => ⟨w⟩)
 
 noncomputable def prop_decidable (a : Prop) : Decidable a :=
-  choice$ Or.elim (em a) (fun ha => ⟨is_true ha⟩) fun hna => ⟨is_false hna⟩
+  choice $ Or.elim (em a) (fun ha => ⟨is_true ha⟩) fun hna => ⟨is_false hna⟩
 
 attribute [local instance] prop_decidable
 
@@ -94,11 +93,10 @@ noncomputable def decidable_inhabited (a : Prop) : Inhabited (Decidable a) :=
 
 attribute [local instance] decidable_inhabited
 
-noncomputable def type_decidable_eq (α : Sort u) : DecidableEq α :=
-  fun x y => prop_decidable (x = y)
+noncomputable def type_decidable_eq (α : Sort u) : DecidableEq α := fun x y => prop_decidable (x = y)
 
 noncomputable def type_decidable (α : Sort u) : Psum α (α → False) :=
-  match prop_decidable (Nonempty α) with 
+  match prop_decidable (Nonempty α) with
   | is_true hp => Psum.inl (@Inhabited.default _ (inhabited_of_nonempty hp))
   | is_false hn => Psum.inr fun a => absurd (Nonempty.intro a) hn
 
@@ -122,11 +120,11 @@ theorem epsilon_singleton {α : Sort u} (x : α) : (@epsilon α ⟨x⟩ fun y =>
   @epsilon_spec α (fun y => y = x) ⟨x, rfl⟩
 
 theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → Prop} (h : ∀ x, ∃ y, r x y) :
-  ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
+    ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
   ⟨_, fun x => some_spec (h x)⟩
 
 theorem skolem {α : Sort u} {b : α → Sort v} {p : ∀ x, b x → Prop} :
-  (∀ x, ∃ y, p x y) ↔ ∃ f : ∀ x, b x, ∀ x, p x (f x) :=
+    (∀ x, ∃ y, p x y) ↔ ∃ f : ∀ x, b x, ∀ x, p x (f x) :=
   ⟨axiom_of_choice, fun ⟨f, hw⟩ x => ⟨f x, hw x⟩⟩
 
 theorem prop_complete (a : Prop) : a = True ∨ a = False :=

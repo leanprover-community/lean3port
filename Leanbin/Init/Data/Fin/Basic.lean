@@ -1,15 +1,15 @@
-prelude 
+prelude
 import Leanbin.Init.Data.Nat.Basic
 
 open Nat
 
-/-- `fin n` is the subtype of `ℕ` consisting of natural numbers strictly smaller than `n`. -/
+/--  `fin n` is the subtype of `ℕ` consisting of natural numbers strictly smaller than `n`. -/
 def Finₓ (n : ℕ) :=
   { i : ℕ // i < n }
 
 namespace Finₓ
 
-/-- Backwards-compatible constructor for `fin n`. -/
+/--  Backwards-compatible constructor for `fin n`. -/
 def mk {n : ℕ} i h : Finₓ n :=
   ⟨i, h⟩
 
@@ -32,26 +32,24 @@ instance decidable_le {n} (a b : Finₓ n) : Decidable (a ≤ b) :=
   Nat.decidableLe _ _
 
 def elim0.{u} {α : Finₓ 0 → Sort u} : ∀ x : Finₓ 0, α x
-| ⟨n, h⟩ => absurd h n.not_lt_zero
+  | ⟨n, h⟩ => absurd h n.not_lt_zero
 
 variable {n : Nat}
 
 theorem eq_of_veq : ∀ {i j : Finₓ n}, i.val = j.val → i = j
-| ⟨iv, ilt₁⟩, ⟨iv, ilt₂⟩, rfl => rfl
+  | ⟨iv, ilt₁⟩, ⟨iv, ilt₂⟩, rfl => rfl
 
 theorem veq_of_eq : ∀ {i j : Finₓ n}, i = j → i.val = j.val
-| ⟨iv, ilt⟩, _, rfl => rfl
+  | ⟨iv, ilt⟩, _, rfl => rfl
 
-theorem ne_of_vne {i j : Finₓ n} (h : i.val ≠ j.val) : i ≠ j :=
-  fun h' => absurd (veq_of_eq h') h
+theorem ne_of_vne {i j : Finₓ n} (h : i.val ≠ j.val) : i ≠ j := fun h' => absurd (veq_of_eq h') h
 
-theorem vne_of_ne {i j : Finₓ n} (h : i ≠ j) : i.val ≠ j.val :=
-  fun h' => absurd (eq_of_veq h') h
+theorem vne_of_ne {i j : Finₓ n} (h : i ≠ j) : i.val ≠ j.val := fun h' => absurd (eq_of_veq h') h
 
 end Finₓ
 
 open Finₓ
 
-instance (n : Nat) : DecidableEq (Finₓ n) :=
-  fun i j => decidableOfDecidableOfIff (Nat.decidableEq i.val j.val) ⟨eq_of_veq, veq_of_eq⟩
+instance (n : Nat) : DecidableEq (Finₓ n) := fun i j =>
+  decidableOfDecidableOfIff (Nat.decidableEq i.val j.val) ⟨eq_of_veq, veq_of_eq⟩
 

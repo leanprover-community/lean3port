@@ -1,4 +1,4 @@
-prelude 
-import Leanbin.Init.Data.Bool.Basic 
+prelude
+import Leanbin.Init.Data.Bool.Basic
 import Leanbin.Init.Data.Bool.Lemmas
 

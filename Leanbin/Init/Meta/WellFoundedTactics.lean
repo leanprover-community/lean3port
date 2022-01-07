@@ -5,20 +5,20 @@ import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.List.Instances
 import Leanbin.Init.Data.List.Qsort
 
-theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a+b :=
-  show (a+0) < a+b by
+theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
+  show a + 0 < a + b by
     apply Nat.add_lt_add_leftₓ
     assumption
 
-theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1+a :=
-  suffices 0 < a+1by
+theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
+  suffices 0 < a + 1 by
     simp [Nat.add_comm]
     assumption
   Nat.zero_lt_succₓ _
 
-theorem Nat.lt_add_rightₓ (a b c : Nat) : a < b → a < b+c := fun h => lt_of_lt_of_leₓ h (Nat.le_add_rightₓ _ _)
+theorem Nat.lt_add_rightₓ (a b c : Nat) : a < b → a < b + c := fun h => lt_of_lt_of_leₓ h (Nat.le_add_rightₓ _ _)
 
-theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c+b := fun h => lt_of_lt_of_leₓ h (Nat.le_add_leftₓ _ _)
+theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_leₓ h (Nat.le_add_leftₓ _ _)
 
 protected def Psum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : Psum α β → ℕ
   | Psum.inl a => sizeof a
@@ -60,8 +60,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | quote.1 (Psigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -93,7 +93,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
       | _ => return s
     else return s
 
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -107,7 +107,7 @@ section SimpleDecTac
 open Tactic Expr
 
 private unsafe def collect_add_args : expr → List expr
-  | quote.1 ((%%ₓa)+%%ₓb) => collect_add_args a ++ collect_add_args b
+  | quote.1 ((%%ₓa) + %%ₓb) => collect_add_args a ++ collect_add_args b
   | e => [e]
 
 private unsafe def mk_nat_add : List expr → tactic expr
@@ -115,7 +115,7 @@ private unsafe def mk_nat_add : List expr → tactic expr
   | [a] => return a
   | a :: as => do
     let rs ← mk_nat_add as
-    to_expr (pquote.1 ((%%ₓa)+%%ₓrs))
+    to_expr (pquote.1 ((%%ₓa) + %%ₓrs))
 
 private unsafe def mk_nat_add_add : List expr → List expr → tactic expr
   | [], b => mk_nat_add b
@@ -123,7 +123,7 @@ private unsafe def mk_nat_add_add : List expr → List expr → tactic expr
   | a, b => do
     let t ← mk_nat_add a
     let s ← mk_nat_add b
-    to_expr (pquote.1 ((%%ₓt)+%%ₓs))
+    to_expr (pquote.1 ((%%ₓt) + %%ₓs))
 
 private unsafe def get_add_fn (e : expr) : expr :=
   if is_napp_of e `has_add.add 4 then e.app_fn.app_fn else e
@@ -138,8 +138,8 @@ private unsafe def num_small_lt (a b : expr) : Bool :=
 private unsafe def sort_args (args : List expr) : List expr :=
   args.qsort num_small_lt
 
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 unsafe def cancel_nat_add_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   let ty ← infer_type lhs >>= whnf
@@ -164,9 +164,9 @@ unsafe def check_target_is_value_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   guardₓ lhs.is_numeral
 
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:771:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>
@@ -187,7 +187,7 @@ unsafe def default_dec_tac : tactic Unit :=
 
 end WellFoundedTactics
 
-/--  Argument for using_well_founded
+/-- Argument for using_well_founded
 
   The tactic `rel_tac` has to synthesize an element of type (has_well_founded A).
   The two arguments are: a local representing the function being defined by well

@@ -5,7 +5,7 @@ import Leanbin.Init.Control.Default
 
 universe u
 
-/--  An alternative to format that keeps structural information stored as a tag. -/
+/-- An alternative to format that keeps structural information stored as a tag. -/
 unsafe inductive tagged_format (α : Type u)
   | tag : α → tagged_format → tagged_format
   | compose : tagged_format → tagged_format → tagged_format
@@ -45,11 +45,11 @@ unsafe instance has_to_fmt : has_to_format (tagged_format α) :=
 
 end TaggedFormat
 
-/--  tagged_format with information about subexpressions. -/
+/-- tagged_format with information about subexpressions. -/
 unsafe def eformat :=
   tagged_format (Expr.Address × expr)
 
-/--  A special version of pp which also preserves expression boundary information.
+/-- A special version of pp which also preserves expression boundary information.
 
 On a tag ⟨e,a⟩, note that the given expr `e` is _not_ necessarily the subexpression of the root
 expression that `tactic_state.pp_tagged` was called with. For example if the subexpression is

@@ -3,7 +3,7 @@ import Leanbin.Init.Meta.Expr
 
 universe u
 
-/--  Quoted expressions. They can be converted into expressions by using a tactic. -/
+/-- Quoted expressions. They can be converted into expressions by using a tactic. -/
 @[reducible]
 unsafe def pexpr :=
   expr ff
@@ -18,17 +18,17 @@ unsafe axiom pexpr.mk_field_macro : pexpr → Name → pexpr
 
 unsafe axiom pexpr.mk_explicit : pexpr → pexpr
 
-/--  Choice macros are used to implement overloading. -/
+/-- Choice macros are used to implement overloading. -/
 unsafe axiom pexpr.is_choice_macro : pexpr → Bool
 
-/--  Information about unelaborated structure instance expressions. -/
+/-- Information about unelaborated structure instance expressions. -/
 unsafe structure structure_instance_info where
   struct : Option Name := none
   field_names : List Name
   field_values : List pexpr
   sources : List pexpr := []
 
-/--  Create a structure instance expression. -/
+/-- Create a structure instance expression. -/
 unsafe axiom pexpr.mk_structure_instance : structure_instance_info → pexpr
 
 unsafe axiom pexpr.get_structure_instance_info : pexpr → Option structure_instance_info

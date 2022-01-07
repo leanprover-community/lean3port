@@ -11,10 +11,10 @@ open Tactic
 def Simp.defaultMaxSteps :=
   10000000
 
-/--  Prefix the given `attr_name` with `"simp_attr"`. -/
+/-- Prefix the given `attr_name` with `"simp_attr"`. -/
 unsafe axiom mk_simp_attr_decl_name (attr_name : Name) : Name
 
-/--  Simp lemmas are used by the "simplifier" family of tactics.
+/-- Simp lemmas are used by the "simplifier" family of tactics.
 `simp_lemmas` is essentially a pair of tables `rb_map (expr_type × name) (priority_list simp_lemma)`.
 One of the tables is for congruences and one is for everything else.
 An individual simp lemma is:
@@ -26,20 +26,20 @@ An individual simp lemma is:
 -/
 unsafe axiom simp_lemmas : Type
 
-/--  Make a new table of simp lemmas -/
+/-- Make a new table of simp lemmas -/
 unsafe axiom simp_lemmas.mk : simp_lemmas
 
-/--  Merge the simp_lemma tables. -/
+/-- Merge the simp_lemma tables. -/
 unsafe axiom simp_lemmas.join : simp_lemmas → simp_lemmas → simp_lemmas
 
-/--  Remove the given lemmas from the table. Use the names of the lemmas. -/
+/-- Remove the given lemmas from the table. Use the names of the lemmas. -/
 unsafe axiom simp_lemmas.erase : simp_lemmas → List Name → simp_lemmas
 
-/--  Makes the default simp_lemmas table which is composed of all lemmas tagged with `simp`. -/
+/-- Makes the default simp_lemmas table which is composed of all lemmas tagged with `simp`. -/
 unsafe axiom simp_lemmas.mk_default : tactic simp_lemmas
 
 /--
- Add a simplification lemma by an expression `p`. Some conditions on `p` must hold for it to be added, see list below.
+Add a simplification lemma by an expression `p`. Some conditions on `p` must hold for it to be added, see list below.
 If your lemma is not being added, you can see the reasons by setting `set_option trace.simp_lemmas true`.
 
 - `p` must have the type `Π (h₁ : _) ... (hₙ : _), LHS ~ RHS` for some reflexive, transitive relation (usually `=`).
@@ -50,10 +50,10 @@ If your lemma is not being added, you can see the reasons by setting `set_option
  -/
 unsafe axiom simp_lemmas.add (s : simp_lemmas) (e : expr) (symm : Bool := False) : tactic simp_lemmas
 
-/--  Add a simplification lemma by it's declaration name. See `simp_lemmas.add` for more information.-/
+/-- Add a simplification lemma by it's declaration name. See `simp_lemmas.add` for more information.-/
 unsafe axiom simp_lemmas.add_simp (s : simp_lemmas) (id : Name) (symm : Bool := False) : tactic simp_lemmas
 
-/--  Adds a congruence simp lemma to simp_lemmas.
+/-- Adds a congruence simp lemma to simp_lemmas.
 A congruence simp lemma is a lemma that breaks the simplification down into separate problems.
 For example, to simplify `a ∧ b` to `c ∧ d`, we should try to simp `a` to `c` and `b` to `d`.
 For examples of congruence simp lemmas look for lemmas with the `@[congr]` attribute.
@@ -65,7 +65,7 @@ lemma and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ∧ b) ↔ (c ∧ d) := .
 -/
 unsafe axiom simp_lemmas.add_congr : simp_lemmas → Name → tactic simp_lemmas
 
-/--  Add expressions to a set of simp lemmas using `simp_lemmas.add`.
+/-- Add expressions to a set of simp lemmas using `simp_lemmas.add`.
 
   This is the new version of `simp_lemmas.append`,
   which also allows you to set the `symm` flag.
@@ -73,7 +73,7 @@ unsafe axiom simp_lemmas.add_congr : simp_lemmas → Name → tactic simp_lemmas
 unsafe def simp_lemmas.append_with_symm (s : simp_lemmas) (hs : List (expr × Bool)) : tactic simp_lemmas :=
   hs.mfoldl (fun s h => simp_lemmas.add s h.fst h.snd) s
 
-/--  Add expressions to a set of simp lemmas using `simp_lemmas.add`.
+/-- Add expressions to a set of simp lemmas using `simp_lemmas.add`.
 
   This is the backwards-compatibility version of `simp_lemmas.append_with_symm`,
   and sets all `symm` flags to `ff`.
@@ -81,7 +81,7 @@ unsafe def simp_lemmas.append_with_symm (s : simp_lemmas) (hs : List (expr × Bo
 unsafe def simp_lemmas.append (s : simp_lemmas) (hs : List expr) : tactic simp_lemmas :=
   hs.mfoldl (fun s h => simp_lemmas.add s h ff) s
 
-/--  `simp_lemmas.rewrite s e prove R` apply a simplification lemma from 's'
+/-- `simp_lemmas.rewrite s e prove R` apply a simplification lemma from 's'
 
    - 'e'     is the expression to be "simplified"
    - 'prove' is used to discharge proof obligations.
@@ -95,7 +95,7 @@ unsafe axiom simp_lemmas.rewrite (s : simp_lemmas) (e : expr) (prove : tactic Un
 unsafe axiom simp_lemmas.rewrites (s : simp_lemmas) (e : expr) (prove : tactic Unit := failed) (r : Name := `eq)
     (md := reducible) : tactic $ List (expr × expr)
 
-/--  `simp_lemmas.drewrite s e` tries to rewrite 'e' using only refl lemmas in 's' -/
+/-- `simp_lemmas.drewrite s e` tries to rewrite 'e' using only refl lemmas in 's' -/
 unsafe axiom simp_lemmas.drewrite (s : simp_lemmas) (e : expr) (md := reducible) : tactic expr
 
 unsafe axiom is_valid_simp_lemma_cnst : Name → tactic Bool
@@ -109,7 +109,7 @@ unsafe instance : has_to_tactic_format simp_lemmas :=
 
 namespace Tactic
 
-/--  Revert a local constant, change its type using `transform`.  -/
+/-- Revert a local constant, change its type using `transform`.  -/
 unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : tactic Unit := do
   let num_reverted : ℕ ← revert h
   let t ← target
@@ -123,7 +123,7 @@ unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : 
     | _ => fail "reverting hypothesis created neither a pi nor an elet expr (unreachable?)"
   intron num_reverted
 
-/--  `get_eqn_lemmas_for deps d` returns the automatically generated equational lemmas for definition d.
+/-- `get_eqn_lemmas_for deps d` returns the automatically generated equational lemmas for definition d.
    If deps is tt, then lemmas for automatically generated auxiliary declarations used to define d are also included. -/
 unsafe def get_eqn_lemmas_for (deps : Bool) (d : Name) : tactic (List Name) := do
   let env ← get_env
@@ -145,7 +145,7 @@ structure dsimp_config where
 
 end Tactic
 
-/--  (Definitional) Simplify the given expression using *only* reflexivity equality lemmas from the given set of lemmas.
+/-- (Definitional) Simplify the given expression using *only* reflexivity equality lemmas from the given set of lemmas.
    The resulting expression is definitionally equal to the input.
 
    The list `u` contains defintions to be delta-reduced, and projections to be reduced.-/
@@ -185,7 +185,7 @@ unsafe def dsimp_hyp (h : expr) (s : Option simp_lemmas := none) (u : List Name 
   let s ← get_simp_lemmas_or_default s
   revert_and_transform (fun e => s.dsimplify u e cfg) h
 
-/--  Tries to unfold `e` if it is a constant or a constant application.
+/-- Tries to unfold `e` if it is a constant or a constant application.
     Remark: this is not a recursive procedure. -/
 unsafe axiom dunfold_head (e : expr) (md := transparency.instances) : tactic expr
 
@@ -212,7 +212,7 @@ private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
       let f := e.get_app_fn
       f.is_constant && f.const_name.is_internal && f.const_name.get_prefix = c
 
-/--  Delta reduce the given constant names -/
+/-- Delta reduce the given constant names -/
 unsafe def delta (cs : List Name) (e : expr) (cfg : delta_config := {  }) : tactic expr :=
   let unfold (u : Unit) (e : expr) : tactic (Unit × expr × Bool) := do
     guardₓ (is_delta_target e cs)
@@ -238,7 +238,7 @@ unsafe def delta_hyp (cs : List Name) (h : expr) (cfg : delta_config := {  }) : 
 structure unfold_proj_config extends dsimp_config where
   md := transparency.instances
 
-/--  If `e` is a projection application, try to unfold it, otherwise fail. -/
+/-- If `e` is a projection application, try to unfold it, otherwise fail. -/
 unsafe axiom unfold_proj (e : expr) (md := transparency.instances) : tactic expr
 
 unsafe def unfold_projs (e : expr) (cfg : unfold_proj_config := {  }) : tactic expr :=
@@ -275,8 +275,7 @@ structure simp_config where
   memoize := tt
   traceLemmas := ff
 
-/-- 
-  `simplify s e cfg r prove` simplify `e` using `s` using bottom-up traversal.
+/-- `simplify s e cfg r prove` simplify `e` using `s` using bottom-up traversal.
   `discharger` is a tactic for dischaging new subgoals created by the simplifier.
    If it fails, the simplifier tries to discharge the subgoal by simplifying it to `true`.
 
@@ -301,8 +300,7 @@ unsafe def simp_hyp (s : simp_lemmas) (to_unfold : List Name := []) (h : expr) (
   let new_hyp ← replace_hyp h h_new_type pr
   return (new_hyp, lms)
 
-/-- 
-`ext_simplify_core a c s discharger pre post r e`:
+/-- `ext_simplify_core a c s discharger pre post r e`:
 
 - `a : α` - initial user data
 - `c : simp_config` - simp configuration options
@@ -431,8 +429,7 @@ unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : comma
   add_decl (declaration.defn n [] t v ReducibilityHints.abbrev ff)
   attribute.register n
 
-/-- 
-### Example usage:
+/-- ### Example usage:
 ```lean
 -- make a new simp attribute called "my_reduction"
 run_cmd mk_simp_attr `my_reduction

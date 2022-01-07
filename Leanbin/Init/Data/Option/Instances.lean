@@ -5,13 +5,10 @@ import Leanbin.Init.Control.Lawful
 
 universe u v
 
--- failed to format: format: uncaught backtrack exception
-instance
-  : IsLawfulMonad Option
-  where
-    id_map α x := Option.rec rfl ( fun x => rfl ) x
-      pure_bind α β x f := rfl
-      bind_assoc α β γ x f g := Option.rec rfl ( fun x => rfl ) x
+instance : IsLawfulMonad Option where
+  id_map := fun α x => Option.rec rfl (fun x => rfl) x
+  pure_bind := fun α β x f => rfl
+  bind_assoc := fun α β γ x f g => Option.rec rfl (fun x => rfl) x
 
 theorem Option.eq_of_eq_some {α : Type u} : ∀ {x y : Option α}, (∀ z, x = some z ↔ y = some z) → x = y
   | none, none, h => rfl

@@ -28,11 +28,10 @@ unsafe def execute (tac : smt_tactic Unit) : tactic Unit :=
 unsafe def execute_with (cfg : SmtConfig) (tac : smt_tactic Unit) : tactic Unit :=
   using_smt tac cfg
 
--- failed to format: format: uncaught backtrack exception
-unsafe
-  instance
-    : interactive.executor smt_tactic
-    where config_type := SmtConfig Inhabited := ⟨ { } { } ⟩ execute_with cfg tac := using_smt tac cfg
+unsafe instance : interactive.executor smt_tactic where
+  config_type := SmtConfig
+  Inhabited := ⟨{  }⟩
+  execute_with := fun cfg tac => using_smt tac cfg
 
 namespace Interactive
 
@@ -53,15 +52,13 @@ unsafe def intros : parse (ident)* → smt_tactic Unit
   | [] => smt_tactic.intros
   | hs => smt_tactic.intro_lst hs
 
-/-- 
-  Try to close main goal by using equalities implied by the congruence
+/-- Try to close main goal by using equalities implied by the congruence
   closure module.
 -/
 unsafe def close : smt_tactic Unit :=
   smt_tactic.close
 
-/-- 
-  Produce new facts using heuristic lemma instantiation based on E-matching.
+/-- Produce new facts using heuristic lemma instantiation based on E-matching.
   This tactic tries to match patterns from lemmas in the main goal with terms
   in the main goal. The set of lemmas is populated with theorems
   tagged with the attribute specified at smt_config.em_attr, and lemmas
@@ -245,15 +242,15 @@ unsafe def ematch_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
   let hs ← add_hinst_lemmas_from_pexprs reducible ff l hinst_lemmas.mk
   smt_tactic.ematch_using hs
 
-/--  Try the given tactic, and do nothing if it fails. -/
+/-- Try the given tactic, and do nothing if it fails. -/
 unsafe def try (t : itactic) : smt_tactic Unit :=
   smt_tactic.try t
 
-/--  Keep applying the given tactic until it fails. -/
+/-- Keep applying the given tactic until it fails. -/
 unsafe def iterate (t : itactic) : smt_tactic Unit :=
   smt_tactic.iterate t
 
-/--  Apply the given tactic to all remaining goals. -/
+/-- Apply the given tactic to all remaining goals. -/
 unsafe def all_goals (t : itactic) : smt_tactic Unit :=
   smt_tactic.all_goals t
 
@@ -263,7 +260,7 @@ unsafe def induction (p : parse tactic.interactive.cases_arg_p) (rec_name : pars
 
 open Tactic
 
-/--  Simplify the target type of the main goal. -/
+/-- Simplify the target type of the main goal. -/
 unsafe def simp (use_iota_eqn : parse $ (tk "!")?) (no_dflt : parse only_flag) (hs : parse simp_arg_list)
     (attr_names : parse with_ident_list) (cfg : simp_config_ext := {  }) : smt_tactic Unit :=
   tactic.interactive.simp use_iota_eqn none no_dflt hs attr_names (loc.ns [none]) cfg
@@ -279,11 +276,11 @@ unsafe def rsimp : smt_tactic Unit := do
 unsafe def add_simp_lemmas : smt_tactic Unit :=
   get_hinst_lemmas_for_attr `rsimp_attr >>= add_lemmas
 
-/--  Keep applying heuristic instantiation until the current goal is solved, or it fails. -/
+/-- Keep applying heuristic instantiation until the current goal is solved, or it fails. -/
 unsafe def eblast : smt_tactic Unit :=
   smt_tactic.eblast
 
-/--  Keep applying heuristic instantiation using the given lemmas until the current goal is solved, or it fails. -/
+/-- Keep applying heuristic instantiation using the given lemmas until the current goal is solved, or it fails. -/
 unsafe def eblast_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
   let hs ← add_hinst_lemmas_from_pexprs reducible ff l hinst_lemmas.mk
   smt_tactic.iterate (smt_tactic.ematch_using hs >> smt_tactic.try smt_tactic.close)

@@ -29,7 +29,7 @@ def is_punctuation (c : Charₓ) : Prop :=
 
 def to_lower (c : Charₓ) : Charₓ :=
   let n := to_nat c
-  if n ≥ 65 ∧ n ≤ 90 then of_nat (n+32) else c
+  if n ≥ 65 ∧ n ≤ 90 then of_nat (n + 32) else c
 
 instance decidable_is_whitespace : DecidablePred is_whitespace := by
   intro c

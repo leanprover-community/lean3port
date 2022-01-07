@@ -14,7 +14,7 @@ open Tactic
 
 open Widget
 
-/--  Accepts terms with the type `component tactic_state empty` or `html empty` and
+/-- Accepts terms with the type `component tactic_state empty` or `html empty` and
 renders them interactively. -/
 @[user_command]
 unsafe def show_widget_cmd (x : parse $ tk "#html") : parser Unit := do

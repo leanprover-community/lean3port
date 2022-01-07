@@ -10,7 +10,7 @@ open Tactic
 universe u
 
 /--
- `conv α` is a tactic for discharging goals of the form `lhs ~ rhs` for some relation `~` (usually equality) and fixed lhs, rhs.
+`conv α` is a tactic for discharging goals of the form `lhs ~ rhs` for some relation `~` (usually equality) and fixed lhs, rhs.
 Known in the literature as a __conversion__ tactic.
 So for example, if one had the lemma `p : x = y`, then the conversion for `p` would be one that solves `p`.
 -/
@@ -28,7 +28,7 @@ unsafe instance : Alternativeₓ conv := by
 
 namespace Conv
 
-/--  Applies the conversion `c`. Returns `(rhs,p)` where `p : r lhs rhs`. Throws away the return value of `c`.-/
+/-- Applies the conversion `c`. Returns `(rhs,p)` where `p : r lhs rhs`. Throws away the return value of `c`.-/
 unsafe def convert (c : conv Unit) (lhs : expr) (rel : Name := `eq) : tactic (expr × expr) := do
   let lhs_type ← infer_type lhs
   let rhs ← mk_meta_var lhs_type
@@ -53,7 +53,7 @@ unsafe def rhs : conv expr := do
   let (_, lhs, rhs) ← target_lhs_rhs
   return rhs
 
-/--  `⊢ lhs = rhs` ~~> `⊢ lhs' = rhs` using `h : lhs = lhs'`. -/
+/-- `⊢ lhs = rhs` ~~> `⊢ lhs' = rhs` using `h : lhs = lhs'`. -/
 unsafe def update_lhs (new_lhs : expr) (h : expr) : conv Unit := do
   transitivity
   rhs >>= unify new_lhs
@@ -61,21 +61,21 @@ unsafe def update_lhs (new_lhs : expr) (h : expr) : conv Unit := do
   let t ← target >>= instantiate_mvars
   change t
 
-/--  Change `lhs` to something definitionally equal to it. -/
+/-- Change `lhs` to something definitionally equal to it. -/
 unsafe def change (new_lhs : expr) : conv Unit := do
   let (r, lhs, rhs) ← target_lhs_rhs
   let new_target ← mk_app r [new_lhs, rhs]
   tactic.change new_target
 
-/--  Use reflexivity to prove. -/
+/-- Use reflexivity to prove. -/
 unsafe def skip : conv Unit :=
   reflexivity
 
-/--  Put LHS in WHNF. -/
+/-- Put LHS in WHNF. -/
 unsafe def whnf : conv Unit :=
   lhs >>= tactic.whnf >>= change
 
-/--  dsimp the LHS. -/
+/-- dsimp the LHS. -/
 unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : dsimp_config := {  }) : conv Unit := do
   let s ←
     match s with
@@ -102,7 +102,7 @@ private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List 
   | ks, as => fail "congr tactic failed, unsupported congruence lemma"
 
 /--
- Take the target equality `f x y = X` and try to apply the congruence lemma for `f` to it (namely `x = x' → y = y' → f x y = f x' y'`). -/
+Take the target equality `f x y = X` and try to apply the congruence lemma for `f` to it (namely `x = x' → y = y' → f x y = f x' y'`). -/
 unsafe def congr : conv Unit := do
   let (r, lhs, rhs) ← target_lhs_rhs
   guardₓ (r = `eq)
@@ -116,7 +116,7 @@ unsafe def congr : conv Unit := do
   set_goals $ new_gs ++ gs
   return ()
 
-/--  Create a conversion from the function extensionality tactic.-/
+/-- Create a conversion from the function extensionality tactic.-/
 unsafe def funext : conv Unit :=
   iterate' $ do
     let (r, lhs, rhs) ← target_lhs_rhs

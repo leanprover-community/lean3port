@@ -14,11 +14,11 @@ namespace Function
 
 variable {α : Sort u₁} {β : Sort u₂} {φ : Sort u₃} {δ : Sort u₄} {ζ : Sort u₁}
 
-/--  Composition of functions: `(f ∘ g) x = f (g x)`. -/
+/-- Composition of functions: `(f ∘ g) x = f (g x)`. -/
 @[inline, reducible]
 def comp (f : β → φ) (g : α → β) : α → φ := fun x => f (g x)
 
-/--  Composition of dependent functions: `(f ∘' g) x = f (g x)`, where type of `g x` depends on `x`
+/-- Composition of dependent functions: `(f ∘' g) x = f (g x)`, where type of `g x` depends on `x`
 and type of `f (g x)` depends on `x` and `g x`. -/
 @[inline, reducible]
 def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} y : β x, φ y) (g : ∀ x, β x) : ∀ x, φ (g x) :=
@@ -32,7 +32,7 @@ def comp_right (f : β → β → β) (g : α → β) : β → α → β := fun 
 @[reducible]
 def comp_left (f : β → β → β) (g : α → β) : α → β → β := fun a b => f (g a) b
 
-/--  Given functions `f : β → β → φ` and `g : α → β`, produce a function `α → α → φ` that evaluates
+/-- Given functions `f : β → β → φ` and `g : α → β`, produce a function `α → α → φ` that evaluates
 `g` on each argument, then applies `f` to the results. Can be used, e.g., to transfer a relation
 from `β` to `α`. -/
 @[reducible]
@@ -41,7 +41,7 @@ def on_fun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y 
 @[reducible]
 def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y => op (f x y) (g x y)
 
-/--  Constant `λ _, a`. -/
+/-- Constant `λ _, a`. -/
 @[reducible]
 def const (β : Sort u₂) (a : α) : β → α := fun x => a
 
@@ -80,14 +80,14 @@ theorem comp.right_id (f : α → β) : f ∘ id = f :=
 theorem comp_const_right (f : β → φ) (b : β) : f ∘ const α b = const α (f b) :=
   rfl
 
-/--  A function `f : α → β` is called injective if `f x = f y` implies `x = y`. -/
+/-- A function `f : α → β` is called injective if `f x = f y` implies `x = y`. -/
 def injective (f : α → β) : Prop :=
   ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂
 
 theorem injective.comp {g : β → φ} {f : α → β} (hg : injective g) (hf : injective f) : injective (g ∘ f) := fun a₁ a₂ =>
   fun h => hf (hg h)
 
-/--  A function `f : α → β` is called surjective if every `b : β` is equal to `f a`
+/-- A function `f : α → β` is called surjective if every `b : β` is equal to `f a`
 for some `a : α`. -/
 @[reducible]
 def surjective (f : α → β) : Prop :=
@@ -98,31 +98,32 @@ theorem surjective.comp {g : β → φ} {f : α → β} (hg : surjective g) (hf 
   Exists.elim (hg c) fun b hb =>
     Exists.elim (hf b) fun a ha => Exists.introₓ a (show g (f a) = c from Eq.trans (congr_argₓ g ha) hb)
 
-/--  A function is called bijective if it is both injective and surjective. -/
+/-- A function is called bijective if it is both injective and surjective. -/
 def bijective (f : α → β) :=
   injective f ∧ surjective f
 
 theorem bijective.comp {g : β → φ} {f : α → β} : bijective g → bijective f → bijective (g ∘ f)
   | ⟨h_ginj, h_gsurj⟩, ⟨h_finj, h_fsurj⟩ => ⟨h_ginj.comp h_finj, h_gsurj.comp h_fsurj⟩
 
-/--  `left_inverse g f` means that g is a left inverse to f. That is, `g ∘ f = id`. -/
+/-- `left_inverse g f` means that g is a left inverse to f. That is, `g ∘ f = id`. -/
 def left_inverse (g : β → α) (f : α → β) : Prop :=
   ∀ x, g (f x) = x
 
-/--  `has_left_inverse f` means that `f` has an unspecified left inverse. -/
+/-- `has_left_inverse f` means that `f` has an unspecified left inverse. -/
 def has_left_inverse (f : α → β) : Prop :=
   ∃ finv : β → α, left_inverse finv f
 
-/--  `right_inverse g f` means that g is a right inverse to f. That is, `f ∘ g = id`. -/
+/-- `right_inverse g f` means that g is a right inverse to f. That is, `f ∘ g = id`. -/
 def RightInverse (g : β → α) (f : α → β) : Prop :=
   left_inverse f g
 
-/--  `has_right_inverse f` means that `f` has an unspecified right inverse. -/
+/-- `has_right_inverse f` means that `f` has an unspecified right inverse. -/
 def has_right_inverse (f : α → β) : Prop :=
   ∃ finv : β → α, RightInverse finv f
 
 theorem left_inverse.injective {g : β → α} {f : α → β} : left_inverse g f → injective f := fun h a b faeqfb =>
-  calc a = g (f a) := (h a).symm
+  calc
+    a = g (f a) := (h a).symm
     _ = g (f b) := congr_argₓ g faeqfb
     _ = b := h b
     
@@ -143,7 +144,8 @@ theorem has_right_inverse.surjective {f : α → β} : has_right_inverse f → s
 theorem left_inverse_of_surjective_of_right_inverse {f : α → β} {g : β → α} (surjf : surjective f)
     (rfg : RightInverse f g) : left_inverse f g := fun y =>
   Exists.elim (surjf y) fun x hx =>
-    calc f (g y) = f (g (f x)) := hx ▸ rfl
+    calc
+      f (g y) = f (g (f x)) := hx ▸ rfl
       _ = f x := Eq.symm (rfg x) ▸ rfl
       _ = y := hx
       
@@ -161,11 +163,11 @@ namespace Function
 
 variable {α : Type u₁} {β : Type u₂} {φ : Type u₃}
 
-/--  Interpret a function on `α × β` as a function with two arguments. -/
+/-- Interpret a function on `α × β` as a function with two arguments. -/
 @[inline]
 def curry : (α × β → φ) → α → β → φ := fun f a b => f (a, b)
 
-/--  Interpret a function with two arguments as a function on `α × β` -/
+/-- Interpret a function with two arguments as a function on `α × β` -/
 @[inline]
 def uncurry : (α → β → φ) → α × β → φ := fun f a => f a.1 a.2
 

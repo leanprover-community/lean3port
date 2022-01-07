@@ -7,7 +7,7 @@ import Leanbin.Init.Control.Except
 universe u v w
 
 /--
- An implementation of [ReaderT](https://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Reader.html#t:ReaderT) -/
+An implementation of [ReaderT](https://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Reader.html#t:ReaderT) -/
 structure ReaderTₓ (ρ : Type u) (m : Type u → Type v) (α : Type u) : Type max u v where
   run : ρ → m α
 
@@ -75,17 +75,16 @@ instance [Alternativeₓ m] : Alternativeₓ (ReaderTₓ ρ m) where
   failure := @ReaderTₓ.failure _ _ _ _
   orelse := @ReaderTₓ.orelse _ _ _ _
 
--- failed to format: format: uncaught backtrack exception
-instance
-  ε [ Monadₓ m ] [ MonadExcept ε m ] : MonadExcept ε ( ReaderTₓ ρ m )
-  where throw α := ReaderTₓ.lift ∘ throw catch α x c := ⟨ fun r => catch ( x.run r ) fun e => ( c e ) . run r ⟩
+instance ε [Monadₓ m] [MonadExcept ε m] : MonadExcept ε (ReaderTₓ ρ m) where
+  throw := fun α => ReaderTₓ.lift ∘ throw
+  catch := fun α x c => ⟨fun r => catch (x.run r) fun e => (c e).run r⟩
 
 end
 
 end ReaderTₓ
 
 /--
- An implementation of [MonadReader](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader-Class.html#t:MonadReader).
+An implementation of [MonadReader](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader-Class.html#t:MonadReader).
     It does not contain `local` because this function cannot be lifted using `monad_lift`.
     Instead, the `monad_reader_adapter` class provides the more general `adapt_reader` function.
 
@@ -107,7 +106,7 @@ instance (priority := 100) monadReaderTrans {ρ : Type u} {m : Type u → Type v
 instance {ρ : Type u} {m : Type u → Type v} [Monadₓ m] : MonadReader ρ (ReaderTₓ ρ m) :=
   ⟨ReaderTₓ.read⟩
 
-/--  Adapt a monad stack, changing the type of its top-most environment.
+/-- Adapt a monad stack, changing the type of its top-most environment.
 
     This class is comparable to [Control.Lens.Magnify](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-Zoom.html#t:Magnify), but does not use lenses (why would it), and is derived automatically for any transformer implementing `monad_functor`.
 

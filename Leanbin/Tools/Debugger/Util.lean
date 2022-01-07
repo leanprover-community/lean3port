@@ -100,7 +100,7 @@ unsafe def show_vars_core : Nat → Nat → Nat → vm Unit
       vm.put_str
           s! "#{c } {n } : {type_str}
             "
-      show_vars_core (c+1) (i+1) e
+      show_vars_core (c + 1) (i + 1) e
 
 unsafe def show_vars (frame : Nat) : vm Unit := do
   let (s, e) ← vm.call_stack_var_range frame
@@ -108,7 +108,7 @@ unsafe def show_vars (frame : Nat) : vm Unit := do
 
 unsafe def show_stack_core : Nat → vm Unit
   | 0 => return ()
-  | i+1 => do
+  | i + 1 => do
     let fn ← vm.call_stack_fn i
     show_fn "" fn i
     show_stack_core i

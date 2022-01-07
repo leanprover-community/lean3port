@@ -1,8 +1,7 @@
 
 universe u
 
-/-- 
-A difference list is a function that, given a list, returns the original
+/-- A difference list is a function that, given a list, returns the original
 contents of the difference list prepended to the given list.
 
 This structure supports `O(1)` `append` and `concat` operations on lists, making it
@@ -18,38 +17,38 @@ open Function
 
 variable {α : Type u}
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 local notation:999 "♯" => by
   abstract 
     intros
     simp
 
-/--  Convert a list to a dlist -/
+/-- Convert a list to a dlist -/
 def of_list (l : List α) : Dlist α :=
   ⟨append l, ♯⟩
 
-/--  Convert a lazily-evaluated list to a dlist -/
+/-- Convert a lazily-evaluated list to a dlist -/
 def lazy_of_list (l : Thunkₓ (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
 
-/--  Convert a dlist to a list -/
+/-- Convert a dlist to a list -/
 def to_list : Dlist α → List α
   | ⟨xs, _⟩ => xs []
 
-/--   Create a dlist containing no elements -/
+/-- Create a dlist containing no elements -/
 def Empty : Dlist α :=
   ⟨id, ♯⟩
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 local notation:999 a "::_" => List.cons a
 
-/--  Create dlist with a single element -/
+/-- Create dlist with a single element -/
 def singleton (x : α) : Dlist α :=
   ⟨x::_, ♯⟩
 
 attribute [local simp] Function.comp
 
-/--  `O(1)` Prepend a single element to a dlist -/
+/-- `O(1)` Prepend a single element to a dlist -/
 def cons (x : α) : Dlist α → Dlist α
   | ⟨xs, h⟩ =>
     ⟨x::_ ∘ xs, by
@@ -58,7 +57,7 @@ def cons (x : α) : Dlist α → Dlist α
         simp
         rw [← h]⟩
 
-/--  `O(1)` Append a single element to a dlist -/
+/-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α
   | ⟨xs, h⟩ =>
     ⟨xs ∘ x::_, by
@@ -68,7 +67,7 @@ def concat (x : α) : Dlist α → Dlist α
         rw [h, h [x]]
         simp ⟩
 
-/--  `O(1)` Append dlists -/
+/-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
   | ⟨xs, h₁⟩, ⟨ys, h₂⟩ =>
     ⟨xs ∘ ys, by
@@ -100,7 +99,7 @@ theorem to_list_singleton (x : α) : to_list (singleton x) = [x] := by
   simp
 
 theorem to_list_append (l₁ l₂ : Dlist α) : to_list (l₁ ++ l₂) = to_list l₁ ++ to_list l₂ :=
-  show to_list (Dlist.append l₁ l₂) = to_list l₁ ++ to_list l₂ from by
+  show to_list (Dlist.append l₁ l₂) = to_list l₁ ++ to_list l₂ by
     cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
 
 theorem to_list_cons (x : α) (l : Dlist α) : to_list (cons x l) = x :: to_list l := by

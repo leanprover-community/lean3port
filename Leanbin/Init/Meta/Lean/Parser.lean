@@ -49,22 +49,22 @@ unsafe def get_env : parser environment := fun s => success s.env s
 
 unsafe axiom set_env : environment → parser Unit
 
-/--  Make sure the next token is an identifier, consume it, and
+/-- Make sure the next token is an identifier, consume it, and
     produce the quoted name `t, where t is the identifier. -/
 unsafe axiom ident : parser Name
 
-/--  Make sure the next token is a small nat, consume it, and produce it -/
+/-- Make sure the next token is a small nat, consume it, and produce it -/
 unsafe axiom small_nat : parser Nat
 
-/--  Check that the next token is `tk` and consume it. `tk` must be a registered token. -/
+/-- Check that the next token is `tk` and consume it. `tk` must be a registered token. -/
 unsafe axiom tk (tk : Stringₓ) : parser Unit
 
-/--  Parse an unelaborated expression using the given right-binding power.
+/-- Parse an unelaborated expression using the given right-binding power.
 When `pat := tt`, the expression is parsed as a pattern, i.e. local
 constants are not checked. -/
 protected unsafe axiom pexpr (rbp := Std.Prec.max) (pat := ff) : parser pexpr
 
-/--  a variable to local scope -/
+/-- a variable to local scope -/
 unsafe axiom add_local (v : expr) : parser Unit
 
 unsafe axiom add_local_level (v : Name) : parser Unit
@@ -81,8 +81,7 @@ unsafe axiom push_local_scope : parser Unit
 
 unsafe axiom pop_local_scope : parser Unit
 
-/-- 
-Run the parser in a local declaration scope.
+/-- Run the parser in a local declaration scope.
 
 Local declarations added via `add_local` do not propagate outside of this scope.
 -/
@@ -92,24 +91,24 @@ unsafe def with_local_scope {α} (p : parser α) : parser α :=
 
 protected unsafe axiom itactic_reflected : parser (reflected_value (tactic Unit))
 
-/--  Parse an interactive tactic block: `begin` .. `end` -/
+/-- Parse an interactive tactic block: `begin` .. `end` -/
 @[reducible]
 protected unsafe def itactic : parser (tactic Unit) :=
   val parser.itactic_reflected
 
-/--  Do not report info from content parsed by `p`. -/
+/-- Do not report info from content parsed by `p`. -/
 unsafe axiom skip_info (p : parser α) : parser α
 
-/--  Set goal info position of content parsed by `p` to current position. Nested calls take precedence. -/
+/-- Set goal info position of content parsed by `p` to current position. Nested calls take precedence. -/
 unsafe axiom set_goal_info_pos (p : parser α) : parser α
 
-/--  Return the current parser position without consuming any input. -/
+/-- Return the current parser position without consuming any input. -/
 unsafe def cur_pos : parser Pos := fun s => success (parser_state.cur_pos s) s
 
-/--  Temporarily replace input of the parser state, run `p`, and return remaining input. -/
+/-- Temporarily replace input of the parser state, run `p`, and return remaining input. -/
 unsafe axiom with_input (p : parser α) (input : Stringₓ) : parser (α × Stringₓ)
 
-/--  Parse a top-level command. -/
+/-- Parse a top-level command. -/
 unsafe axiom command_like : parser Unit
 
 unsafe def parser_orelse (p₁ p₂ : parser α) : parser α := fun s =>

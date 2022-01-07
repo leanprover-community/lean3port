@@ -3,8 +3,7 @@ import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Task
 
-/-- 
-Reducibility hints are used in the convertibility checker.
+/-- Reducibility hints are used in the convertibility checker.
 When trying to solve a constraint such a
 
            (f ...) =?= (g ...)
@@ -40,7 +39,7 @@ inductive ReducibilityHints
   | abbrev : ReducibilityHints
   | regular : Nat → Bool → ReducibilityHints
 
-/--  Reflect a C++ declaration object. The VM replaces it with the C++ implementation. -/
+/-- Reflect a C++ declaration object. The VM replaces it with the C++ implementation. -/
 unsafe inductive declaration
   | defn : Name → List Name → expr → expr → ReducibilityHints → Bool → declaration
   | thm : Name → List Name → expr → task expr → declaration
@@ -123,10 +122,10 @@ unsafe def is_definition : declaration → Bool
   | defn _ _ _ _ _ _ => tt
   | _ => ff
 
-/--  Instantiate a universe polymorphic declaration type with the given universes. -/
+/-- Instantiate a universe polymorphic declaration type with the given universes. -/
 unsafe axiom instantiate_type_univ_params : declaration → List level → Option expr
 
-/--  Instantiate a universe polymorphic declaration value with the given universes. -/
+/-- Instantiate a universe polymorphic declaration value with the given universes. -/
 unsafe axiom instantiate_value_univ_params : declaration → List level → Option expr
 
 end Declaration

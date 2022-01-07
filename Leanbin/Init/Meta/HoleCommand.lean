@@ -1,8 +1,7 @@
 prelude
 import Leanbin.Init.Meta.Tactic
 
-/-- 
-The front-end (e.g., Emacs, VS Code) can invoke commands for holes `{! ... !}` in
+/-- The front-end (e.g., Emacs, VS Code) can invoke commands for holes `{! ... !}` in
 a declaration. A command is a tactic that takes zero or more pre-terms in the
 hole, and returns a list of pair (s, descr) where 's' is a substitution and 'descr' is
 a short explanation for the substitution.
@@ -22,33 +21,36 @@ unsafe structure hole_command where
 open Tactic
 
 @[hole_command]
-unsafe def infer_type_cmd : hole_command :=
-  { Name := "Infer", descr := "Infer type of the expression in the hole",
-    action := fun ps => do
-      let [p] ← return ps | fail "Infer command failed, the hole must contain a single term"
-      let e ← to_expr p
-      let t ← infer_type e
-      trace t
-      return [] }
+unsafe def infer_type_cmd : hole_command where
+  Name := "Infer"
+  descr := "Infer type of the expression in the hole"
+  action := fun ps => do
+    let [p] ← return ps | fail "Infer command failed, the hole must contain a single term"
+    let e ← to_expr p
+    let t ← infer_type e
+    trace t
+    return []
 
 @[hole_command]
-unsafe def show_goal_cmd : hole_command :=
-  { Name := "Show", descr := "Show the current goal",
-    action := fun _ => do
-      trace_state
-      return [] }
+unsafe def show_goal_cmd : hole_command where
+  Name := "Show"
+  descr := "Show the current goal"
+  action := fun _ => do
+    trace_state
+    return []
 
 @[hole_command]
-unsafe def use_cmd : hole_command :=
-  { Name := "Use", descr := "Try to fill the hole using the given argument",
-    action := fun ps => do
-      let [p] ← return ps | fail "Use command failed, the hole must contain a single term"
-      let t ← target
-      let e ← to_expr (pquote.1 (%%ₓp : %%ₓt))
-      let ty ← infer_type e
-      is_def_eq t ty
-      let fmt ← tactic_format_expr e
-      let o ← get_options
-      let s := fmt.to_string o
-      return [(s, "")] }
+unsafe def use_cmd : hole_command where
+  Name := "Use"
+  descr := "Try to fill the hole using the given argument"
+  action := fun ps => do
+    let [p] ← return ps | fail "Use command failed, the hole must contain a single term"
+    let t ← target
+    let e ← to_expr (pquote.1 (%%ₓp : %%ₓt))
+    let ty ← infer_type e
+    is_def_eq t ty
+    let fmt ← tactic_format_expr e
+    let o ← get_options
+    let s := fmt.to_string o
+    return [(s, "")]
 

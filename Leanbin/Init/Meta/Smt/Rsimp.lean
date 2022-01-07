@@ -23,7 +23,7 @@ private unsafe def to_hinst_lemmas (m : transparency) (ex : name_set) : List Nam
         | [] => add n
         | _ => mcond (is_prop_decl n) (add n) (to_hinst_lemmas eqns hs >>= to_hinst_lemmas ns)
 
-/--  Create a rsimp attribute named `attr_name`, the attribute declaration is named `attr_decl_name`.
+/-- Create a rsimp attribute named `attr_name`, the attribute declaration is named `attr_decl_name`.
     The cached hinst_lemmas structure is built using the lemmas marked with simp attribute `simp_attr_name`,
     but *not* marked with `ex_attr_name`.
 
@@ -78,7 +78,7 @@ unsafe def is_value_like : expr → Bool
               if fname = `` bit1 ∧ nargs = 4 then is_value_like e.app_arg
               else if fname = `` Charₓ.ofNat ∧ nargs = 1 then is_value_like e.app_arg else ff
 
-/--  Return the size of term by considering only explicit arguments. -/
+/-- Return the size of term by considering only explicit arguments. -/
 unsafe def explicit_size : expr → tactic Nat
   | e =>
     if ¬e.is_app then return 1
@@ -87,9 +87,9 @@ unsafe def explicit_size : expr → tactic Nat
       else
         fold_explicit_args e 1 fun n arg => do
           let r ← explicit_size arg
-          return $ r+n
+          return $ r + n
 
-/--  Choose smallest element (with respect to explicit_size) in `e`s equivalence class. -/
+/-- Choose smallest element (with respect to explicit_size) in `e`s equivalence class. -/
 unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
   let sz ← explicit_size e
   let p ←

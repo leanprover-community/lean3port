@@ -16,7 +16,7 @@ theorem inv {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
 
 end Acc
 
-/--  A relation `r : α → α → Prop` is well-founded when `∀ x, (∀ y, r y x → P y → P x) → P x` for all predicates `P`.
+/-- A relation `r : α → α → Prop` is well-founded when `∀ x, (∀ y, r y x → P y → P x) → P x` for all predicates `P`.
 Once you know that a relation is well_founded, you can use it to define fixpoint functions on `α`.-/
 structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro ::
   apply : ∀ a, Acc r a
@@ -55,11 +55,11 @@ end
 
 variable {α : Sort u} {C : α → Sort v} {r : α → α → Prop}
 
-/--  Well-founded fixpoint -/
+/-- Well-founded fixpoint -/
 def fix (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) : C x :=
   fix_F F x (apply hwf x)
 
-/--  Well-founded fixpoint satisfies fixpoint equation -/
+/-- Well-founded fixpoint satisfies fixpoint equation -/
 theorem fix_eq (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) :
     fix hwf F x = F x fun y h => fix hwf F y :=
   fix_F_eq F x (apply hwf x)
@@ -68,7 +68,7 @@ end WellFounded
 
 open WellFounded
 
-/--  Empty relation is well-founded -/
+/-- Empty relation is well-founded -/
 theorem empty_wf {α : Sort u} : WellFounded (@EmptyRelation α) :=
   WellFounded.intro fun a : α => Acc.intro a fun b : α lt : False => False.ndrec _ lt
 
@@ -136,7 +136,7 @@ end
 
 end Tc
 
-/--  less-than is well-founded -/
+/-- less-than is well-founded -/
 theorem Nat.lt_wf : WellFounded Nat.Lt :=
   ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zeroₓ n)) fun n ih =>
       Acc.intro (Nat.succ n) fun m h =>

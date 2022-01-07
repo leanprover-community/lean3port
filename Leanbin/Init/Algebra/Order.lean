@@ -21,7 +21,7 @@ section Preorderₓ
 -/
 
 
-/--  A preorder is a reflexive, transitive relation `≤` with `a < b` defined in the obvious way. -/
+/-- A preorder is a reflexive, transitive relation `≤` with `a < b` defined in the obvious way. -/
 class Preorderₓ (α : Type u) extends LE α, LT α where
   le_refl : ∀ a : α, a ≤ a
   le_trans : ∀ a b c : α, a ≤ b → b ≤ c → a ≤ c
@@ -32,12 +32,12 @@ class Preorderₓ (α : Type u) extends LE α, LT α where
 
 variable [Preorderₓ α]
 
-/--  The relation `≤` on a preorder is reflexive. -/
+/-- The relation `≤` on a preorder is reflexive. -/
 @[refl]
 theorem le_reflₓ : ∀ a : α, a ≤ a :=
   Preorderₓ.le_refl
 
-/--  The relation `≤` on a preorder is transitive. -/
+/-- The relation `≤` on a preorder is transitive. -/
 @[trans]
 theorem le_transₓ : ∀ {a b c : α}, a ≤ b → b ≤ c → a ≤ c :=
   Preorderₓ.le_trans
@@ -129,7 +129,7 @@ section PartialOrderₓ
 -/
 
 
-/--  A partial order is a reflexive, transitive, antisymmetric relation `≤`. -/
+/-- A partial order is a reflexive, transitive, antisymmetric relation `≤`. -/
 class PartialOrderₓ (α : Type u) extends Preorderₓ α where
   le_antisymm : ∀ a b : α, a ≤ b → b ≤ a → a = b
 
@@ -181,15 +181,15 @@ section LinearOrderₓ
 -/
 
 
-/--  Default definition of `max`. -/
+/-- Default definition of `max`. -/
 def maxDefault {α : Type u} [LE α] [DecidableRel (· ≤ · : α → α → Prop)] (a b : α) :=
   if b ≤ a then a else b
 
-/--  Default definition of `min`. -/
+/-- Default definition of `min`. -/
 def minDefault {α : Type u} [LE α] [DecidableRel (· ≤ · : α → α → Prop)] (a b : α) :=
   if a ≤ b then a else b
 
-/--  A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
+/-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
 We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`. -/
 class LinearOrderₓ (α : Type u) extends PartialOrderₓ α where
   le_total : ∀ a b : α, a ≤ b ∨ b ≤ a
@@ -294,7 +294,7 @@ instance is_strict_weak_order_of_linear_order : IsStrictWeakOrder α (· < ·) :
 instance is_strict_total_order_of_linear_order : IsStrictTotalOrder α (· < ·) where
   trichotomous := lt_trichotomyₓ
 
-/--  Perform a case-split on the ordering of `x` and `y` in a decidable linear order. -/
+/-- Perform a case-split on the ordering of `x` and `y` in a decidable linear order. -/
 def ltByCases (x y : α) {P : Sort _} (h₁ : x < y → P) (h₂ : x = y → P) (h₃ : y < x → P) : P :=
   if h : x < y then h₁ h else if h' : y < x then h₃ h' else h₂ (le_antisymmₓ (le_of_not_gtₓ h') (le_of_not_gtₓ h))
 

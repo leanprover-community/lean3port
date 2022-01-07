@@ -3,7 +3,7 @@ import Leanbin.Init.Control.Monad
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Util
 
-/--  An exceptional is similar to `Result` in Haskell.-/
+/-- An exceptional is similar to `Result` in Haskell.-/
 unsafe inductive exceptional (α : Type)
   | success : α → exceptional
   | exception : (options → format) → exceptional

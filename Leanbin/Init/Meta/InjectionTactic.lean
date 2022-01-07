@@ -36,8 +36,7 @@ unsafe def injection_with (h : expr) (ns : List Name) (base := `h) (offset := so
       exact pr
       return ([], ns)
 
-/-- 
-Simplify the equation `h` using injectivity of constructors. See
+/-- Simplify the equation `h` using injectivity of constructors. See
 `injection_with`. Returns the hypotheses that were added to the context, or an
 empty list if the goal was solved by contradiction.
 -/
@@ -46,16 +45,15 @@ unsafe def injection (h : expr) (base := `h) (offset := some 1) : tactic (List e
 
 private unsafe def injections_with_inner (base : Name) (offset : Option ℕ) : ℕ → List expr → List Name → tactic Unit
   | 0, lc, ns => fail "recursion depth exceeded"
-  | n+1, [], ns => skip
-  | n+1, h :: lc, ns => do
+  | n + 1, [], ns => skip
+  | n + 1, h :: lc, ns => do
     let o ← try_core (injection_with h ns base offset)
     match o with
-      | none => injections_with_inner (n+1) lc ns
+      | none => injections_with_inner (n + 1) lc ns
       | some ([], _) => skip
       | some (t, ns') => injections_with_inner n (t ++ lc) ns'
 
-/-- 
-Simplifies equations in the context using injectivity of constructors. For
+/-- Simplifies equations in the context using injectivity of constructors. For
 each equation `h : C x₁ ... xₙ = D y₁ ... yₘ` in the context, where `C` and `D`
 are constructors of the same data type, `injections_with` does the following:
 

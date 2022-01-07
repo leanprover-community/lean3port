@@ -155,11 +155,11 @@ namespace Iterator
 
 def nextn : iterator → Nat → iterator
   | it, 0 => it
-  | it, i+1 => nextn it.next i
+  | it, i + 1 => nextn it.next i
 
 def prevn : iterator → Nat → iterator
   | it, 0 => it
-  | it, i+1 => prevn it.prev i
+  | it, i + 1 => prevn it.prev i
 
 end Iterator
 
@@ -179,9 +179,9 @@ protected def Charₓ.toString (c : Charₓ) : Stringₓ :=
 
 private def to_nat_core : Stringₓ.Iterator → Nat → Nat → Nat
   | it, 0, r => r
-  | it, i+1, r =>
+  | it, i + 1, r =>
     let c := it.curr
-    let r := ((r*10)+c.to_nat) - '0'.toNat
+    let r := r * 10 + c.to_nat - '0'.toNat
     to_nat_core it.next i r
 
 def Stringₓ.toNat (s : Stringₓ) : Nat :=

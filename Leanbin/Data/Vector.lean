@@ -63,10 +63,10 @@ def nth : ∀ v : Vector α n, Finₓ n → α
       (by
         rw [h] <;> exact i.2)
 
-def append {n m : Nat} : Vector α n → Vector α m → Vector α (n+m)
+def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
   | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ =>
     ⟨l₁ ++ l₂, by
-      simp ⟩
+      simp [*]⟩
 
 @[elab_as_eliminator]
 def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
@@ -77,7 +77,7 @@ def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l
 def map (f : α → β) : Vector α n → Vector β n
   | ⟨l, h⟩ =>
     ⟨List.map f l, by
-      simp ⟩
+      simp [*]⟩
 
 @[simp]
 theorem map_nil (f : α → β) : map f nil = nil :=
@@ -89,7 +89,7 @@ theorem map_cons (f : α → β) (a : α) : ∀ v : Vector α n, map f (cons a v
 def map₂ (f : α → β → φ) : Vector α n → Vector β n → Vector φ n
   | ⟨x, _⟩, ⟨y, _⟩ =>
     ⟨List.map₂ₓ f x y, by
-      simp ⟩
+      simp [*]⟩
 
 def repeat (a : α) (n : ℕ) : Vector α n :=
   ⟨List.repeat a n, List.length_repeat a n⟩
@@ -97,12 +97,12 @@ def repeat (a : α) (n : ℕ) : Vector α n :=
 def drop (i : ℕ) : Vector α n → Vector α (n - i)
   | ⟨l, p⟩ =>
     ⟨List.dropₓ i l, by
-      simp ⟩
+      simp [*]⟩
 
 def take (i : ℕ) : Vector α n → Vector α (min i n)
   | ⟨l, p⟩ =>
     ⟨List.takeₓ i l, by
-      simp ⟩
+      simp [*]⟩
 
 def remove_nth (i : Finₓ n) : Vector α n → Vector α (n - 1)
   | ⟨l, p⟩ =>
@@ -111,7 +111,7 @@ def remove_nth (i : Finₓ n) : Vector α n → Vector α (n - 1)
 
 def of_fn : ∀ {n}, (Finₓ n → α) → Vector α n
   | 0, f => nil
-  | n+1, f => cons (f 0) (of_fn fun i => f i.succ)
+  | n + 1, f => cons (f 0) (of_fn fun i => f i.succ)
 
 section Accum
 
@@ -123,13 +123,13 @@ def map_accumr (f : α → σ → σ × β) : Vector α n → σ → σ × Vecto
   | ⟨x, px⟩, c =>
     let res := List.mapAccumr f x c
     ⟨res.1, res.2, by
-      simp ⟩
+      simp [*]⟩
 
 def map_accumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vector α n → Vector β n → σ → σ × Vector φ n
   | ⟨x, px⟩, ⟨y, py⟩, c =>
     let res := List.mapAccumr₂ f x y c
     ⟨res.1, res.2, by
-      simp ⟩
+      simp [*]⟩
 
 end Accum
 

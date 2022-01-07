@@ -5,7 +5,7 @@ import Leanbin.Init.IteSimp
 
 universe u v w
 
-/--  In the VM, d_array is implemented as a persistent array. -/
+/-- In the VM, d_array is implemented as a persistent array. -/
 structure DArray (n : Nat) (α : Finₓ n → Type u) where
   data : ∀ i : Finₓ n, α i
 
@@ -13,29 +13,29 @@ namespace DArray
 
 variable {n : Nat} {α : Finₓ n → Type u} {α' : Finₓ n → Type v} {β : Type w}
 
-/--  The empty array. -/
-def nil {α} : DArray 0 α :=
-  { data := fun ⟨x, h⟩ => absurd h (Nat.not_lt_zeroₓ x) }
+/-- The empty array. -/
+def nil {α} : DArray 0 α where
+  data := fun ⟨x, h⟩ => absurd h (Nat.not_lt_zeroₓ x)
 
-/--  `read a i` reads the `i`th member of `a`. Has builtin VM implementation. -/
+/-- `read a i` reads the `i`th member of `a`. Has builtin VM implementation. -/
 def read (a : DArray n α) (i : Finₓ n) : α i :=
   a.data i
 
-/--  `write a i v` sets the `i`th member of `a` to be `v`. Has builtin VM implementation. -/
-def write (a : DArray n α) (i : Finₓ n) (v : α i) : DArray n α :=
-  { data := fun j => if h : i = j then Eq.recOnₓ h v else a.read j }
+/-- `write a i v` sets the `i`th member of `a` to be `v`. Has builtin VM implementation. -/
+def write (a : DArray n α) (i : Finₓ n) (v : α i) : DArray n α where
+  data := fun j => if h : i = j then Eq.recOnₓ h v else a.read j
 
 def iterate_aux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
   | 0, h, b => b
-  | j+1, h, b =>
+  | j + 1, h, b =>
     let i : Finₓ n := ⟨j, h⟩
     f i (a.read i) (iterate_aux j (le_of_ltₓ h) b)
 
-/--  Fold over the elements of the given array in ascending order. Has builtin VM implementation. -/
+/-- Fold over the elements of the given array in ascending order. Has builtin VM implementation. -/
 def iterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) : β :=
   iterate_aux a f n (le_reflₓ _) b
 
-/--  Map the array. Has builtin VM implementation. -/
+/-- Map the array. Has builtin VM implementation. -/
 def foreach (a : DArray n α) (f : ∀ i : Finₓ n, α i → α' i) : DArray n α' :=
   ⟨fun i => f _ (a.read i)⟩
 
@@ -51,7 +51,7 @@ def foldl (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) 
 
 def rev_iterate_aux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
   | 0, h, b => b
-  | j+1, h, b =>
+  | j + 1, h, b =>
     let i : Finₓ n := ⟨j, h⟩
     rev_iterate_aux j (le_of_ltₓ h) (f i (a.read i) b)
 
@@ -79,9 +79,9 @@ protected theorem ext' {a b : DArray n α} (h : ∀ i : Nat h : i < n, read a �
 
 protected def beq_aux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : Nat, i ≤ n → Bool
   | 0, h => tt
-  | i+1, h => if a.read ⟨i, h⟩ = b.read ⟨i, h⟩ then beq_aux i (le_of_ltₓ h) else ff
+  | i + 1, h => if a.read ⟨i, h⟩ = b.read ⟨i, h⟩ then beq_aux i (le_of_ltₓ h) else ff
 
-/--  Boolean element-wise equality check. -/
+/-- Boolean element-wise equality check. -/
 protected def beq [∀ i, DecidableEq (α i)] (a b : DArray n α) : Bool :=
   DArray.beqAux a b n (le_reflₓ _)
 
@@ -90,28 +90,25 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       DArray.beqAux a b i h = tt →
         ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
   | 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zeroₓ _)
-  | i+1, h₁, h₂, j, h₃ => by
+  | i + 1, h₁, h₂, j, h₃ => by
     have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
       simp [DArray.beqAux] at h₂
       assumption
-    have h₁' : i ≤ n
-    exact le_of_ltₓ h₁
-    have ih : ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩
-    exact of_beq_aux_eq_tt i h₁' h₂'.2
+    have h₁' : i ≤ n := le_of_ltₓ h₁
+    have ih : ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ :=
+      of_beq_aux_eq_tt i h₁' h₂'.2
     by_cases' hji : j = i
-    ·
-      subst hji
+    · subst hji
       exact h₂'.1
-    ·
-      have j_lt_i : j < i
-      exact lt_of_le_of_neₓ (Nat.le_of_lt_succₓ h₃) hji
+      
+    · have j_lt_i : j < i := lt_of_le_of_neₓ (Nat.le_of_lt_succₓ h₃) hji
       exact ih j j_lt_i
+      
 
 theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b := by
   unfold DArray.beq
   intro h
-  have : ∀ j : Nat h : j < n, a.read ⟨j, h⟩ = b.read ⟨j, h⟩
-  exact of_beq_aux_eq_tt n (le_reflₓ _) h
+  have : ∀ j : Nat h : j < n, a.read ⟨j, h⟩ = b.read ⟨j, h⟩ := of_beq_aux_eq_tt n (le_reflₓ _) h
   apply DArray.ext' this
 
 theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
@@ -121,31 +118,29 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
   | 0, h₁, h₂ => by
     simp [DArray.beqAux] at h₂
     contradiction
-  | i+1, h₁, h₂ => by
+  | i + 1, h₁, h₂ => by
     have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
       simp [DArray.beqAux] at h₂
       assumption
     cases' h₂' with h h
-    ·
-      exists i
+    · exists i
       exists Nat.lt_succ_selfₓ _
       exact h
-    ·
-      have h₁' : i ≤ n
-      exact le_of_ltₓ h₁
-      have ih : ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩
-      exact of_beq_aux_eq_ff i h₁' h
+      
+    · have h₁' : i ≤ n := le_of_ltₓ h₁
+      have ih : ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ :=
+        of_beq_aux_eq_ff i h₁' h
       cases' ih with j ih
       cases' ih with h' ih
       exists j
       exists Nat.lt_succ_of_ltₓ h'
       exact ih
+      
 
 theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b := by
   unfold DArray.beq
   intro h hne
-  have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩
-  exact of_beq_aux_eq_ff n (le_reflₓ _) h
+  have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ := of_beq_aux_eq_ff n (le_reflₓ _) h
   cases' this with j this
   cases' this with h' this
   subst hne
@@ -156,13 +151,13 @@ instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) := fun a b =>
 
 end DArray
 
-/--  A non-dependent array (see `d_array`). Implemented in the VM as a persistent array.  -/
+/-- A non-dependent array (see `d_array`). Implemented in the VM as a persistent array.  -/
 def Arrayₓ (n : Nat) (α : Type u) : Type u :=
   DArray n fun _ => α
 
-/--  `mk_array n v` creates a new array of length `n` where each element is `v`. Has builtin VM implementation. -/
-def mkArray {α} n (v : α) : Arrayₓ n α :=
-  { data := fun _ => v }
+/-- `mk_array n v` creates a new array of length `n` where each element is `v`. Has builtin VM implementation. -/
+def mkArray {α} n (v : α) : Arrayₓ n α where
+  data := fun _ => v
 
 namespace Arrayₓ
 
@@ -179,12 +174,12 @@ def read (a : Arrayₓ n α) (i : Finₓ n) : α :=
 def write (a : Arrayₓ n α) (i : Finₓ n) (v : α) : Arrayₓ n α :=
   DArray.write a i v
 
-/--  Fold array starting from 0, folder function includes an index argument. -/
+/-- Fold array starting from 0, folder function includes an index argument. -/
 @[inline]
 def iterate (a : Arrayₓ n α) (b : β) (f : Finₓ n → α → β → β) : β :=
   DArray.iterate a b f
 
-/--  Map each element of the given array with an index argument. -/
+/-- Map each element of the given array with an index argument. -/
 @[inline]
 def foreach (a : Arrayₓ n α) (f : Finₓ n → α → β) : Arrayₓ n β :=
   DArray.foreach a f
@@ -209,36 +204,36 @@ def rev_foldl (a : Arrayₓ n α) (b : β) (f : α → β → β) : β :=
 def to_list (a : Arrayₓ n α) : List α :=
   a.rev_foldl [] (· :: ·)
 
-theorem push_back_idx {j n} (h₁ : j < n+1) (h₂ : j ≠ n) : j < n :=
+theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
   Nat.lt_of_le_and_neₓ (Nat.le_of_lt_succₓ h₁) h₂
 
-/--  `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
-def push_back (a : Arrayₓ n α) (v : α) : Arrayₓ (n+1) α :=
-  { data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩ }
+/-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
+def push_back (a : Arrayₓ n α) (v : α) : Arrayₓ (n + 1) α where
+  data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
 
-theorem pop_back_idx {j n} (h : j < n) : j < n+1 :=
+theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
   Nat.Lt.step h
 
-/--  Discard _last_ element in the array. Has builtin VM implementation. -/
-def pop_back (a : Arrayₓ (n+1) α) : Arrayₓ n α :=
-  { data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩ }
+/-- Discard _last_ element in the array. Has builtin VM implementation. -/
+def pop_back (a : Arrayₓ (n + 1) α) : Arrayₓ n α where
+  data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
 
-/--  Auxilliary function for monadically mapping a function over an array. -/
+/-- Auxilliary function for monadically mapping a function over an array. -/
 @[inline]
 def mmap_core {β : Type v} {m : Type v → Type w} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) :
     ∀, ∀ i ≤ n, ∀, m (Arrayₓ i β)
   | 0, _ => pure DArray.nil
-  | i+1, h => do
+  | i + 1, h => do
     let bs ← mmap_core i (le_of_ltₓ h)
     let b ← f (a.read ⟨i, h⟩)
     pure $ bs.push_back b
 
-/--  Monadically map a function over the array. -/
+/-- Monadically map a function over the array. -/
 @[inline]
 def mmap {β : Type v} {m} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) : m (Arrayₓ n β) :=
   a.mmap_core f _ (le_reflₓ _)
 
-/--  Map a function over the array. -/
+/-- Map a function over the array. -/
 @[inline]
 def map {β : Type v} (a : Arrayₓ n α) (f : α → β) : Arrayₓ n β :=
   a.map fun _ => f

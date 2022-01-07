@@ -73,7 +73,7 @@ protected def diff {α} [DecidableEq α] : List α → List α → List α
 @[simp]
 def length : List α → Nat
   | [] => 0
-  | a :: l => length l+1
+  | a :: l => length l + 1
 
 def Empty : List α → Bool
   | [] => tt
@@ -85,13 +85,13 @@ open Option Nat
 def nth : List α → Nat → Option α
   | [], n => none
   | a :: l, 0 => some a
-  | a :: l, n+1 => nth l n
+  | a :: l, n + 1 => nth l n
 
 @[simp]
 def nth_le : ∀ l : List α n, n < l.length → α
   | [], n, h => absurd h n.not_lt_zero
   | a :: l, 0, h => a
-  | a :: l, n+1, h => nth_le l n (le_of_succ_le_succ h)
+  | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succ h)
 
 @[simp]
 def head [Inhabited α] : List α → α
@@ -122,9 +122,9 @@ def map₂ (f : α → β → γ) : List α → List β → List γ
 
 def map_with_index_core (f : ℕ → α → β) : ℕ → List α → List β
   | k, [] => []
-  | k, a :: as => f k a :: map_with_index_core (k+1) as
+  | k, a :: as => f k a :: map_with_index_core (k + 1) as
 
-/--  Given a function `f : ℕ → α → β` and `as : list α`, `as = [a₀, a₁, ...]`, returns the list
+/-- Given a function `f : ℕ → α → β` and `as : list α`, `as = [a₀, a₁, ...]`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`. -/
 def map_with_index (f : ℕ → α → β) (as : List α) : List β :=
   map_with_index_core f 0 as
@@ -154,7 +154,7 @@ def drop_while (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | a :: l => if p a then drop_while l else a :: l
 
-/--  `after p xs` is the suffix of `xs` after the first element that satisfies
+/-- `after p xs` is the suffix of `xs` after the first element that satisfies
   `p`, not including that element.
 
   ```lean
@@ -186,13 +186,13 @@ def remove_all [DecidableEq α] (xs ys : List α) : List α :=
 
 def update_nth : List α → ℕ → α → List α
   | x :: xs, 0, a => a :: xs
-  | x :: xs, i+1, a => x :: update_nth xs i a
+  | x :: xs, i + 1, a => x :: update_nth xs i a
   | [], _, _ => []
 
 def remove_nth : List α → ℕ → List α
   | [], _ => []
   | x :: xs, 0 => xs
-  | x :: xs, i+1 => x :: remove_nth xs i
+  | x :: xs, i + 1 => x :: remove_nth xs i
 
 @[simp]
 def drop : ℕ → List α → List α
@@ -283,7 +283,7 @@ def iota : ℕ → List ℕ
 
 def enum_from : ℕ → List α → List (ℕ × α)
   | n, [] => nil
-  | n, x :: xs => (n, x) :: enum_from (n+1) xs
+  | n, x :: xs => (n, x) :: enum_from (n + 1) xs
 
 def enum : List α → List (ℕ × α) :=
   enum_from 0
@@ -360,13 +360,13 @@ theorem le_eq_not_gt [LT α] : ∀ l₁ l₂ : List α, (l₁ ≤ l₂) = ¬l₂
 theorem lt_eq_not_ge [LT α] [DecidableRel (· < · : α → α → Prop)] : ∀ l₁ l₂ : List α, (l₁ < l₂) = ¬l₂ ≤ l₁ :=
   fun l₁ l₂ => show (l₁ < l₂) = ¬¬l₁ < l₂ from Eq.subst (propext (not_not_iff (l₁ < l₂))).symm rfl
 
-/--   `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/
+/-- `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/
 def is_prefix_of [DecidableEq α] : List α → List α → Bool
   | [], _ => tt
   | _, [] => ff
   | a :: as, b :: bs => to_bool (a = b) && is_prefix_of as bs
 
-/--   `is_suffix_of l₁ l₂` returns `tt` iff `l₁` is a suffix of `l₂`. -/
+/-- `is_suffix_of l₁ l₂` returns `tt` iff `l₁` is a suffix of `l₂`. -/
 def is_suffix_of [DecidableEq α] (l₁ l₂ : List α) : Bool :=
   is_prefix_of l₁.reverse l₂.reverse
 

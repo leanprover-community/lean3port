@@ -23,11 +23,11 @@ instance : IsLawfulMonad List where
   bind_assoc := by
     intro α β γ l f g
     induction' l with x l ih
-    ·
-      simp [· >>= ·]
-    ·
-      simp [· >>= ·] at ih
+    · simp [· >>= ·]
+      
+    · simp [· >>= ·] at ih
       simp [· >>= ·, ih]
+      
 
 instance : Alternativeₓ List :=
   { List.monad with failure := @List.nil, orelse := @List.append }
@@ -61,12 +61,12 @@ instance decidable_bex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
             cases' h with y h
             cases' h with hm hp
             cases eq_or_mem_of_mem_cons hm
-            ·
-              rw [h] at hp
+            · rw [h] at hp
               contradiction
-            ·
-              refine' absurd _ h₂
-              exact ⟨y, h, hp⟩)
+              
+            · refine' absurd _ h₂
+              exact ⟨y, h, hp⟩
+              )
 
 instance decidable_ball (l : List α) : Decidable (∀, ∀ x ∈ l, ∀, p x) :=
   if h : ∃ x ∈ l, ¬p x then

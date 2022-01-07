@@ -5,7 +5,7 @@ import Leanbin.Init.Util
 universe u v
 
 /--
- `has_reflect α` lets you produce an `expr` from an instance of α. That is, it is a function from α to expr such that the expr has type α. -/
+`has_reflect α` lets you produce an `expr` from an instance of α. That is, it is a function from α to expr such that the expr has type α. -/
 @[reducible]
 unsafe def has_reflect (α : Sort u) :=
   ∀ a : α, reflected a

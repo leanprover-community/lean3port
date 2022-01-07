@@ -91,67 +91,61 @@ class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam $ α 
 class IsDistinct (α : Type u) (a : α) (b : α) : Prop where
   distinct : a ≠ b
 
-/--  `is_irrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never
+/-- `is_irrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never
 holds). -/
 @[algebra]
 class IsIrrefl (α : Type u) (r : α → α → Prop) : Prop where
   irrefl : ∀ a, ¬r a a
 
-/--  `is_refl X r` means the binary relation `r` on `X` is reflexive. -/
+/-- `is_refl X r` means the binary relation `r` on `X` is reflexive. -/
 @[algebra]
 class IsRefl (α : Type u) (r : α → α → Prop) : Prop where
   refl : ∀ a, r a a
 
-/--  `is_symm X r` means the binary relation `r` on `X` is symmetric. -/
+/-- `is_symm X r` means the binary relation `r` on `X` is symmetric. -/
 @[algebra]
 class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
   symm : ∀ a b, r a b → r b a
 
--- failed to format: format: uncaught backtrack exception
 /-- The opposite of a symmetric relation is symmetric. -/
-  instance
-    ( priority := 100 )
-    is_symm_op_of_is_symm
-    ( α : Type u ) ( r : α → α → Prop ) [ IsSymm α r ] : IsSymmOp α Prop r
-    where symm_op a b := propext $ Iff.intro ( IsSymm.symm a b ) ( IsSymm.symm b a )
+instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] : IsSymmOp α Prop r where
+  symm_op := fun a b => propext $ Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
 
-/--  `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
+/-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
 `r a b → ¬ r b a`. -/
 @[algebra]
 class IsAsymm (α : Type u) (r : α → α → Prop) : Prop where
   asymm : ∀ a b, r a b → ¬r b a
 
-/--  `is_antisymm X r` means the binary relation `r` on `X` is antisymmetric. -/
+/-- `is_antisymm X r` means the binary relation `r` on `X` is antisymmetric. -/
 @[algebra]
 class IsAntisymm (α : Type u) (r : α → α → Prop) : Prop where
   antisymm : ∀ a b, r a b → r b a → a = b
 
-/--  `is_trans X r` means the binary relation `r` on `X` is transitive. -/
+/-- `is_trans X r` means the binary relation `r` on `X` is transitive. -/
 @[algebra]
 class IsTrans (α : Type u) (r : α → α → Prop) : Prop where
   trans : ∀ a b c, r a b → r b c → r a c
 
-/--  `is_total X r` means that the binary relation `r` on `X` is total, that is, that for any
+/-- `is_total X r` means that the binary relation `r` on `X` is total, that is, that for any
 `x y : X` we have `r x y` or `r y x`.-/
 @[algebra]
 class IsTotal (α : Type u) (r : α → α → Prop) : Prop where
   Total : ∀ a b, r a b ∨ r b a
 
-/--  `is_preorder X r` means that the binary relation `r` on `X` is a pre-order, that is, reflexive
+/-- `is_preorder X r` means that the binary relation `r` on `X` is a pre-order, that is, reflexive
 and transitive. -/
 @[algebra]
 class IsPreorder (α : Type u) (r : α → α → Prop) extends IsRefl α r, IsTrans α r : Prop
 
-/--  `is_total_preorder X r` means that the binary relation `r` on `X` is total and a preorder. -/
+/-- `is_total_preorder X r` means that the binary relation `r` on `X` is total and a preorder. -/
 @[algebra]
 class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α r, IsTotal α r : Prop
 
--- failed to format: format: uncaught backtrack exception
 /-- Every total pre-order is a pre-order. -/
-  instance
-    is_total_preorder_is_preorder
-    ( α : Type u ) ( r : α → α → Prop ) [ s : IsTotalPreorder α r ] : IsPreorder α r
-    where trans := s.trans refl a := Or.elim ( @ IsTotal.total _ r _ a a ) id id
+instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] : IsPreorder α r where
+  trans := s.trans
+  refl := fun a => Or.elim (@IsTotal.total _ r _ a a) id id
 
 @[algebra]
 class IsPartialOrder (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsAntisymm α r : Prop

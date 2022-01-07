@@ -48,7 +48,7 @@ namespace Interactive
 
 open Interactive.Types
 
-/--  Proves the first goal asynchronously as a separate lemma. -/
+/-- Proves the first goal asynchronously as a separate lemma. -/
 unsafe def async (tac : itactic) : tactic Unit :=
   prove_goal_async tac
 

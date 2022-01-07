@@ -25,7 +25,7 @@ private unsafe def mk_inhabited_arg : tactic Unit := do
 
 private unsafe def try_constructors : Nat → Nat → tactic Unit
   | 0, n => failed
-  | i+1, n =>
+  | i + 1, n =>
     (do
         constructor_idx (n - i)
         all_goals mk_inhabited_arg

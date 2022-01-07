@@ -3,13 +3,13 @@ import Leanbin.Init.Data.Nat.Basic
 
 open Nat
 
-/--  `fin n` is the subtype of `ℕ` consisting of natural numbers strictly smaller than `n`. -/
+/-- `fin n` is the subtype of `ℕ` consisting of natural numbers strictly smaller than `n`. -/
 def Finₓ (n : ℕ) :=
   { i : ℕ // i < n }
 
 namespace Finₓ
 
-/--  Backwards-compatible constructor for `fin n`. -/
+/-- Backwards-compatible constructor for `fin n`. -/
 def mk {n : ℕ} i h : Finₓ n :=
   ⟨i, h⟩
 

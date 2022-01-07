@@ -6,7 +6,7 @@ import Leanbin.Init.Util
 
 namespace Expr
 
-/--  An enum representing a recursive argument in an `expr` constructor.
+/-- An enum representing a recursive argument in an `expr` constructor.
 Types of local and meta variables are not included because they are not consistently set and
 depend on context. -/
 inductive coord : Type
@@ -22,7 +22,7 @@ inductive coord : Type
 
 namespace Coord
 
-/--  Convert the coord enum to its index number. -/
+/-- Convert the coord enum to its index number. -/
 def code : coord → ℕ
   | coord.app_fn => 0
   | coord.app_arg => 1
@@ -60,7 +60,7 @@ unsafe instance has_dec_eq : DecidableEq coord :=
 instance LT : LT coord :=
   ⟨fun x y => x.code < y.code⟩
 
-/--  Use this to pick the subexpression of a given expression that cooresponds
+/-- Use this to pick the subexpression of a given expression that cooresponds
 to the given coordinate. -/
 unsafe def follow : coord → expr → Option expr
   | coord.app_fn, expr.app f _ => some f
@@ -76,7 +76,7 @@ unsafe def follow : coord → expr → Option expr
 
 end Coord
 
-/--  An address is a list of coordinates used to reference subterms of an expression.
+/-- An address is a list of coordinates used to reference subterms of an expression.
 The first coordinate in the list corresponds to the root of the expression. -/
 def address : Type :=
   List coord
@@ -101,7 +101,7 @@ unsafe instance has_to_format : has_to_format address :=
 instance : Append address :=
   ⟨List.append⟩
 
-/--  `as_below x y` is some z when it finds `∃ z, x = y ++ z` -/
+/-- `as_below x y` is some z when it finds `∃ z, x = y ++ z` -/
 unsafe def as_below : address → address → Option address
   | a, [] => some a
   | [], _ => none
@@ -110,7 +110,7 @@ unsafe def as_below : address → address → Option address
 unsafe def is_below : address → address → Bool
   | a₁, a₂ => Option.isSome $ as_below a₁ a₂
 
-/--  `follow a e` finds the subexpression of `e` at the given address `a`. -/
+/-- `follow a e` finds the subexpression of `e` at the given address `a`. -/
 unsafe def follow : address → expr → Option expr
   | [], e => e
   | h :: t, e => coord.follow h e >>= follow t

@@ -15,7 +15,7 @@ private unsafe def apply_replacement (replacements : name_map Name) (e : expr) :
       | none => none
     | _ => none
 
-/--  Given a set of constant renamings `replacements` and a declaration name `src_decl_name`, create a new
+/-- Given a set of constant renamings `replacements` and a declaration name `src_decl_name`, create a new
    declaration called `new_decl_name` s.t. its type is the type of `src_decl_name` after applying the
    given constant replacement.
 

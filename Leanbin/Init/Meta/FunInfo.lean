@@ -13,7 +13,7 @@ structure ParamInfo where
 open Format List Decidable
 
 private unsafe def ppfield {α : Type} [has_to_format α] (fname : Stringₓ) (v : α) : format :=
-  group $ to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length+4) (to_fmt v)
+  group $ to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length + 4) (to_fmt v)
 
 private unsafe def concat_fields (f₁ f₂ : format) : format :=
   if is_nil f₁ then f₂ else if is_nil f₂ then f₁ else f₁ ++ to_fmt "," ++ line ++ f₂
@@ -41,8 +41,7 @@ unsafe def fun_info_to_format : FunInfo → format
 unsafe instance : has_to_format FunInfo :=
   has_to_format.mk fun_info_to_format
 
-/-- 
-  specialized is true if the result of fun_info has been specifialized
+/-- specialized is true if the result of fun_info has been specifialized
   using this argument.
   For example, consider the function
 
@@ -75,13 +74,13 @@ unsafe instance : has_to_format SubsingletonInfo :=
 
 namespace Tactic
 
-/--  If nargs is not none, then return information assuming the function has only nargs arguments. -/
+/-- If nargs is not none, then return information assuming the function has only nargs arguments. -/
 unsafe axiom get_fun_info (f : expr) (nargs : Option Nat := none) (md := semireducible) : tactic FunInfo
 
 unsafe axiom get_subsingleton_info (f : expr) (nargs : Option Nat := none) (md := semireducible) :
     tactic (List SubsingletonInfo)
 
-/--  `get_spec_subsingleton_info t` return subsingleton parameter
+/-- `get_spec_subsingleton_info t` return subsingleton parameter
    information for the function application t of the form
       `f a_1 ... a_n`.
 

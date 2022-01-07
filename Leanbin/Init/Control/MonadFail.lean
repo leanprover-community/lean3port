@@ -10,10 +10,7 @@ class MonadFail (m : Type u → Type v) where
 def matchFailed {α : Type u} {m : Type u → Type v} [MonadFail m] : m α :=
   MonadFail.fail "match failed"
 
--- failed to format: format: uncaught backtrack exception
-instance
-  ( priority := 100 )
-  monadFailLift
-  ( m n : Type u → Type v ) [ Monadₓ n ] [ MonadFail m ] [ HasMonadLift m n ] : MonadFail n
-  where fail α s := monad_lift ( MonadFail.fail s : m α )
+instance (priority := 100) monadFailLift (m n : Type u → Type v) [Monadₓ n] [MonadFail m] [HasMonadLift m n] :
+    MonadFail n where
+  fail := fun α s => monad_lift (MonadFail.fail s : m α)
 

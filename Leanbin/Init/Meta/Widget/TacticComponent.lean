@@ -4,7 +4,7 @@ import Leanbin.Init.Meta.Widget.Basic
 namespace Widget
 
 /--
- A component that implicitly depends on tactic_state. For efficiency we always assume that the tactic_state is unchanged between component renderings. -/
+A component that implicitly depends on tactic_state. For efficiency we always assume that the tactic_state is unchanged between component renderings. -/
 unsafe def Tc (π : Type) (α : Type) :=
   component (tactic_state × π) α
 
@@ -25,7 +25,7 @@ open InteractionMonad
 
 open InteractionMonad.Result
 
-/--  Make a tactic component from some init, update, views which are expecting a tactic.
+/-- Make a tactic component from some init, update, views which are expecting a tactic.
 The tactic_state never mutates.
 -/
 unsafe def mk_simple [DecidableEq π] (β σ : Type) (init : π → tactic σ) (update : π → σ → β → tactic (σ × Option α))

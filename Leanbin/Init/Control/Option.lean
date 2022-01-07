@@ -64,8 +64,9 @@ protected def catch (ma : OptionTₓ m α) (handle : Unit → OptionTₓ m α) :
     let some a ← ma.run | (handle ()).run
     pure a⟩
 
--- failed to format: format: uncaught backtrack exception
-instance : MonadExcept Unit ( OptionTₓ m ) where throw _ _ := OptionTₓ.fail catch := @ OptionTₓ.catch _ _
+instance : MonadExcept Unit (OptionTₓ m) where
+  throw := fun _ _ => OptionTₓ.fail
+  catch := @OptionTₓ.catch _ _
 
 instance m out [MonadRun out m] : MonadRun (fun α => out (Option α)) (OptionTₓ m) :=
   ⟨fun α => MonadRun.run ∘ OptionTₓ.run⟩

@@ -24,28 +24,28 @@ theorem cons_append (x : α) (s t : List α) : x :: s ++ t = x :: (s ++ t) :=
 
 @[simp]
 theorem append_nil (t : List α) : t ++ [] = t := by
-  induction t <;> simp
+  induction t <;> simp [*]
 
 @[simp]
 theorem append_assoc (s t u : List α) : s ++ t ++ u = s ++ (t ++ u) := by
-  induction s <;> simp
+  induction s <;> simp [*]
 
-theorem length_cons (a : α) (l : List α) : length (a :: l) = length l+1 :=
+theorem length_cons (a : α) (l : List α) : length (a :: l) = length l + 1 :=
   rfl
 
 @[simp]
-theorem length_append (s t : List α) : length (s ++ t) = length s+length t := by
+theorem length_append (s t : List α) : length (s ++ t) = length s + length t := by
   induction s
-  ·
-    show length t = 0+length t
-    ·
-      rw [Nat.zero_add]
-  ·
-    simp [Nat.add_comm, Nat.add_left_comm]
+  · show length t = 0 + length t
+    · rw [Nat.zero_add]
+      
+    
+  · simp [*, Nat.add_comm, Nat.add_left_comm]
+    
 
 @[simp]
 theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by
-  induction n <;> simp <;> rfl
+  induction n <;> simp [*] <;> rfl
 
 @[simp]
 theorem length_tail (l : List α) : length (tail l) = length l - 1 := by
@@ -56,7 +56,8 @@ theorem length_drop : ∀ i : ℕ l : List α, length (drop i l) = length l - i
   | 0, l => rfl
   | succ i, [] => Eq.symm (Nat.zero_sub (succ i))
   | succ i, x :: l =>
-    calc length (drop (succ i) (x :: l)) = length l - i := length_drop i l
+    calc
+      length (drop (succ i) (x :: l)) = length l - i := length_drop i l
       _ = succ (length l) - succ i := (Nat.succ_sub_succ_eq_sub (length l) i).symm
       
 
@@ -65,22 +66,22 @@ theorem map_cons (f : α → β) a l : map f (a :: l) = f a :: map f l :=
 
 @[simp]
 theorem map_append (f : α → β) : ∀ l₁ l₂, map f (l₁ ++ l₂) = map f l₁ ++ map f l₂ := by
-  intro l₁ <;> induction l₁ <;> intros <;> simp
+  intro l₁ <;> induction l₁ <;> intros <;> simp [*]
 
 theorem map_singleton (f : α → β) (a : α) : map f [a] = [f a] :=
   rfl
 
 @[simp]
 theorem map_id (l : List α) : map id l = l := by
-  induction l <;> simp
+  induction l <;> simp [*]
 
 @[simp]
 theorem map_map (g : β → γ) (f : α → β) (l : List α) : map g (map f l) = map (g ∘ f) l := by
-  induction l <;> simp
+  induction l <;> simp [*]
 
 @[simp]
 theorem length_map (f : α → β) (l : List α) : length (map f l) = length l := by
-  induction l <;> simp
+  induction l <;> simp [*]
 
 @[simp]
 theorem nil_bind (f : α → List β) : List.bind [] f = [] := by
@@ -92,7 +93,7 @@ theorem cons_bind x xs (f : α → List β) : List.bind (x :: xs) f = f x ++ Lis
 
 @[simp]
 theorem append_bind xs ys (f : α → List β) : List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
-  induction xs <;> [rfl, simp [cons_bind]]
+  induction xs <;> [rfl, simp [*, cons_bind]]
 
 theorem mem_nil_iff (a : α) : a ∈ ([] : List α) ↔ False :=
   Iff.rfl
@@ -118,7 +119,7 @@ theorem eq_or_mem_of_mem_cons {a y : α} {l : List α} : a ∈ y :: l → a = y 
 
 @[simp]
 theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by
-  induction s <;> simp [or_assoc]
+  induction s <;> simp [*, or_assoc]
 
 @[rsimp]
 theorem mem_append_eq (a : α) (s t : List α) : (a ∈ s ++ t) = (a ∈ s ∨ a ∈ t) :=
@@ -138,11 +139,11 @@ theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p
   ⟨fun ⟨x, h, px⟩ => by
     simp at h
     cases' h with h h
-    ·
-      cases h
+    · cases h
       exact Or.inl px
-    ·
-      exact Or.inr ⟨x, h, px⟩,
+      
+    · exact Or.inr ⟨x, h, px⟩
+      ,
     fun o => o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 
 theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀, ∀ x ∈ a :: l, ∀, p x) ↔ p a ∧ ∀, ∀ x ∈ l, ∀, p x :=
@@ -191,7 +192,7 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
 
 @[simp]
 theorem length_map₂ (f : α → β → γ) l₁ : ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
-  induction l₁ <;> intro l₂ <;> cases l₂ <;> simp [add_one, min_succ_succ, Nat.zero_minₓ, Nat.min_zeroₓ]
+  induction l₁ <;> intro l₂ <;> cases l₂ <;> simp [*, add_one, min_succ_succ, Nat.zero_minₓ, Nat.min_zeroₓ]
 
 @[simp]
 theorem length_take : ∀ i : ℕ l : List α, length (take i l) = min i (length l)
@@ -200,7 +201,7 @@ theorem length_take : ∀ i : ℕ l : List α, length (take i l) = min i (length
   | succ n, [] => by
     simp [Nat.min_zeroₓ]
   | succ n, a :: l => by
-    simp [Nat.min_succ_succₓ, add_one]
+    simp [*, Nat.min_succ_succₓ, add_one]
 
 theorem length_take_le n (l : List α) : length (take n l) ≤ n := by
   simp [min_le_leftₓ]
@@ -209,9 +210,8 @@ theorem length_remove_nth : ∀ l : List α i : ℕ, i < length l → length (re
   | [], _, h => rfl
   | x :: xs, 0, h => by
     simp [remove_nth]
-  | x :: xs, i+1, h =>
+  | x :: xs, i + 1, h => by
     have : i < length xs := lt_of_succ_lt_succ h
-    by
     dsimp [remove_nth] <;>
       rw [length_remove_nth xs i this, Nat.sub_add_cancelₓ (lt_of_le_of_ltₓ (Nat.zero_leₓ _) this)] <;> rfl
 
@@ -295,8 +295,9 @@ def map_accumr₂ (f : α → β → σ → σ × φ) : List α → List β → 
 @[simp]
 theorem length_map_accumr₂ : ∀ f : α → β → σ → σ × φ x y c, length (map_accumr₂ f x y c).2 = min (length x) (length y)
   | f, a :: x, b :: y, c =>
-    calc succ (length (map_accumr₂ f x y c).2) = succ (min (length x) (length y)) :=
-      congr_argₓ succ (length_map_accumr₂ f x y c)
+    calc
+      succ (length (map_accumr₂ f x y c).2) = succ (min (length x) (length y)) :=
+        congr_argₓ succ (length_map_accumr₂ f x y c)
       _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succ (length x) (length y))
       
   | f, a :: x, [], c => rfl

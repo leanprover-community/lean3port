@@ -26,7 +26,7 @@ namespace TacticState
 
 unsafe axiom env : tactic_state → environment
 
-/--  Format the given tactic state. If `target_lhs_only` is true and the target
+/-- Format the given tactic state. If `target_lhs_only` is true and the target
     is of the form `lhs ~ rhs`, where `~` is a simplification relation,
     then only the `lhs` is displayed.
 
@@ -34,7 +34,7 @@ unsafe axiom env : tactic_state → environment
     the `conv` monad. It will be removed in the future. -/
 unsafe axiom to_format (s : tactic_state) (target_lhs_only : Bool := ff) : format
 
-/--  Format expression with respect to the main goal in the tactic state.
+/-- Format expression with respect to the main goal in the tactic state.
    If the tactic state does not contain any goals, then format expression
    using an empty local context. -/
 unsafe axiom format_expr : tactic_state → expr → format
@@ -51,7 +51,7 @@ unsafe instance : has_to_format tactic_state :=
 unsafe instance : HasToString tactic_state :=
   ⟨fun s => (to_fmt s).toString s.get_options⟩
 
-/--  `tactic` is the monad for building tactics.
+/-- `tactic` is the monad for building tactics.
     You use this to:
     - View and modify the local goals and hypotheses in the prover's state.
     - Invoke type checking and elaboration of terms.
@@ -71,7 +71,7 @@ namespace Tactic
 export
   InteractionMonad (result result.success result.exception result.cases_on result_to_string mk_exception silent_fail orelse' bracket)
 
-/--  Cause the tactic to fail with no error message. -/
+/-- Cause the tactic to fail with no error message. -/
 unsafe def failed {α : Type} : tactic α :=
   interaction_monad.failed
 
@@ -109,7 +109,7 @@ unsafe def tactic.down.{u₁, u₂} {α : Type u₂} (t : tactic (Ulift.{u₁} �
 
 namespace Interactive
 
-/--  Typeclass for custom interaction monads, which provides
+/-- Typeclass for custom interaction monads, which provides
     the information required to convert an interactive-mode
     construction to a `tactic` which can actually be executed.
 
@@ -139,9 +139,11 @@ unsafe def executor.execute_with_explicit (m : Type → Type u) [Monadₓ m] [ex
     executor.config_type m → m Unit → tactic Unit :=
   executor.execute_with
 
--- failed to format: format: uncaught backtrack exception
-/-- Default `executor` instance for `tactic`s themselves -/ unsafe
-  instance executor_tactic : executor tactic where config_type := Unit Inhabited := ⟨ ( ) ⟩ execute_with _ := id
+/-- Default `executor` instance for `tactic`s themselves -/
+unsafe instance executor_tactic : executor tactic where
+  config_type := Unit
+  Inhabited := ⟨()⟩
+  execute_with := fun _ => id
 
 end Interactive
 
@@ -151,12 +153,11 @@ open InteractionMonad.Result
 
 variable {α : Type u}
 
-/--  Does nothing. -/
+/-- Does nothing. -/
 unsafe def skip : tactic Unit :=
   success ()
 
-/-- 
-`try_core t` acts like `t`, but succeeds even if `t` fails. It returns the
+/-- `try_core t` acts like `t`, but succeeds even if `t` fails. It returns the
 result of `t` if `t` succeeded and `none` otherwise.
 -/
 unsafe def try_core (t : tactic α) : tactic (Option α) := fun s =>
@@ -164,8 +165,7 @@ unsafe def try_core (t : tactic α) : tactic (Option α) := fun s =>
   | exception _ _ _ => success none s
   | success a s' => success (some a) s'
 
-/-- 
-`try t` acts like `t`, but succeeds even if `t` fails.
+/-- `try t` acts like `t`, but succeeds even if `t` fails.
 -/
 unsafe def try (t : tactic α) : tactic Unit := fun s =>
   match t s with
@@ -182,8 +182,7 @@ unsafe def try_lst : List (tactic Unit) → tactic Unit
       | exception _ _ _ => exception e p s'
       | r => r
 
-/-- 
-`fail_if_success t` acts like `t`, but succeeds if `t` fails and fails if `t`
+/-- `fail_if_success t` acts like `t`, but succeeds if `t` fails and fails if `t`
 succeeds. Changes made by `t` to the `tactic_state` are preserved only if `t`
 succeeds.
 -/
@@ -192,8 +191,7 @@ unsafe def fail_if_success {α : Type u} (t : tactic α) : tactic Unit := fun s 
   | success a s => mk_exception "fail_if_success combinator failed, given tactic succeeded" none s
   | exception _ _ _ => success () s
 
-/-- 
-`success_if_fail t` acts like `t`, but succeeds if `t` fails and fails if `t`
+/-- `success_if_fail t` acts like `t`, but succeeds if `t` fails and fails if `t`
 succeeds. Changes made by `t` to the `tactic_state` are preserved only if `t`
 succeeds.
 -/
@@ -204,19 +202,17 @@ unsafe def success_if_fail {α : Type u} (t : tactic α) : tactic Unit := fun s 
 
 open Nat
 
-/-- 
-`iterate_at_most n t` iterates `t` `n` times or until `t` fails, returning the
+/-- `iterate_at_most n t` iterates `t` `n` times or until `t` fails, returning the
 result of each successful iteration.
 -/
 unsafe def iterate_at_most : Nat → tactic α → tactic (List α)
   | 0, t => pure []
-  | n+1, t => do
+  | n + 1, t => do
     let some a ← try_core t | pure []
     let as ← iterate_at_most n t
     pure $ a :: as
 
-/-- 
-`iterate_at_most' n t` repeats `t` `n` times or until `t` fails.
+/-- `iterate_at_most' n t` repeats `t` `n` times or until `t` fails.
 -/
 unsafe def iterate_at_most' : Nat → tactic Unit → tactic Unit
   | 0, t => skip
@@ -224,34 +220,30 @@ unsafe def iterate_at_most' : Nat → tactic Unit → tactic Unit
     let some _ ← try_core t | skip
     iterate_at_most' n t
 
-/-- 
-`iterate_exactly n t` iterates `t` `n` times, returning the result of
+/-- `iterate_exactly n t` iterates `t` `n` times, returning the result of
 each iteration. If any iteration fails, the whole tactic fails.
 -/
 unsafe def iterate_exactly : Nat → tactic α → tactic (List α)
   | 0, t => pure []
-  | n+1, t => do
+  | n + 1, t => do
     let a ← t
     let as ← iterate_exactly n t
     pure $ a :: as
 
-/-- 
-`iterate_exactly' n t` executes `t` `n` times. If any iteration fails, the whole
+/-- `iterate_exactly' n t` executes `t` `n` times. If any iteration fails, the whole
 tactic fails.
 -/
 unsafe def iterate_exactly' : Nat → tactic Unit → tactic Unit
   | 0, t => skip
-  | n+1, t => t *> iterate_exactly' n t
+  | n + 1, t => t *> iterate_exactly' n t
 
-/-- 
-`iterate t` repeats `t` 100.000 times or until `t` fails, returning the
+/-- `iterate t` repeats `t` 100.000 times or until `t` fails, returning the
 result of each iteration.
 -/
 unsafe def iterate : tactic α → tactic (List α) :=
   iterate_at_most 100000
 
-/-- 
-`iterate' t` repeats `t` 100.000 times or until `t` fails.
+/-- `iterate' t` repeats `t` 100.000 times or until `t` fails.
 -/
 unsafe def iterate' : tactic Unit → tactic Unit :=
   iterate_at_most' 100000
@@ -264,23 +256,22 @@ unsafe def returnopt (e : Option α) : tactic α := fun s =>
 unsafe instance opt_to_tac : Coe (Option α) (tactic α) :=
   ⟨returnopt⟩
 
-/--  Decorate t's exceptions with msg. -/
+/-- Decorate t's exceptions with msg. -/
 unsafe def decorate_ex (msg : format) (t : tactic α) : tactic α := fun s =>
   result.cases_on (t s) success fun opt_thunk =>
     match opt_thunk with
     | some e => exception (some fun u => msg ++ format.nest 2 (format.line ++ e u))
     | none => exception none
 
-/--  Set the tactic_state. -/
+/-- Set the tactic_state. -/
 @[inline]
 unsafe def write (s' : tactic_state) : tactic Unit := fun s => success () s'
 
-/--  Get the tactic_state. -/
+/-- Get the tactic_state. -/
 @[inline]
 unsafe def read : tactic tactic_state := fun s => success s s
 
-/-- 
-`capture t` acts like `t`, but succeeds with a result containing either the returned value
+/-- `capture t` acts like `t`, but succeeds with a result containing either the returned value
 or the exception.
 Changes made by `t` to the `tactic_state` are preserved in both cases.
 
@@ -292,8 +283,7 @@ unsafe def capture (t : tactic α) : tactic (tactic_result α) := fun s =>
   | success r s' => success (success r s') s'
   | exception f p s' => success (exception f p s') s'
 
-/-- 
-`unwrap r` unwraps a result previously obtained using `capture`.
+/-- `unwrap r` unwraps a result previously obtained using `capture`.
 
 If the previous result was a success, this produces its wrapped value.
 If the previous result was an exception, this "rethrows" the exception as if it came
@@ -306,8 +296,7 @@ unsafe def unwrap {α : Type _} (t : tactic_result α) : tactic α :=
   | success r s' => return r
   | e => fun s => e
 
-/-- 
-`resume r` continues execution from a result previously obtained using `capture`.
+/-- `resume r` continues execution from a result previously obtained using `capture`.
 
 This is like `unwrap`, but the `tactic_state` is rolled back to point of capture even upon success.
 -/
@@ -405,7 +394,7 @@ unsafe def trace_state : tactic Unit := do
   trace $ to_fmt s
 
 /--
- A parameter representing how aggressively definitions should be unfolded when trying to decide if two terms match, unify or are definitionally equal.
+A parameter representing how aggressively definitions should be unfolded when trying to decide if two terms match, unify or are definitionally equal.
 By default, theorem declarations are never unfolded.
 - `all` will unfold everything, including macros and theorems. Except projection macros.
 - `semireducible` will unfold everything except theorems and definitions tagged as irreducible.
@@ -424,84 +413,84 @@ inductive transparency
 
 export Transparency (reducible semireducible)
 
-/--  (eval_expr α e) evaluates 'e' IF 'e' has type 'α'. -/
+/-- (eval_expr α e) evaluates 'e' IF 'e' has type 'α'. -/
 unsafe axiom eval_expr (α : Type u) [reflected α] : expr → tactic α
 
-/--  Return the partial term/proof constructed so far. Note that the resultant expression
+/-- Return the partial term/proof constructed so far. Note that the resultant expression
    may contain variables that are not declarate in the current main goal. -/
 unsafe axiom result : tactic expr
 
-/--  Display the partial term/proof constructed so far. This tactic is *not* equivalent to
+/-- Display the partial term/proof constructed so far. This tactic is *not* equivalent to
    `do { r ← result, s ← read, return (format_expr s r) }` because this one will format the result with respect
    to the current goal, and trace_result will do it with respect to the initial goal. -/
 unsafe axiom format_result : tactic format
 
-/--  Return target type of the main goal. Fail if tactic_state does not have any goal left. -/
+/-- Return target type of the main goal. Fail if tactic_state does not have any goal left. -/
 unsafe axiom target : tactic expr
 
 unsafe axiom intro_core : Name → tactic expr
 
 unsafe axiom intron : Nat → tactic Unit
 
-/--  Clear the given local constant. The tactic fails if the given expression is not a local constant. -/
+/-- Clear the given local constant. The tactic fails if the given expression is not a local constant. -/
 unsafe axiom clear : expr → tactic Unit
 
 /--
- `revert_lst : list expr → tactic nat` is the reverse of `intron`. It takes a local constant `c` and puts it back as bound by a `pi` or `elet` of the main target.
+`revert_lst : list expr → tactic nat` is the reverse of `intron`. It takes a local constant `c` and puts it back as bound by a `pi` or `elet` of the main target.
 If there are other local constants that depend on `c`, these are also reverted. Because of this, the `nat` that is returned is the actual number of reverted local constants.
 Example: with `x : ℕ, h : P(x) ⊢ T(x)`, `revert_lst [x]` returns `2` and produces the state ` ⊢ Π x, P(x) → T(x)`.
  -/
 unsafe axiom revert_lst : List expr → tactic Nat
 
-/--  Return `e` in weak head normal form with respect to the given transparency setting.
+/-- Return `e` in weak head normal form with respect to the given transparency setting.
     If `unfold_ginductive` is `tt`, then nested and/or mutually recursive inductive datatype constructors
     and types are unfolded. Recall that nested and mutually recursive inductive datatype declarations
     are compiled into primitive datatypes accepted by the Kernel. -/
 unsafe axiom whnf (e : expr) (md := semireducible) (unfold_ginductive := tt) : tactic expr
 
 /--
- (head) eta expand the given expression. `f : α → β` head-eta-expands to `λ a, f a`. If `f` isn't a function then it just returns `f`.  -/
+(head) eta expand the given expression. `f : α → β` head-eta-expands to `λ a, f a`. If `f` isn't a function then it just returns `f`.  -/
 unsafe axiom head_eta_expand : expr → tactic expr
 
-/--  (head) beta reduction. `(λ x, B) c` reduces to `B[x/c]`. -/
+/-- (head) beta reduction. `(λ x, B) c` reduces to `B[x/c]`. -/
 unsafe axiom head_beta : expr → tactic expr
 
 /--
- (head) zeta reduction. Reduction of let bindings at the head of the expression. `let x : a := b in c` reduces to `c[x/b]`. -/
+(head) zeta reduction. Reduction of let bindings at the head of the expression. `let x : a := b in c` reduces to `c[x/b]`. -/
 unsafe axiom head_zeta : expr → tactic expr
 
-/--  Zeta reduction. Reduction of let bindings. `let x : a := b in c` reduces to `c[x/b]`. -/
+/-- Zeta reduction. Reduction of let bindings. `let x : a := b in c` reduces to `c[x/b]`. -/
 unsafe axiom zeta : expr → tactic expr
 
-/--  (head) eta reduction. `(λ x, f x)` reduces to `f`. -/
+/-- (head) eta reduction. `(λ x, f x)` reduces to `f`. -/
 unsafe axiom head_eta : expr → tactic expr
 
-/--  Succeeds if `t` and `s` can be unified using the given transparency setting. -/
+/-- Succeeds if `t` and `s` can be unified using the given transparency setting. -/
 unsafe axiom unify (t s : expr) (md := semireducible) (approx := ff) : tactic Unit
 
-/--  Similar to `unify`, but it treats metavariables as constants. -/
+/-- Similar to `unify`, but it treats metavariables as constants. -/
 unsafe axiom is_def_eq (t s : expr) (md := semireducible) (approx := ff) : tactic Unit
 
-/--  Infer the type of the given expression.
+/-- Infer the type of the given expression.
    Remark: transparency does not affect type inference -/
 unsafe axiom infer_type : expr → tactic expr
 
-/--  Get the `local_const` expr for the given `name`. -/
+/-- Get the `local_const` expr for the given `name`. -/
 unsafe axiom get_local : Name → tactic expr
 
-/--  Resolve a name using the current local context, environment, aliases, etc. -/
+/-- Resolve a name using the current local context, environment, aliases, etc. -/
 unsafe axiom resolve_name : Name → tactic pexpr
 
-/--  Return the hypothesis in the main goal. Fail if tactic_state does not have any goal left. -/
+/-- Return the hypothesis in the main goal. Fail if tactic_state does not have any goal left. -/
 unsafe axiom local_context : tactic (List expr)
 
-/--  Get a fresh name that is guaranteed to not be in use in the local context.
+/-- Get a fresh name that is guaranteed to not be in use in the local context.
     If `n` is provided and `n` is not in use, then `n` is returned.
     Otherwise a number `i` is appended to give `"n_i"`.
 -/
 unsafe axiom get_unused_name (n : Name := `_x) (i : Option Nat := none) : tactic Name
 
-/--   Helper tactic for creating simple applications where some arguments are inferred using
+/-- Helper tactic for creating simple applications where some arguments are inferred using
     type inference.
 
     Example, given
@@ -525,7 +514,7 @@ unsafe axiom get_unused_name (n : Name := `_x) (i : Option Nat := none) : tactic
 -/
 unsafe axiom mk_app (fn : Name) (args : List expr) (md := semireducible) : tactic expr
 
-/--  Similar to `mk_app`, but allows to specify which arguments are explicit/implicit.
+/-- Similar to `mk_app`, but allows to specify which arguments are explicit/implicit.
    Example, given `(a b : nat)` then
    ```
    mk_mapp "ite" [some (a > b), none, none, some a, some b]
@@ -537,81 +526,81 @@ unsafe axiom mk_app (fn : Name) (args : List expr) (md := semireducible) : tacti
 -/
 unsafe axiom mk_mapp (fn : Name) (args : List (Option expr)) (md := semireducible) : tactic expr
 
-/--  (mk_congr_arg h₁ h₂) is a more efficient version of (mk_app `congr_arg [h₁, h₂]) -/
+/-- (mk_congr_arg h₁ h₂) is a more efficient version of (mk_app `congr_arg [h₁, h₂]) -/
 unsafe axiom mk_congr_arg : expr → expr → tactic expr
 
-/--  (mk_congr_fun h₁ h₂) is a more efficient version of (mk_app `congr_fun [h₁, h₂]) -/
+/-- (mk_congr_fun h₁ h₂) is a more efficient version of (mk_app `congr_fun [h₁, h₂]) -/
 unsafe axiom mk_congr_fun : expr → expr → tactic expr
 
-/--  (mk_congr h₁ h₂) is a more efficient version of (mk_app `congr [h₁, h₂]) -/
+/-- (mk_congr h₁ h₂) is a more efficient version of (mk_app `congr [h₁, h₂]) -/
 unsafe axiom mk_congr : expr → expr → tactic expr
 
-/--  (mk_eq_refl h) is a more efficient version of (mk_app `eq.refl [h]) -/
+/-- (mk_eq_refl h) is a more efficient version of (mk_app `eq.refl [h]) -/
 unsafe axiom mk_eq_refl : expr → tactic expr
 
-/--  (mk_eq_symm h) is a more efficient version of (mk_app `eq.symm [h]) -/
+/-- (mk_eq_symm h) is a more efficient version of (mk_app `eq.symm [h]) -/
 unsafe axiom mk_eq_symm : expr → tactic expr
 
-/--  (mk_eq_trans h₁ h₂) is a more efficient version of (mk_app `eq.trans [h₁, h₂]) -/
+/-- (mk_eq_trans h₁ h₂) is a more efficient version of (mk_app `eq.trans [h₁, h₂]) -/
 unsafe axiom mk_eq_trans : expr → expr → tactic expr
 
-/--  (mk_eq_mp h₁ h₂) is a more efficient version of (mk_app `eq.mp [h₁, h₂]) -/
+/-- (mk_eq_mp h₁ h₂) is a more efficient version of (mk_app `eq.mp [h₁, h₂]) -/
 unsafe axiom mk_eq_mp : expr → expr → tactic expr
 
-/--  (mk_eq_mpr h₁ h₂) is a more efficient version of (mk_app `eq.mpr [h₁, h₂]) -/
+/-- (mk_eq_mpr h₁ h₂) is a more efficient version of (mk_app `eq.mpr [h₁, h₂]) -/
 unsafe axiom mk_eq_mpr : expr → expr → tactic expr
 
-/--  Given a local constant t, if t has type (lhs = rhs) apply substitution.
+/-- Given a local constant t, if t has type (lhs = rhs) apply substitution.
    Otherwise, try to find a local constant that has type of the form (t = t') or (t' = t).
    The tactic fails if the given expression is not a local constant. -/
 unsafe axiom subst_core : expr → tactic Unit
 
-/--  Close the current goal using `e`. Fail if the type of `e` is not definitionally equal to
+/-- Close the current goal using `e`. Fail if the type of `e` is not definitionally equal to
     the target type. -/
 unsafe axiom exact (e : expr) (md := semireducible) : tactic Unit
 
-/--  Elaborate the given quoted expression with respect to the current main goal.
+/-- Elaborate the given quoted expression with respect to the current main goal.
     Note that this means that any implicit arguments for the given `pexpr` will be applied with fresh metavariables.
     If `allow_mvars` is tt, then metavariables are tolerated and become new goals if `subgoals` is tt. -/
 unsafe axiom to_expr (q : pexpr) (allow_mvars := tt) (subgoals := tt) : tactic expr
 
-/--  Return true if the given expression is a type class. -/
+/-- Return true if the given expression is a type class. -/
 unsafe axiom is_class : expr → tactic Bool
 
-/--  Try to create an instance of the given type class. -/
+/-- Try to create an instance of the given type class. -/
 unsafe axiom mk_instance : expr → tactic expr
 
-/--  Change the target of the main goal.
+/-- Change the target of the main goal.
    The input expression must be definitionally equal to the current target.
    If `check` is `ff`, then the tactic does not check whether `e`
    is definitionally equal to the current target. If it is not,
    then the error will only be detected by the kernel type checker. -/
 unsafe axiom change (e : expr) (check : Bool := tt) : tactic Unit
 
-/--  `assert_core H T`, adds a new goal for T, and change target to `T -> target`. -/
+/-- `assert_core H T`, adds a new goal for T, and change target to `T -> target`. -/
 unsafe axiom assert_core : Name → expr → tactic Unit
 
-/--  `assertv_core H T P`, change target to (T -> target) if P has type T. -/
+/-- `assertv_core H T P`, change target to (T -> target) if P has type T. -/
 unsafe axiom assertv_core : Name → expr → expr → tactic Unit
 
-/--  `define_core H T`, adds a new goal for T, and change target to  `let H : T := ?M in target` in the current goal. -/
+/-- `define_core H T`, adds a new goal for T, and change target to  `let H : T := ?M in target` in the current goal. -/
 unsafe axiom define_core : Name → expr → tactic Unit
 
-/--  `definev_core H T P`, change target to `let H : T := P in target` if P has type T. -/
+/-- `definev_core H T P`, change target to `let H : T := P in target` if P has type T. -/
 unsafe axiom definev_core : Name → expr → expr → tactic Unit
 
 /--
- Rotate goals to the left. That is, `rotate_left 1` takes the main goal and puts it to the back of the subgoal list. -/
+Rotate goals to the left. That is, `rotate_left 1` takes the main goal and puts it to the back of the subgoal list. -/
 unsafe axiom rotate_left : Nat → tactic Unit
 
-/--  Gets a list of metavariables, one for each goal. -/
+/-- Gets a list of metavariables, one for each goal. -/
 unsafe axiom get_goals : tactic (List expr)
 
 /--
- Replace the current list of goals with the given one. Each expr in the list should be a metavariable. Any assigned metavariables will be ignored.-/
+Replace the current list of goals with the given one. Each expr in the list should be a metavariable. Any assigned metavariables will be ignored.-/
 unsafe axiom set_goals : List expr → tactic Unit
 
-/--  How to order the new goals made from an `apply` tactic.
+/-- How to order the new goals made from an `apply` tactic.
 Supposing we were applying `e : ∀ (a:α) (p : P(a)), Q`
 - `non_dep_first` would produce goals `⊢ P(?m)`, `⊢ α`. It puts the P goal at the front because none of the arguments after `p` in `e` depend on `p`. It doesn't matter what the result `Q` depends on.
 - `non_dep_only` would produce goal `⊢ P(?m)`.
@@ -622,7 +611,7 @@ inductive new_goals
   | non_dep_only
   | all
 
-/--  Configuration options for the `apply` tactic.
+/-- Configuration options for the `apply` tactic.
 - `md` sets how aggressively definitions are unfolded.
 - `new_goals` is the strategy for ordering new goals.
 - `instances` if `tt`, then `apply` tries to synthesize unresolved `[...]` arguments using type class resolution.
@@ -642,7 +631,7 @@ structure apply_cfg where
   optParam := tt
   unify := tt
 
-/--  Apply the expression `e` to the main goal, the unification is performed using the transparency mode in `cfg`.
+/-- Apply the expression `e` to the main goal, the unification is performed using the transparency mode in `cfg`.
     Supposing `e : Π (a₁:α₁) ... (aₙ:αₙ), P(a₁,...,aₙ)` and the target is `Q`, `apply` will attempt to unify `Q` with `P(?a₁,...?aₙ)`.
     All of the metavariables that are not assigned are added as new metavariables.
     If `cfg.approx` is `tt`, then fallback to first-order unification, and approximate context during unification.
@@ -656,23 +645,23 @@ unsafe axiom mk_meta_univ : tactic level
 
 unsafe axiom mk_meta_var : expr → tactic expr
 
-/--  Return the value assigned to the given universe meta-variable.
+/-- Return the value assigned to the given universe meta-variable.
    Fail if argument is not an universe meta-variable or if it is not assigned. -/
 unsafe axiom get_univ_assignment : level → tactic level
 
-/--  Return the value assigned to the given meta-variable.
+/-- Return the value assigned to the given meta-variable.
    Fail if argument is not a meta-variable or if it is not assigned. -/
 unsafe axiom get_assignment : expr → tactic expr
 
-/--  Return true if the given meta-variable is assigned.
+/-- Return true if the given meta-variable is assigned.
     Fail if argument is not a meta-variable. -/
 unsafe axiom is_assigned : expr → tactic Bool
 
 /--
- Make a name that is guaranteed to be unique. Eg `_fresh.1001.4667`. These will be different for each run of the tactic.  -/
+Make a name that is guaranteed to be unique. Eg `_fresh.1001.4667`. These will be different for each run of the tactic.  -/
 unsafe axiom mk_fresh_name : tactic Name
 
-/--  Induction on `h` using recursor `rec`, names for the new hypotheses
+/-- Induction on `h` using recursor `rec`, names for the new hypotheses
    are retrieved from `ns`. If `ns` does not have sufficient names, then use the internal binder names
    in the recursor.
    It returns for each new goal the name of the constructor (if `rec_name` is a builtin recursor),
@@ -687,7 +676,7 @@ unsafe axiom mk_fresh_name : tactic Name
 unsafe axiom induction (h : expr) (ns : List Name := []) (rec : Option Name := none) (md := semireducible) :
     tactic (List (Name × List expr × List (Name × expr)))
 
-/--  Apply `cases_on` recursor, names for the new hypotheses are retrieved from `ns`.
+/-- Apply `cases_on` recursor, names for the new hypotheses are retrieved from `ns`.
    `h` must be a local constant. It returns for each new goal the name of the constructor, a list of new hypotheses, and a list of
    substitutions for hypotheses depending on `h`. The number of new goals may be smaller than the
    number of constructors. Some goals may be discarded when the indices to not match.
@@ -701,36 +690,34 @@ unsafe axiom induction (h : expr) (ns : List Name := []) (rec : Option Name := n
 unsafe axiom cases_core (h : expr) (ns : List Name := []) (md := semireducible) :
     tactic (List (Name × List expr × List (Name × expr)))
 
-/--  Similar to cases tactic, but does not revert/intro/clear hypotheses. -/
+/-- Similar to cases tactic, but does not revert/intro/clear hypotheses. -/
 unsafe axiom destruct (e : expr) (md := semireducible) : tactic Unit
 
-/--  Generalizes the target with respect to `e`.  -/
+/-- Generalizes the target with respect to `e`.  -/
 unsafe axiom generalize (e : expr) (n : Name := `_x) (md := semireducible) : tactic Unit
 
-/--  instantiate assigned metavariables in the given expression -/
+/-- instantiate assigned metavariables in the given expression -/
 unsafe axiom instantiate_mvars : expr → tactic expr
 
-/--  Add the given declaration to the environment -/
+/-- Add the given declaration to the environment -/
 unsafe axiom add_decl : declaration → tactic Unit
 
-/-- 
-Changes the environment to the `new_env`.
+/-- Changes the environment to the `new_env`.
 The new environment does not need to be a descendant of the old one.
 Use with care.
 -/
 unsafe axiom set_env_core : environment → tactic Unit
 
-/--  Changes the environment to the `new_env`. `new_env` needs to be a descendant from the current environment. -/
+/-- Changes the environment to the `new_env`. `new_env` needs to be a descendant from the current environment. -/
 unsafe axiom set_env : environment → tactic Unit
 
-/--  `doc_string env d k` returns the doc string for `d` (if available) -/
+/-- `doc_string env d k` returns the doc string for `d` (if available) -/
 unsafe axiom doc_string : Name → tactic Stringₓ
 
-/--  Set the docstring for the given declaration. -/
+/-- Set the docstring for the given declaration. -/
 unsafe axiom add_doc_string : Name → Stringₓ → tactic Unit
 
-/-- 
-Create an auxiliary definition with name `c` where `type` and `value` may contain local constants and
+/-- Create an auxiliary definition with name `c` where `type` and `value` may contain local constants and
 meta-variables. This function collects all dependencies (universe parameters, universe metavariables,
 local constants (aka hypotheses) and metavariables).
 It updates the environment in the tactic_state, and returns an expression of the form
@@ -741,13 +728,13 @@ where l_i's and a_j's are the collected dependencies.
 -/
 unsafe axiom add_aux_decl (c : Name) (type : expr) (val : expr) (is_lemma : Bool) : tactic expr
 
-/--  Returns a list of all top-level (`/-! ... -/`) docstrings in the active module and imported ones.
+/-- Returns a list of all top-level (`/-! ... -/`) docstrings in the active module and imported ones.
 The returned object is a list of modules, indexed by `(some filename)` for imported modules
 and `none` for the active one, where each module in the list is paired with a list
 of `(position_in_file, docstring)` pairs. -/
 unsafe axiom olean_doc_strings : tactic (List (Option Stringₓ × List (Pos × Stringₓ)))
 
-/--  Returns a list of docstrings in the active module. An entry in the list can be either:
+/-- Returns a list of docstrings in the active module. An entry in the list can be either:
 - a top-level (`/-! ... -/`) docstring, represented as `(none, docstring)`
 - a declaration-specific (`/-- ... -/`) docstring, represented as `(some decl_name, docstring)` -/
 unsafe def module_doc_strings : tactic (List (Option Name × Stringₓ)) := do
@@ -763,20 +750,20 @@ unsafe def module_doc_strings : tactic (List (Option Name × Stringₓ)) := do
   let decls ← decls.mfoldl (fun a n => (doc_string n >>= fun doc => pure $ (some n, doc) :: a) <|> pure a) []
   pure (mod_docs ++ decls)
 
-/--  Set attribute `attr_name` for constant `c_name` with the given priority.
+/-- Set attribute `attr_name` for constant `c_name` with the given priority.
    If the priority is none, then use default -/
 unsafe axiom set_basic_attribute (attr_name : Name) (c_name : Name) (persistent := ff) (prio : Option Nat := none) :
     tactic Unit
 
-/--  `unset_attribute attr_name c_name` -/
+/-- `unset_attribute attr_name c_name` -/
 unsafe axiom unset_attribute : Name → Name → tactic Unit
 
-/--  `has_attribute attr_name c_name` succeeds if the declaration `decl_name`
+/-- `has_attribute attr_name c_name` succeeds if the declaration `decl_name`
    has the attribute `attr_name`. The result is the priority and whether or not
    the attribute is persistent. -/
 unsafe axiom has_attribute : Name → Name → tactic (Bool × Nat)
 
-/--  `copy_attribute attr_name c_name p d_name` copy attribute `attr_name` from
+/-- `copy_attribute attr_name c_name p d_name` copy attribute `attr_name` from
    `src` to `tgt` if it is defined for `src`; make it persistent if `p` is `tt`;
    if `p` is `none`, the copied attribute is made persistent iff it is persistent on `src`  -/
 unsafe def copy_attribute (attr_name : Name) (src : Name) (tgt : Name) (p : Option Bool := none) : tactic Unit :=
@@ -785,18 +772,18 @@ unsafe def copy_attribute (attr_name : Name) (src : Name) (tgt : Name) (p : Opti
     let p := p.get_or_else p'
     set_basic_attribute attr_name tgt p (some prio)
 
-/--  Name of the declaration currently being elaborated. -/
+/-- Name of the declaration currently being elaborated. -/
 unsafe axiom decl_name : tactic Name
 
-/--  `save_type_info e ref` save (typeof e) at position associated with ref -/
+/-- `save_type_info e ref` save (typeof e) at position associated with ref -/
 unsafe axiom save_type_info {elab : Bool} : expr → expr elab → tactic Unit
 
 unsafe axiom save_info_thunk : Pos → (Unit → format) → tactic Unit
 
-/--  Return list of currently open namespaces -/
+/-- Return list of currently open namespaces -/
 unsafe axiom open_namespaces : tactic (List Name)
 
-/--  Return tt iff `t` "occurs" in `e`. The occurrence checking is performed using
+/-- Return tt iff `t` "occurs" in `e`. The occurrence checking is performed using
     keyed matching with the given transparency setting.
 
     We say `t` occurs in `e` by keyed matching iff there is a subterm `s`
@@ -806,39 +793,39 @@ unsafe axiom open_namespaces : tactic (List Name)
     performed. -/
 unsafe axiom kdepends_on (e t : expr) (md := reducible) : tactic Bool
 
-/--  Abstracts all occurrences of the term `t` in `e` using keyed matching.
+/-- Abstracts all occurrences of the term `t` in `e` using keyed matching.
     If `unify` is `ff`, then matching is used instead of unification.
     That is, metavariables occurring in `e` are not assigned. -/
 unsafe axiom kabstract (e t : expr) (md := reducible) (unify := tt) : tactic expr
 
-/--  Blocks the execution of the current thread for at least `msecs` milliseconds.
+/-- Blocks the execution of the current thread for at least `msecs` milliseconds.
     This tactic is used mainly for debugging purposes. -/
 unsafe axiom sleep (msecs : Nat) : tactic Unit
 
-/--  Type check `e` with respect to the current goal.
+/-- Type check `e` with respect to the current goal.
     Fails if `e` is not type correct. -/
 unsafe axiom type_check (e : expr) (md := semireducible) : tactic Unit
 
 open List Nat
 
-/--  A `tag` is a list of `names`. These are attached to goals to help tactics track them.-/
+/-- A `tag` is a list of `names`. These are attached to goals to help tactics track them.-/
 def tag : Type :=
   List Name
 
-/--  Enable/disable goal tagging.  -/
+/-- Enable/disable goal tagging.  -/
 unsafe axiom enable_tags (b : Bool) : tactic Unit
 
-/--  Return tt iff goal tagging is enabled. -/
+/-- Return tt iff goal tagging is enabled. -/
 unsafe axiom tags_enabled : tactic Bool
 
-/--  Tag goal `g` with tag `t`. It does nothing if goal tagging is disabled.
+/-- Tag goal `g` with tag `t`. It does nothing if goal tagging is disabled.
     Remark: `set_goal g []` removes the tag -/
 unsafe axiom set_tag (g : expr) (t : tag) : tactic Unit
 
-/--  Return tag associated with `g`. Return `[]` if there is no tag. -/
+/-- Return tag associated with `g`. Return `[]` if there is no tag. -/
 unsafe axiom get_tag (g : expr) : tactic tag
 
-/--  By default, Lean only considers local instances in the header of declarations.
+/-- By default, Lean only considers local instances in the header of declarations.
     This has two main benefits.
     1- Results produced by the type class resolution procedure can be easily cached.
     2- The set of local instances does not have to be recomputed.
@@ -854,25 +841,24 @@ unsafe axiom get_tag (g : expr) : tactic tag
     may generate many type class resolution problems (e.g., `simp`). -/
 unsafe axiom unfreeze_local_instances : tactic Unit
 
-/-- 
-Freeze the current set of local instances.
+/-- Freeze the current set of local instances.
 -/
 unsafe axiom freeze_local_instances : tactic Unit
 
 unsafe axiom frozen_local_instances : tactic (Option (List expr))
 
-/--  Run the provided tactic, associating it to the given AST node. -/
+/-- Run the provided tactic, associating it to the given AST node. -/
 unsafe axiom with_ast {α : Type u} (ast : ℕ) (t : tactic α) : tactic α
 
 unsafe def induction' (h : expr) (ns : List Name := []) (rec : Option Name := none) (md := semireducible) :
     tactic Unit :=
   induction h ns rec md >> return ()
 
-/--  Remark: set_goals will erase any solved goal -/
+/-- Remark: set_goals will erase any solved goal -/
 unsafe def cleanup : tactic Unit :=
   get_goals >>= set_goals
 
-/--  Auxiliary definition used to implement begin ... end blocks -/
+/-- Auxiliary definition used to implement begin ... end blocks -/
 unsafe def step {α : Type u} (t : tactic α) : tactic Unit :=
   t >>[tactic] cleanup
 
@@ -883,7 +869,7 @@ unsafe def is_prop (e : expr) : tactic Bool := do
   let t ← infer_type e
   return (t = quote.1 Prop)
 
-/--  Return true iff n is the name of declaration that is a proposition. -/
+/-- Return true iff n is the name of declaration that is a proposition. -/
 unsafe def is_prop_decl (n : Name) : tactic Bool := do
   let env ← get_env
   let d ← env.get n
@@ -896,7 +882,7 @@ unsafe def is_proof (e : expr) : tactic Bool :=
 unsafe def whnf_no_delta (e : expr) : tactic expr :=
   whnf e transparency.none
 
-/--  Return `e` in weak head normal form with respect to the given transparency setting,
+/-- Return `e` in weak head normal form with respect to the given transparency setting,
     or `e` head is a generalized constructor or inductive datatype. -/
 unsafe def whnf_ginductive (e : expr) (md := semireducible) : tactic expr :=
   whnf e md ff
@@ -904,14 +890,14 @@ unsafe def whnf_ginductive (e : expr) (md := semireducible) : tactic expr :=
 unsafe def whnf_target : tactic Unit :=
   target >>= whnf >>= change
 
-/--  Change the target of the main goal.
+/-- Change the target of the main goal.
    The input expression must be definitionally equal to the current target.
    The tactic does not check whether `e`
    is definitionally equal to the current target. The error will only be detected by the kernel type checker. -/
 unsafe def unsafe_change (e : expr) : tactic Unit :=
   change e ff
 
-/--  Pi or elet introduction.
+/-- Pi or elet introduction.
 Given the tactic state `⊢ Π x : α, Y`, ``intro `hello`` will produce the state `hello : α ⊢ Y[x/hello]`.
 Returns the new local constant. Similarly for `elet` expressions.
 If the target is not a Pi or elet it will try to put it in WHNF.
@@ -920,8 +906,7 @@ unsafe def intro (n : Name) : tactic expr := do
   let t ← target
   if expr.is_pi t ∨ expr.is_let t then intro_core n else whnf_target >> intro_core n
 
-/-- 
-A variant of `intro` which makes sure that the introduced hypothesis's name is
+/-- A variant of `intro` which makes sure that the introduced hypothesis's name is
 unique in the context. If there is no hypothesis named `n` in the context yet,
 `intro_fresh n` is the same as `intro n`. If there is already a hypothesis named
 `n`, the new hypothesis is named `n_1` (or `n_2` if `n_1` already exists, etc.).
@@ -936,11 +921,11 @@ unsafe def intro_fresh (n : Name) (offset : Option Nat := none) : tactic expr :=
     let n ← get_unused_name n offset
     intro n
 
-/--  Like `intro` except the name is derived from the bound name in the Π. -/
+/-- Like `intro` except the name is derived from the bound name in the Π. -/
 unsafe def intro1 : tactic expr :=
   intro `_
 
-/--  Repeatedly apply `intro1` and return the list of new local constants in order of introduction. -/
+/-- Repeatedly apply `intro1` and return the list of new local constants in order of introduction. -/
 unsafe def intros : tactic (List expr) := do
   let t ← target
   match t with
@@ -955,18 +940,17 @@ unsafe def intros : tactic (List expr) := do
     | _ => return []
 
 /--
- Same as `intros`, except with the given names for the new hypotheses. Use the name ```_``` to instead use the binder's name.-/
+Same as `intros`, except with the given names for the new hypotheses. Use the name ```_``` to instead use the binder's name.-/
 unsafe def intro_lst (ns : List Name) : tactic (List expr) :=
   ns.mmap intro
 
-/-- 
-A variant of `intro_lst` which makes sure that the introduced hypotheses' names
+/-- A variant of `intro_lst` which makes sure that the introduced hypotheses' names
 are unique in the context. See `intro_fresh`.
 -/
 unsafe def intro_lst_fresh (ns : List Name) : tactic (List expr) :=
   ns.mmap intro_fresh
 
-/--  Introduces new hypotheses with forward dependencies.  -/
+/-- Introduces new hypotheses with forward dependencies.  -/
 unsafe def intros_dep : tactic (List expr) := do
   let t ← target
   let proc (b : expr) :=
@@ -988,24 +972,21 @@ unsafe def introv : List Name → tactic (List expr)
     let hs' ← introv ns
     return (hs ++ h :: hs')
 
-/-- 
-`intron' n` introduces `n` hypotheses and returns the resulting local
+/-- `intron' n` introduces `n` hypotheses and returns the resulting local
 constants. Fails if there are not at least `n` arguments to introduce. If you do
 not need the return value, use `intron`.
 -/
 unsafe def intron' (n : ℕ) : tactic (List expr) :=
   iterate_exactly n intro1
 
-/-- 
-Like `intron'` but the introduced hypotheses' names are derived from `base`,
+/-- Like `intron'` but the introduced hypotheses' names are derived from `base`,
 i.e. `base`, `base_1` etc. The new names are unique in the context. If `offset`
 is given, the new names will be `base_offset`, `base_offset+1` etc.
 -/
 unsafe def intron_base (n : ℕ) (base : Name) (offset : Option Nat := none) : tactic (List expr) :=
   iterate_exactly n (intro_fresh base offset)
 
-/-- 
-`intron_with i ns base offset` introduces `i` hypotheses using the names from
+/-- `intron_with i ns base offset` introduces `i` hypotheses using the names from
 `ns`. If `ns` contains less than `i` names, the remaining hypotheses' names are
 derived from `base` and `offset` (as with `intron_base`). If `base` is `_`, the
 names are derived from the Π binder names.
@@ -1015,15 +996,15 @@ Returns the introduced local constants and the remaining names from `ns` (if
 -/
 unsafe def intron_with : ℕ → List Name → optParam Name `_ → optParam (Option ℕ) none → tactic (List expr × List Name)
   | 0, ns, _, _ => pure ([], ns)
-  | i+1, [], base, offset => do
-    let hs ← intron_base (i+1) base offset
+  | i + 1, [], base, offset => do
+    let hs ← intron_base (i + 1) base offset
     pure (hs, [])
-  | i+1, n :: ns, base, offset => do
+  | i + 1, n :: ns, base, offset => do
     let h ← intro n
     let ⟨hs, rest⟩ ← intron_with i ns base offset
     pure (h :: hs, rest)
 
-/--  Returns n fully qualified if it refers to a constant, or else fails. -/
+/-- Returns n fully qualified if it refers to a constant, or else fails. -/
 unsafe def resolve_constant (n : Name) : tactic Name := do
   let e ← resolve_name n
   match e with
@@ -1036,8 +1017,7 @@ unsafe def resolve_constant (n : Name) : tactic Name := do
 unsafe def to_expr_strict (q : pexpr) : tactic expr :=
   to_expr q
 
-/-- 
-Example: with `x : ℕ, h : P(x) ⊢ T(x)`, `revert x` returns `2` and produces the state ` ⊢ Π x, P(x) → T(x)`.
+/-- Example: with `x : ℕ, h : P(x) ⊢ T(x)`, `revert x` returns `2` and produces the state ` ⊢ Π x, P(x) → T(x)`.
  -/
 unsafe def revert (l : expr) : tactic Nat :=
   revert_lst [l]
@@ -1118,7 +1098,7 @@ unsafe def any_hyp_aux {α : Type} (f : expr → tactic α) : List expr → tact
 unsafe def any_hyp {α : Type} (f : expr → tactic α) : tactic α :=
   local_context >>= any_hyp_aux f
 
-/--  `find_same_type t es` tries to find in es an expression with type definitionally equal to t -/
+/-- `find_same_type t es` tries to find in es an expression with type definitionally equal to t -/
 unsafe def find_same_type : expr → List expr → tactic expr
   | e, [] => failed
   | e, H :: Hs => do
@@ -1141,14 +1121,14 @@ unsafe def save_info (p : Pos) : tactic Unit := do
   let s ← read
   tactic.save_info_thunk p fun _ => tactic_state.to_format s
 
-/--  Swap first two goals, do nothing if tactic state does not have at least two goals. -/
+/-- Swap first two goals, do nothing if tactic state does not have at least two goals. -/
 unsafe def swap : tactic Unit := do
   let gs ← get_goals
   match gs with
     | g₁ :: g₂ :: rs => set_goals (g₂ :: g₁ :: rs)
     | e => skip
 
-/--  `assert h t`, adds a new goal for t, and the hypothesis `h : t` in the current goal. -/
+/-- `assert h t`, adds a new goal for t, and the hypothesis `h : t` in the current goal. -/
 unsafe def assert (h : Name) (t : expr) : tactic expr := do
   assert_core h t
   swap
@@ -1156,11 +1136,11 @@ unsafe def assert (h : Name) (t : expr) : tactic expr := do
   swap
   return e
 
-/--  `assertv h t v`, adds the hypothesis `h : t` in the current goal if v has type t. -/
+/-- `assertv h t v`, adds the hypothesis `h : t` in the current goal if v has type t. -/
 unsafe def assertv (h : Name) (t : expr) (v : expr) : tactic expr :=
   assertv_core h t v >> intro h
 
-/--  `define h t`, adds a new goal for t, and the hypothesis `h : t := ?M` in the current goal. -/
+/-- `define h t`, adds a new goal for t, and the hypothesis `h : t := ?M` in the current goal. -/
 unsafe def define (h : Name) (t : expr) : tactic expr := do
   define_core h t
   swap
@@ -1168,33 +1148,33 @@ unsafe def define (h : Name) (t : expr) : tactic expr := do
   swap
   return e
 
-/--  `definev h t v`, adds the hypothesis (h : t := v) in the current goal if v has type t. -/
+/-- `definev h t v`, adds the hypothesis (h : t := v) in the current goal if v has type t. -/
 unsafe def definev (h : Name) (t : expr) (v : expr) : tactic expr :=
   definev_core h t v >> intro h
 
-/--  Add `h : t := pr` to the current goal -/
+/-- Add `h : t := pr` to the current goal -/
 unsafe def pose (h : Name) (t : Option expr := none) (pr : expr) : tactic expr :=
   let dv := fun t => definev h t pr
   Option.casesOn t (infer_type pr >>= dv) dv
 
-/--  Add `h : t` to the current goal, given a proof `pr : t` -/
+/-- Add `h : t` to the current goal, given a proof `pr : t` -/
 unsafe def note (h : Name) (t : Option expr := none) (pr : expr) : tactic expr :=
   let dv := fun t => assertv h t pr
   Option.casesOn t (infer_type pr >>= dv) dv
 
-/--  Return the number of goals that need to be solved -/
+/-- Return the number of goals that need to be solved -/
 unsafe def num_goals : tactic Nat := do
   let gs ← get_goals
   return (length gs)
 
-/--  Rotate the goals to the right by `n`. That is, take the goal at the back and push it to the front `n` times.
+/-- Rotate the goals to the right by `n`. That is, take the goal at the back and push it to the front `n` times.
 [NOTE] We have to provide the instance argument `[has_mod nat]` because
    mod for nat was not defined yet -/
 unsafe def rotate_right (n : Nat) [Mod Nat] : tactic Unit := do
   let ng ← num_goals
   if ng = 0 then skip else rotate_left (ng - n % ng)
 
-/--  Rotate the goals to the left by `n`. That is, put the main goal to the back `n` times. -/
+/-- Rotate the goals to the left by `n`. That is, put the main goal to the back `n` times. -/
 unsafe def rotate : Nat → tactic Unit :=
   rotate_left
 
@@ -1208,7 +1188,7 @@ private unsafe def repeat_aux (t : tactic Unit) : List expr → List expr → ta
         let gs' ← get_goals
         repeat_aux (gs' ++ gs) r
 
-/--  This tactic is applied to each goal. If the application succeeds,
+/-- This tactic is applied to each goal. If the application succeeds,
     the tactic is applied recursively to all the generated subgoals until it eventually fails.
     The recursion stops in a subgoal when the tactic has failed to make progress.
     The tactic `repeat` never fails. -/
@@ -1216,13 +1196,13 @@ unsafe def repeat (t : tactic Unit) : tactic Unit := do
   let gs ← get_goals
   repeat_aux t gs []
 
-/--  `first [t_1, ..., t_n]` applies the first tactic that doesn't fail.
+/-- `first [t_1, ..., t_n]` applies the first tactic that doesn't fail.
    The tactic fails if all t_i's fail. -/
 unsafe def first {α : Type u} : List (tactic α) → tactic α
   | [] => fail "first tactic failed, no more alternatives"
   | t :: ts => t <|> first ts
 
-/--  Applies the given tactic to the main goal and fails if it is not solved. -/
+/-- Applies the given tactic to the main goal and fails if it is not solved. -/
 unsafe def solve1 {α} (tac : tactic α) : tactic α := do
   let gs ← get_goals
   match gs with
@@ -1235,7 +1215,7 @@ unsafe def solve1 {α} (tac : tactic α) : tactic α := do
         | [] => set_goals rs >> pure a
         | gs => fail "solve1 tactic failed, focused goal has not been solved"
 
-/--  `solve [t_1, ... t_n]` applies the first tactic that solves the main goal. -/
+/-- `solve [t_1, ... t_n]` applies the first tactic that solves the main goal. -/
 unsafe def solve {α} (ts : List (tactic α)) : tactic α :=
   first $ map solve1 ts
 
@@ -1251,8 +1231,7 @@ private unsafe def focus_aux {α} : List (tactic α) → List expr → List expr
       let as ← focus_aux ts gs (rs ++ rs')
       pure $ a :: as
 
-/-- 
-`focus [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of
+/-- `focus [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of
 goals is not n. Returns the results of t_i (one per goal).
 -/
 unsafe def focus {α} (ts : List (tactic α)) : tactic (List α) := do
@@ -1270,7 +1249,7 @@ private unsafe def focus'_aux : List (tactic Unit) → List expr → List expr �
       let rs' ← get_goals
       focus'_aux ts gs (rs ++ rs')
 
-/--  `focus' [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of goals is not n. -/
+/-- `focus' [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of goals is not n. -/
 unsafe def focus' (ts : List (tactic Unit)) : tactic Unit := do
   let gs ← get_goals
   focus'_aux ts gs []
@@ -1296,8 +1275,7 @@ private unsafe def all_goals_core {α} (tac : tactic α) : List expr → List ex
       let as ← all_goals_core gs (ac ++ new_gs)
       pure $ a :: as
 
-/-- 
-Apply the given tactic to all goals. Return one result per goal.
+/-- Apply the given tactic to all goals. Return one result per goal.
 -/
 unsafe def all_goals {α} (tac : tactic α) : tactic (List α) := do
   let gs ← get_goals
@@ -1312,7 +1290,7 @@ private unsafe def all_goals'_core (tac : tactic Unit) : List expr → List expr
       let new_gs ← get_goals
       all_goals'_core gs (ac ++ new_gs)
 
-/--  Apply the given tactic to all goals. -/
+/-- Apply the given tactic to all goals. -/
 unsafe def all_goals' (tac : tactic Unit) : tactic Unit := do
   let gs ← get_goals
   all_goals'_core tac gs []
@@ -1327,8 +1305,7 @@ private unsafe def any_goals_core {α} (tac : tactic α) : List expr → List ex
       let ress ← any_goals_core gs (ac ++ new_gs) (res.is_some || progress)
       pure $ res :: ress
 
-/-- 
-Apply `tac` to any goal where it succeeds. The tactic succeeds if `tac`
+/-- Apply `tac` to any goal where it succeeds. The tactic succeeds if `tac`
 succeeds for at least one goal. The returned list contains the result of `tac`
 for each goal: `some a` if tac succeeded, or `none` if it did not.
 -/
@@ -1345,14 +1322,13 @@ private unsafe def any_goals'_core (tac : tactic Unit) : List expr → List expr
       let new_gs ← get_goals
       any_goals'_core gs (ac ++ new_gs) (succeeded.is_some || progress)
 
-/--  Apply the given tactic to any goal where it succeeds. The tactic succeeds only if
+/-- Apply the given tactic to any goal where it succeeds. The tactic succeeds only if
    tac succeeds for at least one goal. -/
 unsafe def any_goals' (tac : tactic Unit) : tactic Unit := do
   let gs ← get_goals
   any_goals'_core tac gs [] ff
 
-/-- 
-LCF-style AND_THEN tactic. It applies `tac1` to the main goal, then applies
+/-- LCF-style AND_THEN tactic. It applies `tac1` to the main goal, then applies
 `tac2` to each goal produced by `tac1`.
 -/
 unsafe def seq {α β} (tac1 : tactic α) (tac2 : α → tactic β) : tactic (List β) := do
@@ -1364,7 +1340,7 @@ unsafe def seq {α β} (tac1 : tactic α) (tac2 : α → tactic β) : tactic (Li
   set_goals (gs' ++ gs)
   pure bs
 
-/--  LCF-style AND_THEN tactic. It applies tac1, and if succeed applies tac2 to each subgoal produced by tac1 -/
+/-- LCF-style AND_THEN tactic. It applies tac1, and if succeed applies tac2 to each subgoal produced by tac1 -/
 unsafe def seq' (tac1 : tactic Unit) (tac2 : tactic Unit) : tactic Unit := do
   let g :: gs ← get_goals
   set_goals [g]
@@ -1373,8 +1349,7 @@ unsafe def seq' (tac1 : tactic Unit) (tac2 : tactic Unit) : tactic Unit := do
   let gs' ← get_goals
   set_goals (gs' ++ gs)
 
-/-- 
-Applies `tac1` to the main goal, then applies each of the tactics in `tacs2` to
+/-- Applies `tac1` to the main goal, then applies each of the tactics in `tacs2` to
 one of the produced subgoals (like `focus'`).
 -/
 unsafe def seq_focus {α β} (tac1 : tactic α) (tacs2 : α → List (tactic β)) : tactic (List β) := do
@@ -1386,8 +1361,7 @@ unsafe def seq_focus {α β} (tac1 : tactic α) (tacs2 : α → List (tactic β)
   set_goals (gs' ++ gs)
   pure bs
 
-/-- 
-Applies `tac1` to the main goal, then applies each of the tactics in `tacs2` to
+/-- Applies `tac1` to the main goal, then applies each of the tactics in `tacs2` to
 one of the produced subgoals (like `focus`).
 -/
 unsafe def seq_focus' (tac1 : tactic Unit) (tacs2 : List (tactic Unit)) : tactic Unit := do
@@ -1406,16 +1380,16 @@ unsafe instance andthen_seq_focus : HasAndthen (tactic Unit) (List (tactic Unit)
 
 unsafe axiom is_trace_enabled_for : Name → Bool
 
-/--  Execute tac only if option trace.n is set to true. -/
+/-- Execute tac only if option trace.n is set to true. -/
 unsafe def when_tracing (n : Name) (tac : tactic Unit) : tactic Unit :=
   when (is_trace_enabled_for n = tt) tac
 
-/--  Fail if there are no remaining goals. -/
+/-- Fail if there are no remaining goals. -/
 unsafe def fail_if_no_goals : tactic Unit := do
   let n ← num_goals
   when (n = 0) (fail "tactic failed, there are no goals to be solved")
 
-/--  Fail if there are unsolved goals. -/
+/-- Fail if there are unsolved goals. -/
 unsafe def done : tactic Unit := do
   let n ← num_goals
   when (n ≠ 0) (fail "done tactic failed, there are unsolved goals")
@@ -1467,21 +1441,21 @@ unsafe def apply (e : expr) (cfg : apply_cfg := {  }) : tactic (List (Name × ex
   try_apply_opt_auto_param_for_apply cfg r
   return r
 
-/--  Same as `apply` but __all__ arguments that weren't inferred are added to goal list. -/
+/-- Same as `apply` but __all__ arguments that weren't inferred are added to goal list. -/
 unsafe def fapply (e : expr) : tactic (List (Name × expr)) :=
   apply e { NewGoals := new_goals.all }
 
-/--  Same as `apply` but only goals that don't depend on other goals are added to goal list. -/
+/-- Same as `apply` but only goals that don't depend on other goals are added to goal list. -/
 unsafe def eapply (e : expr) : tactic (List (Name × expr)) :=
   apply e { NewGoals := new_goals.non_dep_only }
 
-/--  Try to solve the main goal using type class resolution. -/
+/-- Try to solve the main goal using type class resolution. -/
 unsafe def apply_instance : tactic Unit := do
   let tgt ← target >>= instantiate_mvars
   let b ← is_class tgt
   if b then mk_instance tgt >>= exact else fail "apply_instance tactic fail, target is not a type class"
 
-/--  Create a list of universe meta-variables of the given size. -/
+/-- Create a list of universe meta-variables of the given size. -/
 unsafe def mk_num_meta_univs : Nat → tactic (List level)
   | 0 => return []
   | succ n => do
@@ -1489,7 +1463,7 @@ unsafe def mk_num_meta_univs : Nat → tactic (List level)
     let ls ← mk_num_meta_univs n
     return (l :: ls)
 
-/--  Return `expr.const c [l_1, ..., l_n]` where l_i's are fresh universe meta-variables. -/
+/-- Return `expr.const c [l_1, ..., l_n]` where l_i's are fresh universe meta-variables. -/
 unsafe def mk_const (c : Name) : tactic expr := do
   let env ← get_env
   let decl ← env.get c
@@ -1497,7 +1471,7 @@ unsafe def mk_const (c : Name) : tactic expr := do
   let ls ← mk_num_meta_univs num
   return (expr.const c ls)
 
-/--  Apply the constant `c` -/
+/-- Apply the constant `c` -/
 unsafe def applyc (c : Name) (cfg : apply_cfg := {  }) : tactic Unit := do
   let c ← mk_const c
   apply c cfg
@@ -1513,7 +1487,7 @@ unsafe def save_const_type_info (n : Name) {elab : Bool} (ref : expr elab) : tac
     let c ← mk_const n
     save_type_info c ref
 
-/--  Create a fresh universe `?u`, a metavariable `?T : Type.{?u}`,
+/-- Create a fresh universe `?u`, a metavariable `?T : Type.{?u}`,
    and return metavariable `?M : ?T`.
    This action can be used to create a meta-variable when
    we don't know its type at creation time -/
@@ -1522,13 +1496,13 @@ unsafe def mk_mvar : tactic expr := do
   let t ← mk_meta_var (expr.sort u)
   mk_meta_var t
 
-/--  Makes a sorry macro with a meta-variable as its type. -/
+/-- Makes a sorry macro with a meta-variable as its type. -/
 unsafe def mk_sorry : tactic expr := do
   let u ← mk_meta_univ
   let t ← mk_meta_var (expr.sort u)
   return $ expr.mk_sorry t
 
-/--  Closes the main goal using sorry. -/
+/-- Closes the main goal using sorry. -/
 unsafe def admit : tactic Unit :=
   target >>= exact ∘ expr.mk_sorry
 
@@ -1552,14 +1526,14 @@ private unsafe def get_pi_arity_aux : expr → tactic Nat
     let l := expr.local_const m n bi d
     let new_b ← whnf (expr.instantiate_var b l)
     let r ← get_pi_arity_aux new_b
-    return (r+1)
+    return (r + 1)
   | e => return 0
 
-/--  Compute the arity of the given (Pi-)type -/
+/-- Compute the arity of the given (Pi-)type -/
 unsafe def get_pi_arity (type : expr) : tactic Nat :=
   whnf type >>= get_pi_arity_aux
 
-/--  Compute the arity of the given function -/
+/-- Compute the arity of the given function -/
 unsafe def get_arity (fn : expr) : tactic Nat :=
   infer_type fn >>= get_pi_arity
 
@@ -1589,20 +1563,20 @@ private unsafe def kdependencies_core (e : expr) (md : transparency) : List expr
     let d ← kdepends_on type e md
     if d then kdependencies_core hs (h :: r) else kdependencies_core hs r
 
-/--  Return all hypotheses that depends on `e`
+/-- Return all hypotheses that depends on `e`
     The dependency test is performed using `kdepends_on` with the given transparency setting. -/
 unsafe def kdependencies (e : expr) (md := reducible) : tactic (List expr) := do
   let ctx ← local_context
   kdependencies_core e md ctx []
 
-/--  Revert all hypotheses that depend on `e` -/
+/-- Revert all hypotheses that depend on `e` -/
 unsafe def revert_kdependencies (e : expr) (md := reducible) : tactic Nat :=
   kdependencies e md >>= revert_lst
 
 unsafe def revert_kdeps (e : expr) (md := reducible) :=
   revert_kdependencies e md
 
-/--  Postprocess the output of `cases_core`:
+/-- Postprocess the output of `cases_core`:
 
 - The third component of each tuple in the input list (the list of
   substitutions) is dropped since we don't use it anywhere.
@@ -1613,7 +1587,7 @@ unsafe def revert_kdeps (e : expr) (md := reducible) :=
 private unsafe def cases_postprocess (hs : List (Name × List expr × List (Name × expr))) : List (Name × List expr) :=
   hs.map $ fun ⟨n, hs, _⟩ => (n, hs.filter fun h => h.is_local_constant)
 
-/--  Similar to `cases_core`, but `e` doesn't need to be a hypothesis.
+/-- Similar to `cases_core`, but `e` doesn't need to be a hypothesis.
     Remark, it reverts dependencies using `revert_kdeps`.
 
     Two different transparency modes are used `md` and `dmd`.
@@ -1643,13 +1617,12 @@ unsafe def cases (e : expr) (ids : List Name := []) (md := semireducible) (dmd :
         let hs' ← all_goals (intron' n)
         return $ cases_postprocess $ r.map₂ (fun ⟨n, hs, x⟩ hs' => (n, hs ++ hs', x)) hs'
 
-/--  The same as `exact` except you can add proof holes. -/
+/-- The same as `exact` except you can add proof holes. -/
 unsafe def refine (e : pexpr) : tactic Unit := do
   let tgt : expr ← target
   to_expr (pquote.1 (%%ₓe : %%ₓtgt)) tt >>= exact
 
-/-- 
-`by_cases p h` splits the main goal into two cases, assuming `h : p` in the
+/-- `by_cases p h` splits the main goal into two cases, assuming `h : p` in the
 first branch, and `h : ¬ p` in the second branch. The expression `p` needs to
 be a proposition.
 
@@ -1690,7 +1663,7 @@ unsafe def funext_lst (ids : List Name) : tactic Unit :=
 private unsafe def get_undeclared_const (env : environment) (base : Name) : ℕ → Name
   | i =>
     let n := base <.> ("_aux_" ++ reprₓ i)
-    if ¬env.contains n then n else get_undeclared_const (i+1)
+    if ¬env.contains n then n else get_undeclared_const (i + 1)
 
 unsafe def new_aux_decl_name : tactic Name := do
   let env ← get_env
@@ -1720,7 +1693,7 @@ unsafe def abstract (tac : tactic Unit) (suffix : Option Name := none) (zeta_red
   let e ← add_aux_decl c type val is_lemma
   exact e
 
-/--  `solve_aux type tac` synthesize an element of 'type' using tactic 'tac' -/
+/-- `solve_aux type tac` synthesize an element of 'type' using tactic 'tac' -/
 unsafe def solve_aux {α : Type} (type : expr) (tac : tactic α) : tactic (α × expr) := do
   let m ← mk_meta_var type
   let gs ← get_goals
@@ -1729,13 +1702,13 @@ unsafe def solve_aux {α : Type} (type : expr) (tac : tactic α) : tactic (α ×
   set_goals gs
   return (a, m)
 
-/--  Return tt iff 'd' is a declaration in one of the current open namespaces -/
+/-- Return tt iff 'd' is a declaration in one of the current open namespaces -/
 unsafe def in_open_namespaces (d : Name) : tactic Bool := do
   let ns ← open_namespaces
   let env ← get_env
   return $ (ns.any fun n => n.is_prefix_of d) && env.contains d
 
-/--  Execute tac for 'max' "heartbeats". The heartbeat is approx. the maximum number of
+/-- Execute tac for 'max' "heartbeats". The heartbeat is approx. the maximum number of
     memory allocations (in thousands) performed by 'tac'. This is a deterministic way of interrupting
     long running tactics. -/
 unsafe def try_for {α} (max : Nat) (tac : tactic α) : tactic α := fun s =>
@@ -1743,7 +1716,7 @@ unsafe def try_for {α} (max : Nat) (tac : tactic α) : tactic α := fun s =>
   | some r => r
   | none => mk_exception "try_for tactic failed, timeout" none s
 
-/--  Execute `tac` for `max` milliseconds. Useful due to variance
+/-- Execute `tac` for `max` milliseconds. Useful due to variance
     in the number of heartbeats taken by various tactics. -/
 unsafe def try_for_time {α} (max : Nat) (tac : tactic α) : tactic α := fun s =>
   match _root_.try_for_time max (tac s) with
@@ -1762,16 +1735,16 @@ unsafe def add_inductive (n : Name) (ls : List Name) (p : Nat) (ty : expr) (is :
 unsafe def add_meta_definition (n : Name) (lvls : List Name) (type value : expr) : tactic Unit :=
   add_decl (declaration.defn n lvls type value ReducibilityHints.abbrev ff)
 
-/--  add declaration `d` as a protected declaration -/
+/-- add declaration `d` as a protected declaration -/
 unsafe def add_protected_decl (d : declaration) : tactic Unit :=
   updateex_env $ fun e => e.add_protected d
 
-/--  check if `n` is the name of a protected declaration -/
+/-- check if `n` is the name of a protected declaration -/
 unsafe def is_protected_decl (n : Name) : tactic Bool := do
   let env ← get_env
   return $ env.is_protected n
 
-/--  `add_defn_equations` adds a definition specified by a list of equations.
+/-- `add_defn_equations` adds a definition specified by a list of equations.
 
   The arguments:
     * `lp`: list of universe parameters
@@ -1805,7 +1778,7 @@ unsafe def add_defn_equations (lp : List Name) (params : List expr) (fn : expr) 
   let opt ← get_options
   updateex_env $ fun e => e.add_defn_eqns opt lp params fn eqns is_meta
 
-/--  Get the revertible part of the local context. These are the hypotheses that
+/-- Get the revertible part of the local context. These are the hypotheses that
 appear after the last frozen local instance in the local context. We call them
 revertible because `revert` can revert them, unlike those hypotheses which occur
 before a frozen instance. -/
@@ -1818,8 +1791,7 @@ unsafe def revertible_local_context : tactic (List expr) := do
       | some [] => ctx
       | some (h :: _) => ctx.after (Eq h)
 
-/-- 
-Rename local hypotheses according to the given `name_map`. The `name_map`
+/-- Rename local hypotheses according to the given `name_map`. The `name_map`
 contains as keys those hypotheses that should be renamed; the associated values
 are the new names.
 
@@ -1859,15 +1831,13 @@ unsafe def rename_many (renames : name_map Name) (strict := tt) (use_unique_name
   intro_lst new_names
   pure ()
 
-/-- 
-Rename a local hypothesis. This is a special case of `rename_many`;
+/-- Rename a local hypothesis. This is a special case of `rename_many`;
 see there for caveats.
 -/
 unsafe def rename (curr : Name) (new : Name) : tactic Unit :=
   rename_many (rb_map.of_list [⟨curr, new⟩])
 
-/-- 
-Rename a local hypothesis. Unlike `rename` and `rename_many`, this tactic does
+/-- Rename a local hypothesis. Unlike `rename` and `rename_many`, this tactic does
 not preserve the order of hypotheses. Its implementation is simpler (and
 therefore probably faster) than that of `rename`.
 -/
@@ -1877,8 +1847,7 @@ unsafe def rename_unstable (curr : Name) (new : Name) : tactic Unit := do
   intro new
   intron (n - 1)
 
-/-- 
-"Replace" hypothesis `h : type` with `h : new_type` where `eq_pr` is a proof
+/-- "Replace" hypothesis `h : type` with `h : new_type` where `eq_pr` is a proof
 that (type = new_type). The tactic actually creates a new hypothesis
 with the same user facing name, and (tries to) clear `h`.
 The `clear` step fails if `h` has forward dependencies. In this case, the old `h`
@@ -1922,7 +1891,7 @@ unsafe def subst (h : expr) : tactic Unit :=
 
 end Tactic
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 notation:999 "command" => tactic Unit
 
 open Tactic
@@ -1945,13 +1914,14 @@ unsafe def any_of {α β} : List α → (α → tactic β) → tactic β
 
 end List
 
-/--  Try to prove with `iff.refl`.-/
+/-- Try to prove with `iff.refl`.-/
 unsafe def order_laws_tac :=
   whnf_target >> intros >> to_expr (pquote.1 (Iff.refl _)) >>= exact
 
 unsafe def monad_from_pure_bind {m : Type u → Type v} (pure : ∀ {α : Type u}, α → m α)
-    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) : Monadₓ m :=
-  { pure := @pure, bind := @bind }
+    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) : Monadₓ m where
+  pure := @pure
+  bind := @bind
 
 unsafe instance : Monadₓ task where
   map := @task.map

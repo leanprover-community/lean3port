@@ -4,7 +4,7 @@ import Leanbin.Init.Function
 
 namespace Tactic
 
-/--  A pattern is an expression `target` containing temporary metavariables.
+/-- A pattern is an expression `target` containing temporary metavariables.
 A pattern also contains a list of `outputs` which also depend on these temporary metavariables.
 When we run `match p e`, the system will match `p.target` with `e` and assign
 the temporary metavariables. It then returns the outputs with the assigned variables.
@@ -37,7 +37,7 @@ unsafe structure pattern where
   nuvars : Nat
   nmvars : Nat
 
-/--  `mk_pattern umetas emetas target uoutput eoutput` creates a new pattern. The arguments are
+/-- `mk_pattern umetas emetas target uoutput eoutput` creates a new pattern. The arguments are
 - `umetas` a list of level params to be replaced with temporary universe metavariables.
 - `emetas` a list of local constants to be replaced with temporary metavariables.
 - `target` the expression to be matched.
@@ -58,7 +58,7 @@ Then `mk_pattern [] [α,h,t] `(@list.cons α h t) [] [h,t]` would `match_pattern
 unsafe axiom mk_pattern (umetas : List level) (emetas : List expr) (target : expr) (uoutput : List level)
     (eoutput : List expr) : tactic pattern
 
-/--  `mk_pattern p e m` matches (pattern.target p) and e using transparency m.
+/-- `mk_pattern p e m` matches (pattern.target p) and e using transparency m.
    If the matching is successful, then return the instantiation of `pattern.output p`.
    The tactic fails if not all (temporary) meta-variables are assigned. -/
 unsafe axiom match_pattern (p : pattern) (e : expr) (m : transparency := reducible) : tactic (List level × List expr)
@@ -74,14 +74,14 @@ private unsafe def to_pattern_core : expr → tactic (expr × List expr)
     return (p, x :: xs)
   | e => return (e, [])
 
-/--  Given a pre-term of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, converts it
+/-- Given a pre-term of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, converts it
    into the pattern `t[?x₁, ..., ?xₙ]` with outputs `[?x₁, ..., ?xₙ]` -/
 unsafe def pexpr_to_pattern (p : pexpr) : tactic pattern := do
   let e ← to_expr p tt ff
   let (new_p, xs) ← to_pattern_core e
   mk_pattern [] xs new_p [] xs
 
-/--  Convert pre-term into a pattern and try to match e.
+/-- Convert pre-term into a pattern and try to match e.
    Given p of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, a successful
    match will produce a list of length n. -/
 unsafe def match_expr (p : pexpr) (e : expr) (m := reducible) : tactic (List expr) := do
@@ -94,18 +94,18 @@ private unsafe def match_subexpr_core (m : transparency) : pattern → List expr
     Prod.snd <$> match_pattern p e m <|>
       match_subexpr_core p es <|> if is_app e then match_subexpr_core p (get_app_args e) else failed
 
-/--  Similar to match_expr, but it tries to match a subexpression of e.
+/-- Similar to match_expr, but it tries to match a subexpression of e.
    Remark: the procedure does not go inside binders. -/
 unsafe def match_subexpr (p : pexpr) (e : expr) (m := reducible) : tactic (List expr) := do
   let new_p ← pexpr_to_pattern p
   match_subexpr_core m new_p [e]
 
-/--  Match the main goal target. -/
+/-- Match the main goal target. -/
 unsafe def match_target (p : pexpr) (m := reducible) : tactic (List expr) := do
   let t ← target
   match_expr p t m
 
-/--  Match a subterm in the main goal target. -/
+/-- Match a subterm in the main goal target. -/
 unsafe def match_target_subexpr (p : pexpr) (m := reducible) : tactic (List expr) := do
   let t ← target
   match_subexpr p t m
@@ -119,7 +119,7 @@ private unsafe def match_hypothesis_core (m : transparency) : pattern → List e
           return (h, r.snd)) <|>
         match_hypothesis_core p hs
 
-/--  Match hypothesis in the main goal target.
+/-- Match hypothesis in the main goal target.
    The result is pair (hypothesis, substitution). -/
 unsafe def match_hypothesis (p : pexpr) (m := reducible) : tactic (expr × List expr) := do
   let ctx ← local_context

@@ -7,7 +7,7 @@ import Leanbin.Init.Meta.ConstructorTactic
 import Leanbin.Init.Meta.RelationTactics
 import Leanbin.Init.Meta.InjectionTactic
 
-/--   We can specify the scope of application of some tactics using
+/-- We can specify the scope of application of some tactics using
    the following type.
 
    - all : all occurrences of a given term are considered.

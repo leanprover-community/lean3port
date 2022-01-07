@@ -107,11 +107,11 @@ namespace Env
 def get (env_var : Stringₓ) : Io (Option Stringₓ) :=
   MonadIoEnvironment.getEnv env_var
 
-/--  get the current working directory -/
+/-- get the current working directory -/
 def get_cwd : Io Stringₓ :=
   MonadIoEnvironment.getCwd
 
-/--  set the current working directory -/
+/-- set the current working directory -/
 def set_cwd (cwd : Stringₓ) : Io Unit :=
   MonadIoEnvironment.setCwd cwd
 
@@ -251,7 +251,7 @@ unsafe def pp_using {α : Type} [has_to_format α] (a : α) (o : options) : Io U
 unsafe def pp {α : Type} [has_to_format α] (a : α) : Io Unit :=
   format.print (to_fmt a)
 
-/--  Run the external process specified by `args`.
+/-- Run the external process specified by `args`.
 
     The process will run to completion with its output captured by a pipe, and
     read into `string` which is then returned. -/
@@ -263,8 +263,7 @@ def Io.cmd (args : Io.Process.SpawnArgs) : Io Stringₓ := do
   when (exitv ≠ 0) $ Io.fail $ "process exited with status " ++ reprₓ exitv
   return buf.to_string
 
-/-- 
-This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.
+/-- This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.
 For this to be safe, the IO computation should be ideally free of side effects and independent of its environment.
 This primitive is used to invoke external tools (e.g., SAT and SMT solvers) from a tactic.
 
@@ -285,8 +284,7 @@ TODO[Leo]: add `[noinline]` attribute and option `compiler.cse`.
 -/
 unsafe axiom tactic.unsafe_run_io {α : Type} : Io α → tactic α
 
-/-- 
-   Execute the given tactic with a tactic_state object that contains:
+/-- Execute the given tactic with a tactic_state object that contains:
    - The current environment in the virtual machine.
    - The current set of options in the virtual machine.
    - Empty metavariable and local contexts.

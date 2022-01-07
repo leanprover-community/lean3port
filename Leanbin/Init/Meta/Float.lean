@@ -9,67 +9,67 @@ namespace Float
 
 namespace Specification
 
-/--  The base. Either 2 or 10. -/
+/-- The base. Either 2 or 10. -/
 unsafe axiom radix : Nat
 
-/--  The length of the mantissa. -/
+/-- The length of the mantissa. -/
 unsafe axiom precision : Nat
 
-/--  The maximum exponent. -/
+/-- The maximum exponent. -/
 unsafe axiom emax : Nat
 
-/--  The minimum exponent. `= 1 - emax` -/
+/-- The minimum exponent. `= 1 - emax` -/
 unsafe axiom emin : Int
 
 end Specification
 
 open Specification
 
-/--  Returns the difference between 1.0 and the next representable value of the given floating-point type.
+/-- Returns the difference between 1.0 and the next representable value of the given floating-point type.
     Reference: https://en.cppreference.com/w/cpp/types/numeric_limits/epsilon
  -/
 unsafe axiom epsilon : float
 
-/--  returns the maximum rounding error -/
+/-- returns the maximum rounding error -/
 unsafe axiom round_error : float
 
-/--  Positive infinity. -/
+/-- Positive infinity. -/
 unsafe axiom infinity : float
 
-/--  Quiet NaN. -/
+/-- Quiet NaN. -/
 unsafe axiom qNaN : float
 
-/--  Signalling NaN. -/
+/-- Signalling NaN. -/
 unsafe axiom sNaN : float
 
-/--  Returns true when the value is positive or negative infinity.-/
+/-- Returns true when the value is positive or negative infinity.-/
 unsafe axiom is_infinite : float → Bool
 
 unsafe axiom is_finite : float → Bool
 
-/--  Returns true when the value is qNaN or sNaN-/
+/-- Returns true when the value is qNaN or sNaN-/
 unsafe axiom is_nan : float → Bool
 
-/--  Reference: https://en.cppreference.com/w/cpp/numeric/math/isnormal
+/-- Reference: https://en.cppreference.com/w/cpp/numeric/math/isnormal
     https://stackoverflow.com/questions/8341395/what-is-a-subnormal-floating-point-number
 -/
 unsafe axiom is_normal : float → Bool
 
-/--  The sign `s` of the float. `tt` if negative. -/
+/-- The sign `s` of the float. `tt` if negative. -/
 unsafe axiom sign : float → Bool
 
 /--
- The exponent `e` of the float in the base given by `radix`. `emin ≤ e ≤ emax`. Returns none if the number is not finite.  -/
+The exponent `e` of the float in the base given by `radix`. `emin ≤ e ≤ emax`. Returns none if the number is not finite.  -/
 unsafe axiom exponent : float → Option Int
 
-/--  Decompose the number `f` in to `(s,e)` where `0.5 ≤ s < 1.0` and `emin ≤ e ≤ emax` such that `f = s * 2 ^ e`. -/
+/-- Decompose the number `f` in to `(s,e)` where `0.5 ≤ s < 1.0` and `emin ≤ e ≤ emax` such that `f = s * 2 ^ e`. -/
 unsafe axiom frexp : float → float × Int
 
-/--  Decompose in to integer `fst` and fractional `snd` parts. -/
+/-- Decompose in to integer `fst` and fractional `snd` parts. -/
 unsafe axiom modf : float → float × float
 
 /--
- `mantissa f` returns a number `s` where `0.5 ≤ s < 1.0` such that there exists an integer `e` such that `f = s * 2 ^ e` -/
+`mantissa f` returns a number `s` where `0.5 ≤ s < 1.0` such that there exists an integer `e` such that `f = s * 2 ^ e` -/
 unsafe def mantissa : float → float :=
   Prod.fst ∘ frexp
 
@@ -98,10 +98,10 @@ unsafe axiom div : float → float → float
 unsafe instance : Div float :=
   ⟨div⟩
 
-/--  remainder of the floating point division operation. -/
+/-- remainder of the floating point division operation. -/
 unsafe axiom fmod : float → float → float
 
-/--  signed remainder of the division operation. -/
+/-- signed remainder of the division operation. -/
 unsafe axiom remainder : float → float → float
 
 unsafe axiom max : float → float → float
@@ -113,22 +113,22 @@ unsafe axiom pow : float → float → float
 unsafe instance has_float_pow : Pow float float :=
   ⟨pow⟩
 
-/--  Square root. -/
+/-- Square root. -/
 unsafe axiom sqrt : float → float
 
-/--  Cube root. -/
+/-- Cube root. -/
 unsafe axiom cbrt : float → float
 
-/--  Computes `sqrt(x^2 + y^2)`. -/
+/-- Computes `sqrt(x^2 + y^2)`. -/
 unsafe axiom hypot : float → float → float
 
-/--  Exponential function. -/
+/-- Exponential function. -/
 unsafe axiom exp : float → float
 
-/--  2 raised to the given power. -/
+/-- 2 raised to the given power. -/
 unsafe axiom exp2 : float → float
 
-/--  Natural logarithm. -/
+/-- Natural logarithm. -/
 unsafe axiom log : float → float
 
 unsafe axiom log2 : float → float
@@ -149,7 +149,7 @@ unsafe axiom acos : float → float
 
 unsafe axiom atan : float → float
 
-/--  `atan2 y x` finds the angle anticlockwise from the x-axis to the point `[x,y]`.-/
+/-- `atan2 y x` finds the angle anticlockwise from the x-axis to the point `[x,y]`.-/
 unsafe axiom atan2 : float → float → float
 
 unsafe axiom sinh : float → float
@@ -166,16 +166,16 @@ unsafe axiom atanh : float → float
 
 unsafe axiom abs : float → float
 
-/--  Nearest integer not less than the given value. -/
+/-- Nearest integer not less than the given value. -/
 unsafe axiom ceil : float → Int
 
-/--  Nearest integer not greater than the given value. -/
+/-- Nearest integer not greater than the given value. -/
 unsafe axiom floor : float → Int
 
-/--  Nearest integer not greater in magnitude than the given value. -/
+/-- Nearest integer not greater in magnitude than the given value. -/
 unsafe axiom trunc : float → Int
 
-/--  Round to the nearest integer, rounding away from zero in halfway cases. -/
+/-- Round to the nearest integer, rounding away from zero in halfway cases. -/
 unsafe axiom round : float → Int
 
 unsafe axiom lt : float → float → Bool

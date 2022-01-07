@@ -36,11 +36,11 @@ unsafe def relation_lhs_rhs (e : expr) : tactic (Name × expr × expr) := do
   let some rhs ← return $ args.nth rhs_pos
   return (c, lhs, rhs)
 
-/--  If the main target has the form `r lhs rhs`, then return `(r,lhs,rhs)`. -/
+/-- If the main target has the form `r lhs rhs`, then return `(r,lhs,rhs)`. -/
 unsafe def target_lhs_rhs : tactic (Name × expr × expr) :=
   target >>= relation_lhs_rhs
 
-/--  Try to apply subst exhaustively -/
+/-- Try to apply subst exhaustively -/
 unsafe def subst_vars : tactic Unit :=
   focus1 $ iterate (any_hyp subst) >> try (reflexivity reducible)
 

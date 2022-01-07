@@ -27,11 +27,11 @@ a type to a sort.
 
 universe u v
 
-/--  Can perform a lifting operation `↑a`. -/
+/-- Can perform a lifting operation `↑a`. -/
 class HasLift (a : Sort u) (b : Sort v) where
   lift : a → b
 
-/--  Auxiliary class that contains the transitive closure of `has_lift`. -/
+/-- Auxiliary class that contains the transitive closure of `has_lift`. -/
 class HasLiftT (a : Sort u) (b : Sort v) where
   lift : a → b
 
@@ -44,7 +44,7 @@ explicitly in order to match exactly what appears in Lean4.
 class Coe (a : Sort u) (b : Sort v) : Sort max max 1 u v where
   coe : a → b
 
-/--  Auxiliary class that contains the transitive closure of `has_coe`. -/
+/-- Auxiliary class that contains the transitive closure of `has_coe`. -/
 class CoeTₓ (a : Sort u) (b : Sort v) where
   coe : a → b
 
@@ -87,16 +87,16 @@ def coeSortₓ {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 /-! ### Notation -/
 
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 notation:999 "↑" x:999 => coeₓ x
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 notation:999 "⇑" x:999 => coeFn x
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 notation:999 "↥" x:999 => coeSortₓ x
 
 universe u₁ u₂ u₃
@@ -116,7 +116,7 @@ instance coeTransₓ {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [CoeTₓ b 
 instance coeBaseₓ {a : Sort u} {b : Sort v} [Coe a b] : CoeTₓ a b :=
   ⟨coeB⟩
 
-/--  We add this instance directly into `has_coe_t` to avoid non-termination.
+/-- We add this instance directly into `has_coe_t` to avoid non-termination.
 
    Suppose coe_option had type `(has_coe a (option a))`.
    Then, we can loop when searching a coercion from `α` to `β` `(has_coe_t α β)`
@@ -132,7 +132,7 @@ instance coeBaseₓ {a : Sort u} {b : Sort v} [Coe a b] : CoeTₓ a b :=
 instance coeOption {a : Type u} : CoeTₓ a (Option a) :=
   ⟨fun x => some x⟩
 
-/--  Auxiliary transitive closure for `has_coe` which does not contain
+/-- Auxiliary transitive closure for `has_coe` which does not contain
    instances such as `coe_option`.
 
    They would produce non-termination when combined with `coe_fn_trans` and `coe_sort_trans`. -/
@@ -152,7 +152,7 @@ instance coeFnTrans {a : Sort u₁} {b : Sort u₂} {c : b → Sort v} [CoeFun b
 instance coeSortTrans {a : Sort u₁} {b : Sort u₂} {c : Sort v} [CoeSort b c] [HasCoeTAux a b] : CoeSort a c :=
   ⟨fun x => coeSortₓ (@HasCoeTAux.coe a b _ x)⟩
 
-/--  Every coercion is also a lift -/
+/-- Every coercion is also a lift -/
 instance coeToLift {a : Sort u} {b : Sort v} [CoeTₓ a b] : HasLiftT a b :=
   ⟨coeT⟩
 
@@ -162,7 +162,7 @@ instance coeToLift {a : Sort u} {b : Sort v} [CoeTₓ a b] : HasLiftT a b :=
 instance coeBoolToProp : Coe Bool Prop :=
   ⟨fun y => y = tt⟩
 
-/--  Tactics such as the simplifier only unfold reducible constants when checking whether two terms are definitionally
+/-- Tactics such as the simplifier only unfold reducible constants when checking whether two terms are definitionally
    equal or a term is a proposition. The motivation is performance.
    In particular, when simplifying `p -> q`, the tactic `simp` only visits `p` if it can establish that it is a proposition.
    Thus, we mark the following instance as `@[reducible]`, otherwise `simp` will not visit `↑p` when simplifying `↑p -> q`.
@@ -182,7 +182,7 @@ instance coeSubtype {a : Sort u} {p : a → Prop} : Coe { x // p x } a :=
 
 universe ua ua₁ ua₂ ub ub₁ ub₂
 
-/--  Remark: we can't use `[has_lift_t a₂ a₁]` since it will produce non-termination whenever a type class resolution
+/-- Remark: we can't use `[has_lift_t a₂ a₁]` since it will produce non-termination whenever a type class resolution
    problem does not have a solution. -/
 instance liftFn {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLift a₂ a₁] [HasLiftT b₁ b₂] :
     HasLift (a₁ → b₁) (a₂ → b₂) :=
@@ -191,7 +191,7 @@ instance liftFn {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b₁ : Sort ub₁} {b�
 instance liftFnRange {a : Sort ua} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLiftT b₁ b₂] : HasLift (a → b₁) (a → b₂) :=
   ⟨fun f x => ↑f x⟩
 
-/--  A dependent version of `lift_fn_range`. -/
+/-- A dependent version of `lift_fn_range`. -/
 instance liftPiRange {α : Sort u} {A : α → Sort ua} {B : α → Sort ub} [∀ i, HasLiftT (A i) (B i)] :
     HasLift (∀ i, A i) (∀ i, B i) :=
   ⟨fun f i => ↑f i⟩

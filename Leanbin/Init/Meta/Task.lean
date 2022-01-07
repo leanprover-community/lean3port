@@ -1,7 +1,7 @@
 prelude
 import Leanbin.Init.Logic
 
-/--  A task is a promise to produce a value later. They perform the same role as promises in JavaScript. -/
+/-- A task is a promise to produce a value later. They perform the same role as promises in JavaScript. -/
 unsafe axiom task.{u} : Type u → Type u
 
 namespace Task

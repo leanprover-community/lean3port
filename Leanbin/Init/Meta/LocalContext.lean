@@ -14,17 +14,17 @@ unsafe structure local_decl where
 unsafe def local_decl.to_expr : local_decl → expr
   | ⟨un, pn, y, _, bi, _⟩ => expr.local_const un pn bi y
 
-/--  A local context is a list of local constant declarations.
+/-- A local context is a list of local constant declarations.
 Each metavariable in a metavariable context holds a local_context
 to declare which locals the metavariable is allowed to depend on. -/
 unsafe axiom local_context : Type
 
 namespace LocalContext
 
-/--  The empty local context. -/
+/-- The empty local context. -/
 unsafe axiom Empty : local_context
 
-/--  Add a new local constant to the lc. The new local has an unused unique_name.
+/-- Add a new local constant to the lc. The new local has an unused unique_name.
 Fails when the type depends on local constants that are not present in the context.-/
 unsafe axiom mk_local (pretty_name : Name) (type : expr) (bi : BinderInfo) :
     local_context → Option (expr × local_context)

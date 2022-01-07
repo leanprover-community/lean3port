@@ -33,7 +33,7 @@ private unsafe def mk_sizeof : Bool → Name → Name → List Name → Nat → 
     let field ← get_local fname
     let rec ← is_type_app_of field I_name
     let sz ← if rec then mk_brec_on_rec_value F_name num_rec else mk_has_sizeof_instance_for field use_default
-    let szs ← mk_sizeof use_default I_name F_name fnames (if rec then num_rec+1 else num_rec)
+    let szs ← mk_sizeof use_default I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (sz :: szs)
 
 private unsafe def mk_sum : List expr → expr

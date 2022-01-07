@@ -11,7 +11,7 @@ def Lean.githashₓ : Stringₓ :=
 def Lean.isRelease : Bool :=
   1 ≠ 0
 
-/--  Additional version description like "nightly-2018-03-11" -/
+/-- Additional version description like "nightly-2018-03-11" -/
 def Lean.specialVersionDesc : Stringₓ :=
   ""
 

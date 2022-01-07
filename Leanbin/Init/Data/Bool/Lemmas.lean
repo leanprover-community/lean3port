@@ -196,10 +196,10 @@ theorem bxor_coe_iff (a b : Bool) : bxor a b ↔ Xorₓ a b := by
 @[simp]
 theorem ite_eq_tt_distrib (c : Prop) [Decidable c] (a b : Bool) :
     ((if c then a else b) = tt) = if c then a = tt else b = tt := by
-  by_cases' c <;> simp
+  by_cases' c <;> simp [*]
 
 @[simp]
 theorem ite_eq_ff_distrib (c : Prop) [Decidable c] (a b : Bool) :
     ((if c then a else b) = ff) = if c then a = ff else b = ff := by
-  by_cases' c <;> simp
+  by_cases' c <;> simp [*]
 

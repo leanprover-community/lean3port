@@ -2,7 +2,7 @@ prelude
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Format
 
-/--  A type universe term. eg `max u v`. Reflect a C++ level object. The VM replaces it with the C++ implementation. -/
+/-- A type universe term. eg `max u v`. Reflect a C++ level object. The VM replaces it with the C++ implementation. -/
 unsafe inductive level
   | zero : level
   | succ : level → level
@@ -24,17 +24,17 @@ unsafe axiom level.lex_lt : level → level → Bool
 
 unsafe axiom level.fold {α : Type} : level → α → (level → α → α) → α
 
-/--  Return the given level expression normal form -/
+/-- Return the given level expression normal form -/
 unsafe axiom level.normalize : level → level
 
-/--  Return tt iff lhs and rhs denote the same level.
+/-- Return tt iff lhs and rhs denote the same level.
    The check is done by normalization. -/
 unsafe axiom level.eqv : level → level → Bool
 
-/--  Return tt iff the first level occurs in the second -/
+/-- Return tt iff the first level occurs in the second -/
 unsafe axiom level.occurs : level → level → Bool
 
-/--  Replace a parameter named n with l in the first level if the list contains the pair (n, l) -/
+/-- Replace a parameter named n with l in the first level if the list contains the pair (n, l) -/
 unsafe axiom level.instantiate : level → List (Name × level) → level
 
 unsafe axiom level.to_format : level → options → format

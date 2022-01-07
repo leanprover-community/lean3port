@@ -79,7 +79,7 @@ namespace Tactic
 
 namespace Interactive
 
-/--  Close goals of the form `n ≠ m` when `n` and `m` have type `nat`, `char`, `string`, `int` or
+/-- Close goals of the form `n ≠ m` when `n` and `m` have type `nat`, `char`, `string`, `int` or
     subtypes `{i : ℕ // p i}`, and they are literals.
     It also closes goals of the form `n < m`, `n > m`, `n ≤ m` and `n ≥ m` for `nat`.
     If the goal is of the form `n = m`, then it tries to close it using reflexivity. -/

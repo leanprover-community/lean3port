@@ -49,7 +49,7 @@ theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n)
     n
 
 def lcm (m n : ℕ) : ℕ :=
-  (m*n) / gcd m n
+  m * n / gcd m n
 
 @[reducible]
 def coprime (m n : ℕ) : Prop :=

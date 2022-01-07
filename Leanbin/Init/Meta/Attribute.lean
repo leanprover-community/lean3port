@@ -4,15 +4,15 @@ import Leanbin.Init.Meta.RbMap
 import Leanbin.Init.Meta.HasReflect
 import Leanbin.Init.Meta.Lean.Parser
 
-/--  Get all of the declaration names that have the given attribute.
+/-- Get all of the declaration names that have the given attribute.
 Eg. ``get_instances `simp`` returns a list with the names of all of the lemmas in the environment tagged with the `@[simp]` attribute.
  -/
 unsafe axiom attribute.get_instances : Name → tactic (List Name)
 
-/--  Returns a hash of `get_instances`. You can use this to tell if your attribute instances have changed. -/
+/-- Returns a hash of `get_instances`. You can use this to tell if your attribute instances have changed. -/
 unsafe axiom attribute.fingerprint : Name → tactic Nat
 
-/--  Configuration for a user attribute cache. For example, the `simp` attribute has a cache of type simp_lemmas.
+/-- Configuration for a user attribute cache. For example, the `simp` attribute has a cache of type simp_lemmas.
 - `mk_cache` is a function where you are given all of the declarations tagged with your attribute and you return the new value for the cache.
   That is, `mk_cache` makes the object you want to be cached.
 - `dependencies` is a list of other attributes whose caches need to be computed first.
@@ -21,15 +21,14 @@ unsafe structure user_attribute_cache_cfg (cache_ty : Type) where
   mk_cache : List Name → tactic cache_ty
   dependencies : List Name
 
-/--  Close the current goal by filling it with the trivial `user_attribute_cache_cfg unit`. -/
+/-- Close the current goal by filling it with the trivial `user_attribute_cache_cfg unit`. -/
 unsafe def user_attribute.dflt_cache_cfg : tactic Unit :=
   tactic.exact (quote.1 (⟨fun _ => pure (), []⟩ : user_attribute_cache_cfg Unit))
 
 unsafe def user_attribute.dflt_parser : tactic Unit :=
   tactic.exact (quote.1 (pure () : lean.parser Unit))
 
-/-- 
-A __user attribute__ is an attribute defined by the user (ie, not built in to Lean).
+/-- A __user attribute__ is an attribute defined by the user (ie, not built in to Lean).
 ### Type parameters
 - `cache_ty` is the type of a cached VM object that is computed from all of the declarations in the environment tagged with this attribute.
 - `param_ty` is an argument for the attribute when it is used. For instance with `param_ty` being `ℕ` you could write `@[my_attribute 4]`.
@@ -64,12 +63,12 @@ unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Un
     run_tac
       user_attribute.dflt_parser
 
-/--  Registers a new user-defined attribute. The argument must be the name of a definition of type
+/-- Registers a new user-defined attribute. The argument must be the name of a definition of type
    `user_attribute α β`. Once registered, you may tag declarations with this attribute. -/
 unsafe def attribute.register (decl : Name) : command :=
   tactic.set_basic_attribute `` user_attribute decl tt
 
-/--  Returns the attribute cache for the given user attribute. -/
+/-- Returns the attribute cache for the given user attribute. -/
 unsafe axiom user_attribute.get_cache {α β : Type} (attr : user_attribute α β) : tactic α
 
 unsafe def user_attribute.parse_reflect {α β : Type} (attr : user_attribute α β) : lean.parser expr :=
@@ -81,7 +80,7 @@ unsafe axiom user_attribute.set_untyped {α β : Type} [reflected β] (attr : us
     (val : expr) (persistent : Bool) (prio : Option Nat := none) : tactic Unit
 
 /--
- Get the value of the parameter for the attribute on a given declatation. Will fail if the attribute does not exist.-/
+Get the value of the parameter for the attribute on a given declatation. Will fail if the attribute does not exist.-/
 unsafe def user_attribute.get_param {α β : Type} [reflected β] (attr : user_attribute α β) (n : Name) : tactic β :=
   attr.get_param_untyped n >>= tactic.eval_expr β
 
@@ -91,7 +90,7 @@ unsafe def user_attribute.set {α β : Type} [reflected β] (attr : user_attribu
 
 open Tactic
 
-/--  Alias for attribute.register -/
+/-- Alias for attribute.register -/
 unsafe def register_attribute :=
   attribute.register
 

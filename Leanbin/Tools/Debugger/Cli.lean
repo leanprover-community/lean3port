@@ -2,13 +2,12 @@ import Leanbin.Tools.Debugger.Util
 
 namespace Debugger
 
--- ././Mathport/Syntax/Translate/Basic.lean:833:9: unsupported derive handler decidable_eq
 inductive mode
   | init
   | step
   | run
   | done
-  deriving [anonymous]
+  deriving DecidableEq
 
 structure State where
   md : mode
@@ -16,8 +15,11 @@ structure State where
   fnBps : List Name
   activeBps : List (Nat × Name)
 
-def init_state : State :=
-  { md := mode.init, csz := 0, fnBps := [], activeBps := [] }
+def init_state : State where
+  md := mode.init
+  csz := 0
+  fnBps := []
+  activeBps := []
 
 unsafe def show_help : vm Unit := do
   vm.put_str "exit       - stop debugger\n"
@@ -65,17 +67,17 @@ unsafe def up_cmd (frame : Nat) : vm Nat :=
 
 unsafe def down_cmd (frame : Nat) : vm Nat := do
   let sz ← vm.call_stack_size
-  if frame ≥ sz - 1 then return frame else show_frame (frame+1) >> return (frame+1)
+  if frame ≥ sz - 1 then return frame else show_frame (frame + 1) >> return (frame + 1)
 
 unsafe def pidx_cmd : Nat → List Stringₓ → vm Unit
   | frame, [arg] => do
     let idx ← return $ arg.to_nat
     let sz ← vm.stack_size
     let (bp, ep) ← vm.call_stack_var_range frame
-    if (bp+idx) ≥ ep then vm.put_str "invalid 'pidx <idx>' command, index out of bounds\n"
+    if bp + idx ≥ ep then vm.put_str "invalid 'pidx <idx>' command, index out of bounds\n"
       else do
-        let v ← vm.pp_stack_obj (bp+idx)
-        let (n, t) ← vm.stack_obj_info (bp+idx)
+        let v ← vm.pp_stack_obj (bp + idx)
+        let (n, t) ← vm.stack_obj_info (bp + idx)
         let opts ← vm.get_options
         vm.put_str n.to_string
         vm.put_str " := "
@@ -95,7 +97,7 @@ unsafe def print_var : Nat → Nat → Name → vm Unit
             vm.put_str " := "
             vm.put_str $ v.to_string opts
             vm.put_str "\n"
-          else print_var (i+1) ep v
+          else print_var (i + 1) ep v
 
 unsafe def print_cmd : Nat → List Stringₓ → vm Unit
   | frame, [arg] => do
@@ -242,8 +244,9 @@ unsafe def step_fn (s : State) : vm State := do
           else return s
 
 @[vm_monitor]
-unsafe def monitor : vm_monitor State :=
-  { init := init_state, step := step_fn }
+unsafe def monitor : vm_monitor State where
+  init := init_state
+  step := step_fn
 
 end Debugger
 

@@ -39,8 +39,7 @@ namespace Tactic
 
 namespace Interactive
 
-/-- 
-A case tag carries the following information:
+/-- A case tag carries the following information:
 
 1. A list of names identifying the case ('case names'). This is usually a list
    of constructor names, one for each case split that was performed. For
@@ -157,8 +156,7 @@ instance : HasRepr case_tag :=
 instance : HasToString case_tag :=
   ⟨case_tag.to_string⟩
 
-/-- 
-The constructor names associated with a case tag.
+/-- The constructor names associated with a case tag.
 -/
 unsafe def case_names : case_tag → List Name
   | pi ns _ => ns
@@ -167,8 +165,7 @@ unsafe def case_names : case_tag → List Name
 private unsafe def render_arguments (args : List Name) : List Name :=
   args.map (Name.mk_string "_arg")
 
-/-- 
-Renders a case tag to a goal tag (i.e. a list of names), according to the
+/-- Renders a case tag to a goal tag (i.e. a list of names), according to the
 following schema:
 
 - A `pi` tag with names `N₀ ... Nₙ` and number of arguments `a` is rendered as
@@ -185,16 +182,14 @@ unsafe def render : case_tag → List Name
   | pi names num_arguments => mk_numeral (Unsigned.ofNat' num_arguments) `_case.pi :: names
   | hyps names arguments => `_case.hyps :: render_arguments arguments ++ names
 
-/-- 
-Creates a `pi` case tag from an input tag `in_tag`. The `names` of the resulting
+/-- Creates a `pi` case tag from an input tag `in_tag`. The `names` of the resulting
 tag are the non-internal names in `in_tag` (in the order in which they appear in
 `in_tag`). `num_arguments` is the number of arguments of the resulting tag.
 -/
 unsafe def from_tag_pi (in_tag : tag) (num_arguments : ℕ) : case_tag :=
   pi (in_tag.filter fun n => ¬n.is_internal) num_arguments
 
-/-- 
-Creates a `hyps` case tag from an input tag `in_tag`. The `names` of the
+/-- Creates a `hyps` case tag from an input tag `in_tag`. The `names` of the
 resulting tag are the non-internal names in `in_tag` (in the order in which they
 appear in `in_tag`). `arguments` is the list of unique hypothesis names of the
 resulting tag.
@@ -214,8 +209,7 @@ private unsafe def parse_arguments : List Name → List Name × List Name
     ⟨n :: args, rest⟩
   | ns => ⟨[], ns⟩
 
-/-- 
-Parses a case tag from the list of names produced by `render`.
+/-- Parses a case tag from the list of names produced by `render`.
 -/
 unsafe def parse : List Name → Option case_tag
   | [] => none
@@ -228,8 +222,7 @@ unsafe def parse : List Name → Option case_tag
     some $ hyps ns args
   | _ => none
 
-/-- 
-Indicates the result of matching a list of names against the names of a case
+/-- Indicates the result of matching a list of names against the names of a case
 tag. See `match_tag`.
 -/
 inductive match_result
@@ -241,8 +234,7 @@ open MatchResult
 
 namespace MatchResult
 
-/-- 
-The 'minimum' of two match results:
+/-- The 'minimum' of two match results:
 
 - If any of the arguments is `no_match`, the result is `no_match`.
 - Otherwise, if any of the arguments is `fuzzy_match`, the result is `fuzzy_match`.
@@ -267,8 +259,7 @@ private unsafe def names_match : List Name → List Name → match_result
   | _ :: _, [] => no_match
   | n :: ns, n' :: ns' => (name_match n n').combine (names_match ns ns')
 
-/-- 
-Match the `names` of a case tag against a user-supplied list of names `ns`. For
+/-- Match the `names` of a case tag against a user-supplied list of names `ns`. For
 this purpose, we consider the `names` in reverse order, i.e. in the order in
 which they are displayed to the user. The matching then uses the following
 rules:

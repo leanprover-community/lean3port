@@ -11,16 +11,16 @@ open Interactive.Types
 
 open Tactic
 
-/--  A handler that may or may not be able to implement the typeclass `cls` for `decl`.
+/-- A handler that may or may not be able to implement the typeclass `cls` for `decl`.
     It should return `tt` if it was able to derive `cls` and `ff` if it does not know
     how to derive `cls`, in which case lower-priority handlers will be tried next. -/
 unsafe def derive_handler :=
   ∀ cls : pexpr decl : Name, tactic Bool
 
 @[user_attribute]
-unsafe def derive_handler_attr : user_attribute :=
-  { Name := `derive_handler,
-    descr := "register a definition of type `derive_handler` for use in the [derive] attribute" }
+unsafe def derive_handler_attr : user_attribute where
+  Name := `derive_handler
+  descr := "register a definition of type `derive_handler` for use in the [derive] attribute"
 
 private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler → tactic Unit
   | [] => fail f! "failed to find a derive handler for '{p}'"
@@ -29,16 +29,18 @@ private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler →
     when ¬success $ try_handlers hs
 
 @[user_attribute]
-unsafe def derive_attr : user_attribute Unit (List pexpr) :=
-  { Name := `derive, descr := "automatically derive typeclass instances", parser := pexpr_list_or_texpr,
-    after_set :=
-      some fun n _ _ => do
-        let ps ← derive_attr.get_param n
-        let handlers ← attribute.get_instances `derive_handler
-        let handlers ← handlers.mmap fun n => eval_expr derive_handler (expr.const n [])
-        ps.mmap' fun p => try_handlers p n handlers }
+unsafe def derive_attr : user_attribute Unit (List pexpr) where
+  Name := `derive
+  descr := "automatically derive typeclass instances"
+  parser := pexpr_list_or_texpr
+  after_set :=
+    some fun n _ _ => do
+      let ps ← derive_attr.get_param n
+      let handlers ← attribute.get_instances `derive_handler
+      let handlers ← handlers.mmap fun n => eval_expr derive_handler (expr.const n [])
+      ps.mmap' fun p => try_handlers p n handlers
 
-/--  Given a tactic `tac` that can solve an application of `cls` in the right context,
+/-- Given a tactic `tac` that can solve an application of `cls` in the right context,
     `instance_derive_handler` uses it to build an instance declaration of `cls n`. -/
 unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly := tt)
     (modify_target : Name → List expr → expr → tactic expr := fun _ _ => pure) : derive_handler := fun p n =>
@@ -87,6 +89,5 @@ unsafe def has_reflect_derive_handler :=
 unsafe def has_sizeof_derive_handler :=
   instance_derive_handler `` SizeOf mk_has_sizeof_instance
 
--- ././Mathport/Syntax/Translate/Basic.lean:833:9: unsupported derive handler has_reflect
-deriving instance [anonymous] for Bool, Prod, Sum, Option, Interactive.Loc, Pos
+deriving instance has_reflect for Bool, Prod, Sum, Option, Interactive.Loc, Pos
 

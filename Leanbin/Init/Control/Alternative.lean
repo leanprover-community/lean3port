@@ -20,7 +20,7 @@ variable {f : Type u → Type v} [Alternativeₓ f] {α : Type u}
 def failure : f α :=
   Alternativeₓ.failure
 
-/--  If the condition `p` is decided to be false, then fail, otherwise, return unit. -/
+/-- If the condition `p` is decided to be false, then fail, otherwise, return unit. -/
 @[inline]
 def guardₓ {f : Type → Type v} [Alternativeₓ f] (p : Prop) [Decidable p] : f Unit :=
   if p then pure () else failure

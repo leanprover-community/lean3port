@@ -109,11 +109,11 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
           if i ∈ occs then do
               let res ← tactic.capture (c.convert e r)
               match res with
-                | success r s' => return (success (i+1) s', r.fst, some r.snd, tt)
+                | success r s' => return (success (i + 1) s', r.fst, some r.snd, tt)
                 | exception f p s' => return (exception f p s', e, none, tt)
             else do
               let st ← tactic.read
-              return (success (i+1) st, e, none, tt))
+              return (success (i + 1) st, e, none, tt))
         (fun a s r p e => tactic.failed) r lhs
   tactic.unwrap found_result
   update_lhs new_lhs pr

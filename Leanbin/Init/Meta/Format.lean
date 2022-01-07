@@ -24,22 +24,22 @@ def Format.Color.toString : Format.Color → Stringₓ
   | Format.Color.grey => "grey"
 
 /--
- Format is a rich string with highlighting and information about how tabs should be put in if linebreaks are needed. A 'pretty string'. -/
+Format is a rich string with highlighting and information about how tabs should be put in if linebreaks are needed. A 'pretty string'. -/
 unsafe axiom format : Type
 
-/--  Indicate that it is ok to put a linebreak in here if the line is too long. -/
+/-- Indicate that it is ok to put a linebreak in here if the line is too long. -/
 unsafe axiom format.line : format
 
-/--  The whitespace character `" "`. -/
+/-- The whitespace character `" "`. -/
 unsafe axiom format.space : format
 
-/--  = `""` -/
+/-- = `""` -/
 unsafe axiom format.nil : format
 
-/--  Concatenate the given format strings. -/
+/-- Concatenate the given format strings. -/
 unsafe axiom format.compose : format → format → format
 
-/--  `format.nest n f` tells the formatter that `f` is nested inside something with length `n`
+/-- `format.nest n f` tells the formatter that `f` is nested inside something with length `n`
 so that it is pretty-printed with the correct tabs on a line break.
 For example, in `list.to_format` we have:
 
@@ -51,18 +51,18 @@ This will be written all on one line, but when the list is too large, it will pu
  -/
 unsafe axiom format.nest : Nat → format → format
 
-/--  Make the given format be displayed a particular color. -/
+/-- Make the given format be displayed a particular color. -/
 unsafe axiom format.highlight : format → color → format
 
 /--
- When printing the given format `f`, if `f.flatten` fits without need for linebreaks then print the `f.flatten`, else print `f` unflattened with linebreaks. -/
+When printing the given format `f`, if `f.flatten` fits without need for linebreaks then print the `f.flatten`, else print `f` unflattened with linebreaks. -/
 unsafe axiom format.group : format → format
 
 unsafe axiom format.of_string : Stringₓ → format
 
 unsafe axiom format.of_nat : Nat → format
 
-/--  Flattening removes all of the `format.nest` items from the format tree.  -/
+/-- Flattening removes all of the `format.nest` items from the format tree.  -/
 unsafe axiom format.flatten : format → format
 
 unsafe axiom format.to_string (f : format) (o : options := options.mk) : Stringₓ
@@ -71,7 +71,7 @@ unsafe axiom format.of_options : options → format
 
 unsafe axiom format.is_nil : format → Bool
 
-/--  Traces the given format to the output window, then performs the given continuation.  -/
+/-- Traces the given format to the output window, then performs the given continuation.  -/
 unsafe axiom trace_fmt {α : Type u} : format → (Unit → α) → α
 
 unsafe instance : Inhabited format :=
@@ -83,7 +83,7 @@ unsafe instance : Append format :=
 unsafe instance : HasToString format :=
   ⟨fun f => f.to_string options.mk⟩
 
-/--  Use this instead of `has_to_string` to enable prettier formatting.
+/-- Use this instead of `has_to_string` to enable prettier formatting.
 See docstring for `format` for more on the differences between `format` and `string`.
 Note that `format` is `meta` while `string` is not. -/
 unsafe class has_to_format (α : Type u) where
@@ -177,19 +177,19 @@ unsafe instance {α : Type u} {p : α → Prop} [has_to_format α] : has_to_form
 unsafe def format.bracket : Stringₓ → Stringₓ → format → format
   | o, c, f => to_fmt o ++ nest o.length f ++ to_fmt c
 
-/--  Surround with "()". -/
+/-- Surround with "()". -/
 unsafe def format.paren (f : format) : format :=
   format.bracket "(" ")" f
 
-/--  Surround with "{}". -/
+/-- Surround with "{}". -/
 unsafe def format.cbrace (f : format) : format :=
   format.bracket "{" "}" f
 
-/--  Surround with "[]". -/
+/-- Surround with "[]". -/
 unsafe def format.sbracket (f : format) : format :=
   format.bracket "[" "]" f
 
-/--  Surround with "⦃⦄". -/
+/-- Surround with "⦃⦄". -/
 unsafe def format.dcbrace (f : format) : format :=
   to_fmt "⦃" ++ nest 1 f ++ to_fmt "⦄"
 

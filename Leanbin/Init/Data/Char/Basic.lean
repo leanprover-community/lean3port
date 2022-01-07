@@ -13,7 +13,7 @@ theorem is_valid_char_range_1 (n : Nat) (h : n < 55296) : IsValidChar n :=
 theorem is_valid_char_range_2 (n : Nat) (h₁ : 57343 < n) (h₂ : n < 1114112) : IsValidChar n :=
   Or.inr ⟨h₁, h₂⟩
 
-/--  The `char` type represents an unicode scalar value.
+/-- The `char` type represents an unicode scalar value.
     See http://www.unicode.org/glossary/#unicode_scalar_value). -/
 structure Charₓ where
   val : Nat

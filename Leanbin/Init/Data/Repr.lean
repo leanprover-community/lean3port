@@ -11,8 +11,7 @@ open Sum Subtype Nat
 
 universe u v
 
-/-- 
-Implement `has_repr` if the output string is valid lean code that evaluates back to the original object.
+/-- Implement `has_repr` if the output string is valid lean code that evaluates back to the original object.
 If you just want to view the object as a string for a trace message, use `has_to_string`.
 
 ### Example:
@@ -31,7 +30,7 @@ class HasRepr (α : Type u) where
   repr : α → Stringₓ
 
 /--
- `repr` is similar to `to_string` except that we should have the property `eval (repr x) = x` for most sensible datatypes.
+`repr` is similar to `to_string` except that we should have the property `eval (repr x) = x` for most sensible datatypes.
 Hence, `repr "hello"` has the value `"\"hello\""` not `"hello"`.  -/
 def reprₓ {α : Type u} [HasRepr α] : α → Stringₓ :=
   HasRepr.repr
@@ -110,11 +109,11 @@ def digit_char (n : ℕ) : Charₓ :=
 
 def digit_succ (base : ℕ) : List ℕ → List ℕ
   | [] => [1]
-  | d :: ds => if (d+1) = base then 0 :: digit_succ ds else (d+1) :: ds
+  | d :: ds => if d + 1 = base then 0 :: digit_succ ds else (d + 1) :: ds
 
 def to_digits (base : ℕ) : ℕ → List ℕ
   | 0 => [0]
-  | n+1 => digit_succ base (to_digits n)
+  | n + 1 => digit_succ base (to_digits n)
 
 protected def reprₓ (n : ℕ) : Stringₓ :=
   ((to_digits 10 n).map digit_char).reverse.asString

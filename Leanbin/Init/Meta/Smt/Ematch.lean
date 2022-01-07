@@ -7,12 +7,12 @@ import Leanbin.Init.Meta.Derive
 
 open Tactic
 
-/--  Heuristic instantiation lemma -/
+/-- Heuristic instantiation lemma -/
 unsafe axiom hinst_lemma : Type
 
 unsafe axiom hinst_lemmas : Type
 
-/--  `mk_core m e as_simp`, m is used to decide which definitions will be unfolded in patterns.
+/-- `mk_core m e as_simp`, m is used to decide which definitions will be unfolded in patterns.
    If as_simp is tt, then this tactic will try to use the left-hand-side of the conclusion
    as a pattern. -/
 unsafe axiom hinst_lemma.mk_core : transparency → expr → Bool → tactic hinst_lemma
@@ -116,8 +116,7 @@ unsafe def merge_hinst_lemma_attrs (m : transparency) (as_simp : Bool) : List Na
     let new_hs ← to_hinst_lemmas_core m as_simp ns hs
     merge_hinst_lemma_attrs attrs new_hs
 
-/-- 
-Create a new "cached" attribute (attr_name : user_attribute hinst_lemmas).
+/-- Create a new "cached" attribute (attr_name : user_attribute hinst_lemmas).
 It also creates "cached" attributes for each attr_names and simp_attr_names if they have not been defined
 yet. Moreover, the hinst_lemmas for attr_name will be the union of the lemmas tagged with
     attr_name, attrs_name, and simp_attr_names.

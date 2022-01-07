@@ -21,6 +21,7 @@ import Leanbin.Init.Meta.Float
 import Leanbin.Init.Meta.Widget.Default
 
 @[user_attribute]
-unsafe def debugger.attr : user_attribute :=
-  { Name := `breakpoint, descr := "breakpoint for debugger" }
+unsafe def debugger.attr : user_attribute where
+  Name := `breakpoint
+  descr := "breakpoint for debugger"
 

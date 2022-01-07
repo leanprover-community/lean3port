@@ -45,7 +45,7 @@ variable {r : α → α → Prop}
 
 variable {β : Quot r → Sort v}
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 local notation:999 "⟦" a "⟧" => Quot.mk r a
 
 @[reducible]
@@ -79,7 +79,8 @@ protected def rec_on_subsingleton [h : ∀ a, Subsingleton (β (⟦a⟧))] (q : 
 protected def hrec_on (q : Quot r) (f : ∀ a, β (⟦a⟧)) (c : ∀ a b : α p : r a b, HEq (f a) (f b)) : β q :=
   Quot.recOnₓ q f fun a b p =>
     eq_of_heq
-      (calc HEq (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) (f a) := eq_rec_heqₓ (sound p) (f a)
+      (calc
+        HEq (Eq.ndrec (f a) (sound p) : β (⟦b⟧)) (f a) := eq_rec_heqₓ (sound p) (f a)
         HEq _ (f b) := c a b p
         )
 
@@ -95,7 +96,7 @@ namespace Quotientₓ
 protected def mk {α : Sort u} [s : Setoidₓ α] (a : α) : Quotientₓ s :=
   Quot.mk Setoidₓ.R a
 
--- ././Mathport/Syntax/Translate/Basic.lean:333:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 notation:999 "⟦" a "⟧" => Quotientₓ.mk a
 
 theorem sound {α : Sort u} [s : Setoidₓ α] {a b : α} : a ≈ b → ⟦a⟧ = ⟦b⟧ :=

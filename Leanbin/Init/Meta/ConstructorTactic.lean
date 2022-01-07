@@ -53,7 +53,7 @@ open Expr
 
 private unsafe def apply_num_metavars : expr → expr → Nat → tactic expr
   | f, ftype, 0 => return f
-  | f, ftype, n+1 => do
+  | f, ftype, n + 1 => do
     let pi m bi d b ← whnf ftype
     let a ← mk_meta_var d
     let new_f ← return $ f a

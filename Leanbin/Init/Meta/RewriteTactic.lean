@@ -4,13 +4,13 @@ import Leanbin.Init.Meta.Occurrences
 
 namespace Tactic
 
-/--  Configuration options for the `rewrite` tactic. -/
+/-- Configuration options for the `rewrite` tactic. -/
 structure rewrite_cfg extends apply_cfg where
   md := reducible
   symm := ff
   occs := Occurrences.all
 
-/--  Rewrite the expression `e` using `h`.
+/-- Rewrite the expression `e` using `h`.
     The unification is performed using the transparency mode in `cfg`.
     If `cfg.approx` is `tt`, then fallback to first-order unification, 
     and approximate context during unification.

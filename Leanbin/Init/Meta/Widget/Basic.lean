@@ -167,7 +167,7 @@ inductive mouse_event_kind
   | on_mouse_enter
   | on_mouse_leave
 
-/--  An effect is some change that the widget makes outside of its own state.
+/-- An effect is some change that the widget makes outside of its own state.
 Usually, giving instructions to the editor to perform some task.
 - `insert_text_relative` will insert at a line relative to the position of the widget.
 - `insert_text_absolute` will insert text at the precise position given.
@@ -221,7 +221,7 @@ namespace Component
 unsafe def map_action (f : α → β) : component π α → component π β
   | c => filter_map_action (fun p a => some $ f a) c
 
-/--  Returns a component that will never trigger an action. -/
+/-- Returns a component that will never trigger an action. -/
 unsafe def ignore_action : component π α → component π β
   | c => component.filter_map_action (fun p a => none) c
 
@@ -241,7 +241,7 @@ unsafe def stateful {π α : Type} (β σ : Type) (init : π → Option σ → �
 unsafe def stateless {π α : Type} [DecidableEq π] (view : π → List (html α)) : component π α :=
   (component.with_should_update fun p1 p2 => p1 ≠ p2) $ component.pure view
 
-/--  Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
+/-- Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
 unsafe def with_props_eq (test : π → π → Bool) : component π α → component π α
   | c => component.with_should_update (fun x y => bnot $ test x y) c
 
@@ -263,12 +263,12 @@ end
 unsafe instance attr.is_functor : Functor attr where
   map := @attr.map_action
 
--- failed to format: format: uncaught backtrack exception
-unsafe instance html.is_functor : Functor html where map _ _ := html.map_action
+unsafe instance html.is_functor : Functor html where
+  map := fun _ _ => html.map_action
 
 namespace Html
 
-/--  See Note [use has_coe_t]. -/
+/-- See Note [use has_coe_t]. -/
 unsafe instance to_string_coe [HasToString β] : CoeTₓ β (html α) :=
   ⟨html.of_string ∘ toString⟩
 
@@ -299,11 +299,11 @@ unsafe def on_mouse_enter : (Unit → α) → attr α
 unsafe def on_mouse_leave : (Unit → α) → attr α
   | a => attr.mouse_event mouse_event_kind.on_mouse_leave a
 
-/--  Alias for `html.element`. -/
+/-- Alias for `html.element`. -/
 unsafe def h : Stringₓ → List (attr α) → List (html α) → html α :=
   html.element
 
-/--  Alias for className. -/
+/-- Alias for className. -/
 unsafe def cn : Stringₓ → attr α :=
   className
 
@@ -318,7 +318,7 @@ unsafe structure select_item (α : Type) where
   key : Stringₓ
   view : List (html α)
 
-/--  Choose from a dropdown selection list. -/
+/-- Choose from a dropdown selection list. -/
 unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html α
   | items, value =>
     let k :=
@@ -333,14 +333,14 @@ unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html 
             | h :: _ => h.result] $
       items.map fun i => h "option" [attr.val "value" i.key] $ select_item.view i
 
-/--  If the html is not an of_element it will wrap it in a div. -/
+/-- If the html is not an of_element it will wrap it in a div. -/
 unsafe def with_attrs : List (attr α) → html α → html α
   | a, x =>
     match as_element x with
     | some ⟨t, as, c⟩ => html.element t (a ++ as) c
     | none => html.element "div" a [x]
 
-/--  If the html is not an of_element it will wrap it in a div. -/
+/-- If the html is not an of_element it will wrap it in a div. -/
 unsafe def with_attr : attr α → html α → html α
   | a, x => with_attrs [a] x
 
@@ -360,13 +360,13 @@ end Widget
 
 namespace Tactic
 
-/--  Same as `tactic.save_info_thunk` except saves a widget to be displayed by a compatible infoviewer. -/
+/-- Same as `tactic.save_info_thunk` except saves a widget to be displayed by a compatible infoviewer. -/
 unsafe axiom save_widget : Pos → widget.component tactic_state Empty → tactic Unit
 
-/--  Outputs a widget trace position at the given position. -/
+/-- Outputs a widget trace position at the given position. -/
 unsafe axiom trace_widget_at (p : Pos) (w : widget.component tactic_state Empty) (text := "(widget)") : tactic Unit
 
-/--  Outputs a widget trace position at the current default trace position. -/
+/-- Outputs a widget trace position at the current default trace position. -/
 unsafe def trace_widget (w : widget.component tactic_state Empty) (text := "(widget)") : tactic Unit := do
   let p ← get_trace_msg_pos
   trace_widget_at p w text

@@ -83,17 +83,16 @@ protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monadₓ 
     let (a, st') ← x.run st
     pure (a, join st' ctx)⟩
 
--- failed to format: format: uncaught backtrack exception
-instance
-  ε [ MonadExcept ε m ] : MonadExcept ε ( StateTₓ σ m )
-  where throw α := StateTₓ.lift ∘ throw catch α x c := ⟨ fun s => catch ( x.run s ) fun e => StateTₓ.run ( c e ) s ⟩
+instance ε [MonadExcept ε m] : MonadExcept ε (StateTₓ σ m) where
+  throw := fun α => StateTₓ.lift ∘ throw
+  catch := fun α x c => ⟨fun s => catch (x.run s) fun e => StateTₓ.run (c e) s⟩
 
 end
 
 end StateTₓ
 
 /--
- An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Class.html).
+An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Class.html).
     In contrast to the Haskell implementation, we use overlapping instances to derive instances
     automatically from `monad_lift`.
 
@@ -122,17 +121,17 @@ instance [Monadₓ m] : MonadStateₓ σ (StateTₓ σ m) :=
 
 variable [Monadₓ m] [MonadStateₓ σ m]
 
-/--  Obtain the top-most state of a monad stack. -/
+/-- Obtain the top-most state of a monad stack. -/
 @[inline]
 def get : m σ :=
   MonadStateₓ.lift StateTₓ.get
 
-/--  Set the top-most state of a monad stack. -/
+/-- Set the top-most state of a monad stack. -/
 @[inline]
 def put (st : σ) : m PUnit :=
   MonadStateₓ.lift (StateTₓ.put st)
 
-/--  Map the top-most state of a monad stack.
+/-- Map the top-most state of a monad stack.
 
     Note: `modify f` may be preferable to `f <$> get >>= put` because the latter
     does not use the state linearly (without sufficient inlining). -/
@@ -142,7 +141,7 @@ def modifyₓ (f : σ → σ) : m PUnit :=
 
 end
 
-/--  Adapt a monad stack, changing the type of its top-most state.
+/-- Adapt a monad stack, changing the type of its top-most state.
 
     This class is comparable to [Control.Lens.Zoom](https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-Zoom.html#t:Zoom), but does not use lenses (yet?), and is derived automatically for any transformer implementing `monad_functor`.
 

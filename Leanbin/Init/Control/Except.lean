@@ -102,7 +102,7 @@ end
 end ExceptTₓ
 
 /--
- An implementation of [MonadError](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError) -/
+An implementation of [MonadError](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError) -/
 class MonadExcept (ε : outParam (Type u)) (m : Type v → Type w) where
   throw {α : Type v} : ε → m α
   catch {α : Type v} : m α → (ε → m α) → m α
@@ -114,7 +114,7 @@ variable {ε : Type u} {m : Type v → Type w}
 protected def orelse [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) : m α :=
   catch t₁ $ fun _ => t₂
 
-/--  Alternative orelse operator that allows to select which exception should be used.
+/-- Alternative orelse operator that allows to select which exception should be used.
     The default is to use the first exception since the standard `orelse` uses the second. -/
 unsafe def orelse' [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) (use_first_ex := tt) : m α :=
   catch t₁ $ fun e₁ => catch t₂ $ fun e₂ => throw (if use_first_ex then e₁ else e₂)
@@ -123,12 +123,11 @@ end MonadExcept
 
 export MonadExcept (throw catch)
 
--- failed to format: format: uncaught backtrack exception
-instance
-  m ε [ Monadₓ m ] : MonadExcept ε ( ExceptTₓ ε m )
-  where throw α := ExceptTₓ.mk ∘ pure ∘ Except.error catch := @ ExceptTₓ.catch ε _ _
+instance m ε [Monadₓ m] : MonadExcept ε (ExceptTₓ ε m) where
+  throw := fun α => ExceptTₓ.mk ∘ pure ∘ Except.error
+  catch := @ExceptTₓ.catch ε _ _
 
-/--  Adapt a monad stack, changing its top-most error type.
+/-- Adapt a monad stack, changing its top-most error type.
 
     Note: This class can be seen as a simplification of the more "principled" definition
     ```

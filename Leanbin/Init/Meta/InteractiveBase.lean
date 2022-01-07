@@ -14,7 +14,7 @@ local postfix:9001 "*" => many
 
 namespace Interactive
 
-/--  (parse p) as the parameter type of an interactive tactic will instruct the Lean parser
+/-- (parse p) as the parameter type of an interactive tactic will instruct the Lean parser
     to run `p` when parsing the parameter and to pass the parsed value as an argument
     to the tactic. -/
 @[reducible]
@@ -22,7 +22,7 @@ unsafe def parse {α : Type} (p : parser α) [lean.parser.reflectable p] : Type 
   α
 
 /--
- A `loc` is either a 'wildcard', which means "everywhere", or a list of `option name`s. `none` means `target` and `some n` means `n` in the local context.-/
+A `loc` is either a 'wildcard', which means "everywhere", or a list of `option name`s. `none` means `target` and `some n` means `n` in the local context.-/
 inductive loc : Type
   | wildcard : loc
   | ns : List (Option Name) → loc
@@ -53,7 +53,7 @@ unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Uni
   let hts := hs.map hyp_tac
   tactic.try_lst $ if l.include_goal then hts ++ [goal_tac] else hts
 
-/--  Use `desc` as the interactive description of `p`. -/
+/-- Use `desc` as the interactive description of `p`. -/
 unsafe def with_desc {α : Type} (desc : format) (p : parser α) : parser α :=
   p
 
@@ -67,21 +67,21 @@ unsafe def brackets (l r : Stringₓ) (p : parser α) :=
 unsafe def list_of (p : parser α) :=
   brackets "[" "]" $ sep_by (skip_info (tk ",")) p
 
--- ././Mathport/Syntax/Translate/Basic.lean:1368:35: warning: unsupported: precedence command
--- ././Mathport/Syntax/Translate/Basic.lean:1368:35: warning: unsupported: precedence command
-/--  The right-binding power 2 will terminate expressions by
+-- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
+/-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
 unsafe def tac_rbp :=
   2
 
-/--  A 'tactic expression', which uses right-binding power 2 so that it is terminated by
+/-- A 'tactic expression', which uses right-binding power 2 so that it is terminated by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
 unsafe def texpr :=
   parser.pexpr tac_rbp
 
-/--  Parse an identifier or a '_' -/
+/-- Parse an identifier or a '_' -/
 unsafe def ident_ : parser Name :=
   ident <|> tk "_" *> return `_
 
@@ -114,7 +114,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
--- ././Mathport/Syntax/Translate/Basic.lean:1368:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format
@@ -229,7 +229,7 @@ unsafe structure inductive_decl where
   decls : List single_inductive_decl
 
 /--
- Parses and elaborates a single or multiple mutual inductive declarations (without the `inductive` keyword), depending on `is_mutual` -/
+Parses and elaborates a single or multiple mutual inductive declarations (without the `inductive` keyword), depending on `is_mutual` -/
 unsafe axiom inductive_decl.parse : decl_meta_info → parser inductive_decl
 
 end Interactive

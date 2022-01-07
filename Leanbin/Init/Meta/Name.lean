@@ -3,13 +3,13 @@ import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Coe
 import Leanbin.Init.Data.ToString
 
-/--  Reflect a C++ name object. The VM replaces it with the C++ implementation. -/
+/-- Reflect a C++ name object. The VM replaces it with the C++ implementation. -/
 inductive Name
   | anonymous : Name
   | mk_string : Stringₓ → Name → Name
   | mk_numeral : Unsigned → Name → Name
 
-/--  Gadget for automatic parameter support. This is similar to the opt_param gadget, but it uses
+/-- Gadget for automatic parameter support. This is similar to the opt_param gadget, but it uses
     the tactic declaration names tac_name to synthesize the argument.
     Like opt_param, this gadget only affects elaboration.
     For example, the tactic will *not* be invoked during type class resolution. -/
@@ -103,7 +103,7 @@ attribute [instance] name.has_decidable_eq
 unsafe instance : Append Name :=
   ⟨name.append⟩
 
-/--  `name.append_after n i` return a name of the form n_i -/
+/-- `name.append_after n i` return a name of the form n_i -/
 unsafe axiom name.append_after : Name → Nat → Name
 
 unsafe def name.is_prefix_of : Name → Name → Bool

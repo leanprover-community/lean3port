@@ -135,7 +135,7 @@ unsafe instance : HasToString (rb_map key data) :=
 
 end
 
-/--  a variant of rb_maps that stores a list of elements for each key.
+/-- a variant of rb_maps that stores a list of elements for each key.
    `find` returns the list of elements in the opposite order that they were inserted. -/
 unsafe def rb_lmap (key : Type) (data : Type) : Type :=
   rb_map key (List data)
@@ -224,7 +224,7 @@ end NameMap
 unsafe def mk_name_map {data : Type} : name_map data :=
   name_map.mk data
 
-/--  An rb_map of `name`s. -/
+/-- An rb_map of `name`s. -/
 unsafe axiom name_set : Type
 
 unsafe axiom mk_name_set : name_set

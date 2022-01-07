@@ -16,7 +16,7 @@ open Html Attr
 
 namespace InteractiveExpression
 
-/--  eformat but without any of the formatting stuff like highlighting, groups etc. -/
+/-- eformat but without any of the formatting stuff like highlighting, groups etc. -/
 unsafe inductive sf : Type
   | tag_expr : Expr.Address → expr → sf → sf
   | compose : sf → sf → sf
@@ -89,7 +89,7 @@ unsafe def view {γ} (tooltip_component : Tc subexpr (action γ)) (click_address
       [h "span" [on_mouse_enter fun _ => action.on_mouse_enter ca, on_click fun _ => action.on_click ca, key s]
           [html.of_string s]]
 
-/--  Make an interactive expression. -/
+/-- Make an interactive expression. -/
 unsafe def mk {γ} (tooltip : Tc subexpr γ) : Tc expr γ :=
   let tooltip_comp :=
     (component.with_should_update fun x y : tactic_state × expr × Expr.Address => x.2.2 ≠ y.2.2) $
@@ -110,7 +110,7 @@ unsafe def mk {γ} (tooltip : Tc subexpr γ) : Tc expr γ :=
     let v ← view tooltip_comp (Prod.snd <$> ca) (Prod.snd <$> sa) ⟨e, []⟩ m
     pure $ [h "span" [className "expr", key e.hash, on_mouse_leave fun _ => action.on_mouse_leave_all] $ v]
 
-/--  Render the implicit arguments for an expression in fancy, little pills. -/
+/-- Render the implicit arguments for an expression in fancy, little pills. -/
 unsafe def implicit_arg_list (tooltip : Tc subexpr Empty) (e : expr) : tactic $ html Empty := do
   let fn ← mk tooltip $ expr.get_app_fn e
   let args ← List.mmapₓ (mk tooltip) $ expr.get_app_args e
@@ -128,12 +128,11 @@ unsafe def type_tooltip : Tc subexpr Empty :=
 
 end InteractiveExpression
 
--- ././Mathport/Syntax/Translate/Basic.lean:833:9: unsupported derive handler decidable_eq
 unsafe inductive filter_type
   | none
   | no_instances
   | only_props
-  deriving [anonymous]
+  deriving DecidableEq
 
 unsafe def filter_local : filter_type → expr → tactic Bool
   | filter_type.none, e => pure tt
@@ -163,15 +162,14 @@ unsafe def show_type_component : Tc expr Empty :=
     let y_comp ← interactive_expression.mk interactive_expression.type_tooltip $ y
     pure y_comp
 
--- ././Mathport/Syntax/Translate/Basic.lean:833:9: unsupported derive handler decidable_eq
-/--  A group of local constants in the context that should be rendered as one line. -/
+/-- A group of local constants in the context that should be rendered as one line. -/
 unsafe structure local_collection where
   key : Stringₓ
   locals : List expr
   type : expr
-  deriving [anonymous]
+  deriving DecidableEq
 
-/--  Group consecutive locals according to whether they have the same type -/
+/-- Group consecutive locals according to whether they have the same type -/
 unsafe def to_local_collection : List local_collection → List expr → tactic (List local_collection)
   | Acc, [] =>
     pure $ (List.map fun lc : local_collection => { lc with locals := lc.locals.reverse }) $ List.reverse $ Acc
@@ -183,7 +181,7 @@ unsafe def to_local_collection : List local_collection → List expr → tactic 
           to_local_collection (⟨k, l :: ns, t⟩ :: Acc) ls) <|>
         to_local_collection (⟨toString $ expr.local_uniq_name $ l, [l], l_type⟩ :: Acc) ls
 
-/--  Component that displays the main (first) goal. -/
+/-- Component that displays the main (first) goal. -/
 unsafe def tactic_view_goal {γ} (local_c : Tc local_collection γ) (target_c : Tc expr γ) : Tc filter_type γ :=
   tc.stateless $ fun ft => do
     let g@(expr.mvar u_n pp_n y) ← main_goal
@@ -210,7 +208,7 @@ unsafe inductive tactic_view_action (γ : Type)
   | out (a : γ) : tactic_view_action
   | filter (f : filter_type) : tactic_view_action
 
-/--  Component that displays all goals, together with the `$n goals` message. -/
+/-- Component that displays all goals, together with the `$n goals` message. -/
 unsafe def tactic_view_component {γ} (local_c : Tc local_collection γ) (target_c : Tc expr γ) : Tc Unit γ :=
   tc.mk_simple (tactic_view_action γ) filter_type (fun _ => pure $ filter_type.none)
     (fun ⟨⟩ ft a =>
@@ -235,7 +233,7 @@ unsafe def tactic_view_component {γ} (local_c : Tc local_collection γ) (target
             [html.of_component ft $ component.map_action tactic_view_action.filter filter_component],
           html.map_action tactic_view_action.out goals]
 
-/--  Component that displays the term-mode goal. -/
+/-- Component that displays the term-mode goal. -/
 unsafe def tactic_view_term_goal {γ} (local_c : Tc local_collection γ) (target_c : Tc expr γ) : Tc Unit γ :=
   tc.stateless $ fun _ => do
     let goal ← flip tc.to_html filter_type.none $ tactic_view_goal local_c target_c
@@ -256,8 +254,7 @@ unsafe def tactic_render : Tc Unit Empty :=
 unsafe def tactic_state_widget : component tactic_state Empty :=
   tc.to_component tactic_render
 
-/-- 
-Widget used to display term-proof goals.
+/-- Widget used to display term-proof goals.
 -/
 unsafe def term_goal_widget : component tactic_state Empty :=
   (tactic_view_term_goal show_local_collection_component show_type_component).to_component

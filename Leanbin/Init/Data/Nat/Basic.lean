@@ -23,15 +23,15 @@ instance : LT ℕ :=
 
 def pred : ℕ → ℕ
   | 0 => 0
-  | a+1 => a
+  | a + 1 => a
 
 protected def sub : ℕ → ℕ → ℕ
   | a, 0 => a
-  | a, b+1 => pred (sub a b)
+  | a, b + 1 => pred (sub a b)
 
 protected def mul : Nat → Nat → Nat
   | a, 0 => 0
-  | a, b+1 => mul a b+a
+  | a, b + 1 => mul a b + a
 
 instance : Sub ℕ :=
   ⟨Nat.sub⟩
@@ -40,7 +40,7 @@ instance : Mul ℕ :=
   ⟨Nat.mul⟩
 
 instance : HasDvd ℕ :=
-  HasDvd.mk fun a b => ∃ c, b = a*c
+  HasDvd.mk fun a b => ∃ c, b = a * c
 
 instance : DecidableEq ℕ
   | zero, zero => is_true rfl
@@ -74,7 +74,7 @@ theorem succ_le_succ {n m : ℕ} : n ≤ m → succ n ≤ succ m := fun h =>
 
 protected theorem zero_le : ∀ n : ℕ, 0 ≤ n
   | 0 => Nat.le_reflₓ 0
-  | n+1 => less_than_or_equal.step (zero_le n)
+  | n + 1 => less_than_or_equal.step (zero_le n)
 
 theorem zero_lt_succ (n : ℕ) : 0 < succ n :=
   succ_le_succ n.zero_le
@@ -97,8 +97,8 @@ theorem le_of_succ_le_succ {n m : ℕ} : succ n ≤ succ m → n ≤ m :=
 
 instance decidable_le : ∀ a b : ℕ, Decidable (a ≤ b)
   | 0, b => is_true b.zero_le
-  | a+1, 0 => is_false (not_succ_le_zero a)
-  | a+1, b+1 =>
+  | a + 1, 0 => is_false (not_succ_le_zero a)
+  | a + 1, b + 1 =>
     match decidable_le a b with
     | is_true h => is_true (succ_le_succ h)
     | is_false h => is_false fun a => h (le_of_succ_le_succ a)
@@ -137,39 +137,40 @@ protected theorem sub_le (a b : ℕ) : a - b ≤ a :=
 
 protected theorem sub_lt : ∀ {a b : ℕ}, 0 < a → 0 < b → a - b < a
   | 0, b, h1, h2 => absurd h1 (Nat.lt_irreflₓ 0)
-  | a+1, 0, h1, h2 => absurd h2 (Nat.lt_irreflₓ 0)
-  | a+1, b+1, h1, h2 => Eq.symm (succ_sub_succ_eq_sub a b) ▸ show a - b < succ a from lt_succ_of_le (a.sub_le b)
+  | a + 1, 0, h1, h2 => absurd h2 (Nat.lt_irreflₓ 0)
+  | a + 1, b + 1, h1, h2 => Eq.symm (succ_sub_succ_eq_sub a b) ▸ show a - b < succ a from lt_succ_of_le (a.sub_le b)
 
 protected theorem lt_of_lt_of_le {n m k : ℕ} : n < m → m ≤ k → n < k :=
   Nat.le_transₓ
 
-protected theorem zero_add : ∀ n : ℕ, (0+n) = n
+protected theorem zero_add : ∀ n : ℕ, 0 + n = n
   | 0 => rfl
-  | n+1 => congr_argₓ succ (zero_add n)
+  | n + 1 => congr_argₓ succ (zero_add n)
 
-theorem succ_add : ∀ n m : ℕ, (succ n+m) = succ (n+m)
+theorem succ_add : ∀ n m : ℕ, succ n + m = succ (n + m)
   | n, 0 => rfl
-  | n, m+1 => congr_argₓ succ (succ_add n m)
+  | n, m + 1 => congr_argₓ succ (succ_add n m)
 
-theorem add_succ (n m : ℕ) : (n+succ m) = succ (n+m) :=
+theorem add_succ (n m : ℕ) : n + succ m = succ (n + m) :=
   rfl
 
-protected theorem add_zero (n : ℕ) : (n+0) = n :=
+protected theorem add_zero (n : ℕ) : n + 0 = n :=
   rfl
 
-theorem add_one (n : ℕ) : (n+1) = succ n :=
+theorem add_one (n : ℕ) : n + 1 = succ n :=
   rfl
 
-theorem succ_eq_add_one (n : ℕ) : succ n = n+1 :=
+theorem succ_eq_add_one (n : ℕ) : succ n = n + 1 :=
   rfl
 
 protected theorem bit0_succ_eq (n : ℕ) : bit0 (succ n) = succ (succ (bit0 n)) :=
-  show succ (succ n+n) = succ (succ (n+n)) from congr_argₓ succ (succ_add n n)
+  show succ (succ n + n) = succ (succ (n + n)) from congr_argₓ succ (succ_add n n)
 
 protected theorem zero_lt_bit0 : ∀ {n : Nat}, n ≠ 0 → 0 < bit0 n
   | 0, h => absurd rfl h
   | succ n, h =>
-    calc 0 < succ (succ (bit0 n)) := zero_lt_succ _
+    calc
+      0 < succ (succ (bit0 n)) := zero_lt_succ _
       _ = bit0 (succ n) := (Nat.bit0_succ_eq n).symm
       
 
@@ -178,13 +179,13 @@ protected theorem zero_lt_bit1 (n : Nat) : 0 < bit1 n :=
 
 protected theorem bit0_ne_zero : ∀ {n : ℕ}, n ≠ 0 → bit0 n ≠ 0
   | 0, h => absurd rfl h
-  | n+1, h =>
-    suffices ((n+1)+n+1) ≠ 0 from this
-    suffices succ ((n+1)+n) ≠ 0 from this
+  | n + 1, h =>
+    suffices n + 1 + (n + 1) ≠ 0 from this
+    suffices succ (n + 1 + n) ≠ 0 from this
     fun h => Nat.noConfusion h
 
 protected theorem bit1_ne_zero (n : ℕ) : bit1 n ≠ 0 :=
-  show succ (n+n) ≠ 0 from fun h => Nat.noConfusion h
+  show succ (n + n) ≠ 0 from fun h => Nat.noConfusion h
 
 end Nat
 

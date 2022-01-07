@@ -91,15 +91,10 @@ class MonadIoRandom (m : Type → Type → Type) where
 instance monadIoIsMonad (m : Type → Type → Type) (e : Type) [MonadIo m] : Monadₓ (m e) :=
   MonadIo.monad e
 
--- failed to format: format: uncaught backtrack exception
-instance
-  monadIoIsMonadFail
-  ( m : Type → Type → Type ) [ MonadIo m ] : MonadFail ( m Io.Error )
-  where fail α s := MonadIo.fail _ _ ( Io.Error.other s )
+instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] : MonadFail (m Io.Error) where
+  fail := fun α s => MonadIo.fail _ _ (Io.Error.other s)
 
--- failed to format: format: uncaught backtrack exception
-instance
-  monadIoIsAlternative
-  ( m : Type → Type → Type ) [ MonadIo m ] : Alternativeₓ ( m Io.Error )
-  where orelse α a b := MonadIo.catch _ _ _ a fun _ => b failure α := MonadIo.fail _ _ ( Io.Error.other "failure" )
+instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternativeₓ (m Io.Error) where
+  orelse := fun α a b => MonadIo.catch _ _ _ a fun _ => b
+  failure := fun α => MonadIo.fail _ _ (Io.Error.other "failure")
 

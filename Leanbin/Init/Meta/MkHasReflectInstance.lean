@@ -31,7 +31,7 @@ private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (
     let field ← get_local fname
     let rec ← is_type_app_of field I_name
     let quote ← if rec then mk_brec_on_rec_value F_name num_rec else mk_has_reflect_instance_for field
-    let quotes ← mk_reflect I_name F_name fnames (if rec then num_rec+1 else num_rec)
+    let quotes ← mk_reflect I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (quote :: quotes)
 
 private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List Name) : tactic Unit := do
@@ -49,7 +49,7 @@ private unsafe def for_each_has_reflect_goal : Name → Name → List (List Name
     solve1 (has_reflect_case I_name F_name ns)
     for_each_has_reflect_goal I_name F_name nss
 
-/--  Solves a goal of the form `has_reflect α` where α is an inductive type.
+/-- Solves a goal of the form `has_reflect α` where α is an inductive type.
     Needs to synthesize a `reflected` instance for each inductive parameter type of α
     and for each constructor parameter of α. -/
 unsafe def mk_has_reflect_instance : tactic Unit := do

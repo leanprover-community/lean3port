@@ -114,6 +114,7 @@ import Leanbin.Init.Meta.FunInfo
 import Leanbin.Init.Meta.HasReflect
 import Leanbin.Init.Meta.HoleCommand
 import Leanbin.Init.Meta.InjectionTactic
+import Leanbin.Init.Meta.InstanceCache
 import Leanbin.Init.Meta.InteractionMonad
 import Leanbin.Init.Meta.Interactive
 import Leanbin.Init.Meta.InteractiveBase

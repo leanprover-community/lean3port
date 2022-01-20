@@ -991,13 +991,13 @@ theorem mul_mod_mul_left (z x y : ℕ) : z * x % (z * y) = z * (x % y) :=
 theorem mul_mod_mul_right (z x y : ℕ) : x * z % (y * z) = x % y * z := by
   rw [Nat.mul_comm x z, Nat.mul_comm y z, Nat.mul_comm (x % y) z] <;> apply mul_mod_mul_left
 
--- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:374:22: warning: unsupported simp config option: iota_eqn
--- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:374:22: warning: unsupported simp config option: iota_eqn
+-- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:377:22: warning: unsupported simp config option: iota_eqn
+-- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:377:22: warning: unsupported simp config option: iota_eqn
 theorem cond_to_bool_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] : cond (@to_bool (x % 2 = 1) d) 1 0 = x % 2 := by
   by_cases' h : x % 2 = 1
   · simp [*]
     
-  · cases mod_two_eq_zero_or_one x <;> simp [*, Nat.zero_ne_one]
+  · cases mod_two_eq_zero_or_one x <;> simp [*, Nat.zero_ne_one] <;> contradiction
     
 
 theorem sub_mul_mod (x k n : ℕ) (h₁ : n * k ≤ x) : (x - n * k) % n = x % n := by

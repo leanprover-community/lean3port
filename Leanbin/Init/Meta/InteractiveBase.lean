@@ -251,6 +251,8 @@ private unsafe def parse_format : Stringₓ → List Charₓ → parser pexpr
     let '}' :: s ← return s.to_list | fail "'}' expected"
     let f ← parse_format "" s
     pure (pquote.1 (to_fmt (%%ₓreflect Acc) ++ to_fmt (%%ₓe) ++ %%ₓf))
+  | Acc, '}' :: '}' :: s => parse_format (Acc ++ "}") s
+  | Acc, '}' :: s => fail "'}}' expected"
   | Acc, c :: s => parse_format (acc.str c) s
 
 @[user_notation]
@@ -265,6 +267,8 @@ private unsafe def parse_sformat : Stringₓ → List Charₓ → parser pexpr
     let '}' :: s ← return s.to_list | fail "'}' expected"
     let f ← parse_sformat "" s
     pure (pquote.1 ((%%ₓreflect Acc) ++ toString (%%ₓe) ++ %%ₓf))
+  | Acc, '}' :: '}' :: s => parse_sformat (Acc ++ "}") s
+  | Acc, '}' :: s => fail "'}}' expected"
   | Acc, c :: s => parse_sformat (acc.str c) s
 
 @[user_notation]

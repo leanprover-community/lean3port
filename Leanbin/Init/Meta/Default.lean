@@ -33,6 +33,7 @@ import Leanbin.Init.Meta.HoleCommand
 import Leanbin.Init.Meta.CongrTactic
 import Leanbin.Init.Meta.LocalContext
 import Leanbin.Init.Meta.TypeContext
+import Leanbin.Init.Meta.InstanceCache
 import Leanbin.Init.Meta.ModuleInfo
 import Leanbin.Init.Meta.ExprAddress
 import Leanbin.Init.Meta.TaggedFormat

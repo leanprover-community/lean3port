@@ -56,7 +56,7 @@ namespace Iterator
 
 def curr : iterator → Charₓ
   | ⟨p, c :: n⟩ => c
-  | _ => default Charₓ
+  | _ => default
 
 def set_curr : iterator → Charₓ → iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩

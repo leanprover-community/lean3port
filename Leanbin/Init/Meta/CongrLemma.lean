@@ -22,6 +22,7 @@ inductive CongrArgKind
   | Eq
   | cast
   | HEq
+  | subsingleton_inst
 
 namespace CongrArgKind
 
@@ -31,6 +32,7 @@ def toString : CongrArgKind → Stringₓ
   | Eq => "eq"
   | cast => "cast"
   | HEq => "heq"
+  | subsingleton_inst => "subsingleton_inst"
 
 instance : HasRepr CongrArgKind :=
   ⟨toString⟩

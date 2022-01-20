@@ -760,19 +760,19 @@ theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} : ∀
   | is_false n₁ => proof_irrelₓ n n₁ ▸ Eq.refl (is_false n)
 
 class Inhabited (α : Sort u) where
-  default {} : α
+  default : α
 
 export Inhabited (default)
 
 @[inline]
-irreducible_def arbitraryₓ (α : Sort u) [Inhabited α] : α :=
-  default α
+irreducible_def arbitrary (α : Sort u) [Inhabited α] : α :=
+  default
 
 instance Prop.inhabited : Inhabited Prop :=
   ⟨True⟩
 
 instance Pi.inhabited (α : Sort u) {β : α → Sort v} [∀ x, Inhabited (β x)] : Inhabited (∀ x, β x) :=
-  ⟨fun a => default (β a)⟩
+  ⟨fun a => default⟩
 
 instance : Inhabited Bool :=
   ⟨ff⟩
@@ -787,7 +787,7 @@ protected theorem Nonempty.elimₓ {α : Sort u} {p : Prop} (h₁ : Nonempty α)
   Nonempty.ndrec h₂ h₁
 
 instance (priority := 100) nonempty_of_inhabited {α : Sort u} [Inhabited α] : Nonempty α :=
-  ⟨default α⟩
+  ⟨default⟩
 
 theorem nonempty_of_exists {α : Sort u} {p : α → Prop} : (∃ x, p x) → Nonempty α
   | ⟨w, h⟩ => ⟨w⟩
@@ -852,7 +852,6 @@ theorem if_ctx_congr {α : Sort u} {b c : Prop} [dec_b : Decidable b] [dec_c : D
   | is_false h₁, is_true h₂ => absurd h₂ (Iff.mp (not_iff_not_of_iff h_c) h₁)
   | is_true h₁, is_false h₂ => absurd h₁ (Iff.mpr (not_iff_not_of_iff h_c) h₂)
 
-@[congr]
 theorem if_congr {α : Sort u} {b c : Prop} [dec_b : Decidable b] [dec_c : Decidable c] {x y u v : α} (h_c : b ↔ c)
     (h_t : x = u) (h_e : y = v) : ite b x y = ite c u v :=
   @if_ctx_congr α b c dec_b dec_c x y u v h_c (fun h => h_t) fun h => h_e

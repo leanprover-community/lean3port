@@ -1119,22 +1119,27 @@ private unsafe def simp_lemmas.resolve_and_add (s : simp_lemmas) (u : List Name)
   match e with
     | const n _ =>
       (do
-          let b ← is_valid_simp_lemma_cnst n
-          guardₓ b
-          save_const_type_info n ref
-          let s ← s.add_simp n symm
-          return (s, u)) <|>
+          guardₓ ¬symm
+          has_attribute `congr n
+          let s ← s.add_congr n
+          pure (s, u)) <|>
         (do
-            let eqns ← get_eqn_lemmas_for tt n
-            guardₓ (eqns.length > 0)
+            let b ← is_valid_simp_lemma_cnst n
+            guardₓ b
             save_const_type_info n ref
-            let s ← add_simps s (eqns.map fun e => (e, ff))
+            let s ← s.add_simp n symm
             return (s, u)) <|>
           (do
-              let env ← get_env
-              guardₓ (env.is_projection n).isSome
-              return (s, n :: u)) <|>
-            report_invalid_simp_lemma n
+              let eqns ← get_eqn_lemmas_for tt n
+              guardₓ (eqns.length > 0)
+              save_const_type_info n ref
+              let s ← add_simps s (eqns.map fun e => (e, ff))
+              return (s, u)) <|>
+            (do
+                let env ← get_env
+                guardₓ (env.is_projection n).isSome
+                return (s, n :: u)) <|>
+              report_invalid_simp_lemma n
     | _ =>
       (do
           let e ← i_to_expr_no_subgoals p

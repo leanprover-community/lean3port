@@ -35,6 +35,9 @@ unsafe axiom simp_lemmas.join : simp_lemmas → simp_lemmas → simp_lemmas
 /-- Remove the given lemmas from the table. Use the names of the lemmas. -/
 unsafe axiom simp_lemmas.erase : simp_lemmas → List Name → simp_lemmas
 
+/-- Remove all simp lemmas from the table. -/
+unsafe axiom simp_lemmas.erase_simp_lemmas : simp_lemmas → simp_lemmas
+
 /-- Makes the default simp_lemmas table which is composed of all lemmas tagged with `simp`. -/
 unsafe axiom simp_lemmas.mk_default : tactic simp_lemmas
 
@@ -405,7 +408,7 @@ unsafe def mk_eq_simp_ext (simp_ext : expr → tactic (expr × expr)) : tactic U
 unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
   | S, [] => return S
   | S, n :: ns => do
-    let S' ← S.add_simp n ff
+    let S' ← has_attribute `congr n >> S.add_congr n <|> S.add_simp n ff
     to_simp_lemmas S' ns
 
 unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : command := do
@@ -450,11 +453,10 @@ unsafe def join_user_simp_lemmas_core : simp_lemmas → List Name → tactic sim
     let S' ← get_user_simp_lemmas attr_name
     join_user_simp_lemmas_core (S.join S') R
 
-unsafe def join_user_simp_lemmas (no_dflt : Bool) (attrs : List Name) : tactic simp_lemmas :=
-  if no_dflt then join_user_simp_lemmas_core simp_lemmas.mk attrs
-  else do
-    let s ← simp_lemmas.mk_default
-    join_user_simp_lemmas_core s attrs
+unsafe def join_user_simp_lemmas (no_dflt : Bool) (attrs : List Name) : tactic simp_lemmas := do
+  let s ← simp_lemmas.mk_default
+  let s := if no_dflt then s.erase_simp_lemmas else s
+  join_user_simp_lemmas_core s attrs
 
 unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × expr × expr)) (e : expr)
     (cfg : simp_config := {  }) : tactic (α × expr × expr) :=

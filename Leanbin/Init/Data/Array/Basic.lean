@@ -265,7 +265,7 @@ theorem read_write_of_ne (a : Arrayₓ n α) {i j : Finₓ n} (v : α) : i ≠ j
   DArray.read_write_of_ne a v
 
 def read' [Inhabited β] (a : Arrayₓ n β) (i : Nat) : β :=
-  if h : i < n then a.read ⟨i, h⟩ else default β
+  if h : i < n then a.read ⟨i, h⟩ else default
 
 def write' (a : Arrayₓ n α) (i : Nat) (v : α) : Arrayₓ n α :=
   if h : i < n then a.write ⟨i, h⟩ v else a

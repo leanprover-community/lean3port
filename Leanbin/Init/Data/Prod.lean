@@ -12,7 +12,7 @@ theorem Prod.mk.eta : ∀ {p : α × β}, (p.1, p.2) = p
   | (a, b) => rfl
 
 instance [Inhabited α] [Inhabited β] : Inhabited (Prod α β) :=
-  ⟨(default α, default β)⟩
+  ⟨(default, default)⟩
 
 instance [h₁ : DecidableEq α] [h₂ : DecidableEq β] : DecidableEq (α × β)
   | (a, b), (a', b') =>

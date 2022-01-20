@@ -8,6 +8,7 @@ structure ParamInfo where
   isInstImplicit : Bool
   isProp : Bool
   hasFwdDeps : Bool
+  isDecInst : Bool
   backDeps : List Nat
 
 open Format List Decidable
@@ -21,12 +22,13 @@ private unsafe def concat_fields (f₁ f₂ : format) : format :=
 local infixl:65 "+++" => concat_fields
 
 unsafe def param_info.to_format : ParamInfo → format
-  | ParamInfo.mk i ii p d ds =>
+  | ParamInfo.mk i ii p d di ds =>
     group ∘ cbrace $
       when i
-                "implicit"+++when ii
-                "inst_implicit"+++when p
-              "prop"+++when d "has_fwd_deps"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
+                  "implicit"+++when ii
+                  "inst_implicit"+++when p
+                "prop"+++when d
+              "has_fwd_deps"+++when di "is_dec_inst"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
 
 unsafe instance : has_to_format ParamInfo :=
   has_to_format.mk param_info.to_format

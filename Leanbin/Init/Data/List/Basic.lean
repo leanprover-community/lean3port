@@ -95,7 +95,7 @@ def nth_le : ∀ l : List α n, n < l.length → α
 
 @[simp]
 def head [Inhabited α] : List α → α
-  | [] => default α
+  | [] => default
   | a :: l => a
 
 @[simp]
@@ -295,7 +295,7 @@ def last : ∀ l : List α, l ≠ [] → α
   | a :: b :: l, h => last (b :: l) fun h => List.noConfusion h
 
 def ilast [Inhabited α] : List α → α
-  | [] => arbitraryₓ α
+  | [] => arbitrary α
   | [a] => a
   | [a, b] => b
   | a :: b :: l => ilast l

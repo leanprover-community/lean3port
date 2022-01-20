@@ -74,12 +74,12 @@ unsafe def type : declaration → expr
 unsafe def value : declaration → expr
   | defn _ _ _ v _ _ => v
   | thm _ _ _ v => v.get
-  | _ => default expr
+  | _ => default
 
 unsafe def value_task : declaration → task expr
   | defn _ _ _ v _ _ => task.pure v
   | thm _ _ _ v => v
-  | _ => task.pure (default expr)
+  | _ => task.pure default
 
 unsafe def is_trusted : declaration → Bool
   | defn _ _ _ _ _ t => t
@@ -114,8 +114,8 @@ unsafe def map_value : declaration → (expr → expr) → declaration
   | d, f => d
 
 unsafe def to_definition : declaration → declaration
-  | cnst n ls t tr => defn n ls t (default expr) ReducibilityHints.abbrev tr
-  | ax n ls t => thm n ls t (task.pure (default expr))
+  | cnst n ls t tr => defn n ls t default ReducibilityHints.abbrev tr
+  | ax n ls t => thm n ls t (task.pure default)
   | d => d
 
 unsafe def is_definition : declaration → Bool

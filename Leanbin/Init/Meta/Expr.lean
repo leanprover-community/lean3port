@@ -539,8 +539,8 @@ unsafe def is_macro : expr → Bool
   | e => ff
 
 unsafe def is_numeral : expr → Bool
-  | quote.1 (@HasZero.zero (%%ₓα) (%%ₓs)) => tt
-  | quote.1 (@HasOne.one (%%ₓα) (%%ₓs)) => tt
+  | quote.1 (@Zero.zero (%%ₓα) (%%ₓs)) => tt
+  | quote.1 (@One.one (%%ₓα) (%%ₓs)) => tt
   | quote.1 (@bit0 (%%ₓα) (%%ₓs) (%%ₓv)) => is_numeral v
   | quote.1 (@bit1 (%%ₓα) (%%ₓs₁) (%%ₓs₂) (%%ₓv)) => is_numeral v
   | _ => ff

@@ -214,10 +214,10 @@ protected unsafe def zero : float :=
 protected unsafe def one : float :=
   of_nat 1
 
-unsafe instance : HasZero float :=
+unsafe instance : Zero float :=
   ⟨float.zero⟩
 
-unsafe instance : HasOne float :=
+unsafe instance : One float :=
   ⟨float.one⟩
 
 unsafe axiom to_repr : float → Stringₓ

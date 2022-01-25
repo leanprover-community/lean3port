@@ -7,10 +7,10 @@ namespace Unsigned
 def of_nat (n : Nat) : Unsigned :=
   Finₓ.ofNat n
 
-instance : HasZero Unsigned :=
+instance : Zero Unsigned :=
   ⟨Finₓ.ofNat 0⟩
 
-instance : HasOne Unsigned :=
+instance : One Unsigned :=
   ⟨Finₓ.ofNat 1⟩
 
 instance : Add Unsigned :=

@@ -69,9 +69,9 @@ unsafe def is_value_like : expr → Bool
       else
         let nargs := e.get_app_num_args
         let fname := fn.const_name
-        if fname = `` HasZero.zero ∧ nargs = 2 then tt
+        if fname = `` Zero.zero ∧ nargs = 2 then tt
         else
-          if fname = `` HasOne.one ∧ nargs = 2 then tt
+          if fname = `` One.one ∧ nargs = 2 then tt
           else
             if fname = `` bit0 ∧ nargs = 3 then is_value_like e.app_arg
             else

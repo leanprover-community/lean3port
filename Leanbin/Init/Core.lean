@@ -264,10 +264,10 @@ structure UnificationHint where
   pattern : UnificationConstraint
   constraints : List UnificationConstraint
 
-class HasZero (α : Type u) where
+class Zero (α : Type u) where
   zero : α
 
-class HasOne (α : Type u) where
+class One (α : Type u) where
   one : α
 
 class Add (α : Type u) where
@@ -391,10 +391,10 @@ infixl:50 " ⊃ " => Ssuperset
 def bit0 {α : Type u} [s : Add α] (a : α) : α :=
   a + a
 
-def bit1 {α : Type u} [s₁ : HasOne α] [s₂ : Add α] (a : α) : α :=
+def bit1 {α : Type u} [s₁ : One α] [s₂ : Add α] (a : α) : α :=
   bit0 a + 1
 
-attribute [matchPattern] HasZero.zero HasOne.one bit0 bit1 Add.add Neg.neg Mul.mul
+attribute [matchPattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 
 export HasInsert (insert)
 
@@ -417,10 +417,10 @@ attribute [matchPattern] Nat.add Nat.add
 
 end Nat
 
-instance : HasZero Nat :=
+instance : Zero Nat :=
   ⟨Nat.zero⟩
 
-instance : HasOne Nat :=
+instance : One Nat :=
   ⟨Nat.succ Nat.zero⟩
 
 instance : Add Nat :=

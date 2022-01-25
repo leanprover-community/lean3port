@@ -1,9 +1,9 @@
 
 axiom Real : Type
 
-axiom HasZero : HasZero Real
+axiom Zero : Zero Real
 
-axiom HasOne : HasOne Real
+axiom One : One Real
 
 axiom Add : Add Real
 

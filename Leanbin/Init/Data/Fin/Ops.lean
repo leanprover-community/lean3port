@@ -51,10 +51,10 @@ private theorem divlt {a b n : Nat} (h : a < n) : a / b < n :=
 protected def div : Finₓ n → Finₓ n → Finₓ n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨a / b, divlt h⟩
 
-instance : HasZero (Finₓ (succ n)) :=
+instance : Zero (Finₓ (succ n)) :=
   ⟨⟨0, succ_pos n⟩⟩
 
-instance : HasOne (Finₓ (succ n)) :=
+instance : One (Finₓ (succ n)) :=
   ⟨of_nat 1⟩
 
 instance : Add (Finₓ n) :=

@@ -35,10 +35,10 @@ protected def zero : ℤ :=
 protected def one : ℤ :=
   of_nat 1
 
-instance : HasZero ℤ :=
+instance : Zero ℤ :=
   ⟨Int.zero⟩
 
-instance : HasOne ℤ :=
+instance : One ℤ :=
   ⟨Int.one⟩
 
 theorem of_nat_zero : of_nat (0 : Nat) = (0 : Int) :=

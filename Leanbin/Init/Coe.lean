@@ -73,7 +73,7 @@ def coeFnB {a : Sort u} {b : a → Sort v} [CoeFun a b] : ∀ x : a, b x :=
 
 
 @[reducible]
-def coeₓ {a : Sort u} {b : Sort v} [HasLiftT a b] : a → b :=
+def coe {a : Sort u} {b : Sort v} [HasLiftT a b] : a → b :=
   liftT
 
 @[reducible]
@@ -81,7 +81,7 @@ def coeFn {a : Sort u} {b : a → Sort v} [CoeFun a b] : ∀ x : a, b x :=
   CoeFun.coe
 
 @[reducible]
-def coeSortₓ {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
+def coeSort {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
   CoeSort.coe
 
 /-! ### Notation -/
@@ -89,7 +89,7 @@ def coeSortₓ {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
-notation:999 "↑" x:999 => coeₓ x
+notation:999 "↑" x:999 => coe x
 
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
@@ -97,7 +97,7 @@ notation:999 "⇑" x:999 => coeFn x
 
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
-notation:999 "↥" x:999 => coeSortₓ x
+notation:999 "↥" x:999 => coeSort x
 
 universe u₁ u₂ u₃
 
@@ -150,7 +150,7 @@ instance coeFnTrans {a : Sort u₁} {b : Sort u₂} {c : b → Sort v} [CoeFun b
   ⟨fun x => coeFn (@HasCoeTAux.coe a b _ x)⟩
 
 instance coeSortTrans {a : Sort u₁} {b : Sort u₂} {c : Sort v} [CoeSort b c] [HasCoeTAux a b] : CoeSort a c :=
-  ⟨fun x => coeSortₓ (@HasCoeTAux.coe a b _ x)⟩
+  ⟨fun x => coeSort (@HasCoeTAux.coe a b _ x)⟩
 
 /-- Every coercion is also a lift -/
 instance coeToLift {a : Sort u} {b : Sort v} [CoeTₓ a b] : HasLiftT a b :=
@@ -171,7 +171,7 @@ instance coeBoolToProp : Coe Bool Prop :=
 instance coeSortBool : CoeSort Bool Prop :=
   ⟨fun y => y = tt⟩
 
-instance coeDecidableEq (x : Bool) : Decidable (coeₓ x) :=
+instance coeDecidableEq (x : Bool) : Decidable (coe x) :=
   show Decidable (x = tt) from Bool.decidableEq x tt
 
 instance coeSubtype {a : Sort u} {p : a → Prop} : Coe { x // p x } a :=
@@ -210,5 +210,5 @@ instance liftPair₂ {a : Type ua} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasL
   ⟨fun p => Prod.casesOn p fun x y => (x, ↑y)⟩
 
 instance liftList {a : Type u} {b : Type v} [HasLift a b] : HasLift (List a) (List b) :=
-  ⟨fun l => List.map coeₓ l⟩
+  ⟨fun l => List.map coe l⟩
 

@@ -14,7 +14,7 @@ structure ParamInfo where
 open Format List Decidable
 
 private unsafe def ppfield {α : Type} [has_to_format α] (fname : Stringₓ) (v : α) : format :=
-  group $ to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length + 4) (to_fmt v)
+  group <| to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length + 4) (to_fmt v)
 
 private unsafe def concat_fields (f₁ f₂ : format) : format :=
   if is_nil f₁ then f₂ else if is_nil f₂ then f₁ else f₁ ++ to_fmt "," ++ line ++ f₂
@@ -23,7 +23,7 @@ local infixl:65 "+++" => concat_fields
 
 unsafe def param_info.to_format : ParamInfo → format
   | ParamInfo.mk i ii p d di ds =>
-    group ∘ cbrace $
+    group ∘ cbrace <|
       when i
                   "implicit"+++when ii
                   "inst_implicit"+++when p
@@ -38,7 +38,7 @@ structure FunInfo where
   resultDeps : List Nat
 
 unsafe def fun_info_to_format : FunInfo → format
-  | FunInfo.mk ps ds => group ∘ dcbrace $ ppfield "params" ps+++ppfield "result_deps" ds
+  | FunInfo.mk ps ds => group ∘ dcbrace <| ppfield "params" ps+++ppfield "result_deps" ds
 
 unsafe instance : has_to_format FunInfo :=
   has_to_format.mk fun_info_to_format
@@ -69,7 +69,7 @@ structure SubsingletonInfo where
   isSubsingleton : Bool
 
 unsafe def subsingleton_info_to_format : SubsingletonInfo → format
-  | SubsingletonInfo.mk s ss => group ∘ cbrace $ when s "specialized"+++when ss "subsingleton"
+  | SubsingletonInfo.mk s ss => group ∘ cbrace <| when s "specialized"+++when ss "subsingleton"
 
 unsafe instance : has_to_format SubsingletonInfo :=
   has_to_format.mk subsingleton_info_to_format

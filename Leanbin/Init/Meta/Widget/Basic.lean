@@ -219,14 +219,14 @@ variable {α β : Type} {π : Type}
 namespace Component
 
 unsafe def map_action (f : α → β) : component π α → component π β
-  | c => filter_map_action (fun p a => some $ f a) c
+  | c => filter_map_action (fun p a => some <| f a) c
 
 /-- Returns a component that will never trigger an action. -/
 unsafe def ignore_action : component π α → component π β
   | c => component.filter_map_action (fun p a => none) c
 
 unsafe def ignore_props : component Unit α → component π α
-  | c => (with_should_update fun a b => ff) $ component.map_props (fun p => ()) c
+  | c => (with_should_update fun a b => ff) <| component.map_props (fun p => ()) c
 
 unsafe instance : Coe (component π Empty) (component π α) :=
   ⟨component.filter_map_action fun p x => none⟩
@@ -236,14 +236,14 @@ unsafe instance : CoeFun (component π α) fun c => π → html α :=
 
 unsafe def stateful {π α : Type} (β σ : Type) (init : π → Option σ → σ) (update : π → σ → β → σ × Option α)
     (view : π → σ → List (html β)) : component π α :=
-  with_state β σ (fun p => init p none) (fun _ p s => init p $ some s) update (component.pure fun ⟨s, p⟩ => view p s)
+  with_state β σ (fun p => init p none) (fun _ p s => init p <| some s) update (component.pure fun ⟨s, p⟩ => view p s)
 
 unsafe def stateless {π α : Type} [DecidableEq π] (view : π → List (html α)) : component π α :=
-  (component.with_should_update fun p1 p2 => p1 ≠ p2) $ component.pure view
+  (component.with_should_update fun p1 p2 => p1 ≠ p2) <| component.pure view
 
 /-- Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
 unsafe def with_props_eq (test : π → π → Bool) : component π α → component π α
-  | c => component.with_should_update (fun x y => bnot $ test x y) c
+  | c => component.with_should_update (fun x y => bnot <| test x y) c
 
 end Component
 
@@ -251,13 +251,13 @@ mutual
   unsafe def attr.map_action (f : α → β) : attr α → attr β
     | attr.val k v => attr.val k v
     | attr.style s => attr.style s
-    | attr.tooltip h => attr.tooltip $ html.map_action h
+    | attr.tooltip h => attr.tooltip <| html.map_action h
     | attr.mouse_event k a => attr.mouse_event k (f ∘ a)
     | attr.text_change_event a => attr.text_change_event (f ∘ a)
   unsafe def html.map_action (f : α → β) : html α → html β
     | html.element t a c => html.element t (List.map attr.map_action a) (List.map html.map_action c)
     | html.of_string s => html.of_string s
-    | html.of_component p c => html.of_component p $ component.map_action f c
+    | html.of_component p c => html.of_component p <| component.map_action f c
 end
 
 unsafe instance attr.is_functor : Functor attr where
@@ -285,10 +285,10 @@ unsafe def as_element : html α → Option (Stringₓ × List (attr α) × List 
   | _ => none
 
 unsafe def key [HasToString β] : β → attr α
-  | s => attr.val "key" $ toString s
+  | s => attr.val "key" <| toString s
 
 unsafe def className : Stringₓ → attr α
-  | s => attr.val "className" $ s
+  | s => attr.val "className" <| s
 
 unsafe def on_click : (Unit → α) → attr α
   | a => attr.mouse_event mouse_event_kind.on_click a
@@ -330,8 +330,8 @@ unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html 
           attr.text_change_event fun k =>
             match items.filter fun i => select_item.key i = k with
             | [] => undefined
-            | h :: _ => h.result] $
-      items.map fun i => h "option" [attr.val "value" i.key] $ select_item.view i
+            | h :: _ => h.result] <|
+      items.map fun i => h "option" [attr.val "value" i.key] <| select_item.view i
 
 /-- If the html is not an of_element it will wrap it in a div. -/
 unsafe def with_attrs : List (attr α) → html α → html α

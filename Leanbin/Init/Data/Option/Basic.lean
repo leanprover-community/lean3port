@@ -27,7 +27,7 @@ def is_none {α : Type u} : Option α → Bool
 
 def get {α : Type u} : ∀ {o : Option α}, is_some o → α
   | some x, h => x
-  | none, h => False.ndrec _ $ Bool.ff_ne_tt h
+  | none, h => False.ndrec _ <| Bool.ff_ne_tt h
 
 def rhoare {α : Type u} : Bool → α → Option α
   | tt, a => none
@@ -36,10 +36,6 @@ def rhoare {α : Type u} : Bool → α → Option α
 def lhoare {α : Type u} : α → Option α → α
   | a, none => a
   | _, some b => b
-
-infixr:1 "|>" => rhoare
-
-infixr:1 "<|" => lhoare
 
 @[inline]
 protected def bind {α : Type u} {β : Type v} : Option α → (α → Option β) → Option β

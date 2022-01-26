@@ -48,7 +48,7 @@ def iterate {e α} (a : α) (f : α → IoCore e (Option α)) : IoCore e α :=
   MonadIo.iterate e α a f
 
 def forever {e} (a : IoCore e Unit) : IoCore e Unit :=
-  iterate () $ fun _ => a >> return (some ())
+  (iterate ()) fun _ => a >> return (some ())
 
 def catch {e₁ e₂ α} (a : IoCore e₁ α) (b : e₁ → IoCore e₂ α) : IoCore e₂ α :=
   MonadIo.catch e₁ e₂ α a b
@@ -76,7 +76,7 @@ def cmdline_args : Io (List Stringₓ) :=
   return (MonadIoTerminal.cmdlineArgs IoCore)
 
 def print {α} [HasToString α] (s : α) : Io Unit :=
-  put_str ∘ toString $ s
+  put_str ∘ toString <| s
 
 def print_ln {α} [HasToString α] (s : α) : Io Unit :=
   print s >> put_str "\n"
@@ -161,7 +161,7 @@ def write : handle → CharBuffer → Io Unit :=
 
 def get_char (h : handle) : Io Charₓ := do
   let b ← read h 1
-  if h : b.size = 1 then return $ b.read ⟨0, h.symm ▸ Nat.zero_lt_oneₓ⟩ else Io.fail "get_char failed"
+  if h : b.size = 1 then return <| b.read ⟨0, h.symm ▸ Nat.zero_lt_oneₓ⟩ else Io.fail "get_char failed"
 
 def get_line : handle → Io CharBuffer :=
   MonadIoFileSystem.getLine
@@ -176,12 +176,12 @@ def put_str_ln (h : handle) (s : Stringₓ) : Io Unit :=
   put_str h s >> put_str h "\n"
 
 def read_to_end (h : handle) : Io CharBuffer :=
-  iterate mkBuffer $ fun r => do
+  (iterate mkBuffer) fun r => do
     let done ← is_eof h
     if done then return none
       else do
         let c ← read h 1024
-        return $ some (r ++ c)
+        return <| some (r ++ c)
 
 def read_file (s : Stringₓ) (bin := ff) : Io CharBuffer := do
   let h ← mk_file_handle s Io.Mode.read bin
@@ -260,7 +260,7 @@ def Io.cmd (args : Io.Process.SpawnArgs) : Io Stringₓ := do
   let buf ← Io.Fs.readToEnd child.stdout
   Io.Fs.close child.stdout
   let exitv ← Io.Proc.wait child
-  when (exitv ≠ 0) $ Io.fail $ "process exited with status " ++ reprₓ exitv
+  when (exitv ≠ 0) <| Io.fail <| "process exited with status " ++ reprₓ exitv
   return buf.to_string
 
 /-- This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.

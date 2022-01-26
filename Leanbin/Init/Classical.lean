@@ -9,7 +9,7 @@ universe u v
 axiom choice {α : Sort u} : Nonempty α → α
 
 noncomputable irreducible_def indefinite_description {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
-  choice $
+  choice <|
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
 
@@ -84,7 +84,7 @@ noncomputable def inhabited_of_exists {α : Sort u} {p : α → Prop} (h : ∃ x
   inhabited_of_nonempty (Exists.elim h fun w hw => ⟨w⟩)
 
 noncomputable def prop_decidable (a : Prop) : Decidable a :=
-  choice $ Or.elim (em a) (fun ha => ⟨is_true ha⟩) fun hna => ⟨is_false hna⟩
+  choice <| Or.elim (em a) (fun ha => ⟨is_true ha⟩) fun hna => ⟨is_false hna⟩
 
 attribute [local instance] prop_decidable
 

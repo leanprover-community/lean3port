@@ -70,10 +70,10 @@ instance decidable_bex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
 
 instance decidable_ball (l : List α) : Decidable (∀, ∀ x ∈ l, ∀, p x) :=
   if h : ∃ x ∈ l, ¬p x then
-    is_false $
+    is_false <|
       let ⟨x, h, np⟩ := h
       fun al => np (al x h)
-  else is_true $ fun x hx => if h' : p x then h' else False.elim $ h ⟨x, hx, h'⟩
+  else is_true fun x hx => if h' : p x then h' else False.elim <| h ⟨x, hx, h'⟩
 
 end List
 

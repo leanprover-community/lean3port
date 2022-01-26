@@ -8,7 +8,7 @@ private unsafe def collect_props : List expr → tactic (List expr)
   | H :: Hs => do
     let Eqs ← collect_props Hs
     let Htype ← infer_type H >>= infer_type >>= whnf
-    return $ if Htype = quote.1 Prop then H :: Eqs else Eqs
+    return <| if Htype = quote.1 Prop then H :: Eqs else Eqs
 
 -- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 unsafe def prove : tactic Unit := do

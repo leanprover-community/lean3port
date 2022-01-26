@@ -47,7 +47,7 @@ instance : HasSingleton α (Set α) :=
   ⟨fun a => { b | b = a }⟩
 
 instance : IsLawfulSingleton α (Set α) :=
-  ⟨fun a => funext $ fun b => propext $ or_falseₓ _⟩
+  ⟨fun a => funext fun b => propext <| or_falseₓ _⟩
 
 protected def union (s₁ s₂ : Set α) : Set α :=
   { a | a ∈ s₁ ∨ a ∈ s₂ }
@@ -73,13 +73,9 @@ instance : HasSdiff (Set α) :=
 def powerset (s : Set α) : Set (Set α) :=
   { t | t ⊆ s }
 
-prefix:100 "𝒫" => powerset
-
 @[reducible]
 def sUnion (s : Set (Set α)) : Set α :=
   { t | ∃ a ∈ s, t ∈ a }
-
-prefix:110 "⋃₀" => sUnion
 
 def image (f : α → β) (s : Set α) : Set β :=
   { b | ∃ a, a ∈ s ∧ f a = b }
@@ -88,9 +84,9 @@ instance : Functor Set where
   map := @Set.Image
 
 instance : IsLawfulFunctor Set where
-  id_map := fun _ s => funext $ fun b => propext ⟨fun ⟨_, sb, rfl⟩ => sb, fun sb => ⟨_, sb, rfl⟩⟩
+  id_map := fun _ s => funext fun b => propext ⟨fun ⟨_, sb, rfl⟩ => sb, fun sb => ⟨_, sb, rfl⟩⟩
   comp_map := fun _ _ _ g h s =>
-    funext $ fun c =>
+    funext fun c =>
       propext
         ⟨fun ⟨a, ⟨h₁, h₂⟩⟩ => ⟨g a, ⟨⟨a, ⟨h₁, rfl⟩⟩, h₂⟩⟩, fun ⟨b, ⟨⟨a, ⟨h₁, h₂⟩⟩, h₃⟩⟩ =>
           ⟨a,

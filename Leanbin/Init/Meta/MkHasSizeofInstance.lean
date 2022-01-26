@@ -62,7 +62,7 @@ unsafe def mk_has_sizeof_instance_core (use_default : Bool) : tactic Unit := do
     List.map (fun p : Name × Nat => mkNumName p.fst p.snd)
       (List.zipₓ (List.repeat `idx num_indices) (List.iota num_indices))
   if is_recursive env I_name then
-      intro `_v >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some $ I_name <.> "brec_on") >> return ()
+      intro `_v >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p
   get_local v_name >>= fun v => cases v (join arg_names)

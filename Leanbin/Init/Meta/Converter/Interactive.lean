@@ -18,7 +18,7 @@ unsafe def execute (c : conv Unit) : tactic Unit :=
   c
 
 unsafe def solve1 (c : conv Unit) : conv Unit :=
-  tactic.solve1 $ c >> tactic.try (tactic.any_goals tactic.reflexivity)
+  tactic.solve1 <| c >> tactic.try (tactic.any_goals tactic.reflexivity)
 
 namespace Interactive
 
@@ -59,13 +59,13 @@ unsafe def funext : conv Unit :=
   conv.funext
 
 private unsafe def is_relation : conv Unit :=
-  lhs >>= tactic.relation_lhs_rhs >> return () <|> tactic.fail "current expression is not a relation"
+  (lhs >>= tactic.relation_lhs_rhs) >> return () <|> tactic.fail "current expression is not a relation"
 
 unsafe def to_lhs : conv Unit :=
-  is_relation >> congr >> tactic.swap >> skip
+  ((is_relation >> congr) >> tactic.swap) >> skip
 
 unsafe def to_rhs : conv Unit :=
-  is_relation >> congr >> skip
+  (is_relation >> congr) >> skip
 
 unsafe def done : conv Unit :=
   tactic.done
@@ -90,7 +90,7 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
             | exception f p s' => return (exception f p s', e, none, ff))
         (fun a s r p e => tactic.failed) r lhs
   let found ← tactic.unwrap found_result
-  when (Not found) $ tactic.fail "find converter failed, pattern was not found"
+  when (Not found) <| tactic.fail "find converter failed, pattern was not found"
   update_lhs new_lhs pr
 
 unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : itactic) : conv Unit := do
@@ -142,14 +142,14 @@ private unsafe def rw_lhs (h : expr) (cfg : rewrite_cfg) : conv Unit := do
   update_lhs new_lhs prf
 
 private unsafe def rw_core (rs : List rw_rule) (cfg : rewrite_cfg) : conv Unit :=
-  rs.mmap' $ fun r => do
+  rs.mmap' fun r => do
     save_info r.pos
     let eq_lemmas ← get_rule_eqn_lemmas r
     orelse'
         (do
           let h ← to_expr' r.rule
           rw_lhs h { cfg with symm := r.symm })
-        (eq_lemmas.mfirst $ fun n => do
+        (eq_lemmas.mfirst fun n => do
           let e ← tactic.mk_const n
           rw_lhs e { cfg with symm := r.symm })
         eq_lemmas.empty

@@ -89,10 +89,6 @@ def coeSort {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
-notation:999 "↑" x:999 => coe x
-
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
 notation:999 "⇑" x:999 => coeFn x
 
 -- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
@@ -186,18 +182,18 @@ universe ua ua₁ ua₂ ub ub₁ ub₂
    problem does not have a solution. -/
 instance liftFn {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLift a₂ a₁] [HasLiftT b₁ b₂] :
     HasLift (a₁ → b₁) (a₂ → b₂) :=
-  ⟨fun f x => ↑f (↑x)⟩
+  ⟨fun f x => ↑(f ↑x)⟩
 
 instance liftFnRange {a : Sort ua} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLiftT b₁ b₂] : HasLift (a → b₁) (a → b₂) :=
-  ⟨fun f x => ↑f x⟩
+  ⟨fun f x => ↑(f x)⟩
 
 /-- A dependent version of `lift_fn_range`. -/
 instance liftPiRange {α : Sort u} {A : α → Sort ua} {B : α → Sort ub} [∀ i, HasLiftT (A i) (B i)] :
     HasLift (∀ i, A i) (∀ i, B i) :=
-  ⟨fun f i => ↑f i⟩
+  ⟨fun f i => ↑(f i)⟩
 
 instance liftFnDom {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b : Sort ub} [HasLift a₂ a₁] : HasLift (a₁ → b) (a₂ → b) :=
-  ⟨fun f x => f (↑x)⟩
+  ⟨fun f x => f ↑x⟩
 
 instance liftPair {a₁ : Type ua₁} {a₂ : Type ub₂} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT a₁ a₂] [HasLiftT b₁ b₂] :
     HasLift (a₁ × b₁) (a₂ × b₂) :=

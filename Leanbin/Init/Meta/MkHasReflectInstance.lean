@@ -60,7 +60,7 @@ unsafe def mk_has_reflect_instance : tactic Unit := do
   guardₓ (env.inductive_num_indices I_name = 0) <|>
       fail "mk_has_reflect_instance failed, indexed families are currently not supported"
   if is_recursive env I_name then
-      intro `_v >>= fun x => induction x [v_name, F_name] (some $ I_name <.> "brec_on") >> return ()
+      intro `_v >>= fun x => induction x [v_name, F_name] (some <| I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p
   get_local v_name >>= fun v => cases v (join arg_names)

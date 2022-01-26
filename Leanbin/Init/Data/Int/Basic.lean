@@ -135,7 +135,7 @@ protected theorem coe_nat_zero : ↑(0 : ℕ) = (0 : ℤ) :=
 protected theorem coe_nat_one : ↑(1 : ℕ) = (1 : ℤ) :=
   rfl
 
-protected theorem coe_nat_succ (n : ℕ) : (↑succ n : ℤ) = ↑n + 1 :=
+protected theorem coe_nat_succ (n : ℕ) : (↑(succ n) : ℤ) = ↑n + 1 :=
   rfl
 
 protected theorem coe_nat_add_out (m n : ℕ) : ↑m + ↑n = (m + n : ℤ) :=
@@ -144,7 +144,7 @@ protected theorem coe_nat_add_out (m n : ℕ) : ↑m + ↑n = (m + n : ℤ) :=
 protected theorem coe_nat_mul_out (m n : ℕ) : ↑m * ↑n = (↑(m * n) : ℤ) :=
   rfl
 
-protected theorem coe_nat_add_one_out (n : ℕ) : ↑n + (1 : ℤ) = ↑succ n :=
+protected theorem coe_nat_add_one_out (n : ℕ) : ↑n + (1 : ℤ) = ↑(succ n) :=
   rfl
 
 theorem of_nat_add_of_nat (m n : Nat) : of_nat m + of_nat n = of_nat (m + n) :=
@@ -261,7 +261,7 @@ def nat_abs : ℤ → ℕ
   | of_nat m => m
   | -[1+ m] => succ m
 
-theorem nat_abs_of_nat (n : ℕ) : nat_abs (↑n) = n :=
+theorem nat_abs_of_nat (n : ℕ) : nat_abs ↑n = n :=
   rfl
 
 theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, nat_abs a = 0 → a = 0
@@ -269,7 +269,7 @@ theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, nat_abs a = 0 → a = 0
   | -[1+ m'], H => absurd H (succ_ne_zero _)
 
 theorem nat_abs_pos_of_ne_zero {a : ℤ} (h : a ≠ 0) : 0 < nat_abs a :=
-  (Nat.eq_zero_or_posₓ _).resolve_left $ mt eq_zero_of_nat_abs_eq_zero h
+  (Nat.eq_zero_or_posₓ _).resolve_left <| mt eq_zero_of_nat_abs_eq_zero h
 
 theorem nat_abs_zero : nat_abs (0 : Int) = (0 : Nat) :=
   rfl

@@ -5,7 +5,7 @@ def is_space (c : Charₓ) : Bool :=
   if c = ' ' ∨ c = Charₓ.ofNat 11 ∨ c = '\n' then tt else ff
 
 private def split_core : List Charₓ → Option Stringₓ → List Stringₓ
-  | c :: cs, none => if is_space c then split_core cs none else split_core cs (some $ Stringₓ.singleton c)
+  | c :: cs, none => if is_space c then split_core cs none else split_core cs (some <| Stringₓ.singleton c)
   | c :: cs, some s => if is_space c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
@@ -57,7 +57,7 @@ unsafe def show_curr_fn (header : Stringₓ) : vm Unit := do
 
 unsafe def is_valid_fn_prefix (p : Name) : vm Bool := do
   let env ← vm.get_env
-  return $
+  return <|
       env.fold ff fun d r =>
         r ||
           let n := d.to_name
@@ -89,7 +89,7 @@ unsafe def type_to_string : Option expr → Nat → vm Stringₓ
   | some type, i => do
     let fmt ← vm.pp_expr type
     let opts ← vm.get_options
-    return $ fmt.to_string opts
+    return <| fmt.to_string opts
 
 unsafe def show_vars_core : Nat → Nat → Nat → vm Unit
   | c, i, e =>

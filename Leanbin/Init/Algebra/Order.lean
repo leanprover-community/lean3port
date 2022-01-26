@@ -86,13 +86,13 @@ theorem le_of_ltₓ : ∀ {a b : α}, a < b → a ≤ b
 theorem lt_of_lt_of_leₓ : ∀ {a b c : α}, a < b → b ≤ c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hab, hba⟩ := le_not_le_of_ltₓ hab
-    lt_of_le_not_leₓ (le_transₓ hab hbc) $ fun hca => hba (le_transₓ hbc hca)
+    (lt_of_le_not_leₓ (le_transₓ hab hbc)) fun hca => hba (le_transₓ hbc hca)
 
 @[trans]
 theorem lt_of_le_of_ltₓ : ∀ {a b c : α}, a ≤ b → b < c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hbc, hcb⟩ := le_not_le_of_ltₓ hbc
-    lt_of_le_not_leₓ (le_transₓ hab hbc) $ fun hca => hcb (le_transₓ hca hab)
+    (lt_of_le_not_leₓ (le_transₓ hab hbc)) fun hca => hcb (le_transₓ hca hab)
 
 @[trans]
 theorem gt_of_gt_of_geₓ {a b c : α} (h₁ : a > b) (h₂ : b ≥ c) : a > c :=
@@ -117,8 +117,8 @@ theorem le_of_eq_or_ltₓ {a b : α} (h : a = b ∨ a < b) : a ≤ b :=
 instance decidableLtOfDecidableLe [DecidableRel (· ≤ · : α → α → Prop)] : DecidableRel (· < · : α → α → Prop)
   | a, b =>
     if hab : a ≤ b then
-      if hba : b ≤ a then is_false $ fun hab' => not_le_of_gtₓ hab' hba else is_true $ lt_of_le_not_leₓ hab hba
-    else is_false $ fun hab' => hab (le_of_ltₓ hab')
+      if hba : b ≤ a then is_false fun hab' => not_le_of_gtₓ hab' hba else is_true <| lt_of_le_not_leₓ hab hba
+    else is_false fun hab' => hab (le_of_ltₓ hab')
 
 end Preorderₓ
 
@@ -141,7 +141,7 @@ theorem le_antisymmₓ : ∀ {a b : α}, a ≤ b → b ≤ a → a = b :=
 theorem le_antisymm_iffₓ {a b : α} : a = b ↔ a ≤ b ∧ b ≤ a :=
   ⟨fun e => ⟨le_of_eqₓ e, le_of_eqₓ e.symm⟩, fun ⟨h1, h2⟩ => le_antisymmₓ h1 h2⟩
 
-theorem lt_of_le_of_neₓ {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_leₓ h₁ $ mt (le_antisymmₓ h₁) h₂
+theorem lt_of_le_of_neₓ {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_leₓ h₁ <| mt (le_antisymmₓ h₁) h₂
 
 instance decidableEqOfDecidableLe [DecidableRel (· ≤ · : α → α → Prop)] : DecidableEq α
   | a, b =>
@@ -241,7 +241,7 @@ theorem lt_of_not_geₓ {a b : α} (h : ¬a ≥ b) : a < b :=
   lt_of_le_not_leₓ ((le_totalₓ _ _).resolve_right h) h
 
 theorem lt_or_leₓ (a b : α) : a < b ∨ b ≤ a :=
-  if hba : b ≤ a then Or.inr hba else Or.inl $ lt_of_not_geₓ hba
+  if hba : b ≤ a then Or.inr hba else Or.inl <| lt_of_not_geₓ hba
 
 theorem le_or_ltₓ (a b : α) : a ≤ b ∨ b < a :=
   (lt_or_leₓ b a).swap
@@ -300,7 +300,7 @@ def ltByCases (x y : α) {P : Sort _} (h₁ : x < y → P) (h₂ : x = y → P) 
 
 theorem le_imp_le_of_lt_imp_ltₓ {β} [Preorderₓ α] [LinearOrderₓ β] {a b : α} {c d : β} (H : d < c → b < a) (h : a ≤ b) :
     c ≤ d :=
-  le_of_not_ltₓ $ fun h' => not_le_of_gtₓ (H h') h
+  le_of_not_ltₓ fun h' => not_le_of_gtₓ (H h') h
 
 end LinearOrderₓ
 

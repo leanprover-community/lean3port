@@ -125,7 +125,7 @@ unsafe def many.{u, v} {f : Type u → Type v} [Monadₓ f] [Alternativeₓ f] {
     (do
         let y ← x
         let ys ← many x
-        return $ y :: ys) <|>
+        return <| y :: ys) <|>
       pure List.nil
 
 local postfix:100 "?" => optionalₓ

@@ -13,7 +13,7 @@ open Function
 open Tactic
 
 unsafe def control_laws_tac :=
-  whnf_target >> intros >> to_expr (pquote.1 rfl) >>= exact
+  (whnf_target >> intros) >> to_expr (pquote.1 rfl) >>= exact
 
 class IsLawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
   map_const_eq : ∀ {α β : Type u}, (· <$ · : α → f β → f α) = · <$> · ∘ const β := by

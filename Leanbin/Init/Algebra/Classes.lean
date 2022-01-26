@@ -62,29 +62,29 @@ class IsIdempotent (α : Type u) (op : α → α → α) : Prop where
   idempotent : ∀ a, op a a = a
 
 @[algebra]
-class IsLeftDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam $ α → α → α) : Prop where
+class IsLeftDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam <| α → α → α) : Prop where
   left_distrib : ∀ a b c, op₁ a (op₂ b c) = op₂ (op₁ a b) (op₁ a c)
 
 @[algebra]
-class IsRightDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam $ α → α → α) : Prop where
+class IsRightDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam <| α → α → α) : Prop where
   right_distrib : ∀ a b c, op₁ (op₂ a b) c = op₂ (op₁ a c) (op₁ b c)
 
 @[algebra]
-class IsLeftInv (α : Type u) (op : α → α → α) (inv : outParam $ α → α) (o : outParam α) : Prop where
+class IsLeftInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α) : Prop where
   left_inv : ∀ a, op (inv a) a = o
 
 @[algebra]
-class IsRightInv (α : Type u) (op : α → α → α) (inv : outParam $ α → α) (o : outParam α) : Prop where
+class IsRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α) : Prop where
   right_inv : ∀ a, op a (inv a) = o
 
 @[algebra]
-class IsCondLeftInv (α : Type u) (op : α → α → α) (inv : outParam $ α → α) (o : outParam α) (p : outParam $ α → Prop) :
-  Prop where
+class IsCondLeftInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α)
+  (p : outParam <| α → Prop) : Prop where
   left_inv : ∀ a, p a → op (inv a) a = o
 
 @[algebra]
-class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam $ α → α) (o : outParam α) (p : outParam $ α → Prop) :
-  Prop where
+class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α)
+  (p : outParam <| α → Prop) : Prop where
   right_inv : ∀ a, p a → op a (inv a) = o
 
 @[algebra]
@@ -109,7 +109,7 @@ class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
 
 /-- The opposite of a symmetric relation is symmetric. -/
 instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] : IsSymmOp α Prop r where
-  symm_op := fun a b => propext $ Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
+  symm_op := fun a b => propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
 
 /-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
 `r a b → ¬ r b a`. -/
@@ -315,14 +315,14 @@ theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α 
 theorem lt_of_lt_of_incomp {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt] [DecidableRel lt] :
     ∀ {a b c}, lt a b → ¬lt b c ∧ ¬lt c b → lt a c := fun a b c hab ⟨nbc, ncb⟩ =>
   have nca : ¬lt c a := fun hca => absurd (trans_of lt hca hab) ncb
-  Decidable.by_contradiction $ fun nac : ¬lt a c =>
+  Decidable.by_contradiction fun nac : ¬lt a c =>
     have : ¬lt a b ∧ ¬lt b a := incomp_trans_of lt ⟨nac, nca⟩ ⟨ncb, nbc⟩
     absurd hab this.1
 
 theorem lt_of_incomp_of_lt {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt] [DecidableRel lt] :
     ∀ {a b c}, ¬lt a b ∧ ¬lt b a → lt b c → lt a c := fun a b c ⟨nab, nba⟩ hbc =>
   have nca : ¬lt c a := fun hca => absurd (trans_of lt hbc hca) nba
-  Decidable.by_contradiction $ fun nac : ¬lt a c =>
+  Decidable.by_contradiction fun nac : ¬lt a c =>
     have : ¬lt b c ∧ ¬lt c b := incomp_trans_of lt ⟨nba, nab⟩ ⟨nac, nca⟩
     absurd hbc this.1
 

@@ -40,7 +40,7 @@ unsafe def mk_alt_sizeof : expr → expr
 unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do
   let tgt ← target
   let rel ← mk_instance tgt
-  exact $
+  exact <|
       match e, rel with
       | expr.local_const _ (Name.mk_string "_mutual" _) _ _, expr.app (e@(quote.1 (@hasWellFoundedOfHasSizeof _))) sz =>
         e (mk_alt_sizeof sz)
@@ -71,7 +71,7 @@ unsafe def process_lex : tactic Unit → tactic Unit
         do
         let (a₁, a₂) ← is_psigma_mk a
         let (b₁, b₂) ← is_psigma_mk b
-        is_def_eq a₁ b₁ >> sorry >> process_lex tac <|> sorry >> tac
+        (is_def_eq a₁ b₁ >> sorry) >> process_lex tac <|> sorry >> tac
       else tac
 
 private unsafe def unfold_sizeof_measure : tactic Unit :=
@@ -84,7 +84,7 @@ private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
     add_simps s' ns
 
 private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
-  e.mfold simp_lemmas.mk $ fun c d s =>
+  (e.mfold simp_lemmas.mk) fun c d s =>
     if c.is_constant then
       match c.const_name with
       | Name.mk_string "sizeof" p => do
@@ -179,7 +179,7 @@ unsafe def trivial_nat_lt : tactic Unit :=
 end SimpleDecTac
 
 unsafe def default_dec_tac : tactic Unit :=
-  abstract $ do
+  abstract <| do
     clear_internals
     unfold_wf_rel
     process_lex (unfold_sizeof >> (done <|> cancel_nat_add_lt >> trivial_nat_lt)) <|>

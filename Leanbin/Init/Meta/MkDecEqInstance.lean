@@ -32,10 +32,10 @@ private unsafe def mk_dec_eq_for (lhs : expr) (rhs : expr) : tactic expr := do
   let dec_type ← mk_app `decidable_eq [lhs_type] >>= whnf
   (do
         let inst ← mk_instance dec_type
-        return $ inst lhs rhs) <|>
+        return <| inst lhs rhs) <|>
       do
       let f ← pp dec_type
-      fail $ to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++ format.nest 2 (format.line ++ f)
+      fail <| to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++ format.nest 2 (format.line ++ f)
 
 private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
   let pr ← mk_app `eq_of_heq [h]
@@ -46,7 +46,7 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
     let (lhs, rhs) ← get_lhs_rhs
-    unify lhs rhs >> right >> reflexivity <|> do
+    (unify lhs rhs >> right) >> reflexivity <|> do
         let lhs_list := get_app_args lhs
         let rhs_list := get_app_args rhs
         when (length lhs_list ≠ length rhs_list)
@@ -56,11 +56,11 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         let inst ←
           if rec then do
               let inst_fn ← mk_brec_on_rec_value F_name num_rec
-              return $ app inst_fn rhs_arg
+              return <| app inst_fn rhs_arg
             else do
               mk_dec_eq_for lhs_arg rhs_arg
         sorry
-        intro1 >>= subst >> dec_eq_same_constructor I_name F_name (if rec then num_rec + 1 else num_rec)
+        (intro1 >>= subst) >> dec_eq_same_constructor I_name F_name (if rec then num_rec + 1 else num_rec)
         intro1
         left
         intro1 >>= injection
@@ -72,7 +72,7 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         return ()
 
 private unsafe def dec_eq_diff_constructor : tactic Unit :=
-  left >> intron 1 >> contradiction
+  (left >> intron 1) >> contradiction
 
 private unsafe def dec_eq_case_2 (I_name : Name) (F_name : Name) : tactic Unit := do
   let (lhs, rhs) ← get_lhs_rhs
@@ -81,7 +81,7 @@ private unsafe def dec_eq_case_2 (I_name : Name) (F_name : Name) : tactic Unit :
   if lhs_fn = rhs_fn then dec_eq_same_constructor I_name F_name 0 else dec_eq_diff_constructor
 
 private unsafe def dec_eq_case_1 (I_name : Name) (F_name : Name) : tactic Unit :=
-  intro `w >>= cases >> all_goals' (dec_eq_case_2 I_name F_name)
+  (intro `w >>= cases) >> all_goals' (dec_eq_case_2 I_name F_name)
 
 unsafe def mk_dec_eq_instance_core : tactic Unit := do
   let I_name ← get_dec_eq_type_name
@@ -93,7 +93,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
     List.map (fun p : Name × Nat => mkNumName p.fst p.snd)
       (List.zipₓ (List.repeat `idx num_indices) (List.iota num_indices))
   if is_recursive env I_name then
-      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some $ I_name <.> "brec_on") >> return ()
+      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()
   get_local v_name >>= cases
   all_goals' (dec_eq_case_1 I_name F_name)
@@ -103,7 +103,7 @@ unsafe def mk_dec_eq_instance : tactic Unit := do
   let env ← get_env
   let pi x1 i1 d1 (pi x2 i2 d2 b) ← target >>= whnf
   let const I_name ls ← return (get_app_fn d1)
-  when (is_ginductive env I_name ∧ ¬is_inductive env I_name) $ do
+  when (is_ginductive env I_name ∧ ¬is_inductive env I_name) <| do
       let d1' ← whnf d1
       let app I_basic_const I_idx ← return d1'
       let I_idx_type ← infer_type I_idx

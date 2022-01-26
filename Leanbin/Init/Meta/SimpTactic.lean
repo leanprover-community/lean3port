@@ -96,7 +96,7 @@ unsafe axiom simp_lemmas.rewrite (s : simp_lemmas) (e : expr) (prove : tactic Un
     (md := reducible) : tactic (expr × expr)
 
 unsafe axiom simp_lemmas.rewrites (s : simp_lemmas) (e : expr) (prove : tactic Unit := failed) (r : Name := `eq)
-    (md := reducible) : tactic $ List (expr × expr)
+    (md := reducible) : tactic <| List (expr × expr)
 
 /-- `simp_lemmas.drewrite s e` tries to rewrite 'e' using only refl lemmas in 's' -/
 unsafe axiom simp_lemmas.drewrite (s : simp_lemmas) (e : expr) (md := reducible) : tactic expr
@@ -119,10 +119,10 @@ unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : 
   match t with
     | expr.pi n bi d b => do
       let h_simp ← transform d
-      unsafe_change $ expr.pi n bi h_simp b
+      unsafe_change <| expr.pi n bi h_simp b
     | expr.elet n g e f => do
       let h_simp ← transform g
-      unsafe_change $ expr.elet n h_simp e f
+      unsafe_change <| expr.elet n h_simp e f
     | _ => fail "reverting hypothesis created neither a pi nor an elet expr (unreachable?)"
   intron num_reverted
 
@@ -130,7 +130,7 @@ unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : 
    If deps is tt, then lemmas for automatically generated auxiliary declarations used to define d are also included. -/
 unsafe def get_eqn_lemmas_for (deps : Bool) (d : Name) : tactic (List Name) := do
   let env ← get_env
-  pure $ if deps then env.get_ext_eqn_lemmas_for d else env.get_eqn_lemmas_for d
+  pure <| if deps then env.get_ext_eqn_lemmas_for d else env.get_eqn_lemmas_for d
 
 structure dsimp_config where
   md := reducible
@@ -395,7 +395,7 @@ unsafe def simp_intros_aux (cfg : simp_config) (use_hyps : Bool) (to_unfold : Li
 
 unsafe def simp_intros (s : simp_lemmas) (to_unfold : List Name := []) (ids : List Name := [])
     (cfg : simp_intros_config := {  }) : tactic Unit :=
-  step $ simp_intros_aux cfg.to_simp_config cfg.use_hyps to_unfold s (bnot ids.empty) ids
+  step <| simp_intros_aux cfg.to_simp_config cfg.use_hyps to_unfold s (bnot ids.empty) ids
 
 end SimpIntros
 
@@ -411,7 +411,7 @@ unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
     let S' ← has_attribute `congr n >> S.add_congr n <|> S.add_simp n ff
     to_simp_lemmas S' ns
 
-unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : command := do
+unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tactic Unit := do
   let t := quote.1 (user_attribute simp_lemmas)
   let v :=
     quote.1
@@ -463,7 +463,7 @@ unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × 
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← pre a e
-      guardₓ ¬new_e =ₐ e
+      guardₓ ¬expr.alpha_eqv new_e e
       return (new_a, new_e, some pr, tt))
     (fun _ _ _ _ _ => failed) `eq e
 
@@ -482,7 +482,7 @@ unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α �
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed) (fun _ _ _ _ _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← post a e
-      guardₓ ¬new_e =ₐ e
+      guardₓ ¬expr.alpha_eqv new_e e
       return (new_a, new_e, some pr, tt))
     `eq e
 
@@ -507,12 +507,12 @@ unsafe def non_dep_prop_hyps : tactic (List expr) := do
           let h_type ← infer_type h
           let s := remove_deps s h_type
           let h_val ← head_zeta h
-          let s := if h_val =ₐ h then s else remove_deps s h_val
-          mcond (is_prop h_type) (return $ s.insert h.local_uniq_name) (return s))
+          let s := if expr.alpha_eqv h_val h then s else remove_deps s h_val
+          mcond (is_prop h_type) (return <| s.insert h.local_uniq_name) (return s))
         mk_name_set
   let t ← target
   let s := remove_deps s t
-  return $ ctx.filter fun h => s.contains h.local_uniq_name
+  return <| ctx.filter fun h => s.contains h.local_uniq_name
 
 section SimpAll
 
@@ -523,7 +523,7 @@ unsafe structure simp_all_entry where
   s : simp_lemmas
 
 private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) : tactic (List simp_all_entry) :=
-  es.mmap $ fun e => do
+  es.mmap fun e => do
     let new_s ← e.s.add h ff
     return { e with s := new_s }
 
@@ -539,13 +539,13 @@ private unsafe def init (s : simp_lemmas) (hs : List expr) : tactic (simp_lemmas
   init_aux hs s []
 
 private unsafe def add_new_hyps (es : List simp_all_entry) : tactic Unit :=
-  es.mmap' $ fun e =>
+  es.mmap' fun e =>
     match e.pr with
     | none => return ()
     | some pr => assert e.h.local_pp_name e.new_type >> mk_eq_mp pr e.h >>= exact
 
 private unsafe def clear_old_hyps (es : List simp_all_entry) : tactic Unit :=
-  es.mmap' $ fun e => when (e.pr ≠ none) (try (clear e.h))
+  es.mmap' fun e => when (e.pr ≠ none) (try (clear e.h))
 
 private unsafe def join_pr : Option expr → expr → tactic expr
   | none, pr₂ => return pr₂
@@ -566,7 +566,7 @@ private unsafe def loop (cfg : simp_config) (discharger : tactic Unit) (to_unfol
   | e :: es, r, s, m => do
     let ⟨h, h_type, h_pr, s'⟩ := e
     let (new_h_type, new_pr, lms) ← simplify s' to_unfold h_type { cfg with failIfUnchanged := ff } `eq discharger
-    if h_type =ₐ new_h_type then do
+    if expr.alpha_eqv h_type new_h_type then do
         let new_lms ← loop es (e :: r) s m
         return (new_lms.fold lms fun n ns => name_set.insert ns n)
       else do

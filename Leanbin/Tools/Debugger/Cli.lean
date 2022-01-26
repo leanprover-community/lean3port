@@ -41,7 +41,7 @@ unsafe def show_help : vm Unit := do
 unsafe def add_breakpoint (s : State) (args : List Stringₓ) : vm State :=
   match args with
   | [arg] => do
-    let fn ← return $ to_qualified_name arg
+    let fn ← return <| to_qualified_name arg
     let ok ← is_valid_fn_prefix fn
     if ok then return { s with fnBps := fn :: List.filterₓ (fun fn' => fn ≠ fn') s.fn_bps }
       else vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >> return s
@@ -50,7 +50,7 @@ unsafe def add_breakpoint (s : State) (args : List Stringₓ) : vm State :=
 unsafe def remove_breakpoint (s : State) (args : List Stringₓ) : vm State :=
   match args with
   | [arg] => do
-    let fn ← return $ to_qualified_name arg
+    let fn ← return <| to_qualified_name arg
     return { s with fnBps := List.filterₓ (fun fn' => fn ≠ fn') s.fn_bps }
   | _ => vm.put_str "invalid 'rbreak <fn>' command, incorrect number of arguments\n" >> return s
 
@@ -71,7 +71,7 @@ unsafe def down_cmd (frame : Nat) : vm Nat := do
 
 unsafe def pidx_cmd : Nat → List Stringₓ → vm Unit
   | frame, [arg] => do
-    let idx ← return $ arg.to_nat
+    let idx ← return <| arg.to_nat
     let sz ← vm.stack_size
     let (bp, ep) ← vm.call_stack_var_range frame
     if bp + idx ≥ ep then vm.put_str "invalid 'pidx <idx>' command, index out of bounds\n"
@@ -81,7 +81,7 @@ unsafe def pidx_cmd : Nat → List Stringₓ → vm Unit
         let opts ← vm.get_options
         vm.put_str n.to_string
         vm.put_str " := "
-        vm.put_str $ v.to_string opts
+        vm.put_str <| v.to_string opts
         vm.put_str "\n"
   | _, _ => vm.put_str "invalid 'pidx <idx>' command, incorrect number of arguments\n"
 
@@ -95,7 +95,7 @@ unsafe def print_var : Nat → Nat → Name → vm Unit
             let opts ← vm.get_options
             vm.put_str n.to_string
             vm.put_str " := "
-            vm.put_str $ v.to_string opts
+            vm.put_str <| v.to_string opts
             vm.put_str "\n"
           else print_var (i + 1) ep v
 
@@ -114,8 +114,8 @@ unsafe def cmd_loop_core : State → Nat → List Stringₓ → vm State
       else do
         vm.put_str "% "
         let l ← vm.get_line
-        let tks ← return $ split l
-        let tks ← return $ if tks = [] then default_cmd else tks
+        let tks ← return <| split l
+        let tks ← return <| if tks = [] then default_cmd else tks
         match tks with
           | [] => cmd_loop_core s frame default_cmd
           | cmd :: args =>
@@ -206,7 +206,7 @@ unsafe def step_transition (s : State) : vm State := do
 unsafe def bp_reached (s : State) : vm Bool :=
   (do
       let fn ← vm.curr_fn
-      return $ s.fn_bps.any fun p => p.is_prefix_of fn) <|>
+      return <| s.fn_bps.any fun p => p.is_prefix_of fn) <|>
     return ff
 
 unsafe def in_active_bps (s : State) : vm Bool := do
@@ -223,7 +223,7 @@ unsafe def run_transition (s : State) : vm State := do
       show_curr_fn "breakpoint"
       let fn ← vm.curr_fn
       let sz ← vm.call_stack_size
-      let new_s ← return $ { s with activeBps := (sz, fn) :: s.active_bps }
+      let new_s ← return <| { s with activeBps := (sz, fn) :: s.active_bps }
       cmd_loop new_s ["r"]
 
 unsafe def step_fn (s : State) : vm State := do

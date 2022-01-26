@@ -42,7 +42,7 @@ end
 unsafe def interaction_monad.result.clamp_pos {state : Type} {α : Type u} (line0 line col : ℕ) :
     result state α → result state α
   | success a s => success a s
-  | exception msg (some p) s => exception msg (some $ if p.line < line0 then ⟨line, col⟩ else p) s
+  | exception msg (some p) s => exception msg (some <| if p.line < line0 then ⟨line, col⟩ else p) s
   | exception msg none s => exception msg (some ⟨line, col⟩) s
 
 @[reducible]

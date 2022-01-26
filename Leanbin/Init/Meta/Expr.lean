@@ -123,8 +123,6 @@ attribute [instance] expr.has_decidable_eq
 /-- Compares expressions while ignoring binder names. -/
 unsafe axiom expr.alpha_eqv : expr → expr → Bool
 
-notation:50 a " =ₐ " b:50 => expr.alpha_eqv a b = Bool.true
-
 protected unsafe axiom expr.to_string : expr elab → Stringₓ
 
 unsafe instance : HasToString (expr elab) :=

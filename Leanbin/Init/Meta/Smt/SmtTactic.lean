@@ -305,19 +305,19 @@ unsafe def swap : smt_tactic Unit := do
 
 /-- Add a new goal for t, and the hypothesis (h : t) in the current goal. -/
 unsafe def assert (h : Name) (t : expr) : smt_tactic Unit :=
-  tactic.assert_core h t >> swap >> intros >> swap >> try close
+  (((tactic.assert_core h t >> swap) >> intros) >> swap) >> try close
 
 /-- Add the hypothesis (h : t) in the current goal if v has type t. -/
 unsafe def assertv (h : Name) (t : expr) (v : expr) : smt_tactic Unit :=
-  tactic.assertv_core h t v >> intros >> return ()
+  (tactic.assertv_core h t v >> intros) >> return ()
 
 /-- Add a new goal for t, and the hypothesis (h : t := ?M) in the current goal. -/
 unsafe def define (h : Name) (t : expr) : smt_tactic Unit :=
-  tactic.define_core h t >> swap >> intros >> swap >> try close
+  (((tactic.define_core h t >> swap) >> intros) >> swap) >> try close
 
 /-- Add the hypothesis (h : t := v) in the current goal if v has type t. -/
 unsafe def definev (h : Name) (t : expr) (v : expr) : smt_tactic Unit :=
-  tactic.definev_core h t v >> intros >> return ()
+  (tactic.definev_core h t v >> intros) >> return ()
 
 /-- Add (h : t := pr) to the current goal -/
 unsafe def pose (h : Name) (t : Option expr := none) (pr : expr) : smt_tactic Unit :=
@@ -374,11 +374,11 @@ unsafe def refutation_for (e : expr) : smt_tactic expr := do
 
 unsafe def get_facts : smt_tactic (List expr) := do
   let cc ← to_cc_state
-  return $ cc.eqc_of expr.mk_true
+  return <| cc.eqc_of expr.mk_true
 
 unsafe def get_refuted_facts : smt_tactic (List expr) := do
   let cc ← to_cc_state
-  return $ cc.eqc_of expr.mk_false
+  return <| cc.eqc_of expr.mk_false
 
 unsafe def add_ematch_lemma : expr → smt_tactic Unit :=
   add_ematch_lemma_core reducible ff
@@ -398,7 +398,7 @@ unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do
-    try (is_prop f >> guardₓ (f.is_pi && bnot f.is_arrow) >> proof_for f >>= add_ematch_lemma_core reducible ff)
+    try ((is_prop f >> guardₓ (f.is_pi && bnot f.is_arrow)) >> proof_for f >>= add_ematch_lemma_core reducible ff)
     add_lemmas_from_facts_core fs
 
 unsafe def add_lemmas_from_facts : smt_tactic Unit :=

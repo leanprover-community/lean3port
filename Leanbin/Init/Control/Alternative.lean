@@ -7,8 +7,6 @@ universe u v
 class HasOrelse (f : Type u → Type v) : Type max (u + 1) v where
   orelse : ∀ {α : Type u}, f α → f α → f α
 
-infixr:2 " <|> " => HasOrelse.orelse
-
 class Alternativeₓ (f : Type u → Type v) extends Applicativeₓ f, HasOrelse f : Type max (u + 1) v where
   failure : ∀ {α : Type u}, f α
 

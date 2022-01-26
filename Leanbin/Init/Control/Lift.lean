@@ -71,7 +71,7 @@ theorem monad_map_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α)
     def my_monad.run {α : Type} (x : my_monad α) := monad_run.run x
     ```
     -/
-class MonadRun (out : outParam $ Type u → Type v) (m : Type u → Type v) where
+class MonadRun (out : outParam <| Type u → Type v) (m : Type u → Type v) where
   run {α : Type u} : m α → out α
 
 export MonadRun (run)

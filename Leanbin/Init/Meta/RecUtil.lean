@@ -9,7 +9,7 @@ open Expr
 /-- Return tt iff e's type is of the form `(I_name ...)` -/
 unsafe def is_type_app_of (e : expr) (I_name : Name) : tactic Bool := do
   let t ← infer_type e
-  return $ is_constant_of (get_app_fn t) I_name
+  return <| is_constant_of (get_app_fn t) I_name
 
 /-- Auxiliary function for using brec_on "dictionary" -/
 private unsafe def mk_rec_inst_aux : expr → Nat → tactic expr
@@ -34,7 +34,7 @@ unsafe def constructor_num_fields (c : Name) : tactic Nat := do
   let arity ← get_pi_arity ctype
   let I ← env.inductive_type_of c
   let nparams ← return (env.inductive_num_params I)
-  return $ arity - nparams
+  return <| arity - nparams
 
 private unsafe def mk_name_list_aux : Name → Nat → Nat → List Name → List Name × Nat
   | p, i, 0, l => (List.reverse l, i)
@@ -47,7 +47,7 @@ private unsafe def mk_name_list (p : Name) (i : Nat) (n : Nat) : List Name × Na
    the number of fields of the constructor c -/
 unsafe def mk_constructor_arg_names (c : Name) (p : Name) (i : Nat) : tactic (List Name × Nat) := do
   let nfields ← constructor_num_fields c
-  return $ mk_name_list p i nfields
+  return <| mk_name_list p i nfields
 
 private unsafe def mk_constructors_arg_names_aux : List Name → Name → Nat → List (List Name) → tactic (List (List Name))
   | [], p, i, r => return (List.reverse r)
@@ -60,7 +60,7 @@ private unsafe def mk_constructors_arg_names_aux : List Name → Name → Nat �
    return the list [[p.1, ..., p.n_1], [p.{n_1 + 1}, ..., p.{n_1 + n_2}], ..., [..., p.{n_1 + ... + n_k}]] -/
 unsafe def mk_constructors_arg_names (I : Name) (p : Name) : tactic (List (List Name)) := do
   let env ← get_env
-  let cs ← return $ env.constructors_of I
+  let cs ← return <| env.constructors_of I
   mk_constructors_arg_names_aux cs p 1 []
 
 private unsafe def mk_fresh_arg_name_aux : Name → Nat → name_set → tactic (Name × name_set)

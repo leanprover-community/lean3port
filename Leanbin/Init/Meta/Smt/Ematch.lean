@@ -55,7 +55,7 @@ unsafe def hinst_lemmas.pp (s : hinst_lemmas) : tactic format :=
               {hpp}"
   do
   let r ← tac
-  return $ format.cbrace (format.group r)
+  return <| format.cbrace (format.group r)
 
 unsafe instance : has_to_tactic_format hinst_lemmas :=
   ⟨hinst_lemmas.pp⟩
@@ -65,7 +65,7 @@ open Tactic
 private unsafe def add_lemma (m : transparency) (as_simp : Bool) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
   do
   let h ← hinst_lemma.mk_from_decl_core m h as_simp
-  return $ hs.add h
+  return <| hs.add h
 
 unsafe def to_hinst_lemmas_core (m : transparency) : Bool → List Name → hinst_lemmas → tactic hinst_lemmas
   | as_simp, [], hs => return hs
@@ -83,15 +83,15 @@ unsafe def to_hinst_lemmas_core (m : transparency) : Bool → List Name → hins
             let new_hs ← to_hinst_lemmas_core tt eqns hs
             to_hinst_lemmas_core as_simp ns new_hs
 
-unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : command := do
+unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : Tactic Unit := do
   let t := quote.1 (user_attribute hinst_lemmas)
   let v :=
     quote.1
       ({ Name := attr_name, descr := "hinst_lemma attribute",
         after_set :=
-          some $ fun n _ _ =>
+          some fun n _ _ =>
             to_hinst_lemmas_core reducible as_simp [n] hinst_lemmas.mk >> skip <|> fail f! "invalid ematch lemma '{n}'",
-        before_unset := some $ fun _ _ => skip,
+        before_unset := some fun _ _ => skip,
         cache_cfg :=
           { mk_cache := fun ns => to_hinst_lemmas_core reducible as_simp ns hinst_lemmas.mk,
             dependencies := [`reducibility] } } :
@@ -99,7 +99,7 @@ unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : comman
   add_decl (declaration.defn attr_name [] t v ReducibilityHints.abbrev ff)
   attribute.register attr_name
 
-unsafe def mk_hinst_lemma_attrs_core (as_simp : Bool) : List Name → command
+unsafe def mk_hinst_lemma_attrs_core (as_simp : Bool) : List Name → Tactic Unit
   | [] => skip
   | n :: ns =>
     mk_hinst_lemma_attr_core n as_simp >> mk_hinst_lemma_attrs_core ns <|> do
@@ -123,7 +123,7 @@ yet. Moreover, the hinst_lemmas for attr_name will be the union of the lemmas ta
 For the ones in simp_attr_names, we use the left-hand-side of the conclusion as the pattern.
 -/
 unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name) (simp_attr_names : List Name) :
-    command := do
+    Tactic Unit := do
   mk_hinst_lemma_attrs_core ff attr_names
   mk_hinst_lemma_attrs_core tt simp_attr_names
   let t := quote.1 (user_attribute hinst_lemmas)
@@ -131,9 +131,9 @@ unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name) (
     quote.1
       ({ Name := attr_name, descr := "hinst_lemma attribute set",
         after_set :=
-          some $ fun n _ _ =>
+          some fun n _ _ =>
             to_hinst_lemmas_core reducible ff [n] hinst_lemmas.mk >> skip <|> fail f! "invalid ematch lemma '{n}'",
-        before_unset := some $ fun _ _ => skip,
+        before_unset := some fun _ _ => skip,
         cache_cfg :=
           { mk_cache := fun ns => do
               let hs₁ ← to_hinst_lemmas_core reducible ff ns hinst_lemmas.mk

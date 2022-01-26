@@ -43,14 +43,14 @@ instance decidable_le (a b : Charₓ) : Decidable (a ≤ b) :=
   Nat.decidableLe _ _
 
 theorem zero_lt_d800 : 0 < 55296 :=
-  Nat.zero_lt_bit0 $
-    Nat.bit0_ne_zero $
-      Nat.bit0_ne_zero $
-        Nat.bit0_ne_zero $
-          Nat.bit0_ne_zero $
-            Nat.bit0_ne_zero $
-              Nat.bit0_ne_zero $
-                Nat.bit0_ne_zero $ Nat.bit0_ne_zero $ Nat.bit0_ne_zero $ Nat.bit0_ne_zero $ Nat.bit1_ne_zero 13
+  Nat.zero_lt_bit0 <|
+    Nat.bit0_ne_zero <|
+      Nat.bit0_ne_zero <|
+        Nat.bit0_ne_zero <|
+          Nat.bit0_ne_zero <|
+            Nat.bit0_ne_zero <|
+              Nat.bit0_ne_zero <|
+                Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
 
 @[matchPattern]
 def of_nat (n : Nat) : Charₓ :=

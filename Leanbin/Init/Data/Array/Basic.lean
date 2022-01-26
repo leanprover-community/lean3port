@@ -226,7 +226,7 @@ def mmap_core {β : Type v} {m : Type v → Type w} [Monadₓ m] (a : Arrayₓ n
   | i + 1, h => do
     let bs ← mmap_core i (le_of_ltₓ h)
     let b ← f (a.read ⟨i, h⟩)
-    pure $ bs.push_back b
+    pure <| bs.push_back b
 
 /-- Monadically map a function over the array. -/
 @[inline]

@@ -23,10 +23,10 @@ theorem max_def (a b : α) : max a b = if b ≤ a then a else b := by
 -- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 -- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
 private unsafe def min_tac_step : tactic Unit :=
-  solve1 $ intros >> sorry >> try sorry >> try sorry >> try sorry
+  solve1 <| (((intros >> sorry) >> try sorry) >> try sorry) >> try sorry
 
 unsafe def tactic.interactive.min_tac (a b : interactive.parse lean.parser.pexpr) : tactic Unit :=
-  interactive.by_cases (none, pquote.1 ((%%ₓa) ≤ %%ₓb)); min_tac_step
+  andthen (interactive.by_cases (none, pquote.1 ((%%ₓa) ≤ %%ₓb))) min_tac_step
 
 theorem min_le_leftₓ (a b : α) : min a b ≤ a :=
   minTac.1 a b

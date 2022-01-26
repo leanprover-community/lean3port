@@ -108,7 +108,7 @@ unsafe def as_below : address → address → Option address
   | h₁ :: t₁, h₂ :: t₂ => if h₁ = h₂ then as_below t₁ t₂ else none
 
 unsafe def is_below : address → address → Bool
-  | a₁, a₂ => Option.isSome $ as_below a₁ a₂
+  | a₁, a₂ => Option.isSome <| as_below a₁ a₂
 
 /-- `follow a e` finds the subexpression of `e` at the given address `a`. -/
 unsafe def follow : address → expr → Option expr

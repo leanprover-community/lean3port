@@ -8,7 +8,7 @@ open Tactic
 private unsafe def add_lemma (m : transparency) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
   (do
       let h ← hinst_lemma.mk_from_decl_core m h tt
-      return $ hs.add h) <|>
+      return <| hs.add h) <|>
     return hs
 
 private unsafe def to_hinst_lemmas (m : transparency) (ex : name_set) : List Name → hinst_lemmas → tactic hinst_lemmas
@@ -30,7 +30,7 @@ private unsafe def to_hinst_lemmas (m : transparency) (ex : name_set) : List Nam
     We say `ex_attr_name` is the "exception set". It is useful for excluding lemmas in `simp_attr_name`
     which are not good or redundant for ematching. -/
 unsafe def mk_hinst_lemma_attr_from_simp_attr (attr_decl_name attr_name : Name) (simp_attr_name : Name)
-    (ex_attr_name : Name) : command := do
+    (ex_attr_name : Name) : Tactic Unit := do
   let t := quote.1 (user_attribute hinst_lemmas)
   let v :=
     quote.1
@@ -87,13 +87,13 @@ unsafe def explicit_size : expr → tactic Nat
       else
         fold_explicit_args e 1 fun n arg => do
           let r ← explicit_size arg
-          return $ r + n
+          return <| r + n
 
 /-- Choose smallest element (with respect to explicit_size) in `e`s equivalence class. -/
 unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
   let sz ← explicit_size e
   let p ←
-    ccs.mfold_eqc e (e, sz) $ fun p e' =>
+    (ccs.mfold_eqc e (e, sz)) fun p e' =>
         if p.2 = 1 then return p
         else do
           let sz' ← explicit_size e'
@@ -110,7 +110,7 @@ unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
   ccs.roots.mfoldl
     (fun S e => do
       let r ← choose ccs e
-      return $ S.insert e r)
+      return <| S.insert e r)
     mk_repr_map
 
 unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) : tactic (expr × expr) := do
@@ -121,9 +121,9 @@ unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) :
   let r ←
     simplify_top_down ()
         (fun _ t => do
-          let root ← return $ ccs.root t
+          let root ← return <| ccs.root t
           let new_t ← m.find root
-          guardₓ ¬new_t =ₐ t
+          guardₓ ¬expr.alpha_eqv new_t t
           let prf ← ccs.eqv_proof t new_t
           return ((), new_t, prf))
         e
@@ -136,8 +136,8 @@ structure config where
 open SmtTactic
 
 unsafe def collect_implied_eqs (cfg : config := {  }) (extra := hinst_lemmas.mk) : tactic cc_state := do
-  focus1 $
-      using_smt_with { emAttr := cfg.attr_name } $ do
+  focus1 <|
+      using_smt_with { emAttr := cfg.attr_name } <| do
         add_lemmas_from_facts
         add_lemmas extra
         iterate_at_most cfg.max_rounds (ematch >> try smt_tactic.close)
@@ -153,10 +153,10 @@ unsafe def rsimplify_at (ccs : cc_state) (h : expr) (m : Option repr_map := none
       (tactic.fail "tactic rsimplify_at failed, the given expression is not a hypothesis")
   let htype ← infer_type h
   let (new_htype, HEq) ← rsimplify ccs htype m
-  try $ do
+  try <| do
       assert (expr.local_pp_name h) new_htype
       mk_eq_mp HEq h >>= exact
-      try $ clear h
+      try <| clear h
 
 end Rsimp
 
@@ -166,11 +166,11 @@ namespace Tactic
 
 unsafe def rsimp (cfg : config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
-  try $ rsimplify_goal ccs
+  try <| rsimplify_goal ccs
 
 unsafe def rsimp_at (h : expr) (cfg : config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
-  try $ rsimplify_at ccs h
+  try <| rsimplify_at ccs h
 
 namespace Interactive
 

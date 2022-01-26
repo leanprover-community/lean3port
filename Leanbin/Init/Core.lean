@@ -276,7 +276,7 @@ class Add (α : Type u) where
 class Mul (α : Type u) where
   mul : α → α → α
 
-class HasInv (α : Type u) where
+class Inv (α : Type u) where
   inv : α → α
 
 class Neg (α : Type u) where
@@ -303,7 +303,7 @@ class LT (α : Type u) where
 class Append (α : Type u) where
   append : α → α → α
 
-class HasAndthen (α : Type u) (β : Type v) (σ : outParam $ Type w) where
+class HasAndthen (α : Type u) (β : Type v) (σ : outParam <| Type w) where
   andthen : α → β → σ
 
 class HasUnion (α : Type u) where
@@ -327,16 +327,16 @@ class HasSsubset (α : Type u) where
 class HasEmptyc (α : Type u) where
   emptyc : α
 
-class HasInsert (α : outParam $ Type u) (γ : Type v) where
+class HasInsert (α : outParam <| Type u) (γ : Type v) where
   insert : α → γ → γ
 
-class HasSingleton (α : outParam $ Type u) (β : Type v) where
+class HasSingleton (α : outParam <| Type u) (β : Type v) where
   singleton : α → β
 
-class HasSep (α : outParam $ Type u) (γ : Type v) where
+class HasSep (α : outParam <| Type u) (γ : Type v) where
   sep : (α → Prop) → γ → γ
 
-class HasMem (α : outParam $ Type u) (γ : Type v) where
+class HasMem (α : outParam <| Type u) (γ : Type v) where
   Mem : α → γ → Prop
 
 class Pow (α : Type u) (β : Type v) where
@@ -346,23 +346,11 @@ export HasAndthen (andthen)
 
 export Pow (pow)
 
-infixl:50 " ∈ " => HasMem.Mem
-
 notation:50 a " ∉ " s:50 => ¬HasMem.Mem a s
 
 infixl:50 " ∣ " => HasDvd.Dvd
 
-infixl:1 "; " => andthen
-
-infixl:65 " ∪ " => HasUnion.union
-
-infixl:70 " ∩ " => HasInter.inter
-
-infixl:50 " ⊆ " => HasSubset.Subset
-
 infixl:50 " ⊂ " => HasSsubset.Ssubset
-
-infixl:70 " \\ " => HasSdiff.sdiff
 
 infixl:50 " ≈ " => HasEquivₓ.Equiv
 
@@ -447,9 +435,6 @@ def Std.Prec.arrow : Nat :=
 
 def Std.Prec.maxPlus : Nat :=
   Std.Prec.max + 10
-
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
-postfix:999 "⁻¹" => HasInv.inv
 
 class SizeOf (α : Sort u) where
   sizeof : α → Nat

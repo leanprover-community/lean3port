@@ -282,7 +282,7 @@ protected theorem lt_of_add_lt_add_left {k n m : ℕ} (h : k + n < k + m) : n < 
         assumption)
 
 protected theorem lt_of_add_lt_add_right {a b c : ℕ} (h : a + b < c + b) : a < c :=
-  Nat.lt_of_add_lt_add_leftₓ $
+  Nat.lt_of_add_lt_add_leftₓ <|
     show b + a < b + c by
       rwa [Nat.add_comm b a, Nat.add_comm b c]
 
@@ -835,7 +835,7 @@ protected theorem strong_induction_on {p : Nat → Prop} (n : Nat) (h : ∀ n, (
 
 protected theorem case_strong_induction_on {p : Nat → Prop} (a : Nat) (hz : p 0)
     (hi : ∀ n, (∀ m, m ≤ n → p m) → p (succ n)) : p a :=
-  Nat.strong_induction_onₓ a $ fun n =>
+  (Nat.strong_induction_onₓ a) fun n =>
     match n with
     | 0 => fun _ => hz
     | n + 1 => fun h₁ => hi n fun m h₂ => h₁ _ (lt_succ_of_le h₂)
@@ -978,7 +978,7 @@ theorem mul_mod_mul_left (z x y : ℕ) : z * x % (z * y) = z * (x % y) :=
     if z0 : z = 0 then by
       rw [z0, Nat.zero_mul, Nat.zero_mul, Nat.zero_mul, mod_zero]
     else
-      x.strong_induction_on $ fun n IH =>
+      x.strong_induction_on fun n IH =>
         have y0 : y > 0 := Nat.pos_of_ne_zeroₓ y0
         have z0 : z > 0 := Nat.pos_of_ne_zeroₓ z0
         Or.elim (le_or_ltₓ y n)
@@ -1075,7 +1075,7 @@ protected theorem div_zero (n : ℕ) : n / 0 = 0 := by
 
 @[simp]
 protected theorem zero_div (b : ℕ) : 0 / b = 0 :=
-  Eq.trans (div_def 0 b) $ if_neg (And.ndrec not_le_of_gtₓ)
+  Eq.trans (div_def 0 b) <| if_neg (And.ndrec not_le_of_gtₓ)
 
 protected theorem div_le_of_le_mul {m n : ℕ} : ∀ {k}, m ≤ k * n → m / k ≤ n
   | 0, h => by
@@ -1216,7 +1216,7 @@ protected theorem div_eq_of_eq_mul_right {m n k : ℕ} (H1 : 0 < n) (H2 : m = n 
 
 protected theorem div_eq_of_lt_le {m n k : ℕ} (lo : k * n ≤ m) (hi : m < succ k * n) : m / n = k :=
   have npos : 0 < n :=
-    n.eq_zero_or_pos.resolve_left $ fun hn => by
+    n.eq_zero_or_pos.resolve_left fun hn => by
       rw [hn, Nat.mul_zero] at hi lo <;> exact absurd lo (not_le_of_gtₓ hi)
   le_antisymmₓ (le_of_lt_succ ((Nat.div_lt_iff_lt_mulₓ _ _ npos).2 hi)) ((Nat.le_div_iff_mul_leₓ _ _ npos).2 lo)
 
@@ -1298,10 +1298,10 @@ protected theorem dvd_add {a b c : ℕ} (h₁ : a ∣ b) (h₂ : a ∣ c) : a �
 
 protected theorem dvd_add_iff_right {k m n : ℕ} (h : k ∣ m) : k ∣ n ↔ k ∣ m + n :=
   ⟨Nat.dvd_add h,
-    Exists.elim h $ fun d hd =>
+    (Exists.elim h) fun d hd =>
       match m, hd with
       | _, rfl => fun h₂ =>
-        Exists.elim h₂ $ fun e he =>
+        (Exists.elim h₂) fun e he =>
           ⟨e - d, by
             rw [Nat.mul_sub_left_distrib, ← he, Nat.add_sub_cancel_left]⟩⟩
 
@@ -1309,7 +1309,7 @@ protected theorem dvd_add_iff_left {k m n : ℕ} (h : k ∣ n) : k ∣ m ↔ k �
   rw [Nat.add_comm] <;> exact Nat.dvd_add_iff_right h
 
 theorem dvd_sub {k m n : ℕ} (H : n ≤ m) (h₁ : k ∣ m) (h₂ : k ∣ n) : k ∣ m - n :=
-  (Nat.dvd_add_iff_left h₂).2 $ by
+  (Nat.dvd_add_iff_left h₂).2 <| by
     rw [Nat.sub_add_cancelₓ H] <;> exact h₁
 
 theorem dvd_mod_iff {k m n : ℕ} (h : k ∣ n) : k ∣ m % n ↔ k ∣ m := by
@@ -1331,7 +1331,7 @@ theorem dvd_antisymm : ∀ {m n : ℕ}, m ∣ n → n ∣ m → m = n
   | succ m, succ n, h₁, h₂ => le_antisymmₓ (le_of_dvd (succ_pos _) h₁) (le_of_dvd (succ_pos _) h₂)
 
 theorem pos_of_dvd_of_pos {m n : ℕ} (H1 : m ∣ n) (H2 : 0 < n) : 0 < m :=
-  Nat.pos_of_ne_zeroₓ $ fun m0 => by
+  Nat.pos_of_ne_zeroₓ fun m0 => by
     rw [m0] at H1 <;> rw [Nat.eq_zero_of_zero_dvd H1] at H2 <;> exact lt_irreflₓ _ H2
 
 theorem eq_one_of_dvd_one {n : ℕ} (H : n ∣ 1) : n = 1 :=
@@ -1431,7 +1431,7 @@ protected def find_x : { n // p n ∧ ∀, ∀ m < n, ∀, ¬p m } :=
         have : ∀, ∀ n ≤ m, ∀, ¬p n := fun n h =>
           Or.elim (Decidable.lt_or_eq_of_leₓ h) (al n) fun e => by
             rw [e] <;> exact pm
-        IH _ ⟨rfl, this⟩ fun n h => this n $ Nat.le_of_succ_le_succₓ h)
+        IH _ ⟨rfl, this⟩ fun n h => this n <| Nat.le_of_succ_le_succₓ h)
     0 fun n h => absurd h (Nat.not_lt_zeroₓ _)
 
 /-- If `p` is a (decidable) predicate on `ℕ` and `hp : ∃ (n : ℕ), p n` is a proof that

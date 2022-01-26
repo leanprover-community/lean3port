@@ -47,7 +47,7 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : �
         aux rfl (HEq.refl xb)
 
 theorem lex_wf (ha : WellFounded r) (hb : ∀ x, WellFounded (s x)) : WellFounded (lex r s) :=
-  WellFounded.intro $ fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b
+  WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b
 
 end
 
@@ -60,7 +60,7 @@ def lex_ndep (r : α → α → Prop) (s : β → β → Prop) :=
 
 theorem lex_ndep_wf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r) (hb : WellFounded s) :
     WellFounded (lex_ndep r s) :=
-  WellFounded.intro $ fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
+  WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
 
 end
 
@@ -106,7 +106,7 @@ theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, A
         aux rfl rfl
 
 theorem rev_lex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (rev_lex r s) :=
-  WellFounded.intro $ fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
+  WellFounded.intro fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
 
 end
 

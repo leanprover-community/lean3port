@@ -26,7 +26,7 @@ private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler →
   | [] => fail f! "failed to find a derive handler for '{p}'"
   | h :: hs => do
     let success ← h p n
-    when ¬success $ try_handlers hs
+    when ¬success <| try_handlers hs
 
 @[user_attribute]
 unsafe def derive_attr : user_attribute Unit (List pexpr) where
@@ -49,7 +49,7 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     let cls_decl ← get_decl cls
     let env ← get_env
     guardₓ (env.is_inductive n) <|> fail f! "failed to derive '{cls }', '{n}' is not an inductive type"
-    let ls := decl.univ_params.map $ fun n => if univ_poly then level.param n else level.zero
+    let ls := decl.univ_params.map fun n => if univ_poly then level.param n else level.zero
     let tgt : expr := expr.const n ls
     let ⟨params, _⟩ ← mk_local_pis (decl.type.instantiate_univ_params (decl.univ_params.zip ls))
     let tgt := tgt.mk_app params
@@ -60,11 +60,11 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
           (fun ⟨i, param⟩ tgt => do
             let tgt ←
               (do
-                    guardₓ $ i < env.inductive_num_params n
+                    guardₓ <| i < env.inductive_num_params n
                     let param_cls ← mk_app cls [param]
-                    pure $ expr.pi `a BinderInfo.inst_implicit param_cls tgt) <|>
+                    pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt) <|>
                   pure tgt
-            pure $ tgt.bind_pi param)
+            pure <| tgt.bind_pi param)
           tgt
     let (_, val) ← tactic.solve_aux tgt (intros >> tac)
     let val ← instantiate_mvars val
@@ -82,7 +82,7 @@ unsafe def has_reflect_derive_handler :=
     params.mfoldr
       (fun param tgt => do
         let param_cls ← mk_app `reflected [param]
-        pure $ expr.pi `a BinderInfo.inst_implicit param_cls tgt)
+        pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt)
       tgt
 
 @[derive_handler]

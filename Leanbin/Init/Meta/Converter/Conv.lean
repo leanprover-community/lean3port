@@ -37,7 +37,7 @@ unsafe def convert (c : conv Unit) (lhs : expr) (rel : Name := `eq) : tactic (ex
   let gs ← get_goals
   set_goals [new_g]
   c
-  try $ any_goals reflexivity
+  try <| any_goals reflexivity
   let n ← num_goals
   when (n ≠ 0) (fail "convert tactic failed, there are unsolved goals")
   set_goals gs
@@ -89,15 +89,15 @@ private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List 
   | k :: ks, a :: as => do
     let (gs, largs) ← congr_aux ks as
     match k with
-      | CongrArgKind.fixed => return $ (gs, a :: largs)
-      | CongrArgKind.fixed_no_param => return $ (gs, largs)
+      | CongrArgKind.fixed => return <| (gs, a :: largs)
+      | CongrArgKind.fixed_no_param => return <| (gs, largs)
       | CongrArgKind.eq => do
         let a_type ← infer_type a
         let rhs ← mk_meta_var a_type
         let g_type ← mk_app `eq [a, rhs]
         let g ← mk_meta_var g_type
         return (g :: gs, a :: rhs :: g :: largs)
-      | CongrArgKind.cast => return $ (gs, a :: largs)
+      | CongrArgKind.cast => return <| (gs, a :: largs)
       | _ => fail "congr tactic failed, unsupported congruence lemma"
   | ks, as => fail "congr tactic failed, unsupported congruence lemma"
 
@@ -113,12 +113,12 @@ unsafe def congr : conv Unit := do
   let (new_gs, lemma_args) ← congr_aux cgr_lemma.arg_kinds args
   let g_val := cgr_lemma.proof.mk_app lemma_args
   unify g g_val
-  set_goals $ new_gs ++ gs
+  set_goals <| new_gs ++ gs
   return ()
 
 /-- Create a conversion from the function extensionality tactic.-/
 unsafe def funext : conv Unit :=
-  iterate' $ do
+  iterate' <| do
     let (r, lhs, rhs) ← target_lhs_rhs
     guardₓ (r = `eq)
     let expr.lam n _ _ _ ← return lhs

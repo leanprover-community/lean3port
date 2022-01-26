@@ -129,9 +129,9 @@ open Format
 
 protected unsafe def case_tag.to_format : case_tag → format
   | pi names num_arguments =>
-    join ["(pi ", group $ nest 4 $ join $ List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
+    join ["(pi ", group <| nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
   | hyps names arguments =>
-    join ["(hyps ", group $ nest 6 $ join $ List.intersperse line [names.to_format, arguments.to_format], ")"]
+    join ["(hyps ", group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format], ")"]
 
 end
 
@@ -214,12 +214,12 @@ private unsafe def parse_arguments : List Name → List Name × List Name
 unsafe def parse : List Name → Option case_tag
   | [] => none
   | mk_numeral n `_case.pi :: ns => do
-    guardₓ $ ns.all fun n => ¬n.is_internal
-    some $ pi ns n.to_nat
+    guardₓ <| ns.all fun n => ¬n.is_internal
+    some <| pi ns n.to_nat
   | `_case.hyps :: ns => do
     let ⟨args, ns⟩ := parse_arguments ns
-    guardₓ $ ns.all fun n => ¬n.is_internal
-    some $ hyps ns args
+    guardₓ <| ns.all fun n => ¬n.is_internal
+    some <| hyps ns args
   | _ => none
 
 /-- Indicates the result of matching a list of names against the names of a case

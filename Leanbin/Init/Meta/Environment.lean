@@ -77,7 +77,7 @@ unsafe axiom mk_protected : environment → Name → environment
 /-- add declaration `d` and make it protected -/
 unsafe def add_protected (env : environment) (d : declaration) : exceptional environment := do
   let env ← env.add d
-  pure $ env.mk_protected d.to_name
+  pure <| env.mk_protected d.to_name
 
 /-- check if `n` is the name of a protected declaration -/
 unsafe axiom is_protected : environment → Name → Bool

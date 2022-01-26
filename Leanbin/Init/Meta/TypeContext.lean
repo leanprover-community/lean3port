@@ -67,7 +67,7 @@ unsafe axiom mk_mvar (pp_name : Name) (type : expr) (context : Option local_cont
 unsafe axiom fold_mvars {α : Type} (f : α → expr → type_context α) : α → type_context α
 
 unsafe def list_mvars : type_context (List expr) :=
-  fold_mvars (fun l x => pure $ x :: l) []
+  fold_mvars (fun l x => pure <| x :: l) []
 
 /-- Set the mvar to the following assignments.
 Works for temporary metas too.
@@ -162,12 +162,12 @@ You can use this to perform unsafe operations such as direct metavariable assign
 unsafe axiom run (inner : type_context α) (tr := Tactic.Transparency.semireducible) : tactic α
 
 unsafe def trace {α} [has_to_format α] : α → type_context Unit
-  | a => pure $ _root_.trace_fmt (to_fmt a) fun u => ()
+  | a => pure <| _root_.trace_fmt (to_fmt a) fun u => ()
 
 unsafe def print_mvars : type_context Unit := do
   let mvs ← list_mvars
   let mvs ←
-    pure $
+    pure <|
         mvs.map fun x =>
           match x with
           | expr.mvar _ pp _ => to_fmt pp

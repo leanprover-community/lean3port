@@ -5,7 +5,7 @@ import Leanbin.Init.Meta.Interactive
 namespace Tactic
 
 private unsafe def report {α} (s : tactic_state) : Option (Unit → format) → α
-  | some fmt => undefined_core $ format.to_string $ fmt () ++ format.line ++ to_fmt s
+  | some fmt => undefined_core <| format.to_string <| fmt () ++ format.line ++ to_fmt s
   | none => undefined_core "silent failure"
 
 private unsafe def run_or_fail {α} (s : tactic_state) (tac : tactic α) : α :=
@@ -15,8 +15,8 @@ private unsafe def run_or_fail {α} (s : tactic_state) (tac : tactic α) : α :=
 
 unsafe def run_async {α : Type} (tac : tactic α) : tactic (task α) := do
   let s ← read
-  return $
-      task.delay $ fun _ =>
+  return <|
+      task.delay fun _ =>
         match tac s with
         | result.success a s => a
         | result.exception fmt _ s' => report s' fmt
@@ -27,7 +27,7 @@ unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
   let tgt ← target
   let tgt ← instantiate_mvars tgt
   let env ← get_env
-  let tgt ← return $ env.unfold_untrusted_macros tgt
+  let tgt ← return <| env.unfold_untrusted_macros tgt
   when tgt.has_meta_var (fail "goal contains metavariables")
   let params ← return tgt.collect_univ_params
   let lemma_name ← new_aux_decl_name
@@ -38,10 +38,10 @@ unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
         ctx.mmap' fun c => intro c.local_pp_name
         tac
         let proof ← instantiate_mvars goal_meta
-        let proof ← return $ env.unfold_untrusted_macros proof
-        when proof.has_meta_var $ fail "async proof failed: contains metavariables"
+        let proof ← return <| env.unfold_untrusted_macros proof
+        when proof.has_meta_var <| fail "async proof failed: contains metavariables"
         return proof
-  add_decl $ declaration.thm lemma_name params tgt proof
+  add_decl <| declaration.thm lemma_name params tgt proof
   exact (expr.const lemma_name (params.map level.param))
 
 namespace Interactive

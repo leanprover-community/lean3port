@@ -100,7 +100,7 @@ theorem eq_succ_of_zero_lt {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
   ⟨n, by
     rw [Nat.add_comm] at h <;> exact h.symm⟩
 
-theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a + ↑Nat.succ n :=
+theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a + ↑(Nat.succ n) :=
   le.intro
     (show a + 1 + n = a + Nat.succ n by
       simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]
@@ -109,14 +109,14 @@ theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a + ↑Nat.succ n :=
 theorem lt.intro {a b : ℤ} {n : ℕ} (h : a + Nat.succ n = b) : a < b :=
   h ▸ lt_add_succ a n
 
-theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, a + ↑Nat.succ n = b :=
+theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, a + ↑(Nat.succ n) = b :=
   le.elim h fun n => fun hn : a + 1 + n = b =>
     Exists.introₓ n
       (by
         rw [← hn, Int.add_assoc, Int.add_comm 1]
         rfl)
 
-theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, a + ↑Nat.succ n = b → P) : P :=
+theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, a + ↑(Nat.succ n) = b → P) : P :=
   Exists.elim (lt.dest h) h'
 
 theorem coe_nat_lt_coe_nat_iff (n m : ℕ) : (↑n : ℤ) < ↑m ↔ n < m := by
@@ -209,7 +209,7 @@ protected theorem mul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
   lt.elim ha fun n => fun hn =>
     lt.elim hb fun m => fun hm =>
       lt.intro
-        (show 0 + ↑Nat.succ (Nat.succ n * m + n) = a * b by
+        (show 0 + ↑(Nat.succ (Nat.succ n * m + n)) = a * b by
           rw [← hn, ← hm]
           simp [Int.coe_nat_zero]
           rw [← Int.coe_nat_mul]
@@ -262,7 +262,7 @@ theorem le_nat_abs {a : ℤ} : a ≤ nat_abs a :=
     fun h => le_transₓ h (coe_zero_le _)
 
 theorem neg_succ_lt_zero (n : ℕ) : -[1+ n] < 0 :=
-  lt_of_not_geₓ $ fun h => by
+  lt_of_not_geₓ fun h => by
     let ⟨m, h⟩ := eq_coe_of_zero_le h
     contradiction
 
@@ -880,10 +880,10 @@ theorem le_of_lt_add_one {a b : ℤ} (H : a < b + 1) : a ≤ b :=
   Int.le_of_add_le_add_rightₓ H
 
 theorem sub_one_lt_of_le {a b : ℤ} (H : a ≤ b) : a - 1 < b :=
-  Int.sub_right_lt_of_lt_addₓ $ lt_add_one_of_le H
+  Int.sub_right_lt_of_lt_addₓ <| lt_add_one_of_le H
 
 theorem le_of_sub_one_lt {a b : ℤ} (H : a - 1 < b) : a ≤ b :=
-  le_of_lt_add_one $ Int.lt_add_of_sub_right_ltₓ H
+  le_of_lt_add_one <| Int.lt_add_of_sub_right_ltₓ H
 
 theorem le_sub_one_of_lt {a b : ℤ} (H : a < b) : a ≤ b - 1 :=
   Int.le_sub_right_of_add_leₓ H

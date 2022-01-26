@@ -20,9 +20,9 @@ variable {α β : Type u}
 
 protected unsafe def map (f : α → β) : tagged_format α → tagged_format β
   | compose x y => compose (map x) (map y)
-  | group x => group $ map x
-  | nest i x => nest i $ map x
-  | highlight c x => highlight c $ map x
+  | group x => group <| map x
+  | nest i x => nest i <| map x
+  | highlight c x => highlight c <| map x
   | of_format x => of_format x
   | tag a x => tag (f a) (map x)
 
@@ -34,7 +34,7 @@ unsafe def m_untag {t : Type → Type} [Monadₓ t] (f : α → format → t for
   | group x => pure format.group <*> m_untag x
   | nest i x => pure (format.nest i) <*> m_untag x
   | highlight c x => pure format.highlight <*> m_untag x <*> pure c
-  | of_format x => pure $ x
+  | of_format x => pure <| x
   | tag a x => m_untag x >>= f a
 
 unsafe def untag (f : α → format → format) : tagged_format α → format :=
@@ -58,5 +58,5 @@ the local context with the name and type set to that of the binder.-/
 unsafe axiom tactic_state.pp_tagged : tactic_state → expr → eformat
 
 unsafe def tactic.pp_tagged : expr → tactic eformat
-  | e => tactic.read >>= fun ts => pure $ tactic_state.pp_tagged ts e
+  | e => tactic.read >>= fun ts => pure <| tactic_state.pp_tagged ts e
 

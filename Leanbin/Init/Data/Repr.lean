@@ -124,7 +124,7 @@ instance : HasRepr Nat :=
   ⟨Nat.reprₓ⟩
 
 def hexDigitReprₓ (n : Nat) : Stringₓ :=
-  Stringₓ.singleton $ Nat.digitCharₓ n
+  Stringₓ.singleton <| Nat.digitCharₓ n
 
 def charToHexₓ (c : Charₓ) : Stringₓ :=
   let n := Charₓ.toNat c

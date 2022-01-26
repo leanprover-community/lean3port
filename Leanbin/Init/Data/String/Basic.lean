@@ -195,7 +195,7 @@ private theorem nil_ne_append_singleton : ∀ c : Charₓ l : List Charₓ, [] �
 
 theorem empty_ne_str : ∀ c : Charₓ s : Stringₓ, Empty ≠ str s c
   | c, ⟨l⟩ => fun h : StringImp.mk [] = StringImp.mk (l ++ [c]) =>
-    StringImp.noConfusion h $ fun h => nil_ne_append_singleton _ _ h
+    (StringImp.noConfusion h) fun h => nil_ne_append_singleton _ _ h
 
 theorem str_ne_empty (c : Charₓ) (s : Stringₓ) : str s c ≠ Empty :=
   (empty_ne_str c s).symm

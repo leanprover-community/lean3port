@@ -120,7 +120,7 @@ theorem bit_val b n : bit b n = 2 * n + cond b 1 0 := by
   apply bit1_val
 
 theorem bit_decomp (n : Nat) : bit (bodd n) (div2 n) = n :=
-  (bit_val _ _).trans $ (Nat.add_comm _ _).trans $ bodd_add_div2 _
+  (bit_val _ _).trans <| (Nat.add_comm _ _).trans <| bodd_add_div2 _
 
 def bit_cases_on {C : Nat → Sort u} n (h : ∀ b n, C (bit b n)) : C n := by
   rw [← bit_decomp n] <;> apply h

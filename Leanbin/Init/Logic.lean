@@ -661,10 +661,10 @@ theorem not_or_iff_and_not p q [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p 
   Iff.intro
     (fun h =>
       match d₁ with
-      | is_true h₁ => False.elim $ h (Or.inl h₁)
+      | is_true h₁ => False.elim <| h (Or.inl h₁)
       | is_false h₁ =>
         match d₂ with
-        | is_true h₂ => False.elim $ h (Or.inr h₂)
+        | is_true h₂ => False.elim <| h (Or.inr h₂)
         | is_false h₂ => ⟨h₁, h₂⟩)
     fun ⟨np, nq⟩ h => Or.elim h np nq
 
@@ -704,15 +704,15 @@ instance Implies.decidable [Decidable p] [Decidable q] : Decidable (p → q) :=
   else is_true fun h => absurd h hp
 
 instance [Decidable p] [Decidable q] : Decidable (p ↔ q) :=
-  if hp : p then if hq : q then is_true ⟨fun _ => hq, fun _ => hp⟩ else is_false $ fun h => hq (h.1 hp)
-  else if hq : q then is_false $ fun h => hp (h.2 hq) else is_true $ ⟨fun h => absurd h hp, fun h => absurd h hq⟩
+  if hp : p then if hq : q then is_true ⟨fun _ => hq, fun _ => hp⟩ else is_false fun h => hq (h.1 hp)
+  else if hq : q then is_false fun h => hp (h.2 hq) else is_true <| ⟨fun h => absurd h hp, fun h => absurd h hq⟩
 
 instance [Decidable p] [Decidable q] : Decidable (Xorₓ p q) :=
   if hp : p then
     if hq : q then is_false (Or.ndrec (fun ⟨_, h⟩ => h hq : ¬(p ∧ ¬q)) (fun ⟨_, h⟩ => h hp : ¬(q ∧ ¬p)))
-    else is_true $ Or.inl ⟨hp, hq⟩
+    else is_true <| Or.inl ⟨hp, hq⟩
   else
-    if hq : q then is_true $ Or.inr ⟨hq, hp⟩
+    if hq : q then is_true <| Or.inr ⟨hq, hp⟩
     else is_false (Or.ndrec (fun ⟨h, _⟩ => hp h : ¬(p ∧ ¬q)) (fun ⟨h, _⟩ => hq h : ¬(q ∧ ¬p)))
 
 instance existsPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] : Decidable (∃ h, P h) :=

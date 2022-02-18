@@ -57,7 +57,7 @@ variable {α : Sort u} {C : α → Sort v} {r : α → α → Prop}
 
 /-- Well-founded fixpoint -/
 def fix (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) : C x :=
-  fix_F F x (apply hwf x)
+  fixF F x (apply hwf x)
 
 /-- Well-founded fixpoint satisfies fixpoint equation -/
 theorem fix_eq (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) :
@@ -185,32 +185,32 @@ parameter {α : Type u}{β : Type v}
 
 parameter {ra : α → α → Prop}{rb : β → β → Prop}
 
-local infixl:50 "≺" => lex ra rb
+local infixl:50 "≺" => Lex ra rb
 
-theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc (lex ra rb) (a, b) :=
+theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc (Lex ra rb) (a, b) :=
   Acc.recOnₓ aca fun xa aca iha b =>
     Acc.recOnₓ (acb b) fun xb acb ihb =>
       Acc.intro (xa, xb) fun p lt =>
-        have aux : xa = xa → xb = xb → Acc (lex ra rb) p :=
-          @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (lex ra rb) p₁) p (xa, xb) lt
+        have aux : xa = xa → xb = xb → Acc (Lex ra rb) p :=
+          @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p (xa, xb) lt
             (fun a₁ b₁ a₂ b₂ h eq₂ : a₂ = xa eq₃ : b₂ = xb => iha a₁ (Eq.recOnₓ eq₂ h) b₁)
             fun a b₁ b₂ h eq₂ : a = xa eq₃ : b₂ = xb => Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
         aux rfl rfl
 
-theorem lex_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (lex ra rb) :=
-  ⟨fun p => cases_on p fun a b => lex_accessible (apply ha a) (WellFounded.apply hb) b⟩
+theorem lex_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Lex ra rb) :=
+  ⟨fun p => casesOn p fun a b => lex_accessible (apply ha a) (WellFounded.apply hb) b⟩
 
-theorem rprod_sub_lex : ∀ a b, rprod ra rb a b → lex ra rb a b := fun a b h =>
-  Prod.Rprod.rec_on h fun a₁ b₁ a₂ b₂ h₁ h₂ => lex.left b₁ b₂ h₁
+theorem rprod_sub_lex : ∀ a b, Rprod ra rb a b → Lex ra rb a b := fun a b h =>
+  Prod.Rprod.rec_on h fun a₁ b₁ a₂ b₂ h₁ h₂ => Lex.left b₁ b₂ h₁
 
-theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (rprod ra rb) :=
+theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Rprod ra rb) :=
   Subrelation.wfₓ rprod_sub_lex (lex_wf ha hb)
 
 end
 
 instance HasWellFounded {α : Type u} {β : Type v} [s₁ : HasWellFounded α] [s₂ : HasWellFounded β] :
     HasWellFounded (α × β) where
-  R := lex s₁.r s₂.r
+  R := Lex s₁.R s₂.R
   wf := lex_wf s₁.wf s₂.wf
 
 end Prod

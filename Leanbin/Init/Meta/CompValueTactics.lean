@@ -63,7 +63,7 @@ unsafe def comp_val : tactic Unit := do
               exact pr) <|>
             (do
                 let type ← whnf type
-                guardₓ (type.app_fn = quote.1 (@Subtype Nat))
+                guardₓ (type = quote.1 (@Subtype Nat))
                 applyc `subtype.ne_of_val_ne
                 let (quote.1 (Subtype.mk (%%ₓa) (%%ₓha)), quote.1 (Subtype.mk (%%ₓb) (%%ₓhb))) ← is_ne t
                 let pr ← mk_nat_val_ne_proof a b

@@ -15,25 +15,25 @@ def cond.{u} {a : Type u} : Bool → a → a → a
 /-- Boolean OR -/
 @[inline]
 def bor : Bool → Bool → Bool
-  | tt, b => tt
+  | tt, b => true
   | ff, b => b
 
 /-- Boolean AND -/
 @[inline]
 def band : Bool → Bool → Bool
   | tt, b => b
-  | ff, b => ff
+  | ff, b => false
 
 /-- Boolean NOT -/
 @[inline]
 def bnot : Bool → Bool
-  | tt => ff
-  | ff => tt
+  | tt => false
+  | ff => true
 
 /-- Boolean XOR -/
 @[inline]
 def bxor : Bool → Bool → Bool
-  | tt, ff => tt
-  | ff, tt => tt
-  | _, _ => ff
+  | tt, ff => true
+  | ff, tt => true
+  | _, _ => false
 

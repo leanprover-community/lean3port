@@ -25,7 +25,7 @@ inductive Occurrences
 open Occurrences
 
 def Occurrences.contains : Occurrences → Nat → Bool
-  | all, p => tt
+  | all, p => true
   | Occurrences.pos ps, p => p ∈ ps
   | Occurrences.neg ps, p => p ∉ ps
 

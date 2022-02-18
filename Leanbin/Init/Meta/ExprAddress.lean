@@ -23,7 +23,7 @@ inductive coord : Type
 namespace Coord
 
 /-- Convert the coord enum to its index number. -/
-def code : coord → ℕ
+def code : Coord → ℕ
   | coord.app_fn => 0
   | coord.app_arg => 1
   | coord.lam_var_type => 2
@@ -34,7 +34,7 @@ def code : coord → ℕ
   | coord.elet_assignment => 7
   | coord.elet_body => 8
 
-protected def reprₓ : coord → Stringₓ
+protected def reprₓ : Coord → Stringₓ
   | coord.app_fn => "app_fn"
   | coord.app_arg => "app_arg"
   | coord.lam_var_type => "lam_var_type"
@@ -45,24 +45,24 @@ protected def reprₓ : coord → Stringₓ
   | coord.elet_assignment => "elet_assignment"
   | coord.elet_body => "elet_body"
 
-instance : HasRepr coord :=
-  ⟨coord.repr⟩
+instance : HasRepr Coord :=
+  ⟨Coord.repr⟩
 
-instance : HasToString coord :=
-  ⟨coord.repr⟩
+instance : HasToString Coord :=
+  ⟨Coord.repr⟩
 
-unsafe instance : has_to_format coord :=
+unsafe instance : has_to_format Coord :=
   ⟨format.of_string ∘ coord.repr⟩
 
-unsafe instance has_dec_eq : DecidableEq coord :=
+unsafe instance has_dec_eq : DecidableEq Coord :=
   unchecked_cast (inferInstance : DecidableEq ℕ)
 
-instance LT : LT coord :=
+instance LT : LT Coord :=
   ⟨fun x y => x.code < y.code⟩
 
 /-- Use this to pick the subexpression of a given expression that cooresponds
 to the given coordinate. -/
-unsafe def follow : coord → expr → Option expr
+unsafe def follow : Coord → expr → Option expr
   | coord.app_fn, expr.app f _ => some f
   | coord.app_arg, expr.app _ a => some a
   | coord.lam_var_type, expr.lam n bi y _ => some y
@@ -79,39 +79,39 @@ end Coord
 /-- An address is a list of coordinates used to reference subterms of an expression.
 The first coordinate in the list corresponds to the root of the expression. -/
 def address : Type :=
-  List coord
+  List Coord
 
 namespace Address
 
-unsafe instance has_dec_eq : DecidableEq address :=
+unsafe instance has_dec_eq : DecidableEq Address :=
   (inferInstance : DecidableEq (List Expr.Coord))
 
-protected def toString : address → Stringₓ :=
-  toString ∘ List.map coord.repr
+protected def toString : Address → Stringₓ :=
+  toString ∘ List.map Coord.repr
 
-instance HasRepr : HasRepr address :=
-  ⟨address.to_string⟩
+instance HasRepr : HasRepr Address :=
+  ⟨Address.toString⟩
 
-instance HasToString : HasToString address :=
-  ⟨address.to_string⟩
+instance HasToString : HasToString Address :=
+  ⟨Address.toString⟩
 
-unsafe instance has_to_format : has_to_format address :=
+unsafe instance has_to_format : has_to_format Address :=
   ⟨list.to_format⟩
 
-instance : Append address :=
+instance : Append Address :=
   ⟨List.append⟩
 
 /-- `as_below x y` is some z when it finds `∃ z, x = y ++ z` -/
-unsafe def as_below : address → address → Option address
+unsafe def as_below : Address → Address → Option Address
   | a, [] => some a
   | [], _ => none
   | h₁ :: t₁, h₂ :: t₂ => if h₁ = h₂ then as_below t₁ t₂ else none
 
-unsafe def is_below : address → address → Bool
+unsafe def is_below : Address → Address → Bool
   | a₁, a₂ => Option.isSome <| as_below a₁ a₂
 
 /-- `follow a e` finds the subexpression of `e` at the given address `a`. -/
-unsafe def follow : address → expr → Option expr
+unsafe def follow : Address → expr → Option expr
   | [], e => e
   | h :: t, e => coord.follow h e >>= follow t
 

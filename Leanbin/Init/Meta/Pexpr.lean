@@ -6,7 +6,7 @@ universe u
 /-- Quoted expressions. They can be converted into expressions by using a tactic. -/
 @[reducible]
 unsafe def pexpr :=
-  expr ff
+  expr false
 
 protected unsafe axiom pexpr.of_expr : expr → pexpr
 

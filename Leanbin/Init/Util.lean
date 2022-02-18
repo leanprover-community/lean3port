@@ -45,3 +45,10 @@ unsafe def undefined {α : Sort u} : α :=
 unsafe def unchecked_cast {α : Sort u} {β : Sort u} : α → β :=
   cast undefined
 
+/-- For tactics to tag the proofs they construct.
+  The tag is `unit` but is intended to be encoded by a constant, e.g.
+  def tagged_proof.ring : unit := () -/
+@[reducible]
+def id_tag (tag : Unit) {p : Prop} (h : p) : p :=
+  h
+

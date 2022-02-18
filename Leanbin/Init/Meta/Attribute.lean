@@ -53,8 +53,8 @@ and stored and can be retrieved with `user_attribute.get_param`.
 unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Unit) where
   Name : Name
   descr : Stringₓ
-  after_set : Option (∀ decl : _root_.name prio : Nat persistent : Bool, Tactic Unit) := none
-  before_unset : Option (∀ decl : _root_.name persistent : Bool, Tactic Unit) := none
+  after_set : Option (∀ decl : Name prio : Nat persistent : Bool, Tactic Unit) := none
+  before_unset : Option (∀ decl : Name persistent : Bool, Tactic Unit) := none
   cache_cfg : user_attribute_cache_cfg cache_ty := by
     run_tac
       user_attribute.dflt_cache_cfg
@@ -66,7 +66,7 @@ unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Un
 /-- Registers a new user-defined attribute. The argument must be the name of a definition of type
    `user_attribute α β`. Once registered, you may tag declarations with this attribute. -/
 unsafe def attribute.register (decl : Name) : Tactic Unit :=
-  tactic.set_basic_attribute `` user_attribute decl tt
+  tactic.set_basic_attribute `` user_attribute decl true
 
 /-- Returns the attribute cache for the given user attribute. -/
 unsafe axiom user_attribute.get_cache {α β : Type} (attr : user_attribute α β) : tactic α

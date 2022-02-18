@@ -118,7 +118,8 @@ private unsafe def format_key_data (k : key) (d : data) (first : Bool) : format 
 unsafe instance : has_to_format (rb_map key data) :=
   ⟨fun m =>
     group <|
-      to_fmt "⟨" ++ nest 1 (fst (fold m (to_fmt "", tt) fun k d p => (fst p ++ format_key_data k d (snd p), ff))) ++
+      to_fmt "⟨" ++
+          nest 1 (fst (fold m (to_fmt "", true) fun k d p => (fst p ++ format_key_data k d (snd p), false))) ++
         to_fmt "⟩"⟩
 
 end
@@ -131,7 +132,7 @@ private unsafe def key_data_to_string (k : key) (d : data) (first : Bool) : Stri
   (if first then "" else ", ") ++ toString k ++ " ← " ++ toString d
 
 unsafe instance : HasToString (rb_map key data) :=
-  ⟨fun m => "⟨" ++ fst (fold m ("", tt) fun k d p => (fst p ++ key_data_to_string k d (snd p), ff)) ++ "⟩"⟩
+  ⟨fun m => "⟨" ++ fst (fold m ("", true) fun k d p => (fst p ++ key_data_to_string k d (snd p), false)) ++ "⟩"⟩
 
 end
 
@@ -199,7 +200,8 @@ unsafe def to_list {key : Type} (s : rb_set key) : List key :=
 unsafe instance {key} [has_to_format key] : has_to_format (rb_set key) :=
   ⟨fun m =>
     group <|
-      to_fmt "{" ++ nest 1 (fst (fold m (to_fmt "", tt) fun k p => (fst p ++ format_key k (snd p), ff))) ++ to_fmt "}"⟩
+      to_fmt "{" ++ nest 1 (fst (fold m (to_fmt "", true) fun k p => (fst p ++ format_key k (snd p), false))) ++
+        to_fmt "}"⟩
 
 end RbSet
 
@@ -251,7 +253,8 @@ unsafe def to_list (s : name_set) : List Name :=
 
 unsafe instance : has_to_format name_set :=
   ⟨fun m =>
-    group <| to_fmt "{" ++ nest 1 (fold m (to_fmt "", tt) fun k p => (p.1 ++ format_key k p.2, ff)).1 ++ to_fmt "}"⟩
+    group <|
+      to_fmt "{" ++ nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++ to_fmt "}"⟩
 
 unsafe def of_list (l : List Name) : name_set :=
   List.foldlₓ name_set.insert mk_name_set l

@@ -66,11 +66,11 @@ unsafe def mk_constructors_arg_names (I : Name) (p : Name) : tactic (List (List 
 private unsafe def mk_fresh_arg_name_aux : Name → Nat → name_set → tactic (Name × name_set)
   | n, i, s => do
     let r ← get_unused_name n (some i)
-    if s.contains r then mk_fresh_arg_name_aux n (i + 1) s else return (r, s.insert r)
+    if s r then mk_fresh_arg_name_aux n (i + 1) s else return (r, s r)
 
 private unsafe def mk_fresh_arg_name (n : Name) (s : name_set) : tactic (Name × name_set) := do
   let r ← get_unused_name n
-  if s.contains r then mk_fresh_arg_name_aux n 1 s else return (r, s.insert r)
+  if s r then mk_fresh_arg_name_aux n 1 s else return (r, s r)
 
 private unsafe def mk_constructor_fresh_names_aux : Nat → expr → name_set → tactic (List Name × name_set)
   | nparams, ty, s => do
@@ -80,12 +80,12 @@ private unsafe def mk_constructor_fresh_names_aux : Nat → expr → name_set �
         if nparams = 0 then do
           let (n', s') ← mk_fresh_arg_name n s
           let x ← mk_local' n' bi d
-          let ty' := b.instantiate_var x
+          let ty' := b x
           let (ns, s'') ← mk_constructor_fresh_names_aux 0 ty' s'
           return (n' :: ns, s'')
         else do
           let x ← mk_local' n bi d
-          let ty' := b.instantiate_var x
+          let ty' := b x
           mk_constructor_fresh_names_aux (nparams - 1) ty' s
       | _ => return ([], s)
 

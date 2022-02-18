@@ -26,7 +26,7 @@ run_cmd
 structure SmtPreConfig where
   simpAttr : Name := `pre_smt
   maxSteps : Nat := 1000000
-  zeta : Bool := ff
+  zeta : Bool := false
 
 /-- Configuration for the smt_state object.
 
@@ -39,7 +39,7 @@ structure SmtConfig where
   emAttr : Name := `ematch
 
 unsafe def smt_config.set_classical (c : SmtConfig) (b : Bool) : SmtConfig :=
-  { c with ccCfg := { c.cc_cfg with em := b } }
+  { c with ccCfg := { c.ccCfg with em := b } }
 
 unsafe axiom smt_goal : Type
 
@@ -80,7 +80,7 @@ unsafe instance : HasMonadLift tactic smt_tactic :=
   ⟨tactic_to_smt_tactic⟩
 
 unsafe instance (α : Type) : Coe (tactic α) (smt_tactic α) :=
-  ⟨monad_lift⟩
+  ⟨monadLift⟩
 
 unsafe instance : MonadFail smt_tactic :=
   { smt_tactic.monad with fail := fun α s => (tactic.fail (to_fmt s) : smt_tactic α) }
@@ -118,7 +118,7 @@ unsafe axiom ematch_core : (expr → Bool) → smt_tactic Unit
 -/
 unsafe axiom ematch_using : hinst_lemmas → smt_tactic Unit
 
-unsafe axiom mk_ematch_eqn_lemmas_for_core : transparency → Name → smt_tactic hinst_lemmas
+unsafe axiom mk_ematch_eqn_lemmas_for_core : Transparency → Name → smt_tactic hinst_lemmas
 
 unsafe axiom to_cc_state : smt_tactic cc_state
 
@@ -138,20 +138,20 @@ unsafe axiom set_lemmas : hinst_lemmas → smt_tactic Unit
 
 unsafe axiom add_lemmas : hinst_lemmas → smt_tactic Unit
 
-unsafe def add_ematch_lemma_core (md : transparency) (as_simp : Bool) (e : expr) : smt_tactic Unit := do
+unsafe def add_ematch_lemma_core (md : Transparency) (as_simp : Bool) (e : expr) : smt_tactic Unit := do
   let h ← hinst_lemma.mk_core md e as_simp
   add_lemmas (mk_hinst_singleton h)
 
-unsafe def add_ematch_lemma_from_decl_core (md : transparency) (as_simp : Bool) (n : Name) : smt_tactic Unit := do
+unsafe def add_ematch_lemma_from_decl_core (md : Transparency) (as_simp : Bool) (n : Name) : smt_tactic Unit := do
   let h ← hinst_lemma.mk_from_decl_core md n as_simp
   add_lemmas (mk_hinst_singleton h)
 
-unsafe def add_ematch_eqn_lemmas_for_core (md : transparency) (n : Name) : smt_tactic Unit := do
+unsafe def add_ematch_eqn_lemmas_for_core (md : Transparency) (n : Name) : smt_tactic Unit := do
   let hs ← mk_ematch_eqn_lemmas_for_core md n
   add_lemmas hs
 
 unsafe def ematch : smt_tactic Unit :=
-  ematch_core fun _ => tt
+  ematch_core fun _ => true
 
 unsafe def failed {α} : smt_tactic α :=
   tactic.failed
@@ -228,12 +228,12 @@ unsafe def trace_state : smt_tactic Unit := do
 unsafe def trace {α : Type} [has_to_tactic_format α] (a : α) : smt_tactic Unit :=
   tactic.trace a
 
-unsafe def to_expr (q : pexpr) (allow_mvars := tt) : smt_tactic expr :=
+unsafe def to_expr (q : pexpr) (allow_mvars := true) : smt_tactic expr :=
   tactic.to_expr q allow_mvars
 
 unsafe def classical : smt_tactic Bool := do
   let s ← get
-  return s.classical
+  return s
 
 unsafe def num_goals : smt_tactic Nat :=
   List.length <$> get
@@ -350,7 +350,7 @@ unsafe def by_cases (e : expr) : smt_tactic Unit := do
 unsafe def by_contradiction : smt_tactic Unit := do
   let t ← target
   let c ← classical
-  if t.is_false then skip
+  if t then skip
     else
       if c then do
         apply (expr.app (expr.const `classical.by_contradiction []) t)
@@ -365,40 +365,41 @@ unsafe def by_contradiction : smt_tactic Unit := do
 /-- Return a proof for e, if 'e' is a known fact in the main goal. -/
 unsafe def proof_for (e : expr) : smt_tactic expr := do
   let cc ← to_cc_state
-  cc.proof_for e
+  cc e
 
 /-- Return a refutation for e (i.e., a proof for (not e)), if 'e' has been refuted in the main goal. -/
 unsafe def refutation_for (e : expr) : smt_tactic expr := do
   let cc ← to_cc_state
-  cc.refutation_for e
+  cc e
 
 unsafe def get_facts : smt_tactic (List expr) := do
   let cc ← to_cc_state
-  return <| cc.eqc_of expr.mk_true
+  return <| cc expr.mk_true
 
 unsafe def get_refuted_facts : smt_tactic (List expr) := do
   let cc ← to_cc_state
-  return <| cc.eqc_of expr.mk_false
+  return <| cc expr.mk_false
 
 unsafe def add_ematch_lemma : expr → smt_tactic Unit :=
-  add_ematch_lemma_core reducible ff
+  add_ematch_lemma_core reducible false
 
 unsafe def add_ematch_lhs_lemma : expr → smt_tactic Unit :=
-  add_ematch_lemma_core reducible tt
+  add_ematch_lemma_core reducible true
 
 unsafe def add_ematch_lemma_from_decl : Name → smt_tactic Unit :=
-  add_ematch_lemma_from_decl_core reducible ff
+  add_ematch_lemma_from_decl_core reducible false
 
 unsafe def add_ematch_lhs_lemma_from_decl : Name → smt_tactic Unit :=
-  add_ematch_lemma_from_decl_core reducible ff
+  add_ematch_lemma_from_decl_core reducible false
 
 unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
   add_ematch_eqn_lemmas_for_core reducible
 
+-- ././Mathport/Syntax/Translate/Basic.lean:707:4: warning: unsupported notation `f
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do
-    try ((is_prop f >> guardₓ (f.is_pi && bnot f.is_arrow)) >> proof_for f >>= add_ematch_lemma_core reducible ff)
+    try ((is_prop f >> guardₓ (f && bnot (f f.is_arrow))) >> proof_for f >>= add_ematch_lemma_core reducible ff)
     add_lemmas_from_facts_core fs
 
 unsafe def add_lemmas_from_facts : smt_tactic Unit :=

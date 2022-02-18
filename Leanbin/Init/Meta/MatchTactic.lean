@@ -61,7 +61,7 @@ unsafe axiom mk_pattern (umetas : List level) (emetas : List expr) (target : exp
 /-- `mk_pattern p e m` matches (pattern.target p) and e using transparency m.
    If the matching is successful, then return the instantiation of `pattern.output p`.
    The tactic fails if not all (temporary) meta-variables are assigned. -/
-unsafe axiom match_pattern (p : pattern) (e : expr) (m : transparency := reducible) : tactic (List level × List expr)
+unsafe axiom match_pattern (p : pattern) (e : expr) (m : Transparency := reducible) : tactic (List level × List expr)
 
 open Expr
 
@@ -77,7 +77,7 @@ private unsafe def to_pattern_core : expr → tactic (expr × List expr)
 /-- Given a pre-term of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, converts it
    into the pattern `t[?x₁, ..., ?xₙ]` with outputs `[?x₁, ..., ?xₙ]` -/
 unsafe def pexpr_to_pattern (p : pexpr) : tactic pattern := do
-  let e ← to_expr p tt ff
+  let e ← to_expr p true false
   let (new_p, xs) ← to_pattern_core e
   mk_pattern [] xs new_p [] xs
 
@@ -88,7 +88,7 @@ unsafe def match_expr (p : pexpr) (e : expr) (m := reducible) : tactic (List exp
   let new_p ← pexpr_to_pattern p
   Prod.snd <$> match_pattern new_p e m
 
-private unsafe def match_subexpr_core (m : transparency) : pattern → List expr → tactic (List expr)
+private unsafe def match_subexpr_core (m : Transparency) : pattern → List expr → tactic (List expr)
   | p, [] => failed
   | p, e :: es =>
     Prod.snd <$> match_pattern p e m <|>
@@ -110,13 +110,13 @@ unsafe def match_target_subexpr (p : pexpr) (m := reducible) : tactic (List expr
   let t ← target
   match_subexpr p t m
 
-private unsafe def match_hypothesis_core (m : transparency) : pattern → List expr → tactic (expr × List expr)
+private unsafe def match_hypothesis_core (m : Transparency) : pattern → List expr → tactic (expr × List expr)
   | p, [] => failed
   | p, h :: hs => do
     let h_type ← infer_type h
     (do
           let r ← match_pattern p h_type m
-          return (h, r.snd)) <|>
+          return (h, r)) <|>
         match_hypothesis_core p hs
 
 /-- Match hypothesis in the main goal target.

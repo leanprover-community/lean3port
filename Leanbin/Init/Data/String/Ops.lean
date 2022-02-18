@@ -8,14 +8,14 @@ namespace Stringₓ
 namespace Iterator
 
 @[simp]
-theorem next_to_string_mk_iterator (s : Stringₓ) : s.mk_iterator.next_to_string = s := by
+theorem next_to_string_mk_iterator (s : Stringₓ) : s.mkIterator.nextToString = s := by
   induction s <;> rfl
 
 @[simp]
-theorem length_next_to_string_next (it : iterator) : it.next.next_to_string.length = it.next_to_string.length - 1 := by
+theorem length_next_to_string_next (it : Iterator) : it.next.nextToString.length = it.nextToString.length - 1 := by
   cases it <;> cases it_snd <;> simp [iterator.next, iterator.next_to_string, Stringₓ.length, Nat.add_sub_cancel_left]
 
-theorem zero_lt_length_next_to_string_of_has_next {it : iterator} : it.has_next → 0 < it.next_to_string.length := by
+theorem zero_lt_length_next_to_string_of_has_next {it : Iterator} : it.hasNext → 0 < it.nextToString.length := by
   cases it <;>
     cases it_snd <;>
       simp [iterator.has_next, iterator.next_to_string, Stringₓ.length, Nat.zero_lt_one_add, Nat.add_comm,
@@ -23,21 +23,21 @@ theorem zero_lt_length_next_to_string_of_has_next {it : iterator} : it.has_next 
 
 end Iterator
 
-private def split_core (p : Charₓ → Bool) : iterator → iterator → List Stringₓ
+private def split_core (p : Charₓ → Bool) : Iterator → Iterator → List Stringₓ
   | start, stop =>
-    if h : stop.has_next then
-      have : stop.next_to_string.length - 1 < stop.next_to_string.length :=
-        Nat.sub_ltₓ (iterator.zero_lt_length_next_to_string_of_has_next h)
+    if h : stop.hasNext then
+      have : stop.nextToString.length - 1 < stop.nextToString.length :=
+        Nat.sub_ltₓ (Iterator.zero_lt_length_next_to_string_of_has_next h)
           (by
             decide)
       if p stop.curr then
-        let rest := stop.next.next_to_string
+        let rest := stop.next.nextToString
         (start.extract stop).getOrElse "" :: split_core stop.next stop.next
       else split_core start stop.next
-    else [start.next_to_string]
+    else [start.nextToString]
 
 def split (p : Charₓ → Bool) (s : Stringₓ) : List Stringₓ :=
-  split_core p s.mk_iterator s.mk_iterator
+  splitCore p s.mkIterator s.mkIterator
 
 end Stringₓ
 

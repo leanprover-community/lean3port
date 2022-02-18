@@ -10,13 +10,13 @@ inductive mode
   deriving DecidableEq
 
 structure State where
-  md : mode
+  md : Mode
   csz : Nat
   fnBps : List Name
   activeBps : List (Nat × Name)
 
 def init_state : State where
-  md := mode.init
+  md := Mode.init
   csz := 0
   fnBps := []
   activeBps := []
@@ -41,24 +41,24 @@ unsafe def show_help : vm Unit := do
 unsafe def add_breakpoint (s : State) (args : List Stringₓ) : vm State :=
   match args with
   | [arg] => do
-    let fn ← return <| to_qualified_name arg
+    let fn ← return <| toQualifiedName arg
     let ok ← is_valid_fn_prefix fn
-    if ok then return { s with fnBps := fn :: List.filterₓ (fun fn' => fn ≠ fn') s.fn_bps }
+    if ok then return { s with fnBps := fn :: List.filterₓ (fun fn' => fn ≠ fn') s }
       else vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >> return s
   | _ => vm.put_str "invalid 'break <fn>' command, incorrect number of arguments\n" >> return s
 
 unsafe def remove_breakpoint (s : State) (args : List Stringₓ) : vm State :=
   match args with
   | [arg] => do
-    let fn ← return <| to_qualified_name arg
-    return { s with fnBps := List.filterₓ (fun fn' => fn ≠ fn') s.fn_bps }
+    let fn ← return <| toQualifiedName arg
+    return { s with fnBps := List.filterₓ (fun fn' => fn ≠ fn') s }
   | _ => vm.put_str "invalid 'rbreak <fn>' command, incorrect number of arguments\n" >> return s
 
 unsafe def show_breakpoints : List Name → vm Unit
   | [] => return ()
   | fn :: fns => do
     vm.put_str "  "
-    vm.put_str fn.to_string
+    vm.put_str fn
     vm.put_str "\n"
     show_breakpoints fns
 
@@ -71,7 +71,7 @@ unsafe def down_cmd (frame : Nat) : vm Nat := do
 
 unsafe def pidx_cmd : Nat → List Stringₓ → vm Unit
   | frame, [arg] => do
-    let idx ← return <| arg.to_nat
+    let idx ← return <| arg.toNat
     let sz ← vm.stack_size
     let (bp, ep) ← vm.call_stack_var_range frame
     if bp + idx ≥ ep then vm.put_str "invalid 'pidx <idx>' command, index out of bounds\n"
@@ -79,9 +79,9 @@ unsafe def pidx_cmd : Nat → List Stringₓ → vm Unit
         let v ← vm.pp_stack_obj (bp + idx)
         let (n, t) ← vm.stack_obj_info (bp + idx)
         let opts ← vm.get_options
-        vm.put_str n.to_string
+        vm.put_str n
         vm.put_str " := "
-        vm.put_str <| v.to_string opts
+        vm.put_str <| v opts
         vm.put_str "\n"
   | _, _ => vm.put_str "invalid 'pidx <idx>' command, incorrect number of arguments\n"
 
@@ -93,9 +93,9 @@ unsafe def print_var : Nat → Nat → Name → vm Unit
         if n = v then do
             let v ← vm.pp_stack_obj i
             let opts ← vm.get_options
-            vm.put_str n.to_string
+            vm.put_str n
             vm.put_str " := "
-            vm.put_str <| v.to_string opts
+            vm.put_str <| v opts
             vm.put_str "\n"
           else print_var (i + 1) ep v
 
@@ -137,7 +137,7 @@ unsafe def cmd_loop_core : State → Nat → List Stringₓ → vm State
                       else
                         if cmd = "bs" then do
                           vm.put_str "breakpoints\n"
-                          show_breakpoints s.fn_bps
+                          show_breakpoints s
                           cmd_loop_core s frame default_cmd
                         else
                           if cmd = "up" ∨ cmd = "u" then do
@@ -177,7 +177,7 @@ def prune_active_bps_core (csz : Nat) : List (Nat × Name) → List (Nat × Name
 
 unsafe def prune_active_bps (s : State) : vm State := do
   let sz ← vm.call_stack_size
-  return { s with activeBps := prune_active_bps_core sz s.active_bps }
+  return { s with activeBps := prune_active_bps_core sz s }
 
 unsafe def updt_csz (s : State) : vm State := do
   let sz ← vm.call_stack_size
@@ -185,11 +185,11 @@ unsafe def updt_csz (s : State) : vm State := do
 
 unsafe def init_transition (s : State) : vm State := do
   let opts ← vm.get_options
-  if opts.get_bool `server ff then return { s with md := mode.done }
+  if opts `server ff then return { s with md := mode.done }
     else do
       let bps ← vm.get_attribute `breakpoint
       let new_s ← return { s with fnBps := bps }
-      if opts.get_bool `debugger.autorun ff then return { new_s with md := mode.run }
+      if opts `debugger.autorun ff then return { new_s with md := mode.run }
         else do
           vm.put_str "Lean debugger\n"
           show_curr_fn "debugging"
@@ -198,7 +198,7 @@ unsafe def init_transition (s : State) : vm State := do
 
 unsafe def step_transition (s : State) : vm State := do
   let sz ← vm.call_stack_size
-  if sz = s.csz then return s
+  if sz = s then return s
     else do
       show_curr_fn "step"
       cmd_loop s ["s"]
@@ -206,12 +206,12 @@ unsafe def step_transition (s : State) : vm State := do
 unsafe def bp_reached (s : State) : vm Bool :=
   (do
       let fn ← vm.curr_fn
-      return <| s.fn_bps.any fun p => p.is_prefix_of fn) <|>
-    return ff
+      return <| s fun p => p fn) <|>
+    return false
 
 unsafe def in_active_bps (s : State) : vm Bool := do
   let sz ← vm.call_stack_size
-  match s.active_bps with
+  match s with
     | [] => return ff
     | (csz, _) :: _ => return (sz = csz)
 
@@ -223,29 +223,29 @@ unsafe def run_transition (s : State) : vm State := do
       show_curr_fn "breakpoint"
       let fn ← vm.curr_fn
       let sz ← vm.call_stack_size
-      let new_s ← return <| { s with activeBps := (sz, fn) :: s.active_bps }
+      let new_s ← return <| { s with activeBps := (sz, fn) :: s }
       cmd_loop new_s ["r"]
 
 unsafe def step_fn (s : State) : vm State := do
   let s ← prune_active_bps s
-  if s.md = mode.init then do
+  if s = mode.init then do
       let new_s ← init_transition s
       updt_csz new_s
     else
-      if s.md = mode.done then return s
+      if s = mode.done then return s
       else
-        if s.md = mode.step then do
+        if s = mode.step then do
           let new_s ← step_transition s
           updt_csz new_s
         else
-          if s.md = mode.run then do
+          if s = mode.run then do
             let new_s ← run_transition s
             updt_csz new_s
           else return s
 
 @[vm_monitor]
 unsafe def monitor : vm_monitor State where
-  init := init_state
+  init := initState
   step := step_fn
 
 end Debugger

@@ -24,14 +24,14 @@ unsafe def injection_with (h : expr) (ns : List Name) (base := `h) (offset := so
       let inj ← mk_const inj_name
       let inj_type ← infer_type inj
       let inj_arity ← get_pi_arity inj_type
-      let num_equations := (inj_type.nth_binding_body (inj_arity - 1)).binding_domain.pi_arity
+      let num_equations := (inj_type (inj_arity - 1)).binding_domain.pi_arity
       let tgt ← target
       let proof ← mk_mapp inj_name (List.repeat none (inj_arity - 3) ++ [some h, some tgt])
       eapply proof
       intron_with num_equations ns base offset
     else do
       let tgt ← target
-      let inductive_name := constructor_left.get_prefix
+      let inductive_name := constructor_left
       let pr ← mk_app (inductive_name <.> "no_confusion") [tgt, lhs, rhs, h]
       exact pr
       return ([], ns)

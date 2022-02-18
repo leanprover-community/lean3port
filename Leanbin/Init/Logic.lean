@@ -599,18 +599,18 @@ def Decidable.toBool (p : Prop) [h : Decidable p] : Bool :=
 export Decidable (isTrue isFalse toBool)
 
 @[simp]
-theorem to_bool_true_eq_tt (h : Decidable True) : @to_bool True h = tt :=
+theorem to_bool_true_eq_tt (h : Decidable True) : @toBool True h = tt :=
   Decidable.casesOn h (fun h => False.elim (Iff.mp not_true h)) fun _ => rfl
 
 @[simp]
-theorem to_bool_false_eq_ff (h : Decidable False) : @to_bool False h = ff :=
+theorem to_bool_false_eq_ff (h : Decidable False) : @toBool False h = ff :=
   Decidable.casesOn h (fun h => rfl) fun h => False.elim h
 
 instance Decidable.true : Decidable True :=
-  is_true trivialₓ
+  isTrue trivialₓ
 
 instance Decidable.false : Decidable False :=
-  is_false not_false
+  isFalse not_false
 
 @[inline]
 def dite {α : Sort u} (c : Prop) [h : Decidable c] : (c → α) → (¬c → α) → α := fun t e => Decidable.recOn h e t
@@ -636,7 +636,7 @@ def by_cases {q : Sort u} [φ : Decidable p] : (p → q) → (¬p → q) → q :
 
 /-- Law of Excluded Middle. -/
 theorem em (p : Prop) [Decidable p] : p ∨ ¬p :=
-  by_cases Or.inl Or.inr
+  byCases Or.inl Or.inr
 
 theorem by_contradiction [Decidable p] (h : ¬p → False) : p :=
   if h₁ : p then h₁ else False.ndrec _ (h h₁)
@@ -675,7 +675,7 @@ section
 variable {p q : Prop}
 
 def decidableOfDecidableOfIff (hp : Decidable p) (h : p ↔ q) : Decidable q :=
-  if hp : p then is_true (Iff.mp h hp) else is_false (Iff.mp (not_iff_not_of_iff h) hp)
+  if hp : p then isTrue (Iff.mp h hp) else isFalse (Iff.mp (not_iff_not_of_iff h) hp)
 
 def decidableOfDecidableOfEqₓ (hp : Decidable p) (h : p = q) : Decidable q :=
   decidableOfDecidableOfIff hp h.to_iff
@@ -690,37 +690,37 @@ section
 variable {p q : Prop}
 
 instance [Decidable p] [Decidable q] : Decidable (p ∧ q) :=
-  if hp : p then if hq : q then is_true ⟨hp, hq⟩ else is_false fun h : p ∧ q => hq (And.right h)
-  else is_false fun h : p ∧ q => hp (And.left h)
+  if hp : p then if hq : q then isTrue ⟨hp, hq⟩ else isFalse fun h : p ∧ q => hq (And.right h)
+  else isFalse fun h : p ∧ q => hp (And.left h)
 
 instance [Decidable p] [Decidable q] : Decidable (p ∨ q) :=
-  if hp : p then is_true (Or.inl hp) else if hq : q then is_true (Or.inr hq) else is_false (Or.ndrec hp hq)
+  if hp : p then isTrue (Or.inl hp) else if hq : q then isTrue (Or.inr hq) else isFalse (Or.ndrec hp hq)
 
 instance [Decidable p] : Decidable ¬p :=
-  if hp : p then is_false (absurd hp) else is_true hp
+  if hp : p then isFalse (absurd hp) else isTrue hp
 
 instance Implies.decidable [Decidable p] [Decidable q] : Decidable (p → q) :=
-  if hp : p then if hq : q then is_true fun h => hq else is_false fun h : p → q => absurd (h hp) hq
-  else is_true fun h => absurd h hp
+  if hp : p then if hq : q then isTrue fun h => hq else isFalse fun h : p → q => absurd (h hp) hq
+  else isTrue fun h => absurd h hp
 
 instance [Decidable p] [Decidable q] : Decidable (p ↔ q) :=
-  if hp : p then if hq : q then is_true ⟨fun _ => hq, fun _ => hp⟩ else is_false fun h => hq (h.1 hp)
+  if hp : p then if hq : q then isTrue ⟨fun _ => hq, fun _ => hp⟩ else is_false fun h => hq (h.1 hp)
   else if hq : q then is_false fun h => hp (h.2 hq) else is_true <| ⟨fun h => absurd h hp, fun h => absurd h hq⟩
 
 instance [Decidable p] [Decidable q] : Decidable (Xorₓ p q) :=
   if hp : p then
-    if hq : q then is_false (Or.ndrec (fun ⟨_, h⟩ => h hq : ¬(p ∧ ¬q)) (fun ⟨_, h⟩ => h hp : ¬(q ∧ ¬p)))
+    if hq : q then isFalse (Or.ndrec (fun ⟨_, h⟩ => h hq : ¬(p ∧ ¬q)) (fun ⟨_, h⟩ => h hp : ¬(q ∧ ¬p)))
     else is_true <| Or.inl ⟨hp, hq⟩
   else
     if hq : q then is_true <| Or.inr ⟨hq, hp⟩
-    else is_false (Or.ndrec (fun ⟨h, _⟩ => hp h : ¬(p ∧ ¬q)) (fun ⟨h, _⟩ => hq h : ¬(q ∧ ¬p)))
+    else isFalse (Or.ndrec (fun ⟨h, _⟩ => hp h : ¬(p ∧ ¬q)) (fun ⟨h, _⟩ => hq h : ¬(q ∧ ¬p)))
 
 instance existsPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] : Decidable (∃ h, P h) :=
   if h : p then decidableOfDecidableOfIff (DP h) ⟨fun h2 => ⟨h, h2⟩, fun ⟨h', h2⟩ => h2⟩
-  else is_false (mt (fun ⟨h, _⟩ => h) h)
+  else isFalse (mt (fun ⟨h, _⟩ => h) h)
 
 instance forallPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] : Decidable (∀ h, P h) :=
-  if h : p then decidableOfDecidableOfIff (DP h) ⟨fun h2 _ => h2, fun al => al h⟩ else is_true fun h2 => absurd h2 h
+  if h : p then decidableOfDecidableOfIff (DP h) ⟨fun h2 _ => h2, fun al => al h⟩ else isTrue fun h2 => absurd h2 h
 
 end
 
@@ -739,25 +739,25 @@ def IsDecRefl {α : Sort u} (p : α → α → Bool) : Prop :=
 open Decidable
 
 instance : DecidableEq Bool
-  | ff, ff => is_true rfl
-  | ff, tt => is_false Bool.ff_ne_tt
-  | tt, ff => is_false (Ne.symm Bool.ff_ne_tt)
-  | tt, tt => is_true rfl
+  | ff, ff => isTrue rfl
+  | ff, tt => isFalse Bool.ff_ne_tt
+  | tt, ff => isFalse (Ne.symm Bool.ff_ne_tt)
+  | tt, tt => isTrue rfl
 
 def decidableEqOfBoolPred {α : Sort u} {p : α → α → Bool} (h₁ : IsDecEq p) (h₂ : IsDecRefl p) : DecidableEq α :=
   fun x y : α =>
-  if hp : p x y = tt then is_true (h₁ hp)
-  else is_false fun hxy : x = y => absurd (h₂ y) (@Eq.recOnₓ _ _ (fun z => ¬p z y = tt) _ hxy hp)
+  if hp : p x y = tt then isTrue (h₁ hp)
+  else isFalse fun hxy : x = y => absurd (h₂ y) (@Eq.recOnₓ _ _ (fun z => ¬p z y = tt) _ hxy hp)
 
-theorem decidable_eq_inl_refl {α : Sort u} [h : DecidableEq α] (a : α) : h a a = is_true (Eq.refl a) :=
+theorem decidable_eq_inl_refl {α : Sort u} [h : DecidableEq α] (a : α) : h a a = isTrue (Eq.refl a) :=
   match h a a with
   | is_true e => rfl
   | is_false n => absurd rfl n
 
-theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} : ∀ n : a ≠ b, h a b = is_false n := fun n =>
+theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} : ∀ n : a ≠ b, h a b = isFalse n := fun n =>
   match h a b with
   | is_true e => absurd e n
-  | is_false n₁ => proof_irrelₓ n n₁ ▸ Eq.refl (is_false n)
+  | is_false n₁ => proof_irrelₓ n n₁ ▸ Eq.refl (isFalse n)
 
 class Inhabited (α : Sort u) where
   default : α
@@ -775,7 +775,7 @@ instance Pi.inhabited (α : Sort u) {β : α → Sort v} [∀ x, Inhabited (β x
   ⟨fun a => default⟩
 
 instance : Inhabited Bool :=
-  ⟨ff⟩
+  ⟨false⟩
 
 instance : Inhabited True :=
   ⟨trivialₓ⟩

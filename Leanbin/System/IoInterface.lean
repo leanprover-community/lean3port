@@ -19,9 +19,9 @@ inductive Io.Process.Stdio
 structure Io.Process.SpawnArgs where
   cmd : Stringₓ
   args : List Stringₓ := []
-  stdin := stdio.inherit
-  stdout := stdio.inherit
-  stderr := stdio.inherit
+  stdin := Stdio.inherit
+  stdout := Stdio.inherit
+  stderr := Stdio.inherit
   cwd : Option Stringₓ := none
   env : List (Stringₓ × Option Stringₓ) := []
 
@@ -49,16 +49,16 @@ class MonadIoNetSystem (m : Type → Type → Type) [MonadIo m] where
   close : socket → m Io.Error Unit
 
 class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
-  mkFileHandle : Stringₓ → Io.Mode → Bool → m Io.Error (handle m)
-  isEof : handle m → m Io.Error Bool
-  flush : handle m → m Io.Error Unit
-  close : handle m → m Io.Error Unit
-  read : handle m → Nat → m Io.Error CharBuffer
-  write : handle m → CharBuffer → m Io.Error Unit
-  getLine : handle m → m Io.Error CharBuffer
-  stdin : m Io.Error (handle m)
-  stdout : m Io.Error (handle m)
-  stderr : m Io.Error (handle m)
+  mkFileHandle : Stringₓ → Io.Mode → Bool → m Io.Error (Handle m)
+  isEof : Handle m → m Io.Error Bool
+  flush : Handle m → m Io.Error Unit
+  close : Handle m → m Io.Error Unit
+  read : Handle m → Nat → m Io.Error CharBuffer
+  write : Handle m → CharBuffer → m Io.Error Unit
+  getLine : Handle m → m Io.Error CharBuffer
+  stdin : m Io.Error (Handle m)
+  stdout : m Io.Error (Handle m)
+  stderr : m Io.Error (Handle m)
   fileExists : Stringₓ → m Io.Error Bool
   dirExists : Stringₓ → m Io.Error Bool
   remove : Stringₓ → m Io.Error Unit
@@ -67,8 +67,8 @@ class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
   rmdir : Stringₓ → m Io.Error Bool
 
 unsafe class monad_io_serial (m : Type → Type → Type) [MonadIo m] where
-  serialize : handle m → expr → m Io.Error Unit
-  deserialize : handle m → m Io.Error expr
+  serialize : Handle m → expr → m Io.Error Unit
+  deserialize : Handle m → m Io.Error expr
 
 class MonadIoEnvironment (m : Type → Type → Type) where
   getEnv : Stringₓ → m Io.Error (Option Stringₓ)
@@ -77,9 +77,9 @@ class MonadIoEnvironment (m : Type → Type → Type) where
 
 class MonadIoProcess (m : Type → Type → Type) [MonadIo m] where
   Child : Type
-  stdin : child → handle m
-  stdout : child → handle m
-  stderr : child → handle m
+  stdin : child → Handle m
+  stdout : child → Handle m
+  stderr : child → Handle m
   spawn : Io.Process.SpawnArgs → m Io.Error child
   wait : child → m Io.Error Nat
   sleep : Nat → m Io.Error Unit

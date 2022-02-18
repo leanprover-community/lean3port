@@ -8,7 +8,7 @@ def nonneg (a : ℤ) : Prop :=
   Int.casesOn a (fun n => True) fun n => False
 
 protected def le (a b : ℤ) : Prop :=
-  nonneg (b - a)
+  Nonneg (b - a)
 
 instance : LE Int :=
   ⟨Int.Le⟩
@@ -19,41 +19,41 @@ protected def lt (a b : ℤ) : Prop :=
 instance : LT Int :=
   ⟨Int.Lt⟩
 
-def decidable_nonneg (a : ℤ) : Decidable (nonneg a) :=
+def decidable_nonneg (a : ℤ) : Decidable (Nonneg a) :=
   Int.casesOn a (fun a => Decidable.true) fun a => Decidable.false
 
 instance decidable_le (a b : ℤ) : Decidable (a ≤ b) :=
-  decidable_nonneg _
+  decidableNonneg _
 
 instance decidable_lt (a b : ℤ) : Decidable (a < b) :=
-  decidable_nonneg _
+  decidableNonneg _
 
 theorem lt_iff_add_one_le (a b : ℤ) : a < b ↔ a + 1 ≤ b :=
   Iff.refl _
 
-theorem nonneg.elim {a : ℤ} : nonneg a → ∃ n : ℕ, a = n :=
+theorem nonneg.elim {a : ℤ} : Nonneg a → ∃ n : ℕ, a = n :=
   Int.casesOn a (fun n H => Exists.introₓ n rfl) fun n' => False.elim
 
-theorem nonneg_or_nonneg_neg (a : ℤ) : nonneg a ∨ nonneg (-a) :=
+theorem nonneg_or_nonneg_neg (a : ℤ) : Nonneg a ∨ Nonneg (-a) :=
   Int.casesOn a (fun n => Or.inl trivialₓ) fun n => Or.inr trivialₓ
 
 theorem le.intro_sub {a b : ℤ} {n : ℕ} (h : b - a = n) : a ≤ b :=
-  show nonneg (b - a) by
+  show Nonneg (b - a) by
     rw [h] <;> trivial
 
 attribute [local simp]
   Int.sub_eq_add_neg Int.add_assoc Int.add_right_neg Int.add_left_neg Int.zero_add Int.add_zero Int.neg_add Int.neg_neg Int.neg_zero
 
 theorem le.intro {a b : ℤ} {n : ℕ} (h : a + n = b) : a ≤ b :=
-  le.intro_sub
+  Le.intro_sub
     (by
       rw [← h, Int.add_comm] <;> simp )
 
 theorem le.dest_sub {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, b - a = n :=
-  nonneg.elim h
+  Nonneg.elim h
 
 theorem le.dest {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, a + n = b :=
-  match le.dest_sub h with
+  match Le.dest_sub h with
   | ⟨n, h₁⟩ =>
     Exists.introₓ n
       (by
@@ -61,26 +61,26 @@ theorem le.dest {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, a + n = b :=
         simp )
 
 theorem le.elim {a b : ℤ} (h : a ≤ b) {P : Prop} (h' : ∀ n : ℕ, a + ↑n = b → P) : P :=
-  Exists.elim (le.dest h) h'
+  Exists.elim (Le.dest h) h'
 
 protected theorem le_totalₓ (a b : ℤ) : a ≤ b ∨ b ≤ a :=
   Or.imp_rightₓ
-    (fun H : nonneg (-(b - a)) =>
+    (fun H : Nonneg (-(b - a)) =>
       have : -(b - a) = a - b := by
         simp [Int.add_comm]
-      show nonneg (a - b) from this ▸ H)
-    (nonneg_or_nonneg_neg (b - a))
+      show Nonneg (a - b) from this ▸ H)
+    (nonneg_or_nonneg_negₓ (b - a))
 
 theorem coe_nat_le_coe_nat_of_le {m n : ℕ} (h : m ≤ n) : (↑m : ℤ) ≤ ↑n :=
   match Nat.Le.dest h with
   | ⟨k, (hk : m + k = n)⟩ =>
-    le.intro
+    Le.intro
       (by
         rw [← hk]
         rfl)
 
 theorem le_of_coe_nat_le_coe_nat {m n : ℕ} (h : (↑m : ℤ) ≤ ↑n) : m ≤ n :=
-  le.elim h fun k => fun hk : ↑m + ↑k = ↑n =>
+  Le.elim h fun k => fun hk : ↑m + ↑k = ↑n =>
     have : m + k = n := Int.coe_nat_inj ((Int.coe_nat_add m k).trans hk)
     Nat.Le.intro this
 
@@ -96,28 +96,28 @@ theorem eq_coe_of_zero_le {a : ℤ} (h : 0 ≤ a) : ∃ n : ℕ, a = n := by
   exact t
 
 theorem eq_succ_of_zero_lt {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
-  let ⟨n, (h : ↑(1 + n) = a)⟩ := le.dest h
+  let ⟨n, (h : ↑(1 + n) = a)⟩ := Le.dest h
   ⟨n, by
     rw [Nat.add_comm] at h <;> exact h.symm⟩
 
 theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a + ↑(Nat.succ n) :=
-  le.intro
+  Le.intro
     (show a + 1 + n = a + Nat.succ n by
       simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]
       rfl)
 
 theorem lt.intro {a b : ℤ} {n : ℕ} (h : a + Nat.succ n = b) : a < b :=
-  h ▸ lt_add_succ a n
+  h ▸ lt_add_succₓ a n
 
 theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, a + ↑(Nat.succ n) = b :=
-  le.elim h fun n => fun hn : a + 1 + n = b =>
+  Le.elim h fun n => fun hn : a + 1 + n = b =>
     Exists.introₓ n
       (by
         rw [← hn, Int.add_assoc, Int.add_comm 1]
         rfl)
 
 theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, a + ↑(Nat.succ n) = b → P) : P :=
-  Exists.elim (lt.dest h) h'
+  Exists.elim (Lt.dest h) h'
 
 theorem coe_nat_lt_coe_nat_iff (n m : ℕ) : (↑n : ℤ) < ↑m ↔ n < m := by
   rw [lt_iff_add_one_le, ← Int.coe_nat_succ, coe_nat_le_coe_nat_iff]
@@ -130,18 +130,18 @@ theorem coe_nat_lt_coe_nat_of_lt {m n : ℕ} (h : m < n) : (↑m : ℤ) < ↑n :
   (coe_nat_lt_coe_nat_iff _ _).mpr h
 
 protected theorem le_reflₓ (a : ℤ) : a ≤ a :=
-  le.intro (Int.add_zero a)
+  Le.intro (Int.add_zero a)
 
 protected theorem le_transₓ {a b c : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ c) : a ≤ c :=
-  le.elim h₁ fun n => fun hn : a + n = b =>
-    le.elim h₂ fun m => fun hm : b + m = c => by
+  Le.elim h₁ fun n => fun hn : a + n = b =>
+    Le.elim h₂ fun m => fun hm : b + m = c => by
       apply le.intro
       rw [← hm, ← hn, Int.add_assoc]
       rfl
 
 protected theorem le_antisymmₓ {a b : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ a) : a = b :=
-  le.elim h₁ fun n => fun hn : a + n = b =>
-    le.elim h₂ fun m => fun hm : b + m = a =>
+  Le.elim h₁ fun n => fun hn : a + n = b =>
+    Le.elim h₂ fun m => fun hm : b + m = a =>
       have : a + ↑(n + m) = a + 0 := by
         rw [Int.coe_nat_add, ← Int.add_assoc, hn, hm, Int.add_zero a]
       have : (↑(n + m) : ℤ) = 0 := Int.add_left_cancel this
@@ -151,7 +151,7 @@ protected theorem le_antisymmₓ {a b : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ a) :
         rw [← hn, this, Int.coe_nat_zero, Int.add_zero a]
 
 protected theorem lt_irreflₓ (a : ℤ) : ¬a < a := fun this : a < a =>
-  lt.elim this fun n => fun hn : a + Nat.succ n = a =>
+  Lt.elim this fun n => fun hn : a + Nat.succ n = a =>
     have : a + Nat.succ n = a + 0 := by
       rw [hn, Int.add_zero]
     have : Nat.succ n = 0 := Int.coe_nat_inj (Int.add_left_cancel this)
@@ -165,17 +165,17 @@ protected theorem ne_of_ltₓ {a b : ℤ} (h : a < b) : a ≠ b := fun this : a 
     (Int.lt_irreflₓ b)
 
 theorem le_of_ltₓ {a b : ℤ} (h : a < b) : a ≤ b :=
-  lt.elim h fun n => fun hn : a + Nat.succ n = b => le.intro hn
+  Lt.elim h fun n => fun hn : a + Nat.succ n = b => Le.intro hn
 
 protected theorem lt_iff_le_and_ne (a b : ℤ) : a < b ↔ a ≤ b ∧ a ≠ b :=
   Iff.intro (fun h => ⟨le_of_ltₓ h, Int.ne_of_ltₓ h⟩) fun ⟨aleb, aneb⟩ =>
-    le.elim aleb fun n => fun hn : a + n = b =>
+    Le.elim aleb fun n => fun hn : a + n = b =>
       have : n ≠ 0 := fun this : n = 0 =>
         aneb
           (by
             rw [← hn, this, Int.coe_nat_zero, Int.add_zero])
       have : n = Nat.succ (Nat.pred n) := Eq.symm (Nat.succ_pred_eq_of_posₓ (Nat.pos_of_ne_zeroₓ this))
-      lt.intro
+      Lt.intro
         (by
           rw [this] at hn
           exact hn)
@@ -184,8 +184,8 @@ theorem lt_succ (a : ℤ) : a < a + 1 :=
   Int.le_reflₓ (a + 1)
 
 protected theorem add_le_add_left {a b : ℤ} (h : a ≤ b) (c : ℤ) : c + a ≤ c + b :=
-  le.elim h fun n => fun hn : a + n = b =>
-    le.intro
+  Le.elim h fun n => fun hn : a + n = b =>
+    Le.intro
       (show c + a + n = c + b by
         rw [Int.add_assoc, hn])
 
@@ -198,17 +198,17 @@ protected theorem add_lt_add_left {a b : ℤ} (h : a < b) (c : ℤ) : c + a < c 
           exact h))
 
 protected theorem mul_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b :=
-  le.elim ha fun n => fun hn =>
-    le.elim hb fun m => fun hm =>
-      le.intro
+  Le.elim ha fun n => fun hn =>
+    Le.elim hb fun m => fun hm =>
+      Le.intro
         (show 0 + ↑n * ↑m = a * b by
           rw [← hn, ← hm]
           simp [Int.zero_add])
 
 protected theorem mul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
-  lt.elim ha fun n => fun hn =>
-    lt.elim hb fun m => fun hm =>
-      lt.intro
+  Lt.elim ha fun n => fun hn =>
+    Lt.elim hb fun m => fun hm =>
+      Lt.intro
         (show 0 + ↑(Nat.succ (Nat.succ n * m + n)) = a * b by
           rw [← hn, ← hm]
           simp [Int.coe_nat_zero]
@@ -251,11 +251,11 @@ instance : LinearOrderₓ Int where
   decidableLe := Int.decidableLe
   decidableLt := Int.decidableLt
 
-theorem eq_nat_abs_of_zero_le {a : ℤ} (h : 0 ≤ a) : a = nat_abs a := by
+theorem eq_nat_abs_of_zero_le {a : ℤ} (h : 0 ≤ a) : a = natAbs a := by
   let ⟨n, e⟩ := eq_coe_of_zero_le h
   rw [e] <;> rfl
 
-theorem le_nat_abs {a : ℤ} : a ≤ nat_abs a :=
+theorem le_nat_abs {a : ℤ} : a ≤ natAbs a :=
   Or.elim (le_totalₓ 0 a)
     (fun h => by
       rw [eq_nat_abs_of_zero_le h] <;> rfl)
@@ -850,7 +850,7 @@ protected theorem mul_self_le_mul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a ≤ b)
 protected theorem mul_self_lt_mul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a < b) : a * a < b * b :=
   Int.mul_lt_mul'ₓ (le_of_ltₓ h2) h2 h1 (lt_of_le_of_ltₓ h1 h2)
 
-theorem of_nat_nonneg (n : ℕ) : 0 ≤ of_nat n :=
+theorem of_nat_nonneg (n : ℕ) : 0 ≤ ofNat n :=
   trivialₓ
 
 theorem coe_succ_pos (n : Nat) : 0 < (Nat.succ n : ℤ) :=
@@ -860,11 +860,11 @@ theorem exists_eq_neg_of_nat {a : ℤ} (H : a ≤ 0) : ∃ n : ℕ, a = -n :=
   let ⟨n, h⟩ := eq_coe_of_zero_le (Int.neg_nonneg_of_nonposₓ H)
   ⟨n, Int.eq_neg_of_eq_neg h.symm⟩
 
-theorem nat_abs_of_nonneg {a : ℤ} (H : 0 ≤ a) : (nat_abs a : ℤ) = a :=
+theorem nat_abs_of_nonneg {a : ℤ} (H : 0 ≤ a) : (natAbs a : ℤ) = a :=
   match a, eq_coe_of_zero_le H with
   | _, ⟨n, rfl⟩ => rfl
 
-theorem of_nat_nat_abs_of_nonpos {a : ℤ} (H : a ≤ 0) : (nat_abs a : ℤ) = -a := by
+theorem of_nat_nat_abs_of_nonpos {a : ℤ} (H : a ≤ 0) : (natAbs a : ℤ) = -a := by
   rw [← nat_abs_neg, nat_abs_of_nonneg (Int.neg_nonneg_of_nonposₓ H)]
 
 theorem lt_of_add_one_le {a b : ℤ} (H : a + 1 ≤ b) : a < b :=
@@ -880,7 +880,7 @@ theorem le_of_lt_add_one {a b : ℤ} (H : a < b + 1) : a ≤ b :=
   Int.le_of_add_le_add_rightₓ H
 
 theorem sub_one_lt_of_le {a b : ℤ} (H : a ≤ b) : a - 1 < b :=
-  Int.sub_right_lt_of_lt_addₓ <| lt_add_one_of_le H
+  Int.sub_right_lt_of_lt_addₓ <| lt_add_one_of_leₓ H
 
 theorem le_of_sub_one_lt {a b : ℤ} (H : a - 1 < b) : a ≤ b :=
   le_of_lt_add_one <| Int.lt_add_of_sub_right_ltₓ H
@@ -895,11 +895,11 @@ theorem sign_of_succ (n : Nat) : sign (Nat.succ n) = 1 :=
   rfl
 
 theorem sign_eq_one_of_pos {a : ℤ} (h : 0 < a) : sign a = 1 :=
-  match a, eq_succ_of_zero_lt h with
+  match a, eq_succ_of_zero_ltₓ h with
   | _, ⟨n, rfl⟩ => rfl
 
 theorem sign_eq_neg_one_of_neg {a : ℤ} (h : a < 0) : sign a = -1 :=
-  match a, eq_neg_succ_of_lt_zero h with
+  match a, eq_neg_succ_of_lt_zeroₓ h with
   | _, ⟨n, rfl⟩ => rfl
 
 theorem eq_zero_of_sign_eq_zero : ∀ {a : ℤ}, sign a = 0 → a = 0
@@ -911,13 +911,13 @@ theorem pos_of_sign_eq_one : ∀ {a : ℤ}, sign a = 1 → 0 < a
 theorem neg_of_sign_eq_neg_one : ∀ {a : ℤ}, sign a = -1 → a < 0
   | (n + 1 : ℕ), h => nomatch h
   | 0, h => nomatch h
-  | -[1+ n], _ => neg_succ_lt_zero _
+  | -[1+ n], _ => neg_succ_lt_zeroₓ _
 
 theorem sign_eq_one_iff_pos (a : ℤ) : sign a = 1 ↔ 0 < a :=
-  ⟨pos_of_sign_eq_one, sign_eq_one_of_pos⟩
+  ⟨pos_of_sign_eq_oneₓ, sign_eq_one_of_posₓ⟩
 
 theorem sign_eq_neg_one_iff_neg (a : ℤ) : sign a = -1 ↔ a < 0 :=
-  ⟨neg_of_sign_eq_neg_one, sign_eq_neg_one_of_neg⟩
+  ⟨neg_of_sign_eq_neg_oneₓ, sign_eq_neg_one_of_negₓ⟩
 
 theorem sign_eq_zero_iff_zero (a : ℤ) : sign a = 0 ↔ a = 0 :=
   ⟨eq_zero_of_sign_eq_zero, fun h => by

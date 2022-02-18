@@ -53,17 +53,17 @@ theorem bxor_self (b : Bool) : bxor b b = ff := by
   cases b <;> simp
 
 @[simp]
-theorem bxor_tt (b : Bool) : bxor b tt = bnot b := by
+theorem bxor_tt (b : Bool) : bxor b true = bnot b := by
   cases b <;> simp
 
-theorem bxor_ff (b : Bool) : bxor b ff = b := by
+theorem bxor_ff (b : Bool) : bxor b false = b := by
   cases b <;> simp
 
 @[simp]
-theorem tt_bxor (b : Bool) : bxor tt b = bnot b := by
+theorem tt_bxor (b : Bool) : bxor true b = bnot b := by
   cases b <;> simp
 
-theorem ff_bxor (b : Bool) : bxor ff b = b := by
+theorem ff_bxor (b : Bool) : bxor false b = b := by
   cases b <;> simp
 
 @[simp]
@@ -135,18 +135,18 @@ theorem coe_sort_tt : ↥tt = True :=
     simp
 
 @[simp]
-theorem to_bool_iff (p : Prop) [d : Decidable p] : to_bool p = tt ↔ p :=
+theorem to_bool_iff (p : Prop) [d : Decidable p] : toBool p = tt ↔ p :=
   match d with
   | is_true hp => ⟨fun h => hp, fun _ => rfl⟩
   | is_false hnp => ⟨fun h => Bool.noConfusion h, fun hp => absurd hp hnp⟩
 
-theorem to_bool_true {p : Prop} [Decidable p] : p → to_bool p :=
+theorem to_bool_true {p : Prop} [Decidable p] : p → toBool p :=
   (to_bool_iff p).2
 
-theorem to_bool_tt {p : Prop} [Decidable p] : p → to_bool p = tt :=
+theorem to_bool_tt {p : Prop} [Decidable p] : p → toBool p = tt :=
   to_bool_true
 
-theorem of_to_bool_true {p : Prop} [Decidable p] : to_bool p → p :=
+theorem of_to_bool_true {p : Prop} [Decidable p] : toBool p → p :=
   (to_bool_iff p).1
 
 theorem bool_iff_false {b : Bool} : ¬b ↔ b = ff := by
@@ -158,16 +158,16 @@ theorem bool_eq_false {b : Bool} : ¬b → b = ff :=
   bool_iff_false.1
 
 @[simp]
-theorem to_bool_ff_iff (p : Prop) [Decidable p] : to_bool p = ff ↔ ¬p :=
+theorem to_bool_ff_iff (p : Prop) [Decidable p] : toBool p = ff ↔ ¬p :=
   bool_iff_false.symm.trans (not_congr (to_bool_iff _))
 
-theorem to_bool_ff {p : Prop} [Decidable p] : ¬p → to_bool p = ff :=
+theorem to_bool_ff {p : Prop} [Decidable p] : ¬p → toBool p = ff :=
   (to_bool_ff_iff p).2
 
-theorem of_to_bool_ff {p : Prop} [Decidable p] : to_bool p = ff → ¬p :=
+theorem of_to_bool_ff {p : Prop} [Decidable p] : toBool p = ff → ¬p :=
   (to_bool_ff_iff p).1
 
-theorem to_bool_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) : to_bool p = to_bool q := by
+theorem to_bool_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) : toBool p = toBool q := by
   induction' h' : to_bool q with
   exact to_bool_ff (mt h.1 <| of_to_bool_ff h')
   exact to_bool_true (h.2 <| of_to_bool_true h')

@@ -10,21 +10,21 @@ private unsafe def target' : tactic expr :=
 unsafe def get_constructors_for (e : expr) : tactic (List Name) := do
   let env ← get_env
   let I ← return e.extract_opt_auto_param.get_app_fn.const_name
-  when (¬env.is_inductive I) (fail "constructor tactic failed, target is not an inductive datatype")
-  return <| env.constructors_of I
+  when (¬env I) (fail "constructor tactic failed, target is not an inductive datatype")
+  return <| env I
 
-private unsafe def try_constructors (cfg : apply_cfg) : List Name → tactic (List (Name × expr))
+private unsafe def try_constructors (cfg : ApplyCfg) : List Name → tactic (List (Name × expr))
   | [] => fail "constructor tactic failed, none of the constructors is applicable"
   | c :: cs => (mk_const c >>= fun e => apply e cfg) <|> try_constructors cs
 
-unsafe def constructor (cfg : apply_cfg := {  }) : tactic (List (Name × expr)) :=
+unsafe def constructor (cfg : ApplyCfg := {  }) : tactic (List (Name × expr)) :=
   target' >>= get_constructors_for >>= try_constructors cfg
 
 unsafe def econstructor : tactic (List (Name × expr)) :=
-  constructor { NewGoals := new_goals.non_dep_only }
+  constructor { NewGoals := NewGoals.non_dep_only }
 
 unsafe def fconstructor : tactic (List (Name × expr)) :=
-  constructor { NewGoals := new_goals.all }
+  constructor { NewGoals := NewGoals.all }
 
 unsafe def left : tactic (List (Name × expr)) := do
   let tgt ← target'
@@ -71,9 +71,8 @@ unsafe def existsi (e : expr) : tactic Unit := do
   eapply (app t e)
   let t_type ← infer_type t >>= whnf
   let e_type ← infer_type e
-  guardₓ t_type.is_pi <|> fail "existsi tactic failed, failed to infer type"
-  unify t_type.binding_domain e_type <|>
-      fail "existsi tactic failed, type mismatch between given term witness and expected type"
+  guardₓ t_type <|> fail "existsi tactic failed, failed to infer type"
+  unify t_type e_type <|> fail "existsi tactic failed, type mismatch between given term witness and expected type"
 
 end Tactic
 

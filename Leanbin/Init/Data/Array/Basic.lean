@@ -33,7 +33,7 @@ def iterate_aux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : �
 
 /-- Fold over the elements of the given array in ascending order. Has builtin VM implementation. -/
 def iterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) : β :=
-  iterate_aux a f n (le_reflₓ _) b
+  iterateAux a f n (le_reflₓ _) b
 
 /-- Map the array. Has builtin VM implementation. -/
 def foreach (a : DArray n α) (f : ∀ i : Finₓ n, α i → α' i) : DArray n α' :=
@@ -56,7 +56,7 @@ def rev_iterate_aux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β)
     rev_iterate_aux j (le_of_ltₓ h) (f i (a.read i) b)
 
 def rev_iterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) : β :=
-  rev_iterate_aux a f n (le_reflₓ _) b
+  revIterateAux a f n (le_reflₓ _) b
 
 @[simp]
 theorem read_write (a : DArray n α) (i : Finₓ n) (v : α i) : read (write a i v) i = v := by
@@ -78,8 +78,8 @@ protected theorem ext' {a b : DArray n α} (h : ∀ i : Nat h : i < n, read a �
   apply h
 
 protected def beq_aux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : Nat, i ≤ n → Bool
-  | 0, h => tt
-  | i + 1, h => if a.read ⟨i, h⟩ = b.read ⟨i, h⟩ then beq_aux i (le_of_ltₓ h) else ff
+  | 0, h => true
+  | i + 1, h => if a.read ⟨i, h⟩ = b.read ⟨i, h⟩ then beq_aux i (le_of_ltₓ h) else false
 
 /-- Boolean element-wise equality check. -/
 protected def beq [∀ i, DecidableEq (α i)] (a b : DArray n α) : Bool :=
@@ -147,7 +147,7 @@ theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.be
   contradiction
 
 instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) := fun a b =>
-  if h : DArray.beq a b = tt then is_true (of_beq_eq_tt h) else is_false (of_beq_eq_ff (eq_ff_of_not_eq_tt h))
+  if h : DArray.beq a b = tt then isTrue (of_beq_eq_tt h) else isFalse (of_beq_eq_ff (eq_ff_of_not_eq_tt h))
 
 end DArray
 
@@ -199,10 +199,10 @@ def rev_iterate (a : Arrayₓ n α) (b : β) (f : Finₓ n → α → β → β)
   DArray.revIterate a b f
 
 def rev_foldl (a : Arrayₓ n α) (b : β) (f : α → β → β) : β :=
-  rev_iterate a b fun _ => f
+  revIterate a b fun _ => f
 
 def to_list (a : Arrayₓ n α) : List α :=
-  a.rev_foldl [] (· :: ·)
+  a.revFoldl [] (· :: ·)
 
 theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
   Nat.lt_of_le_and_neₓ (Nat.le_of_lt_succₓ h₁) h₂
@@ -226,12 +226,12 @@ def mmap_core {β : Type v} {m : Type v → Type w} [Monadₓ m] (a : Arrayₓ n
   | i + 1, h => do
     let bs ← mmap_core i (le_of_ltₓ h)
     let b ← f (a.read ⟨i, h⟩)
-    pure <| bs.push_back b
+    pure <| bs b
 
 /-- Monadically map a function over the array. -/
 @[inline]
 def mmap {β : Type v} {m} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) : m (Arrayₓ n β) :=
-  a.mmap_core f _ (le_reflₓ _)
+  a.mmapCore f _ (le_reflₓ _)
 
 /-- Map a function over the array. -/
 @[inline]

@@ -4,10 +4,10 @@ import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.SetGetOptionTactics
 
 structure CcConfig where
-  ignoreInstances : Bool := tt
-  ac : Bool := tt
+  ignoreInstances : Bool := true
+  ac : Bool := true
   hoFns : Option (List Name) := none
-  em : Bool := tt
+  em : Bool := true
 
 /-- Congruence closure state.
 This may be considered to be a set of expressions and an equivalence class over this set.
@@ -93,10 +93,10 @@ unsafe def mk_using_hs : tactic cc_state :=
   cc_state.mk_using_hs_core {  }
 
 unsafe def roots (s : cc_state) : List expr :=
-  cc_state.roots_core s tt
+  cc_state.roots_core s true
 
 unsafe instance : has_to_tactic_format cc_state :=
-  ⟨fun s => cc_state.pp_core s tt⟩
+  ⟨fun s => cc_state.pp_core s true⟩
 
 unsafe def eqc_of_core (s : cc_state) : expr → expr → List expr → List expr
   | e, f, r =>
@@ -135,14 +135,14 @@ unsafe def tactic.cc_core (cfg : CcConfig) : tactic Unit := do
   let s ← cc_state.mk_using_hs_core cfg
   let t ← target
   let s ← s.internalize t
-  if s.inconsistent then do
-      let pr ← s.proof_for_false
+  if s then do
+      let pr ← s
       mk_app `false.elim [t, pr] >>= exact
     else do
       let tr ← return <| expr.const `true []
-      let b ← s.is_eqv t tr
+      let b ← s t tr
       if b then do
-          let pr ← s.eqv_proof t tr
+          let pr ← s t tr
           mk_app `of_eq_true [pr] >>= exact
         else do
           let dbg ← get_bool_option `trace.cc.failure ff
@@ -158,7 +158,7 @@ unsafe def tactic.cc : tactic Unit :=
   tactic.cc_core {  }
 
 unsafe def tactic.cc_dbg_core (cfg : CcConfig) : tactic Unit :=
-  save_options <| set_bool_option `trace.cc.failure tt >> tactic.cc_core cfg
+  save_options <| set_bool_option `trace.cc.failure true >> tactic.cc_core cfg
 
 unsafe def tactic.cc_dbg : tactic Unit :=
   tactic.cc_dbg_core {  }
@@ -170,7 +170,7 @@ unsafe def tactic.ac_refl : tactic Unit := do
   let s ← s.internalize rhs
   let b ← s.is_eqv lhs rhs
   if b then do
-      s.eqv_proof lhs rhs >>= exact
+      s lhs rhs >>= exact
     else do
       fail "ac_refl failed"
 

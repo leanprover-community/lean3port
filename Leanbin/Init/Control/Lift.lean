@@ -24,16 +24,16 @@ export HasMonadLiftT (monadLift)
     Because of [limitations of the current coercion resolution](https://github.com/leanprover/lean/issues/1402), this definition is not marked as a global instance and should be marked locally instead. -/
 @[reducible]
 def hasMonadLiftToHasCoe {m n} [HasMonadLiftT m n] {α} : Coe (m α) (n α) :=
-  ⟨monad_lift⟩
+  ⟨monadLift⟩
 
 instance (priority := 100) hasMonadLiftTTrans m n o [HasMonadLiftT m n] [HasMonadLift n o] : HasMonadLiftT m o :=
-  ⟨fun α ma => HasMonadLift.monadLift (monad_lift ma : n α)⟩
+  ⟨fun α ma => HasMonadLift.monadLift (monadLift ma : n α)⟩
 
 instance hasMonadLiftTRefl m : HasMonadLiftT m m :=
   ⟨fun α => id⟩
 
 @[simp]
-theorem monad_lift_refl {m : Type u → Type v} {α} : (monad_lift : m α → m α) = id :=
+theorem monad_lift_refl {m : Type u → Type v} {α} : (monadLift : m α → m α) = id :=
   rfl
 
 /-- A functor in the category of monads. Can be used to lift monad-transforming functions.
@@ -53,13 +53,13 @@ export MonadFunctorTₓ (monadMap)
 
 instance (priority := 100) monadFunctorTTrans m m' n n' o o' [MonadFunctorTₓ m m' n n'] [MonadFunctorₓ n n' o o'] :
     MonadFunctorTₓ m m' o o' :=
-  ⟨fun α f => MonadFunctorₓ.monadMap fun α => (monad_map @f : n α → n' α)⟩
+  ⟨fun α f => MonadFunctorₓ.monadMap fun α => (monadMap @f : n α → n' α)⟩
 
 instance monadFunctorTRefl m m' : MonadFunctorTₓ m m' m m' :=
   ⟨fun α f => f⟩
 
 @[simp]
-theorem monad_map_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α) {α} : (monad_map @f : m α → m' α) = f :=
+theorem monad_map_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α) {α} : (monadMap @f : m α → m' α) = f :=
   rfl
 
 /-- Run a monad stack to completion.

@@ -52,7 +52,7 @@ This will be written all on one line, but when the list is too large, it will pu
 unsafe axiom format.nest : Nat → format → format
 
 /-- Make the given format be displayed a particular color. -/
-unsafe axiom format.highlight : format → color → format
+unsafe axiom format.highlight : format → Color → format
 
 /--
 When printing the given format `f`, if `f.flatten` fits without need for linebreaks then print the `f.flatten`, else print `f` unflattened with linebreaks. -/
@@ -81,7 +81,7 @@ unsafe instance : Append format :=
   ⟨format.compose⟩
 
 unsafe instance : HasToString format :=
-  ⟨fun f => f.to_string options.mk⟩
+  ⟨fun f => f.toString options.mk⟩
 
 /-- Use this instead of `has_to_string` to enable prettier formatting.
 See docstring for `format` for more on the differences between `format` and `string`.
@@ -111,7 +111,7 @@ unsafe def format.when {α : Type u} [has_to_format α] : Bool → α → format
   | ff, a => nil
 
 unsafe def format.join (xs : List format) : format :=
-  foldl compose (of_string "") xs
+  foldlₓ compose (of_string "") xs
 
 unsafe instance : has_to_format options :=
   ⟨fun o => format.of_options o⟩
@@ -129,10 +129,10 @@ unsafe instance : has_to_format Nat :=
   ⟨fun n => format.of_nat n⟩
 
 unsafe instance : has_to_format Unsigned :=
-  ⟨fun n => to_fmt n.to_nat⟩
+  ⟨fun n => to_fmt n.toNat⟩
 
 unsafe instance : has_to_format Charₓ :=
-  ⟨fun c : Charₓ => format.of_string c.to_string⟩
+  ⟨fun c : Charₓ => format.of_string c.toString⟩
 
 unsafe def list.to_format {α : Type u} [has_to_format α] : List α → format
   | [] => to_fmt "[]"
@@ -144,7 +144,7 @@ unsafe instance {α : Type u} [has_to_format α] : has_to_format (List α) :=
 attribute [instance] string.has_to_format
 
 unsafe instance : has_to_format Name :=
-  ⟨fun n => to_fmt n.to_string⟩
+  ⟨fun n => to_fmt n.toString⟩
 
 unsafe instance : has_to_format Unit :=
   ⟨fun u => to_fmt "()"⟩

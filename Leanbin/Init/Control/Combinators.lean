@@ -58,10 +58,10 @@ export List (mmap mmap' mfilter mfoldl)
 namespace Monadₓ
 
 def mapm :=
-  @mmap
+  @mmapₓ
 
 def mapm' :=
-  @mmap'
+  @mmap'ₓ
 
 def join :=
   @mjoin
@@ -87,10 +87,10 @@ def sequence' {m : Type → Type u} [Monadₓ m] {α : Type} : List (m α) → m
   | h :: t => h >> sequence' t
 
 def whenb {m : Type → Type} [Monadₓ m] (b : Bool) (t : m Unit) : m Unit :=
-  _root_.cond b t (return ())
+  cond b t (return ())
 
 def unlessb {m : Type → Type} [Monadₓ m] (b : Bool) (t : m Unit) : m Unit :=
-  _root_.cond b (return ()) t
+  cond b (return ()) t
 
 end Monadₓ
 

@@ -6,7 +6,7 @@ namespace Tactic
 
 open Expr
 
-private unsafe def relation_tactic (md : transparency) (op_for : environment → Name → Option Name)
+private unsafe def relation_tactic (md : Transparency) (op_for : environment → Name → Option Name)
     (tac_name : Stringₓ) : tactic Unit := do
   let tgt ← target >>= instantiate_mvars
   let env ← get_env
@@ -31,7 +31,7 @@ unsafe def relation_lhs_rhs (e : expr) : tactic (Name × expr × expr) := do
   let env ← get_env
   let some (arity, lhs_pos, rhs_pos) ← return <| env.relation_info c
   let args ← return <| get_app_args e
-  guardₓ (args.length = arity)
+  guardₓ (args = arity)
   let some lhs ← return <| args.nth lhs_pos
   let some rhs ← return <| args.nth rhs_pos
   return (c, lhs, rhs)

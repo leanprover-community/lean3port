@@ -139,14 +139,14 @@ theorem run_map (f : α → β) [IsLawfulMonad m] :
 
 @[simp]
 theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) :
-    (monad_lift x : StateTₓ σ m α).run st = do
-      let a ← (monad_lift x : m α)
+    (monadLift x : StateTₓ σ m α).run st = do
+      let a ← (monadLift x : m α)
       pure (a, st) :=
   rfl
 
 @[simp]
 theorem run_monad_map {m' n n'} [Monadₓ m'] [MonadFunctorTₓ n n' m m'] (f : ∀ {α}, n α → n' α) :
-    (monad_map (@f) x : StateTₓ σ m' α).run st = monad_map (@f) (x.run st) :=
+    (monadMap (@f) x : StateTₓ σ m' α).run st = monadMap (@f) (x.run st) :=
   rfl
 
 @[simp]
@@ -208,12 +208,12 @@ theorem run_map (f : α → β) [IsLawfulMonad m] : (f <$> x).run = Except.map�
 
 @[simp]
 theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) :
-    (monad_lift x : ExceptTₓ ε m α).run = Except.ok <$> (monad_lift x : m α) :=
+    (monadLift x : ExceptTₓ ε m α).run = Except.ok <$> (monadLift x : m α) :=
   rfl
 
 @[simp]
 theorem run_monad_map {m' n n'} [Monadₓ m'] [MonadFunctorTₓ n n' m m'] (f : ∀ {α}, n α → n' α) :
-    (monad_map (@f) x : ExceptTₓ ε m' α).run = monad_map (@f) x.run :=
+    (monadMap (@f) x : ExceptTₓ ε m' α).run = monadMap (@f) x.run :=
   rfl
 
 end ExceptTₓ
@@ -273,13 +273,12 @@ theorem run_map (f : α → β) [IsLawfulMonad m] : (f <$> x).run r = f <$> x.ru
   rw [← bind_pure_comp_eq_map _ (x.run r)] <;> rfl
 
 @[simp]
-theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) :
-    (monad_lift x : ReaderTₓ ρ m α).run r = (monad_lift x : m α) :=
+theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) : (monadLift x : ReaderTₓ ρ m α).run r = (monadLift x : m α) :=
   rfl
 
 @[simp]
 theorem run_monad_map {m' n n'} [Monadₓ m'] [MonadFunctorTₓ n n' m m'] (f : ∀ {α}, n α → n' α) :
-    (monad_map (@f) x : ReaderTₓ ρ m' α).run r = monad_map (@f) (x.run r) :=
+    (monadMap (@f) x : ReaderTₓ ρ m' α).run r = monadMap (@f) (x.run r) :=
   rfl
 
 @[simp]
@@ -324,12 +323,12 @@ theorem run_map (f : α → β) [IsLawfulMonad m] : (f <$> x).run = Option.map f
 
 @[simp]
 theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) :
-    (monad_lift x : OptionTₓ m α).run = some <$> (monad_lift x : m α) :=
+    (monadLift x : OptionTₓ m α).run = some <$> (monadLift x : m α) :=
   rfl
 
 @[simp]
 theorem run_monad_map {m' n n'} [Monadₓ m'] [MonadFunctorTₓ n n' m m'] (f : ∀ {α}, n α → n' α) :
-    (monad_map (@f) x : OptionTₓ m' α).run = monad_map (@f) x.run :=
+    (monadMap (@f) x : OptionTₓ m' α).run = monadMap (@f) x.run :=
   rfl
 
 end OptionTₓ

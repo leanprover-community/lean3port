@@ -6,7 +6,7 @@ namespace Conv
 
 unsafe def save_info (p : Pos) : conv Unit := do
   let s ← tactic.read
-  tactic.save_info_thunk p fun _ => s.to_format tt
+  tactic.save_info_thunk p fun _ => s tt
 
 unsafe def step {α : Type} (c : conv α) : conv Unit :=
   c >> return ()
@@ -76,17 +76,18 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   let s ← simp_lemmas.mk_default
   let st ← tactic.read
   let (found_result, new_lhs, pr) ←
-    tactic.ext_simplify_core (success ff st)
-        { zeta := ff, beta := ff, singlePass := tt, eta := ff, proj := ff, failIfUnchanged := ff, memoize := ff } s
-        (fun u => return u)
+    tactic.ext_simplify_core (success false st)
+        { zeta := false, beta := false, singlePass := true, eta := false, proj := false, failIfUnchanged := false,
+          memoize := false }
+        s (fun u => return u)
         (fun found_result s r p e => do
           let found ← tactic.unwrap found_result
           guardₓ (Not found)
-          let matched ← tactic.match_pattern pat e >> return tt <|> return ff
+          let matched ← tactic.match_pattern pat e >> return true <|> return false
           guardₓ matched
           let res ← tactic.capture (c.convert e r)
           match res with
-            | success r s' => return (success tt s', r.fst, some r.snd, ff)
+            | success r s' => return (success tt s', r, some r, ff)
             | exception f p s' => return (exception f p s', e, none, ff))
         (fun a s r p e => tactic.failed) r lhs
   let found ← tactic.unwrap found_result
@@ -100,16 +101,17 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
   let st ← tactic.read
   let (found_result, new_lhs, pr) ←
     tactic.ext_simplify_core (success 1 st)
-        { zeta := ff, beta := ff, singlePass := tt, eta := ff, proj := ff, failIfUnchanged := ff, memoize := ff } s
-        (fun u => return u)
+        { zeta := false, beta := false, singlePass := true, eta := false, proj := false, failIfUnchanged := false,
+          memoize := false }
+        s (fun u => return u)
         (fun found_result s r p e => do
           let i ← tactic.unwrap found_result
-          let matched ← tactic.match_pattern pat e >> return tt <|> return ff
+          let matched ← tactic.match_pattern pat e >> return true <|> return false
           guardₓ matched
           if i ∈ occs then do
-              let res ← tactic.capture (c.convert e r)
+              let res ← tactic.capture (c e r)
               match res with
-                | success r s' => return (success (i + 1) s', r.fst, some r.snd, tt)
+                | success r s' => return (success (i + 1) s', r, some r, tt)
                 | exception f p s' => return (exception f p s', e, none, tt)
             else do
               let st ← tactic.read
@@ -122,7 +124,7 @@ unsafe def simp (no_dflt : parse only_flag) (hs : parse tactic.simp_arg_list) (a
     (cfg : tactic.simp_config_ext := {  }) : conv Unit := do
   let (s, u) ← tactic.mk_simp_set no_dflt attr_names hs
   let (r, lhs, rhs) ← tactic.target_lhs_rhs
-  let (new_lhs, pr, lms) ← tactic.simplify s u lhs cfg.to_simp_config r cfg.discharger
+  let (new_lhs, pr, lms) ← tactic.simplify s u lhs cfg.toSimpConfig r cfg.discharger
   update_lhs new_lhs pr
   return ()
 
@@ -136,28 +138,29 @@ open tactic.interactive (rw_rules rw_rule get_rule_eqn_lemmas to_expr')
 
 open tactic (RewriteCfg)
 
-private unsafe def rw_lhs (h : expr) (cfg : rewrite_cfg) : conv Unit := do
+private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let l ← conv.lhs
   let (new_lhs, prf, _) ← tactic.rewrite h l cfg
   update_lhs new_lhs prf
 
-private unsafe def rw_core (rs : List rw_rule) (cfg : rewrite_cfg) : conv Unit :=
+-- ././Mathport/Syntax/Translate/Basic.lean:707:4: warning: unsupported notation `eq_lemmas
+private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
   rs.mmap' fun r => do
-    save_info r.pos
+    save_info r
     let eq_lemmas ← get_rule_eqn_lemmas r
     orelse'
         (do
-          let h ← to_expr' r.rule
-          rw_lhs h { cfg with symm := r.symm })
-        (eq_lemmas.mfirst fun n => do
+          let h ← to_expr' r
+          rw_lhs h { cfg with symm := r })
+        (eq_lemmas fun n => do
           let e ← tactic.mk_const n
-          rw_lhs e { cfg with symm := r.symm })
-        eq_lemmas.empty
+          rw_lhs e { cfg with symm := r })
+        (eq_lemmas eq_lemmas.empty)
 
-unsafe def rewrite (q : parse rw_rules) (cfg : rewrite_cfg := {  }) : conv Unit :=
+unsafe def rewrite (q : parse rw_rules) (cfg : RewriteCfg := {  }) : conv Unit :=
   rw_core q.rules cfg
 
-unsafe def rw (q : parse rw_rules) (cfg : rewrite_cfg := {  }) : conv Unit :=
+unsafe def rw (q : parse rw_rules) (cfg : RewriteCfg := {  }) : conv Unit :=
   rw_core q.rules cfg
 
 end Rw
@@ -186,13 +189,13 @@ private unsafe def conv_at (h_name : Name) (c : conv Unit) : tactic Unit := do
   let h ← get_local h_name
   let h_type ← infer_type h
   let (new_h_type, pr) ← c.convert h_type
-  replace_hyp h new_h_type pr
+  replace_hyp h new_h_type pr `` id_tag.conv
   return ()
 
 private unsafe def conv_target (c : conv Unit) : tactic Unit := do
   let t ← target
   let (new_t, pr) ← c.convert t
-  replace_target new_t pr
+  replace_target new_t pr `` id_tag.conv
   try tactic.triv
   try (tactic.reflexivity reducible)
 

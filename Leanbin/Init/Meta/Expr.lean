@@ -15,9 +15,9 @@ structure Pos where
 instance : DecidableEq Pos
   | ⟨l₁, c₁⟩, ⟨l₂, c₂⟩ =>
     if h₁ : l₁ = l₂ then
-      if h₂ : c₁ = c₂ then is_true (Eq.recOnₓ h₁ (Eq.recOnₓ h₂ rfl))
-      else is_false fun contra => Pos.noConfusion contra fun e₁ e₂ => absurd e₂ h₂
-    else is_false fun contra => Pos.noConfusion contra fun e₁ e₂ => absurd e₁ h₁
+      if h₂ : c₁ = c₂ then isTrue (Eq.recOnₓ h₁ (Eq.recOnₓ h₂ rfl))
+      else isFalse fun contra => Pos.noConfusion contra fun e₁ e₂ => absurd e₂ h₂
+    else isFalse fun contra => Pos.noConfusion contra fun e₁ e₂ => absurd e₁ h₁
 
 unsafe instance : has_to_format Pos :=
   ⟨fun ⟨l, c⟩ => "⟨" ++ l ++ ", " ++ c ++ "⟩"⟩
@@ -78,7 +78,7 @@ unsafe axiom macro_def : Type
     The `elab` flag is indicates whether the `expr` has been elaborated and doesn't contain any placeholder macros.
     For example the equality `x = x` is represented in `expr ff` as ``app (app (const `eq _) x) x`` while in `expr tt` it is represented as ``app (app (app (const `eq _) t) x) x`` (one more argument).
     The VM replaces instances of this datatype with the C++ implementation. -/
-unsafe inductive expr (elaborated : Bool := tt)
+unsafe inductive expr (elaborated : Bool := true)
   | var : Nat → expr
   | sort : level → expr
   | const : Name → List level → expr
@@ -92,7 +92,7 @@ unsafe inductive expr (elaborated : Bool := tt)
 
 variable {elab : Bool}
 
-unsafe instance : Inhabited expr :=
+unsafe instance : Inhabited (expr elab) :=
   ⟨expr.sort level.zero⟩
 
 /-- Get the name of the macro definition. -/
@@ -129,7 +129,7 @@ unsafe instance : HasToString (expr elab) :=
   ⟨expr.to_string⟩
 
 unsafe instance : has_to_format (expr elab) :=
-  ⟨fun e => e.to_string⟩
+  ⟨fun e => e.toString⟩
 
 /-- Coercion for letting users write (f a) instead of (expr.app f a) -/
 unsafe instance : CoeFun (expr elab) fun e => expr elab → expr elab :=
@@ -335,16 +335,16 @@ unsafe def instantiate_locals (s : List (Name × expr)) (e : expr) : expr :=
   instantiate_vars (abstract_locals e (List.reverse (List.map Prod.fst s))) (List.map Prod.snd s)
 
 unsafe def is_var : expr → Bool
-  | var _ => tt
-  | _ => ff
+  | var _ => true
+  | _ => false
 
 unsafe def app_of_list : expr → List expr → expr
   | f, [] => f
   | f, p :: ps => app_of_list (f p) ps
 
 unsafe def is_app : expr → Bool
-  | app f a => tt
-  | e => ff
+  | app f a => true
+  | e => false
 
 unsafe def app_fn : expr → expr
   | app f a => f
@@ -398,12 +398,12 @@ unsafe def const_name : expr elab → Name
   | e => Name.anonymous
 
 unsafe def is_constant : expr elab → Bool
-  | const n ls => tt
-  | e => ff
+  | const n ls => true
+  | e => false
 
 unsafe def is_local_constant : expr → Bool
-  | local_const n m bi t => tt
-  | e => ff
+  | local_const n m bi t => true
+  | e => false
 
 unsafe def local_uniq_name : expr → Name
   | local_const n m bi t => n
@@ -418,12 +418,12 @@ unsafe def local_type : expr elab → expr elab
   | e => e
 
 unsafe def is_aux_decl : expr → Bool
-  | local_const _ _ BinderInfo.aux_decl _ => tt
-  | _ => ff
+  | local_const _ _ BinderInfo.aux_decl _ => true
+  | _ => false
 
 unsafe def is_constant_of : expr elab → Name → Bool
   | const n₁ ls, n₂ => n₁ = n₂
-  | e, n => ff
+  | e, n => false
 
 unsafe def is_app_of (e : expr) (n : Name) : Bool :=
   is_constant_of (get_app_fn e) n
@@ -433,8 +433,8 @@ unsafe def is_napp_of (e : expr) (c : Name) (n : Nat) : Bool :=
   is_app_of e c ∧ get_app_num_args e = n
 
 unsafe def is_false : expr → Bool
-  | quote.1 False => tt
-  | _ => ff
+  | quote.1 False => true
+  | _ => false
 
 unsafe def is_not : expr → Option expr
   | quote.1 (Not (%%ₓa)) => some a
@@ -481,20 +481,20 @@ unsafe def is_heq : expr → Option (expr × expr × expr × expr)
   | _ => none
 
 unsafe def is_lambda : expr → Bool
-  | lam _ _ _ _ => tt
-  | e => ff
+  | lam _ _ _ _ => true
+  | e => false
 
 unsafe def is_pi : expr → Bool
-  | pi _ _ _ _ => tt
-  | e => ff
+  | pi _ _ _ _ => true
+  | e => false
 
 unsafe def is_arrow : expr → Bool
   | pi _ _ _ b => bnot (has_var b)
-  | e => ff
+  | e => false
 
 unsafe def is_let : expr → Bool
-  | elet _ _ _ _ => tt
-  | e => ff
+  | elet _ _ _ _ => true
+  | e => false
 
 /-- The name of the bound variable in a pi, lambda or let expression. -/
 unsafe def binding_name : expr → Name
@@ -533,15 +533,15 @@ unsafe def nth_binding_body : ℕ → expr → expr
   | _, e => e
 
 unsafe def is_macro : expr → Bool
-  | macro d a => tt
-  | e => ff
+  | macro d a => true
+  | e => false
 
 unsafe def is_numeral : expr → Bool
-  | quote.1 (@Zero.zero (%%ₓα) (%%ₓs)) => tt
-  | quote.1 (@One.one (%%ₓα) (%%ₓs)) => tt
+  | quote.1 (@Zero.zero (%%ₓα) (%%ₓs)) => true
+  | quote.1 (@One.one (%%ₓα) (%%ₓs)) => true
   | quote.1 (@bit0 (%%ₓα) (%%ₓs) (%%ₓv)) => is_numeral v
   | quote.1 (@bit1 (%%ₓα) (%%ₓs₁) (%%ₓs₂) (%%ₓv)) => is_numeral v
-  | _ => ff
+  | _ => false
 
 unsafe def pi_arity : expr → ℕ
   | pi _ _ _ b => pi_arity b + 1

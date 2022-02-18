@@ -50,7 +50,7 @@ def Name.updatePrefix : Name → Name → Name
   | mk_string s p, new_p => mk_string s new_p
   | mk_numeral s p, new_p => mk_numeral s new_p
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:9: warning: unsupported option eqn_compiler.ite
+-- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option eqn_compiler.ite
 set_option eqn_compiler.ite false
 
 def Name.toStringWithSep (sep : Stringₓ) : Name → Stringₓ
@@ -66,13 +66,13 @@ private def name.components' : Name → List Name
   | mk_numeral v n => mk_numeral v anonymous :: name.components' n
 
 def Name.components (n : Name) : List Name :=
-  (name.components' n).reverse
+  (Name.components' n).reverse
 
 protected def Name.toString : Name → Stringₓ :=
   Name.toStringWithSep "."
 
 protected def Name.repr (n : Name) : Stringₓ :=
-  "`" ++ n.to_string
+  "`" ++ n.toString
 
 instance : HasToString Name :=
   ⟨Name.toString⟩
@@ -107,14 +107,14 @@ unsafe instance : Append Name :=
 unsafe axiom name.append_after : Name → Nat → Name
 
 unsafe def name.is_prefix_of : Name → Name → Bool
-  | p, Name.anonymous => ff
-  | p, n => if p = n then tt else name.is_prefix_of p n.get_prefix
+  | p, Name.anonymous => false
+  | p, n => if p = n then true else name.is_prefix_of p n.getPrefix
 
 unsafe def name.is_suffix_of : Name → Name → Bool
-  | anonymous, _ => tt
+  | anonymous, _ => true
   | mk_string s n, mk_string s' n' => s = s' && name.is_suffix_of n n'
   | mk_numeral v n, mk_numeral v' n' => v = v' && name.is_suffix_of n n'
-  | _, _ => ff
+  | _, _ => false
 
 unsafe def name.replace_prefix : Name → Name → Name → Name
   | anonymous, p, p' => anonymous

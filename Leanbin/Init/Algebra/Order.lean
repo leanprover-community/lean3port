@@ -4,14 +4,14 @@ import Leanbin.Init.Classical
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Algebra.Classes
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:9: warning: unsupported option default_priority
+-- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option default_priority
 set_option default_priority 100
 
 universe u
 
 variable {α : Type u}
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:9: warning: unsupported option auto_param.check_exists
+-- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option auto_param.check_exists
 set_option auto_param.check_exists false
 
 section Preorderₓ
@@ -145,9 +145,8 @@ theorem lt_of_le_of_neₓ {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁
 
 instance decidableEqOfDecidableLe [DecidableRel (· ≤ · : α → α → Prop)] : DecidableEq α
   | a, b =>
-    if hab : a ≤ b then
-      if hba : b ≤ a then is_true (le_antisymmₓ hab hba) else is_false fun heq => hba (HEq ▸ le_reflₓ _)
-    else is_false fun heq => hab (HEq ▸ le_reflₓ _)
+    if hab : a ≤ b then if hba : b ≤ a then isTrue (le_antisymmₓ hab hba) else isFalse fun heq => hba (HEq ▸ le_reflₓ _)
+    else isFalse fun heq => hab (HEq ▸ le_reflₓ _)
 
 namespace Decidable
 

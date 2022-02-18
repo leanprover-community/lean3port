@@ -27,11 +27,11 @@ inductive loc : Type
   | wildcard : loc
   | ns : List (Option Name) → loc
 
-unsafe def loc.include_goal : loc → Bool
-  | loc.wildcard => tt
+unsafe def loc.include_goal : Loc → Bool
+  | loc.wildcard => true
   | loc.ns ls => (ls.map Option.isNone).bor
 
-unsafe def loc.get_locals : loc → tactic (List expr)
+unsafe def loc.get_locals : Loc → tactic (List expr)
   | loc.wildcard => tactic.local_context
   | loc.ns xs =>
     xs.mfoldl
@@ -43,15 +43,15 @@ unsafe def loc.get_locals : loc → tactic (List expr)
           pure <| l :: ls)
       []
 
-unsafe def loc.apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : loc) : tactic Unit := do
+unsafe def loc.apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
   let hs ← l.get_locals
-  hs.mmap' hyp_tac
-  if l.include_goal then goal_tac else pure ()
+  hs hyp_tac
+  if l then goal_tac else pure ()
 
-unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : loc) : tactic Unit := do
+unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
   let hs ← l.get_locals
   let hts := hs.map hyp_tac
-  tactic.try_lst <| if l.include_goal then hts ++ [goal_tac] else hts
+  tactic.try_lst <| if l then hts ++ [goal_tac] else hts
 
 /-- Use `desc` as the interactive description of `p`. -/
 unsafe def with_desc {α : Type} (desc : format) (p : parser α) : parser α :=
@@ -96,9 +96,9 @@ unsafe def without_ident_list :=
 
 unsafe def location :=
   tk "at" *>
-      (tk "*" *> return loc.wildcard <|>
+      (tk "*" *> return Loc.wildcard <|>
         loc.ns <$> ((with_desc "⊢" <| tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
-    return (loc.ns [none])
+    return (Loc.ns [none])
 
 unsafe def pexpr_list :=
   list_of (parser.pexpr 0)
@@ -110,7 +110,7 @@ unsafe def pexpr_list_or_texpr :=
   pexpr_list <|> List.ret <$> texpr
 
 unsafe def only_flag : parser Bool :=
-  tk "only" *> return tt <|> return ff
+  tk "only" *> return true <|> return false
 
 end Types
 
@@ -127,10 +127,10 @@ private unsafe def unfold (e : expr) : tactic expr := do
   let env ← get_env
   let decl ← env.get f_name
   let new_f ← decl.instantiate_value_univ_params f_lvls
-  head_beta (expr.mk_app new_f e.get_app_args)
+  head_beta (expr.mk_app new_f e)
 
 private unsafe def concat (f₁ f₂ : List format) :=
-  if f₁.empty then f₂ else if f₂.empty then f₁ else f₁ ++ [" "] ++ f₂
+  if f₁.Empty then f₂ else if f₂.Empty then f₁ else f₁ ++ [" "] ++ f₂
 
 private unsafe def parser_desc_aux : expr → tactic (List format)
   | quote.1 ident => return ["id"]
@@ -142,6 +142,7 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
   | quote.1 (pure _) => return []
   | quote.1 (_ <$> %%ₓp) => parser_desc_aux p
   | quote.1 (skip_info (%%ₓp)) => parser_desc_aux p
+  | quote.1 (_ <$ %%ₓp) => parser_desc_aux p
   | quote.1 (set_goal_info_pos (%%ₓp)) => parser_desc_aux p
   | quote.1 (with_desc (%%ₓdesc) (%%ₓp)) => List.ret <$> eval_expr format desc
   | quote.1 ((%%ₓp₁) <*> %%ₓp₂) => do
@@ -153,6 +154,10 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
     let f₂ ← parser_desc_aux p₂
     return <| concat f₁ f₂
   | quote.1 ((%%ₓp₁) *> %%ₓp₂) => do
+    let f₁ ← parser_desc_aux p₁
+    let f₂ ← parser_desc_aux p₂
+    return <| concat f₁ f₂
+  | quote.1 ((%%ₓp₁) >> %%ₓp₂) => do
     let f₁ ← parser_desc_aux p₁
     let f₂ ← parser_desc_aux p₂
     return <| concat f₁ f₂
@@ -170,8 +175,8 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
     let f₁ ← parser_desc_aux p₁
     let f₂ ← parser_desc_aux p₂
     return <|
-        if f₁.empty then [maybe_paren f₂ ++ "?"]
-        else if f₂.empty then [maybe_paren f₁ ++ "?"] else [paren <| join <| f₁ ++ [to_fmt " | "] ++ f₂]
+        if f₁ then [maybe_paren f₂ ++ "?"]
+        else if f₂ then [maybe_paren f₁ ++ "?"] else [paren <| join <| f₁ ++ [to_fmt " | "] ++ f₂]
   | quote.1 (brackets (%%ₓl) (%%ₓr) (%%ₓp)) => do
     let f ← parser_desc_aux p
     let l ← eval_expr Stringₓ l
@@ -247,33 +252,33 @@ private unsafe def parse_format : Stringₓ → List Charₓ → parser pexpr
     pure (pquote.1 (to_fmt (%%ₓreflect Acc) ++ format.line ++ %%ₓf))
   | Acc, '{' :: '{' :: s => parse_format (Acc ++ "{") s
   | Acc, '{' :: s => do
-    let (e, s) ← with_input (lean.parser.pexpr 0) s.as_string
-    let '}' :: s ← return s.to_list | fail "'}' expected"
+    let (e, s) ← with_input (lean.parser.pexpr 0) s.asString
+    let '}' :: s ← return s.toList | fail "'}' expected"
     let f ← parse_format "" s
     pure (pquote.1 (to_fmt (%%ₓreflect Acc) ++ to_fmt (%%ₓe) ++ %%ₓf))
   | Acc, '}' :: '}' :: s => parse_format (Acc ++ "}") s
   | Acc, '}' :: s => fail "'}}' expected"
-  | Acc, c :: s => parse_format (acc.str c) s
+  | Acc, c :: s => parse_format (Acc.str c) s
 
 @[user_notation]
 unsafe def format_macro (_ : parse <| tk "format!") (s : Stringₓ) : parser pexpr :=
-  parse_format "" s.to_list
+  parse_format "" s.toList
 
 private unsafe def parse_sformat : Stringₓ → List Charₓ → parser pexpr
   | Acc, [] => pure <| pexpr.of_expr (reflect Acc)
   | Acc, '{' :: '{' :: s => parse_sformat (Acc ++ "{") s
   | Acc, '{' :: s => do
-    let (e, s) ← with_input (lean.parser.pexpr 0) s.as_string
-    let '}' :: s ← return s.to_list | fail "'}' expected"
+    let (e, s) ← with_input (lean.parser.pexpr 0) s.asString
+    let '}' :: s ← return s.toList | fail "'}' expected"
     let f ← parse_sformat "" s
     pure (pquote.1 ((%%ₓreflect Acc) ++ toString (%%ₓe) ++ %%ₓf))
   | Acc, '}' :: '}' :: s => parse_sformat (Acc ++ "}") s
   | Acc, '}' :: s => fail "'}}' expected"
-  | Acc, c :: s => parse_sformat (acc.str c) s
+  | Acc, c :: s => parse_sformat (Acc.str c) s
 
 @[user_notation]
 unsafe def sformat_macro (_ : parse <| tk "sformat!") (s : Stringₓ) : parser pexpr :=
-  parse_sformat "" s.to_list
+  parse_sformat "" s.toList
 
 end Macros
 

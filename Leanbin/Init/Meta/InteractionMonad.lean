@@ -93,7 +93,7 @@ unsafe def interaction_monad.silent_fail {α : Type u} : m α := fun s => except
 unsafe def interaction_monad.failed {α : Type u} : m α :=
   interaction_monad.fail "failed"
 
-unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first_ex := tt) : m α := fun s =>
+unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first_ex := true) : m α := fun s =>
   interaction_monad.result.cases_on (t₁ s) success fun e₁ ref₁ s₁' =>
     interaction_monad.result.cases_on (t₂ s) success fun e₂ ref₂ s₂' =>
       if use_first_ex then exception e₁ ref₁ s₁' else exception e₂ ref₂ s₂'

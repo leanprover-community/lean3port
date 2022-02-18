@@ -62,7 +62,7 @@ unsafe axiom tk (tk : Stringₓ) : parser Unit
 /-- Parse an unelaborated expression using the given right-binding power.
 When `pat := tt`, the expression is parsed as a pattern, i.e. local
 constants are not checked. -/
-protected unsafe axiom pexpr (rbp := Std.Prec.max) (pat := ff) : parser pexpr
+protected unsafe axiom pexpr (rbp := Std.Prec.max) (pat := false) : parser pexpr
 
 /-- a variable to local scope -/
 unsafe axiom add_local (v : expr) : parser Unit

@@ -78,7 +78,7 @@ unsafe def apply_instance : smt_tactic Unit :=
   tactic.apply_instance
 
 unsafe def change (q : parse texpr) : smt_tactic Unit :=
-  tactic.interactive.change q none (loc.ns [none])
+  tactic.interactive.change q none (Loc.ns [none])
 
 unsafe def exact (q : parse texpr) : smt_tactic Unit :=
   tactic.interactive.exact q
@@ -91,7 +91,7 @@ unsafe def assume :=
 
 unsafe def have (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
     smt_tactic Unit :=
-  let h := h.get_or_else `this
+  let h := h.getOrElse `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← tactic.to_expr e
@@ -109,7 +109,7 @@ unsafe def have (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : p
 
 unsafe def let (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
     smt_tactic Unit :=
-  let h := h.get_or_else `this
+  let h := h.getOrElse `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← tactic.to_expr e
@@ -155,7 +155,7 @@ open tactic (resolve_name Transparency to_expr)
 private unsafe def report_invalid_em_lemma {α : Type} (n : Name) : smt_tactic α :=
   fail f! "invalid ematch lemma '{n}'"
 
-private unsafe def add_lemma_name (md : transparency) (lhs_lemma : Bool) (n : Name) (ref : pexpr) : smt_tactic Unit :=
+private unsafe def add_lemma_name (md : Transparency) (lhs_lemma : Bool) (n : Name) (ref : pexpr) : smt_tactic Unit :=
   do
   let p ← resolve_name n
   match p with
@@ -167,7 +167,7 @@ private unsafe def add_lemma_name (md : transparency) (lhs_lemma : Bool) (n : Na
           add_ematch_lemma_core md lhs_lemma e >> try (tactic.save_type_info e ref)) <|>
         report_invalid_em_lemma n
 
-private unsafe def add_lemma_pexpr (md : transparency) (lhs_lemma : Bool) (p : pexpr) : smt_tactic Unit :=
+private unsafe def add_lemma_pexpr (md : Transparency) (lhs_lemma : Bool) (p : pexpr) : smt_tactic Unit :=
   match p with
   | expr.const c [] => add_lemma_name md lhs_lemma c p
   | expr.local_const c _ _ _ => add_lemma_name md lhs_lemma c p
@@ -175,17 +175,17 @@ private unsafe def add_lemma_pexpr (md : transparency) (lhs_lemma : Bool) (p : p
     let new_e ← to_expr p
     add_ematch_lemma_core md lhs_lemma new_e
 
-private unsafe def add_lemma_pexprs (md : transparency) (lhs_lemma : Bool) : List pexpr → smt_tactic Unit
+private unsafe def add_lemma_pexprs (md : Transparency) (lhs_lemma : Bool) : List pexpr → smt_tactic Unit
   | [] => return ()
   | p :: ps => add_lemma_pexpr md lhs_lemma p >> add_lemma_pexprs ps
 
 unsafe def add_lemma (l : parse pexpr_list_or_texpr) : smt_tactic Unit :=
-  add_lemma_pexprs reducible ff l
+  add_lemma_pexprs reducible false l
 
 unsafe def add_lhs_lemma (l : parse pexpr_list_or_texpr) : smt_tactic Unit :=
-  add_lemma_pexprs reducible tt l
+  add_lemma_pexprs reducible true l
 
-private unsafe def add_eqn_lemmas_for_core (md : transparency) : List Name → smt_tactic Unit
+private unsafe def add_eqn_lemmas_for_core (md : Transparency) : List Name → smt_tactic Unit
   | [] => return ()
   | c :: cs => do
     let p ← resolve_name c
@@ -199,7 +199,7 @@ unsafe def add_eqn_lemmas_for (ids : parse (ident)*) : smt_tactic Unit :=
 unsafe def add_eqn_lemmas (ids : parse (ident)*) : smt_tactic Unit :=
   add_eqn_lemmas_for ids
 
-private unsafe def add_hinst_lemma_from_name (md : transparency) (lhs_lemma : Bool) (n : Name) (hs : hinst_lemmas)
+private unsafe def add_hinst_lemma_from_name (md : Transparency) (lhs_lemma : Bool) (n : Name) (hs : hinst_lemmas)
     (ref : pexpr) : smt_tactic hinst_lemmas := do
   let p ← resolve_name n
   match p with
@@ -207,21 +207,21 @@ private unsafe def add_hinst_lemma_from_name (md : transparency) (lhs_lemma : Bo
       (do
           let h ← hinst_lemma.mk_from_decl_core md n lhs_lemma
           tactic.save_const_type_info n ref
-          return <| hs.add h) <|>
+          return <| hs h) <|>
         (do
             let hs₁ ← mk_ematch_eqn_lemmas_for_core md n
             tactic.save_const_type_info n ref
-            return <| hs.merge hs₁) <|>
+            return <| hs hs₁) <|>
           report_invalid_em_lemma n
     | _ =>
       (do
           let e ← to_expr p
           let h ← hinst_lemma.mk_core md e lhs_lemma
           try (tactic.save_type_info e ref)
-          return <| hs.add h) <|>
+          return <| hs h) <|>
         report_invalid_em_lemma n
 
-private unsafe def add_hinst_lemma_from_pexpr (md : transparency) (lhs_lemma : Bool) (p : pexpr) (hs : hinst_lemmas) :
+private unsafe def add_hinst_lemma_from_pexpr (md : Transparency) (lhs_lemma : Bool) (p : pexpr) (hs : hinst_lemmas) :
     smt_tactic hinst_lemmas :=
   match p with
   | expr.const c [] => add_hinst_lemma_from_name md lhs_lemma c hs p
@@ -229,9 +229,9 @@ private unsafe def add_hinst_lemma_from_pexpr (md : transparency) (lhs_lemma : B
   | _ => do
     let new_e ← to_expr p
     let h ← hinst_lemma.mk_core md new_e lhs_lemma
-    return <| hs.add h
+    return <| hs h
 
-private unsafe def add_hinst_lemmas_from_pexprs (md : transparency) (lhs_lemma : Bool) :
+private unsafe def add_hinst_lemmas_from_pexprs (md : Transparency) (lhs_lemma : Bool) :
     List pexpr → hinst_lemmas → smt_tactic hinst_lemmas
   | [], hs => return hs
   | p :: ps, hs => do
@@ -239,7 +239,7 @@ private unsafe def add_hinst_lemmas_from_pexprs (md : transparency) (lhs_lemma :
     add_hinst_lemmas_from_pexprs ps hs₁
 
 unsafe def ematch_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
-  let hs ← add_hinst_lemmas_from_pexprs reducible ff l hinst_lemmas.mk
+  let hs ← add_hinst_lemmas_from_pexprs reducible false l hinst_lemmas.mk
   smt_tactic.ematch_using hs
 
 /-- Try the given tactic, and do nothing if it fails. -/
@@ -263,11 +263,11 @@ open Tactic
 /-- Simplify the target type of the main goal. -/
 unsafe def simp (use_iota_eqn : parse <| (tk "!")?) (no_dflt : parse only_flag) (hs : parse simp_arg_list)
     (attr_names : parse with_ident_list) (cfg : simp_config_ext := {  }) : smt_tactic Unit :=
-  tactic.interactive.simp use_iota_eqn none no_dflt hs attr_names (loc.ns [none]) cfg
+  tactic.interactive.simp use_iota_eqn none no_dflt hs attr_names (Loc.ns [none]) cfg
 
 unsafe def dsimp (no_dflt : parse only_flag) (es : parse simp_arg_list) (attr_names : parse with_ident_list) :
     smt_tactic Unit :=
-  tactic.interactive.dsimp no_dflt es attr_names (loc.ns [none])
+  tactic.interactive.dsimp no_dflt es attr_names (Loc.ns [none])
 
 unsafe def rsimp : smt_tactic Unit := do
   let ccs ← to_cc_state
@@ -282,7 +282,7 @@ unsafe def eblast : smt_tactic Unit :=
 
 /-- Keep applying heuristic instantiation using the given lemmas until the current goal is solved, or it fails. -/
 unsafe def eblast_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
-  let hs ← add_hinst_lemmas_from_pexprs reducible ff l hinst_lemmas.mk
+  let hs ← add_hinst_lemmas_from_pexprs reducible false l hinst_lemmas.mk
   smt_tactic.iterate (smt_tactic.ematch_using hs >> smt_tactic.try smt_tactic.close)
 
 unsafe def guard_expr_eq (t : expr) (p : parse <| tk ":=" *> texpr) : smt_tactic Unit := do

@@ -36,7 +36,7 @@ if the passed expression is amongst the frozen instances.
 -/
 unsafe def unfreezing_hyp (h : expr) (tac : tactic Unit) : tactic Unit := do
   let frozen ← frozen_local_instances
-  if h ∈ frozen.get_or_else [] then unfreezing tac else tac
+  if h ∈ frozen [] then unfreezing tac else tac
 
 namespace Interactive
 

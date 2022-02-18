@@ -20,15 +20,15 @@ instance : HasRepr Ordering :=
 namespace Ordering
 
 def swap : Ordering → Ordering
-  | lt => Gt
-  | Eq => Eq
+  | lt => gt
+  | Eq => eq
   | Gt => lt
 
 @[inline]
 def or_else : Ordering → Ordering → Ordering
   | lt, _ => lt
   | Eq, o => o
-  | Gt, _ => Gt
+  | Gt, _ => gt
 
 theorem swap_swap : ∀ o : Ordering, o.swap.swap = o
   | lt => rfl
@@ -47,17 +47,17 @@ instance : DecidableEq Ordering := fun a b =>
   match a with
   | Ordering.lt =>
     match b with
-    | Ordering.lt => is_true rfl
-    | Ordering.eq => is_false fun h => Ordering.noConfusion h
-    | Ordering.gt => is_false fun h => Ordering.noConfusion h
+    | Ordering.lt => isTrue rfl
+    | Ordering.eq => isFalse fun h => Ordering.noConfusion h
+    | Ordering.gt => isFalse fun h => Ordering.noConfusion h
   | Ordering.eq =>
     match b with
-    | Ordering.lt => is_false fun h => Ordering.noConfusion h
-    | Ordering.eq => is_true rfl
-    | Ordering.gt => is_false fun h => Ordering.noConfusion h
+    | Ordering.lt => isFalse fun h => Ordering.noConfusion h
+    | Ordering.eq => isTrue rfl
+    | Ordering.gt => isFalse fun h => Ordering.noConfusion h
   | Ordering.gt =>
     match b with
-    | Ordering.lt => is_false fun h => Ordering.noConfusion h
-    | Ordering.eq => is_false fun h => Ordering.noConfusion h
-    | Ordering.gt => is_true rfl
+    | Ordering.lt => isFalse fun h => Ordering.noConfusion h
+    | Ordering.eq => isFalse fun h => Ordering.noConfusion h
+    | Ordering.gt => isTrue rfl
 

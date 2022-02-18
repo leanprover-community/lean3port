@@ -69,7 +69,7 @@ unsafe def mk_has_sizeof_instance_core (use_default : Bool) : tactic Unit := do
   for_each_has_sizeof_goal use_default I_name F_name arg_names
 
 unsafe def mk_has_sizeof_instance : tactic Unit :=
-  mk_has_sizeof_instance_core ff
+  mk_has_sizeof_instance_core false
 
 end Tactic
 

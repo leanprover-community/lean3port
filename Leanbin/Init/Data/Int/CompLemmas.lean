@@ -43,66 +43,66 @@ protected theorem bit1_nonneg {a : ℤ} : 0 ≤ a → 0 ≤ bit1 a := fun h => l
 protected theorem nonneg_of_pos {a : ℤ} : 0 < a → 0 ≤ a :=
   le_of_ltₓ
 
-theorem neg_succ_of_nat_lt_zero (n : ℕ) : neg_succ_of_nat n < 0 :=
-  @lt.intro _ _ n
+theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
+  @Lt.intro _ _ n
     (by
       simp [neg_succ_of_nat_coe, Int.coe_nat_succ, Int.coe_nat_add, Int.coe_nat_one, Int.add_comm, Int.add_left_comm,
         Int.neg_add, Int.add_right_neg, Int.zero_add])
 
-theorem zero_le_of_nat (n : ℕ) : 0 ≤ of_nat n :=
-  @le.intro _ _ n
+theorem zero_le_of_nat (n : ℕ) : 0 ≤ ofNat n :=
+  @Le.intro _ _ n
     (by
       rw [Int.zero_add, Int.coe_nat_eq])
 
-theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → of_nat (nat_abs a) = a
+theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → ofNat (natAbs a) = a
   | of_nat n, h => rfl
   | neg_succ_of_nat n, h => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_geₓ h)
 
-theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : nat_abs a ≠ nat_abs b) : a ≠ b :=
+theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : natAbs a ≠ natAbs b) : a ≠ b :=
   fun h => by
-  have : of_nat (nat_abs a) = of_nat (nat_abs b) := by
+  have : ofNat (natAbs a) = ofNat (natAbs b) := by
     rwa [of_nat_nat_abs_eq_of_nonneg ha, of_nat_nat_abs_eq_of_nonneg hb]
   injection this
   contradiction
 
-protected theorem ne_of_nat_ne_nonneg_case {a b : ℤ} {n m : Nat} (ha : 0 ≤ a) (hb : 0 ≤ b) (e1 : nat_abs a = n)
-    (e2 : nat_abs b = m) (h : n ≠ m) : a ≠ b :=
-  have : nat_abs a ≠ nat_abs b := by
+protected theorem ne_of_nat_ne_nonneg_case {a b : ℤ} {n m : Nat} (ha : 0 ≤ a) (hb : 0 ≤ b) (e1 : natAbs a = n)
+    (e2 : natAbs b = m) (h : n ≠ m) : a ≠ b :=
+  have : natAbs a ≠ natAbs b := by
     rwa [e1, e2]
   ne_of_nat_abs_ne_nat_abs_of_nonneg ha hb this
 
-theorem nat_abs_of_nat_core (n : ℕ) : nat_abs (of_nat n) = n :=
+theorem nat_abs_of_nat_core (n : ℕ) : natAbs (ofNat n) = n :=
   rfl
 
-theorem nat_abs_of_neg_succ_of_nat (n : ℕ) : nat_abs (neg_succ_of_nat n) = Nat.succ n :=
+theorem nat_abs_of_neg_succ_of_nat (n : ℕ) : natAbs (negSucc n) = Nat.succ n :=
   rfl
 
-protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → nat_abs (a + b) = nat_abs a + nat_abs b
+protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → natAbs (a + b) = natAbs a + natAbs b
   | of_nat n, of_nat m, h₁, h₂ => by
-    have : of_nat n + of_nat m = of_nat (n + m) := rfl
+    have : ofNat n + ofNat m = ofNat (n + m) := rfl
     simp [nat_abs_of_nat_core, this]
   | _, neg_succ_of_nat m, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero m) (not_lt_of_geₓ h₂)
   | neg_succ_of_nat n, _, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_geₓ h₁)
 
-protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → nat_abs (a + b) = nat_abs a + nat_abs b
+protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
   | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ => by
     have : -[1+ n] + -[1+ m] = -[1+ Nat.succ (n + m)] := rfl
     simp [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
 
-protected theorem nat_abs_bit0 : ∀ a : Int, nat_abs (bit0 a) = bit0 (nat_abs a)
+protected theorem nat_abs_bit0 : ∀ a : Int, natAbs (bit0 a) = bit0 (natAbs a)
   | of_nat n => Int.nat_abs_add_nonneg (zero_le_of_nat n) (zero_le_of_nat n)
   | neg_succ_of_nat n => Int.nat_abs_add_neg (neg_succ_of_nat_lt_zero n) (neg_succ_of_nat_lt_zero n)
 
-protected theorem nat_abs_bit0_step {a : Int} {n : Nat} (h : nat_abs a = n) : nat_abs (bit0 a) = bit0 n := by
+protected theorem nat_abs_bit0_step {a : Int} {n : Nat} (h : natAbs a = n) : natAbs (bit0 a) = bit0 n := by
   rw [← h]
   apply Int.nat_abs_bit0
 
-protected theorem nat_abs_bit1_nonneg {a : Int} (h : 0 ≤ a) : nat_abs (bit1 a) = bit1 (nat_abs a) :=
-  show nat_abs (bit0 a + 1) = bit0 (nat_abs a) + nat_abs 1 by
+protected theorem nat_abs_bit1_nonneg {a : Int} (h : 0 ≤ a) : natAbs (bit1 a) = bit1 (natAbs a) :=
+  show natAbs (bit0 a + 1) = bit0 (natAbs a) + natAbs 1 by
     rw [Int.nat_abs_add_nonneg (Int.bit0_nonneg h) (le_of_ltₓ Int.zero_lt_oneₓ), Int.nat_abs_bit0]
 
-protected theorem nat_abs_bit1_nonneg_step {a : Int} {n : Nat} (h₁ : 0 ≤ a) (h₂ : nat_abs a = n) :
-    nat_abs (bit1 a) = bit1 n := by
+protected theorem nat_abs_bit1_nonneg_step {a : Int} {n : Nat} (h₁ : 0 ≤ a) (h₂ : natAbs a = n) :
+    natAbs (bit1 a) = bit1 n := by
   rw [← h₂]
   apply Int.nat_abs_bit1_nonneg h₁
 

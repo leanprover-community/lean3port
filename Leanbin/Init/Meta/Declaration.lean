@@ -49,7 +49,7 @@ unsafe inductive declaration
 open Declaration
 
 unsafe def mk_definition (n : Name) (ls : List Name) (v : expr) (e : expr) : declaration :=
-  defn n ls v e (ReducibilityHints.regular 1 tt) tt
+  defn n ls v e (ReducibilityHints.regular 1 true) true
 
 namespace Declaration
 
@@ -84,7 +84,7 @@ unsafe def value_task : declaration → task expr
 unsafe def is_trusted : declaration → Bool
   | defn _ _ _ _ _ t => t
   | cnst _ _ _ t => t
-  | _ => tt
+  | _ => true
 
 unsafe def update_type : declaration → expr → declaration
   | defn n ls t v h tr, new_t => defn n ls new_t v h tr
@@ -119,8 +119,8 @@ unsafe def to_definition : declaration → declaration
   | d => d
 
 unsafe def is_definition : declaration → Bool
-  | defn _ _ _ _ _ _ => tt
-  | _ => ff
+  | defn _ _ _ _ _ _ => true
+  | _ => false
 
 /-- Instantiate a universe polymorphic declaration type with the given universes. -/
 unsafe axiom instantiate_type_univ_params : declaration → List level → Option expr

@@ -52,12 +52,12 @@ theorem length_tail (l : List α) : length (tail l) = length l - 1 := by
   cases l <;> rfl
 
 @[simp]
-theorem length_drop : ∀ i : ℕ l : List α, length (drop i l) = length l - i
+theorem length_drop : ∀ i : ℕ l : List α, length (dropₓ i l) = length l - i
   | 0, l => rfl
   | succ i, [] => Eq.symm (Nat.zero_sub (succ i))
   | succ i, x :: l =>
     calc
-      length (drop (succ i) (x :: l)) = length l - i := length_drop i l
+      length (dropₓ (succ i) (x :: l)) = length l - i := length_drop i l
       _ = succ (length l) - succ i := (Nat.succ_sub_succ_eq_sub (length l) i).symm
       
 
@@ -123,13 +123,13 @@ theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈
 
 @[rsimp]
 theorem mem_append_eq (a : α) (s t : List α) : (a ∈ s ++ t) = (a ∈ s ∨ a ∈ t) :=
-  propext mem_append
+  propext mem_appendₓ
 
 theorem mem_append_left {a : α} {l₁ : List α} (l₂ : List α) (h : a ∈ l₁) : a ∈ l₁ ++ l₂ :=
-  mem_append.2 (Or.inl h)
+  mem_appendₓ.2 (Or.inl h)
 
 theorem mem_append_right {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l₂) : a ∈ l₁ ++ l₂ :=
-  mem_append.2 (Or.inr h)
+  mem_appendₓ.2 (Or.inr h)
 
 theorem not_bex_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
 
@@ -144,10 +144,10 @@ theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p
       
     · exact Or.inr ⟨x, h, px⟩
       ,
-    fun o => o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
+    fun o => o.elim (fun pa => ⟨a, mem_cons_selfₓ _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_memₓ _ h, px⟩⟩
 
 theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀, ∀ x ∈ a :: l, ∀, p x) ↔ p a ∧ ∀, ∀ x ∈ l, ∀, p x :=
-  ⟨fun al => ⟨al a (mem_cons_self _ _), fun x h => al x (mem_cons_of_mem _ h)⟩, fun ⟨pa, al⟩ x o =>
+  ⟨fun al => ⟨al a (mem_cons_selfₓ _ _), fun x h => al x (mem_cons_of_memₓ _ h)⟩, fun ⟨pa, al⟩ x o =>
     o.elim (fun e => e.symm ▸ pa) (al x)⟩
 
 protected def subset (l₁ l₂ : List α) :=
@@ -168,16 +168,16 @@ theorem subset.trans {l₁ l₂ l₃ : List α} (h₁ : l₁ ⊆ l₂) (h₂ : l
 @[simp]
 theorem subset_cons (a : α) (l : List α) : l ⊆ a :: l := fun b i => Or.inr i
 
-theorem subset_of_cons_subset {a : α} {l₁ l₂ : List α} : a :: l₁ ⊆ l₂ → l₁ ⊆ l₂ := fun s b i => s (mem_cons_of_mem _ i)
+theorem subset_of_cons_subset {a : α} {l₁ l₂ : List α} : a :: l₁ ⊆ l₂ → l₁ ⊆ l₂ := fun s b i => s (mem_cons_of_memₓ _ i)
 
 theorem cons_subset_cons {l₁ l₂ : List α} (a : α) (s : l₁ ⊆ l₂) : a :: l₁ ⊆ a :: l₂ := fun b hin =>
-  Or.elim (eq_or_mem_of_mem_cons hin) (fun e : b = a => Or.inl e) fun i : b ∈ l₁ => Or.inr (s i)
+  Or.elim (eq_or_mem_of_mem_consₓ hin) (fun e : b = a => Or.inl e) fun i : b ∈ l₁ => Or.inr (s i)
 
 @[simp]
-theorem subset_append_left (l₁ l₂ : List α) : l₁ ⊆ l₁ ++ l₂ := fun b => mem_append_left _
+theorem subset_append_left (l₁ l₂ : List α) : l₁ ⊆ l₁ ++ l₂ := fun b => mem_append_leftₓ _
 
 @[simp]
-theorem subset_append_right (l₁ l₂ : List α) : l₂ ⊆ l₁ ++ l₂ := fun b => mem_append_right _
+theorem subset_append_right (l₁ l₂ : List α) : l₂ ⊆ l₁ ++ l₂ := fun b => mem_append_rightₓ _
 
 theorem subset_cons_of_subset (a : α) {l₁ l₂ : List α} : l₁ ⊆ l₂ → l₁ ⊆ a :: l₂ := fun s : l₁ ⊆ l₂ a : α i : a ∈ l₁ =>
   Or.inr (s i)
@@ -191,11 +191,11 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
   induction l <;> intros <;> contradiction
 
 @[simp]
-theorem length_map₂ (f : α → β → γ) l₁ : ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
+theorem length_map₂ (f : α → β → γ) l₁ : ∀ l₂, length (map₂ₓ f l₁ l₂) = min (length l₁) (length l₂) := by
   induction l₁ <;> intro l₂ <;> cases l₂ <;> simp [*, add_one, min_succ_succ, Nat.zero_minₓ, Nat.min_zeroₓ]
 
 @[simp]
-theorem length_take : ∀ i : ℕ l : List α, length (take i l) = min i (length l)
+theorem length_take : ∀ i : ℕ l : List α, length (takeₓ i l) = min i (length l)
   | 0, l => by
     simp [Nat.zero_minₓ]
   | succ n, [] => by
@@ -203,21 +203,21 @@ theorem length_take : ∀ i : ℕ l : List α, length (take i l) = min i (length
   | succ n, a :: l => by
     simp [*, Nat.min_succ_succₓ, add_one]
 
-theorem length_take_le n (l : List α) : length (take n l) ≤ n := by
+theorem length_take_le n (l : List α) : length (takeₓ n l) ≤ n := by
   simp [min_le_leftₓ]
 
-theorem length_remove_nth : ∀ l : List α i : ℕ, i < length l → length (remove_nth l i) = length l - 1
+theorem length_remove_nth : ∀ l : List α i : ℕ, i < length l → length (removeNthₓ l i) = length l - 1
   | [], _, h => rfl
   | x :: xs, 0, h => by
     simp [remove_nth]
   | x :: xs, i + 1, h => by
-    have : i < length xs := lt_of_succ_lt_succ h
+    have : i < length xs := lt_of_succ_lt_succₓ h
     dsimp [remove_nth] <;>
       rw [length_remove_nth xs i this, Nat.sub_add_cancelₓ (lt_of_le_of_ltₓ (Nat.zero_leₓ _) this)] <;> rfl
 
 @[simp]
 theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
-    ∀ l : List α, partition p l = (filter p l, filter (Not ∘ p) l)
+    ∀ l : List α, partitionₓ p l = (filterₓ p l, filterₓ (Not ∘ p) l)
   | [] => rfl
   | a :: l => by
     by_cases' pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
@@ -227,35 +227,35 @@ inductive sublist : List α → List α → Prop
   | cons l₁ l₂ a : sublist l₁ l₂ → sublist l₁ (a :: l₂)
   | cons2 l₁ l₂ a : sublist l₁ l₂ → sublist (a :: l₁) (a :: l₂)
 
-infixl:50 " <+ " => sublist
+infixl:50 " <+ " => Sublist
 
 theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → length l₁ ≤ length l₂
   | _, _, sublist.slnil => le_reflₓ 0
-  | _, _, sublist.cons l₁ l₂ a s => le_succ_of_le (length_le_of_sublist s)
-  | _, _, sublist.cons2 l₁ l₂ a s => succ_le_succ (length_le_of_sublist s)
+  | _, _, sublist.cons l₁ l₂ a s => le_succ_of_leₓ (length_le_of_sublist s)
+  | _, _, sublist.cons2 l₁ l₂ a s => succ_le_succₓ (length_le_of_sublist s)
 
 @[simp]
-theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter p [] = [] :=
+theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filterₓ p [] = [] :=
   rfl
 
 @[simp]
 theorem filter_cons_of_pos {p : α → Prop} [h : DecidablePred p] {a : α} :
-    ∀ l, p a → filter p (a :: l) = a :: filter p l := fun l pa => if_pos pa
+    ∀ l, p a → filterₓ p (a :: l) = a :: filterₓ p l := fun l pa => if_pos pa
 
 @[simp]
-theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} : ∀ l, ¬p a → filter p (a :: l) = filter p l :=
-  fun l pa => if_neg pa
+theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
+    ∀ l, ¬p a → filterₓ p (a :: l) = filterₓ p l := fun l pa => if_neg pa
 
 @[simp]
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
-    ∀ l₁ l₂ : List α, filter p (l₁ ++ l₂) = filter p l₁ ++ filter p l₂
+    ∀ l₁ l₂ : List α, filterₓ p (l₁ ++ l₂) = filterₓ p l₁ ++ filterₓ p l₂
   | [], l₂ => rfl
   | a :: l₁, l₂ => by
     by_cases' pa : p a <;> simp [pa, filter_append]
 
 @[simp]
-theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filter p l <+ l
-  | [] => sublist.slnil
+theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filterₓ p l <+ l
+  | [] => Sublist.slnil
   | a :: l =>
     if pa : p a then by
       simp [pa] <;> apply sublist.cons2 <;> apply filter_sublist l
@@ -274,7 +274,7 @@ def map_accumr (f : α → σ → σ × β) : List α → σ → σ × List β
     (z.1, z.2 :: r.2)
 
 @[simp]
-theorem length_map_accumr : ∀ f : α → σ → σ × β x : List α s : σ, length (map_accumr f x s).2 = length x
+theorem length_map_accumr : ∀ f : α → σ → σ × β x : List α s : σ, length (mapAccumr f x s).2 = length x
   | f, a :: x, s => congr_argₓ succ (length_map_accumr f x s)
   | f, [], s => rfl
 
@@ -293,12 +293,12 @@ def map_accumr₂ (f : α → β → σ → σ × φ) : List α → List β → 
     (q.1, q.2 :: r.2)
 
 @[simp]
-theorem length_map_accumr₂ : ∀ f : α → β → σ → σ × φ x y c, length (map_accumr₂ f x y c).2 = min (length x) (length y)
+theorem length_map_accumr₂ : ∀ f : α → β → σ → σ × φ x y c, length (mapAccumr₂ f x y c).2 = min (length x) (length y)
   | f, a :: x, b :: y, c =>
     calc
-      succ (length (map_accumr₂ f x y c).2) = succ (min (length x) (length y)) :=
+      succ (length (mapAccumr₂ f x y c).2) = succ (min (length x) (length y)) :=
         congr_argₓ succ (length_map_accumr₂ f x y c)
-      _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succ (length x) (length y))
+      _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succₓ (length x) (length y))
       
   | f, a :: x, [], c => rfl
   | f, [], b :: y, c => rfl

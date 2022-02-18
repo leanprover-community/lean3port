@@ -38,17 +38,17 @@ unsafe def derive_attr : user_attribute Unit (List pexpr) where
       let ps ← derive_attr.get_param n
       let handlers ← attribute.get_instances `derive_handler
       let handlers ← handlers.mmap fun n => eval_expr derive_handler (expr.const n [])
-      ps.mmap' fun p => try_handlers p n handlers
+      ps fun p => try_handlers p n handlers
 
 /-- Given a tactic `tac` that can solve an application of `cls` in the right context,
     `instance_derive_handler` uses it to build an instance declaration of `cls n`. -/
-unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly := tt)
+unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly := true)
     (modify_target : Name → List expr → expr → tactic expr := fun _ _ => pure) : derive_handler := fun p n =>
   if p.is_constant_of cls then do
     let decl ← get_decl n
     let cls_decl ← get_decl cls
     let env ← get_env
-    guardₓ (env.is_inductive n) <|> fail f! "failed to derive '{cls }', '{n}' is not an inductive type"
+    guardₓ (env n) <|> fail f! "failed to derive '{cls }', '{n}' is not an inductive type"
     let ls := decl.univ_params.map fun n => if univ_poly then level.param n else level.zero
     let tgt : expr := expr.const n ls
     let ⟨params, _⟩ ← mk_local_pis (decl.type.instantiate_univ_params (decl.univ_params.zip ls))
@@ -60,25 +60,24 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
           (fun ⟨i, param⟩ tgt => do
             let tgt ←
               (do
-                    guardₓ <| i < env.inductive_num_params n
+                    guardₓ <| i < env n
                     let param_cls ← mk_app cls [param]
                     pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt) <|>
                   pure tgt
-            pure <| tgt.bind_pi param)
+            pure <| tgt param)
           tgt
     let (_, val) ← tactic.solve_aux tgt (intros >> tac)
     let val ← instantiate_mvars val
     let trusted := decl.is_trusted ∧ cls_decl.is_trusted
     add_protected_decl
-        (declaration.defn (n ++ cls) (if univ_poly then decl.univ_params else []) tgt val ReducibilityHints.abbrev
-          trusted)
+        (declaration.defn (n ++ cls) (if univ_poly then decl else []) tgt val ReducibilityHints.abbrev trusted)
     set_basic_attribute `instance (n ++ cls) tt
     pure True
   else pure False
 
 @[derive_handler]
 unsafe def has_reflect_derive_handler :=
-  instance_derive_handler `` has_reflect mk_has_reflect_instance ff fun n params tgt =>
+  instance_derive_handler `` has_reflect mk_has_reflect_instance false fun n params tgt =>
     params.mfoldr
       (fun param tgt => do
         let param_cls ← mk_app `reflected [param]

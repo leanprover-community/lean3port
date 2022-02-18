@@ -14,10 +14,10 @@ noncomputable irreducible_def indefinite_description {α : Sort u} (p : α → P
     ⟨⟨x, px⟩⟩
 
 noncomputable def some {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
-  (indefinite_description p h).val
+  (indefiniteDescription p h).val
 
 theorem some_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (some h) :=
-  (indefinite_description p h).property
+  (indefiniteDescription p h).property
 
 section Diaconescu
 
@@ -41,7 +41,7 @@ private theorem u : Prop :=
 private theorem v : Prop :=
   some exV
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:9: warning: unsupported option type_context.unfold_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option type_context.unfold_lemmas
 set_option type_context.unfold_lemmas true
 
 private theorem u_def : U u :=
@@ -81,37 +81,37 @@ noncomputable def inhabited_of_nonempty {α : Sort u} (h : Nonempty α) : Inhabi
   ⟨choice h⟩
 
 noncomputable def inhabited_of_exists {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : Inhabited α :=
-  inhabited_of_nonempty (Exists.elim h fun w hw => ⟨w⟩)
+  inhabitedOfNonempty (Exists.elim h fun w hw => ⟨w⟩)
 
 noncomputable def prop_decidable (a : Prop) : Decidable a :=
-  choice <| Or.elim (em a) (fun ha => ⟨is_true ha⟩) fun hna => ⟨is_false hna⟩
+  choice <| Or.elim (em a) (fun ha => ⟨isTrue ha⟩) fun hna => ⟨isFalse hna⟩
 
 attribute [local instance] prop_decidable
 
 noncomputable def decidable_inhabited (a : Prop) : Inhabited (Decidable a) :=
-  ⟨prop_decidable a⟩
+  ⟨propDecidable a⟩
 
 attribute [local instance] decidable_inhabited
 
-noncomputable def type_decidable_eq (α : Sort u) : DecidableEq α := fun x y => prop_decidable (x = y)
+noncomputable def type_decidable_eq (α : Sort u) : DecidableEq α := fun x y => propDecidable (x = y)
 
 noncomputable def type_decidable (α : Sort u) : Psum α (α → False) :=
-  match prop_decidable (Nonempty α) with
-  | is_true hp => Psum.inl (@Inhabited.default _ (inhabited_of_nonempty hp))
+  match propDecidable (Nonempty α) with
+  | is_true hp => Psum.inl (@Inhabited.default _ (inhabitedOfNonempty hp))
   | is_false hn => Psum.inr fun a => absurd (Nonempty.intro a) hn
 
 noncomputable irreducible_def strong_indefinite_description {α : Sort u} (p : α → Prop) (h : Nonempty α) :
   { x : α // (∃ y : α, p y) → p x } :=
   if hp : ∃ x : α, p x then
-    let xp := indefinite_description _ hp
+    let xp := indefiniteDescription _ hp
     ⟨xp.val, fun h' => xp.property⟩
   else ⟨choice h, fun h => absurd h hp⟩
 
 noncomputable def epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α :=
-  (strong_indefinite_description p h).val
+  (strongIndefiniteDescription p h).val
 
 theorem epsilon_spec_aux {α : Sort u} (h : Nonempty α) (p : α → Prop) : (∃ y, p y) → p (@epsilon α h p) :=
-  (strong_indefinite_description p h).property
+  (strongIndefiniteDescription p h).property
 
 theorem epsilon_spec {α : Sort u} {p : α → Prop} (hex : ∃ y, p y) : p (@epsilon α (nonempty_of_exists hex) p) :=
   epsilon_spec_aux (nonempty_of_exists hex) p hex

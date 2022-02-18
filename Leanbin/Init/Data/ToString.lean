@@ -34,12 +34,12 @@ instance {p : Prop} : HasToString (Decidable p) :=
 
 protected def List.toStringAuxₓ {α : Type u} [HasToString α] : Bool → List α → Stringₓ
   | b, [] => ""
-  | tt, x :: xs => toString x ++ List.toStringAuxₓ ff xs
-  | ff, x :: xs => ", " ++ toString x ++ List.toStringAuxₓ ff xs
+  | tt, x :: xs => toString x ++ List.toStringAuxₓ false xs
+  | ff, x :: xs => ", " ++ toString x ++ List.toStringAuxₓ false xs
 
 protected def List.toStringₓ {α : Type u} [HasToString α] : List α → Stringₓ
   | [] => "[]"
-  | x :: xs => "[" ++ List.toStringAuxₓ tt (x :: xs) ++ "]"
+  | x :: xs => "[" ++ List.toStringAuxₓ true (x :: xs) ++ "]"
 
 instance {α : Type u} [HasToString α] : HasToString (List α) :=
   ⟨List.toStringₓ⟩
@@ -51,7 +51,7 @@ instance : HasToString Nat :=
   ⟨fun n => reprₓ n⟩
 
 instance : HasToString Charₓ :=
-  ⟨fun c => c.to_string⟩
+  ⟨fun c => c.toString⟩
 
 instance (n : Nat) : HasToString (Finₓ n) :=
   ⟨fun f => toString f.val⟩

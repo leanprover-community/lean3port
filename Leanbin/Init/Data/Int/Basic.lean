@@ -30,10 +30,10 @@ protected theorem coe_nat_eq (n : ℕ) : ↑n = Int.ofNat n :=
   rfl
 
 protected def zero : ℤ :=
-  of_nat 0
+  ofNat 0
 
 protected def one : ℤ :=
-  of_nat 1
+  ofNat 1
 
 instance : Zero ℤ :=
   ⟨Int.zero⟩
@@ -41,10 +41,10 @@ instance : Zero ℤ :=
 instance : One ℤ :=
   ⟨Int.one⟩
 
-theorem of_nat_zero : of_nat (0 : Nat) = (0 : Int) :=
+theorem of_nat_zero : ofNat (0 : Nat) = (0 : Int) :=
   rfl
 
-theorem of_nat_one : of_nat (1 : Nat) = (1 : Int) :=
+theorem of_nat_one : ofNat (1 : Nat) = (1 : Int) :=
   rfl
 
 def neg_of_nat : ℕ → ℤ
@@ -53,34 +53,34 @@ def neg_of_nat : ℕ → ℤ
 
 def sub_nat_nat (m n : ℕ) : ℤ :=
   match (n - m : Nat) with
-  | 0 => of_nat (m - n)
+  | 0 => ofNat (m - n)
   | succ k => -[1+ k]
 
-theorem sub_nat_nat_of_sub_eq_zero {m n : ℕ} (h : n - m = 0) : sub_nat_nat m n = of_nat (m - n) := by
+theorem sub_nat_nat_of_sub_eq_zero {m n : ℕ} (h : n - m = 0) : subNatNat m n = ofNat (m - n) := by
   unfold sub_nat_nat
   rw [h]
   unfold sub_nat_nat._match_1
 
-theorem sub_nat_nat_of_sub_eq_succ {m n k : ℕ} (h : n - m = succ k) : sub_nat_nat m n = -[1+ k] := by
+theorem sub_nat_nat_of_sub_eq_succ {m n k : ℕ} (h : n - m = succ k) : subNatNat m n = -[1+ k] := by
   unfold sub_nat_nat
   rw [h]
   unfold sub_nat_nat._match_1
 
 protected def neg : ℤ → ℤ
-  | of_nat n => neg_of_nat n
+  | of_nat n => negOfNat n
   | -[1+ n] => succ n
 
 protected def add : ℤ → ℤ → ℤ
-  | of_nat m, of_nat n => of_nat (m + n)
-  | of_nat m, -[1+ n] => sub_nat_nat m (succ n)
-  | -[1+ m], of_nat n => sub_nat_nat n (succ m)
+  | of_nat m, of_nat n => ofNat (m + n)
+  | of_nat m, -[1+ n] => subNatNat m (succ n)
+  | -[1+ m], of_nat n => subNatNat n (succ m)
   | -[1+ m], -[1+ n] => -[1+ succ (m + n)]
 
 protected def mul : ℤ → ℤ → ℤ
-  | of_nat m, of_nat n => of_nat (m * n)
-  | of_nat m, -[1+ n] => neg_of_nat (m * succ n)
-  | -[1+ m], of_nat n => neg_of_nat (succ m * n)
-  | -[1+ m], -[1+ n] => of_nat (succ m * succ n)
+  | of_nat m, of_nat n => ofNat (m * n)
+  | of_nat m, -[1+ n] => negOfNat (m * succ n)
+  | -[1+ m], of_nat n => negOfNat (succ m * n)
+  | -[1+ m], -[1+ n] => ofNat (succ m * succ n)
 
 instance : Neg ℤ :=
   ⟨Int.neg⟩
@@ -99,25 +99,25 @@ instance : Sub ℤ :=
 protected theorem neg_zero : -(0 : ℤ) = 0 :=
   rfl
 
-theorem of_nat_add (n m : ℕ) : of_nat (n + m) = of_nat n + of_nat m :=
+theorem of_nat_add (n m : ℕ) : ofNat (n + m) = ofNat n + ofNat m :=
   rfl
 
-theorem of_nat_mul (n m : ℕ) : of_nat (n * m) = of_nat n * of_nat m :=
+theorem of_nat_mul (n m : ℕ) : ofNat (n * m) = ofNat n * ofNat m :=
   rfl
 
-theorem of_nat_succ (n : ℕ) : of_nat (succ n) = of_nat n + 1 :=
+theorem of_nat_succ (n : ℕ) : ofNat (succ n) = ofNat n + 1 :=
   rfl
 
-theorem neg_of_nat_zero : -of_nat 0 = 0 :=
+theorem neg_of_nat_zero : -ofNat 0 = 0 :=
   rfl
 
-theorem neg_of_nat_of_succ (n : ℕ) : -of_nat (succ n) = -[1+ n] :=
+theorem neg_of_nat_of_succ (n : ℕ) : -ofNat (succ n) = -[1+ n] :=
   rfl
 
-theorem neg_neg_of_nat_succ (n : ℕ) : - -[1+ n] = of_nat (succ n) :=
+theorem neg_neg_of_nat_succ (n : ℕ) : - -[1+ n] = ofNat (succ n) :=
   rfl
 
-theorem of_nat_eq_coe (n : ℕ) : of_nat n = ↑n :=
+theorem of_nat_eq_coe (n : ℕ) : ofNat n = ↑n :=
   rfl
 
 theorem neg_succ_of_nat_coe (n : ℕ) : -[1+ n] = -↑(n + 1) :=
@@ -147,28 +147,28 @@ protected theorem coe_nat_mul_out (m n : ℕ) : ↑m * ↑n = (↑(m * n) : ℤ)
 protected theorem coe_nat_add_one_out (n : ℕ) : ↑n + (1 : ℤ) = ↑(succ n) :=
   rfl
 
-theorem of_nat_add_of_nat (m n : Nat) : of_nat m + of_nat n = of_nat (m + n) :=
+theorem of_nat_add_of_nat (m n : Nat) : ofNat m + ofNat n = ofNat (m + n) :=
   rfl
 
-theorem of_nat_add_neg_succ_of_nat (m n : Nat) : of_nat m + -[1+ n] = sub_nat_nat m (succ n) :=
+theorem of_nat_add_neg_succ_of_nat (m n : Nat) : ofNat m + -[1+ n] = subNatNat m (succ n) :=
   rfl
 
-theorem neg_succ_of_nat_add_of_nat (m n : Nat) : -[1+ m] + of_nat n = sub_nat_nat n (succ m) :=
+theorem neg_succ_of_nat_add_of_nat (m n : Nat) : -[1+ m] + ofNat n = subNatNat n (succ m) :=
   rfl
 
 theorem neg_succ_of_nat_add_neg_succ_of_nat (m n : Nat) : -[1+ m] + -[1+ n] = -[1+ succ (m + n)] :=
   rfl
 
-theorem of_nat_mul_of_nat (m n : Nat) : of_nat m * of_nat n = of_nat (m * n) :=
+theorem of_nat_mul_of_nat (m n : Nat) : ofNat m * ofNat n = ofNat (m * n) :=
   rfl
 
-theorem of_nat_mul_neg_succ_of_nat (m n : Nat) : of_nat m * -[1+ n] = neg_of_nat (m * succ n) :=
+theorem of_nat_mul_neg_succ_of_nat (m n : Nat) : ofNat m * -[1+ n] = negOfNat (m * succ n) :=
   rfl
 
-theorem neg_succ_of_nat_of_nat (m n : Nat) : -[1+ m] * of_nat n = neg_of_nat (succ m * n) :=
+theorem neg_succ_of_nat_of_nat (m n : Nat) : -[1+ m] * ofNat n = negOfNat (succ m * n) :=
   rfl
 
-theorem mul_neg_succ_of_nat_neg_succ_of_nat (m n : Nat) : -[1+ m] * -[1+ n] = of_nat (succ m * succ n) :=
+theorem mul_neg_succ_of_nat_neg_succ_of_nat (m n : Nat) : -[1+ m] * -[1+ n] = ofNat (succ m * succ n) :=
   rfl
 
 attribute [local simp]
@@ -177,14 +177,14 @@ attribute [local simp]
 protected theorem coe_nat_inj {m n : ℕ} (h : (↑m : ℤ) = ↑n) : m = n :=
   Int.ofNat.injₓ h
 
-theorem of_nat_eq_of_nat_iff (m n : ℕ) : of_nat m = of_nat n ↔ m = n :=
+theorem of_nat_eq_of_nat_iff (m n : ℕ) : ofNat m = ofNat n ↔ m = n :=
   Iff.intro Int.ofNat.injₓ (congr_argₓ _)
 
 protected theorem coe_nat_eq_coe_nat_iff (m n : ℕ) : (↑m : ℤ) = ↑n ↔ m = n :=
   of_nat_eq_of_nat_iff m n
 
-theorem neg_succ_of_nat_inj_iff {m n : ℕ} : neg_succ_of_nat m = neg_succ_of_nat n ↔ m = n :=
-  ⟨neg_succ_of_nat.inj, fun H => by
+theorem neg_succ_of_nat_inj_iff {m n : ℕ} : negSucc m = negSucc n ↔ m = n :=
+  ⟨negSucc.injₓ, fun H => by
     simp [H]⟩
 
 theorem neg_succ_of_nat_eq (n : ℕ) : -[1+ n] = -(n + 1) :=
@@ -201,8 +201,8 @@ protected theorem neg_inj {a b : ℤ} (h : -a = -b) : a = b := by
 protected theorem sub_eq_add_neg {a b : ℤ} : a - b = a + -b :=
   rfl
 
-theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ i n, P (n + i) n (of_nat i))
-    (hn : ∀ i m, P m (m + i + 1) -[1+ i]) : P m n (sub_nat_nat m n) := by
+theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ i n, P (n + i) n (ofNat i))
+    (hn : ∀ i m, P m (m + i + 1) -[1+ i]) : P m n (subNatNat m n) := by
   have H : ∀ k, n - m = k → P m n (Nat.casesOn k (of_nat (m - n)) fun a => -[1+ a]) := by
     intro k
     cases k
@@ -220,24 +220,24 @@ theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : �
   delta' sub_nat_nat
   exact H _ rfl
 
-theorem sub_nat_nat_add_left {m n : ℕ} : sub_nat_nat (m + n) m = of_nat n := by
+theorem sub_nat_nat_add_left {m n : ℕ} : subNatNat (m + n) m = ofNat n := by
   dunfold sub_nat_nat
   rw [Nat.sub_eq_zero_of_leₓ]
   dunfold sub_nat_nat._match_1
   rw [Nat.add_sub_cancel_left]
   apply Nat.le_add_rightₓ
 
-theorem sub_nat_nat_add_right {m n : ℕ} : sub_nat_nat m (m + n + 1) = neg_succ_of_nat n :=
+theorem sub_nat_nat_add_right {m n : ℕ} : subNatNat m (m + n + 1) = negSucc n :=
   calc
-    sub_nat_nat._match_1 m (m + n + 1) (m + n + 1 - m) = sub_nat_nat._match_1 m (m + n + 1) (m + (n + 1) - m) := by
+    SubNatNat._match1 m (m + n + 1) (m + n + 1 - m) = SubNatNat._match1 m (m + n + 1) (m + (n + 1) - m) := by
       rw [Nat.add_assoc]
-    _ = sub_nat_nat._match_1 m (m + n + 1) (n + 1) := by
+    _ = SubNatNat._match1 m (m + n + 1) (n + 1) := by
       rw [Nat.add_sub_cancel_left]
-    _ = neg_succ_of_nat n := rfl
+    _ = negSucc n := rfl
     
 
-theorem sub_nat_nat_add_add (m n k : ℕ) : sub_nat_nat (m + k) (n + k) = sub_nat_nat m n :=
-  sub_nat_nat_elim m n (fun m n i => sub_nat_nat (m + k) (n + k) = i)
+theorem sub_nat_nat_add_add (m n k : ℕ) : subNatNat (m + k) (n + k) = subNatNat m n :=
+  sub_nat_nat_elim m n (fun m n i => subNatNat (m + k) (n + k) = i)
     (fun i n => by
       have : n + i + k = n + k + i := by
         simp [Nat.add_comm, Nat.add_left_comm]
@@ -249,11 +249,11 @@ theorem sub_nat_nat_add_add (m n k : ℕ) : sub_nat_nat (m + k) (n + k) = sub_na
     rw [this]
     exact sub_nat_nat_add_right
 
-theorem sub_nat_nat_of_le {m n : ℕ} (h : n ≤ m) : sub_nat_nat m n = of_nat (m - n) :=
+theorem sub_nat_nat_of_le {m n : ℕ} (h : n ≤ m) : subNatNat m n = ofNat (m - n) :=
   sub_nat_nat_of_sub_eq_zero (Nat.sub_eq_zero_of_leₓ h)
 
-theorem sub_nat_nat_of_lt {m n : ℕ} (h : m < n) : sub_nat_nat m n = -[1+ pred (n - m)] := by
-  have : n - m = succ (pred (n - m)) := Eq.symm (succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h))
+theorem sub_nat_nat_of_lt {m n : ℕ} (h : m < n) : subNatNat m n = -[1+ pred (n - m)] := by
+  have : n - m = succ (pred (n - m)) := Eq.symm (succ_pred_eq_of_posₓ (Nat.sub_pos_of_ltₓ h))
   rw [sub_nat_nat_of_sub_eq_succ this]
 
 @[simp]
@@ -261,33 +261,33 @@ def nat_abs : ℤ → ℕ
   | of_nat m => m
   | -[1+ m] => succ m
 
-theorem nat_abs_of_nat (n : ℕ) : nat_abs ↑n = n :=
+theorem nat_abs_of_nat (n : ℕ) : natAbs ↑n = n :=
   rfl
 
-theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, nat_abs a = 0 → a = 0
-  | of_nat m, H => congr_argₓ of_nat H
+theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, natAbs a = 0 → a = 0
+  | of_nat m, H => congr_argₓ ofNat H
   | -[1+ m'], H => absurd H (succ_ne_zero _)
 
-theorem nat_abs_pos_of_ne_zero {a : ℤ} (h : a ≠ 0) : 0 < nat_abs a :=
+theorem nat_abs_pos_of_ne_zero {a : ℤ} (h : a ≠ 0) : 0 < natAbs a :=
   (Nat.eq_zero_or_posₓ _).resolve_left <| mt eq_zero_of_nat_abs_eq_zero h
 
-theorem nat_abs_zero : nat_abs (0 : Int) = (0 : Nat) :=
+theorem nat_abs_zero : natAbs (0 : Int) = (0 : Nat) :=
   rfl
 
-theorem nat_abs_one : nat_abs (1 : Int) = (1 : Nat) :=
+theorem nat_abs_one : natAbs (1 : Int) = (1 : Nat) :=
   rfl
 
-theorem nat_abs_mul_self : ∀ {a : ℤ}, ↑(nat_abs a * nat_abs a) = a * a
+theorem nat_abs_mul_self : ∀ {a : ℤ}, ↑(natAbs a * natAbs a) = a * a
   | of_nat m => rfl
   | -[1+ m'] => rfl
 
 @[simp]
-theorem nat_abs_neg (a : ℤ) : nat_abs (-a) = nat_abs a := by
+theorem nat_abs_neg (a : ℤ) : natAbs (-a) = natAbs a := by
   cases' a with n n
   cases n <;> rfl
   rfl
 
-theorem nat_abs_eq : ∀ a : ℤ, a = nat_abs a ∨ a = -nat_abs a
+theorem nat_abs_eq : ∀ a : ℤ, a = natAbs a ∨ a = -natAbs a
   | of_nat m => Or.inl rfl
   | -[1+ m'] => Or.inr rfl
 
@@ -312,42 +312,42 @@ theorem sign_neg_one : sign (-1) = -1 :=
   rfl
 
 protected def div : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => of_nat (m / n)
-  | (m : ℕ), -[1+ n] => -of_nat (m / succ n)
+  | (m : ℕ), (n : ℕ) => ofNat (m / n)
+  | (m : ℕ), -[1+ n] => -ofNat (m / succ n)
   | -[1+ m], 0 => 0
   | -[1+ m], (n + 1 : ℕ) => -[1+ m / succ n]
-  | -[1+ m], -[1+ n] => of_nat (succ (m / succ n))
+  | -[1+ m], -[1+ n] => ofNat (succ (m / succ n))
 
 protected def mod : ℤ → ℤ → ℤ
-  | (m : ℕ), n => (m % nat_abs n : ℕ)
-  | -[1+ m], n => sub_nat_nat (nat_abs n) (succ (m % nat_abs n))
+  | (m : ℕ), n => (m % natAbs n : ℕ)
+  | -[1+ m], n => subNatNat (natAbs n) (succ (m % natAbs n))
 
 def fdiv : ℤ → ℤ → ℤ
   | 0, _ => 0
-  | (m : ℕ), (n : ℕ) => of_nat (m / n)
+  | (m : ℕ), (n : ℕ) => ofNat (m / n)
   | (m + 1 : ℕ), -[1+ n] => -[1+ m / succ n]
   | -[1+ m], 0 => 0
   | -[1+ m], (n + 1 : ℕ) => -[1+ m / succ n]
-  | -[1+ m], -[1+ n] => of_nat (succ m / succ n)
+  | -[1+ m], -[1+ n] => ofNat (succ m / succ n)
 
 def fmod : ℤ → ℤ → ℤ
   | 0, _ => 0
-  | (m : ℕ), (n : ℕ) => of_nat (m % n)
-  | (m + 1 : ℕ), -[1+ n] => sub_nat_nat (m % succ n) n
-  | -[1+ m], (n : ℕ) => sub_nat_nat n (succ (m % n))
-  | -[1+ m], -[1+ n] => -of_nat (succ m % succ n)
+  | (m : ℕ), (n : ℕ) => ofNat (m % n)
+  | (m + 1 : ℕ), -[1+ n] => subNatNat (m % succ n) n
+  | -[1+ m], (n : ℕ) => subNatNat n (succ (m % n))
+  | -[1+ m], -[1+ n] => -ofNat (succ m % succ n)
 
 def Quot : ℤ → ℤ → ℤ
-  | of_nat m, of_nat n => of_nat (m / n)
-  | of_nat m, -[1+ n] => -of_nat (m / succ n)
-  | -[1+ m], of_nat n => -of_nat (succ m / n)
-  | -[1+ m], -[1+ n] => of_nat (succ m / succ n)
+  | of_nat m, of_nat n => ofNat (m / n)
+  | of_nat m, -[1+ n] => -ofNat (m / succ n)
+  | -[1+ m], of_nat n => -ofNat (succ m / n)
+  | -[1+ m], -[1+ n] => ofNat (succ m / succ n)
 
 def rem : ℤ → ℤ → ℤ
-  | of_nat m, of_nat n => of_nat (m % n)
-  | of_nat m, -[1+ n] => of_nat (m % succ n)
-  | -[1+ m], of_nat n => -of_nat (succ m % n)
-  | -[1+ m], -[1+ n] => -of_nat (succ m % succ n)
+  | of_nat m, of_nat n => ofNat (m % n)
+  | of_nat m, -[1+ n] => ofNat (m % succ n)
+  | -[1+ m], of_nat n => -ofNat (succ m % n)
+  | -[1+ m], -[1+ n] => -ofNat (succ m % succ n)
 
 instance : Div ℤ :=
   ⟨Int.divₓ⟩
@@ -356,7 +356,7 @@ instance : Mod ℤ :=
   ⟨Int.modₓ⟩
 
 def gcd (m n : ℤ) : ℕ :=
-  gcd (nat_abs m) (nat_abs n)
+  gcdₓ (natAbs m) (natAbs n)
 
 protected theorem add_comm : ∀ a b : ℤ, a + b = b + a
   | of_nat n, of_nat m => by
@@ -373,15 +373,15 @@ protected theorem add_zero : ∀ a : ℤ, a + 0 = a
 protected theorem zero_add (a : ℤ) : 0 + a = a :=
   Int.add_comm a 0 ▸ Int.add_zero a
 
-theorem sub_nat_nat_sub {m n : ℕ} (h : n ≤ m) (k : ℕ) : sub_nat_nat (m - n) k = sub_nat_nat m (k + n) :=
+theorem sub_nat_nat_sub {m n : ℕ} (h : n ≤ m) (k : ℕ) : subNatNat (m - n) k = subNatNat m (k + n) :=
   calc
-    sub_nat_nat (m - n) k = sub_nat_nat (m - n + n) (k + n) := by
+    subNatNat (m - n) k = subNatNat (m - n + n) (k + n) := by
       rw [sub_nat_nat_add_add]
-    _ = sub_nat_nat m (k + n) := by
+    _ = subNatNat m (k + n) := by
       rw [Nat.sub_add_cancelₓ h]
     
 
-theorem sub_nat_nat_add (m n k : ℕ) : sub_nat_nat (m + n) k = of_nat m + sub_nat_nat n k := by
+theorem sub_nat_nat_add (m n k : ℕ) : subNatNat (m + n) k = ofNat m + subNatNat n k := by
   have h := le_or_ltₓ k n
   cases' h with h' h'
   · rw [sub_nat_nat_of_le h']
@@ -397,7 +397,7 @@ theorem sub_nat_nat_add (m n k : ℕ) : sub_nat_nat (m + n) k = of_nat m + sub_n
   rw [← Nat.sub_add_cancelₓ (le_of_ltₓ h')]
   apply sub_nat_nat_add_add
 
-theorem sub_nat_nat_add_neg_succ_of_nat (m n k : ℕ) : sub_nat_nat m n + -[1+ k] = sub_nat_nat m (n + succ k) := by
+theorem sub_nat_nat_add_neg_succ_of_nat (m n k : ℕ) : subNatNat m n + -[1+ k] = subNatNat m (n + succ k) := by
   have h := le_or_ltₓ n m
   cases' h with h' h'
   · rw [sub_nat_nat_of_le h']
@@ -411,13 +411,13 @@ theorem sub_nat_nat_add_neg_succ_of_nat (m n k : ℕ) : sub_nat_nat m n + -[1+ k
   rw [← add_succ, succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h'), add_succ, succ_sub h₃, pred_succ]
   rw [Nat.add_comm n, Nat.add_sub_assocₓ (le_of_ltₓ h')]
 
-theorem add_assoc_aux1 (m n : ℕ) : ∀ c : ℤ, of_nat m + of_nat n + c = of_nat m + (of_nat n + c)
+theorem add_assoc_aux1 (m n : ℕ) : ∀ c : ℤ, ofNat m + ofNat n + c = ofNat m + (ofNat n + c)
   | of_nat k => by
     simp [Nat.add_assoc]
   | -[1+ k] => by
     simp [sub_nat_nat_add]
 
-theorem add_assoc_aux2 (m n k : ℕ) : -[1+ m] + -[1+ n] + of_nat k = -[1+ m] + (-[1+ n] + of_nat k) := by
+theorem add_assoc_aux2 (m n k : ℕ) : -[1+ m] + -[1+ n] + ofNat k = -[1+ m] + (-[1+ n] + ofNat k) := by
   simp [add_succ]
   rw [Int.add_comm, sub_nat_nat_add_neg_succ_of_nat]
   simp [add_succ, succ_add, Nat.add_comm]
@@ -436,7 +436,7 @@ protected theorem add_assoc : ∀ a b c : ℤ, a + b + c = a + (b + c)
   | -[1+ m], -[1+ n], -[1+ k] => by
     simp [add_succ, Nat.add_comm, Nat.add_left_comm, neg_of_nat_of_succ]
 
-theorem sub_nat_self : ∀ n, sub_nat_nat n n = 0
+theorem sub_nat_self : ∀ n, subNatNat n n = 0
   | 0 => rfl
   | succ m => by
     rw [sub_nat_nat_of_sub_eq_zero, Nat.sub_self, of_nat_zero]
@@ -464,23 +464,23 @@ protected theorem mul_comm : ∀ a b : ℤ, a * b = b * a
   | -[1+ m], -[1+ n] => by
     simp [Nat.mul_comm]
 
-theorem of_nat_mul_neg_of_nat (m : ℕ) : ∀ n, of_nat m * neg_of_nat n = neg_of_nat (m * n)
+theorem of_nat_mul_neg_of_nat (m : ℕ) : ∀ n, ofNat m * negOfNat n = negOfNat (m * n)
   | 0 => rfl
   | succ n => by
     unfold neg_of_nat
     simp
 
-theorem neg_of_nat_mul_of_nat (m n : ℕ) : neg_of_nat m * of_nat n = neg_of_nat (m * n) := by
+theorem neg_of_nat_mul_of_nat (m n : ℕ) : negOfNat m * ofNat n = negOfNat (m * n) := by
   rw [Int.mul_comm]
   simp [of_nat_mul_neg_of_nat, Nat.mul_comm]
 
-theorem neg_succ_of_nat_mul_neg_of_nat (m : ℕ) : ∀ n, -[1+ m] * neg_of_nat n = of_nat (succ m * n)
+theorem neg_succ_of_nat_mul_neg_of_nat (m : ℕ) : ∀ n, -[1+ m] * negOfNat n = ofNat (succ m * n)
   | 0 => rfl
   | succ n => by
     unfold neg_of_nat
     simp
 
-theorem neg_of_nat_mul_neg_succ_of_nat (m n : ℕ) : neg_of_nat n * -[1+ m] = of_nat (n * succ m) := by
+theorem neg_of_nat_mul_neg_succ_of_nat (m n : ℕ) : negOfNat n * -[1+ m] = ofNat (n * succ m) := by
   rw [Int.mul_comm]
   simp [neg_succ_of_nat_mul_neg_of_nat, Nat.mul_comm]
 
@@ -512,11 +512,11 @@ protected theorem mul_zero : ∀ a : ℤ, a * 0 = 0
 protected theorem zero_mul (a : ℤ) : 0 * a = 0 :=
   Int.mul_comm a 0 ▸ Int.mul_zero a
 
-theorem neg_of_nat_eq_sub_nat_nat_zero : ∀ n, neg_of_nat n = sub_nat_nat 0 n
+theorem neg_of_nat_eq_sub_nat_nat_zero : ∀ n, negOfNat n = subNatNat 0 n
   | 0 => rfl
   | succ n => rfl
 
-theorem of_nat_mul_sub_nat_nat (m n k : ℕ) : of_nat m * sub_nat_nat n k = sub_nat_nat (m * n) (m * k) := by
+theorem of_nat_mul_sub_nat_nat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat (m * n) (m * k) := by
   have h₀ : m > 0 ∨ 0 = m := Decidable.lt_or_eq_of_leₓ m.zero_le
   cases' h₀ with h₀ h₀
   · have h := Nat.lt_or_geₓ n k
@@ -538,7 +538,7 @@ theorem of_nat_mul_sub_nat_nat (m n k : ℕ) : of_nat m * sub_nat_nat n k = sub_
   subst h₀
   simp [h₂, Int.zero_mul, Nat.zero_mul]
 
-theorem neg_of_nat_add (m n : ℕ) : neg_of_nat m + neg_of_nat n = neg_of_nat (m + n) := by
+theorem neg_of_nat_add (m n : ℕ) : negOfNat m + negOfNat n = negOfNat (m + n) := by
   cases m
   · cases n
     · simp
@@ -554,8 +554,8 @@ theorem neg_of_nat_add (m n : ℕ) : neg_of_nat m + neg_of_nat n = neg_of_nat (m
   simp [Nat.succ_add]
   rfl
 
-theorem neg_succ_of_nat_mul_sub_nat_nat (m n k : ℕ) :
-    -[1+ m] * sub_nat_nat n k = sub_nat_nat (succ m * k) (succ m * n) := by
+theorem neg_succ_of_nat_mul_sub_nat_nat (m n k : ℕ) : -[1+ m] * subNatNat n k = subNatNat (succ m * k) (succ m * n) :=
+  by
   have h := Nat.lt_or_geₓ n k
   cases' h with h h
   · have h' : succ m * n < succ m * k := Nat.mul_lt_mul_of_pos_leftₓ h (Nat.succ_posₓ m)
@@ -611,12 +611,12 @@ protected theorem distrib_right (a b c : ℤ) : (a + b) * c = a * c + b * c := b
 
 protected theorem zero_ne_one : (0 : Int) ≠ 1 := fun h : 0 = 1 => succ_ne_zero _ (Int.ofNat.injₓ h).symm
 
-theorem of_nat_sub {n m : ℕ} (h : m ≤ n) : of_nat (n - m) = of_nat n - of_nat m :=
-  show of_nat (n - m) = of_nat n + neg_of_nat m from
+theorem of_nat_sub {n m : ℕ} (h : m ≤ n) : ofNat (n - m) = ofNat n - ofNat m :=
+  show ofNat (n - m) = ofNat n + negOfNat m from
     match m, h with
     | 0, h => rfl
     | succ m, h =>
-      show of_nat (n - succ m) = sub_nat_nat n (succ m) by
+      show ofNat (n - succ m) = subNatNat n (succ m) by
         delta' sub_nat_nat <;> rw [Nat.sub_eq_zero_of_leₓ h] <;> rfl
 
 protected theorem add_left_comm (a b c : ℤ) : a + (b + c) = b + (a + c) := by
@@ -644,7 +644,7 @@ protected theorem coe_nat_sub {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑
 
 attribute [local simp] Int.sub_eq_add_neg
 
-protected theorem sub_nat_nat_eq_coe {m n : ℕ} : sub_nat_nat m n = ↑m - ↑n :=
+protected theorem sub_nat_nat_eq_coe {m n : ℕ} : subNatNat m n = ↑m - ↑n :=
   sub_nat_nat_elim m n (fun m n i => i = ↑m - ↑n)
     (fun i n => by
       simp [Int.coe_nat_add, Int.add_left_comm, Int.add_assoc, Int.add_right_neg]
@@ -657,7 +657,7 @@ def to_nat : ℤ → ℕ
   | (n : ℕ) => n
   | -[1+ n] => 0
 
-theorem to_nat_sub (m n : ℕ) : to_nat (m - n) = m - n := by
+theorem to_nat_sub (m n : ℕ) : toNat (m - n) = m - n := by
   rw [← Int.sub_nat_nat_eq_coe] <;>
     exact
       sub_nat_nat_elim m n (fun m n i => to_nat i = m - n)
@@ -671,7 +671,7 @@ def nat_mod (m n : ℤ) : ℕ :=
 
 protected theorem one_mul : ∀ a : ℤ, (1 : ℤ) * a = a
   | of_nat n =>
-    show of_nat (1 * n) = of_nat n by
+    show ofNat (1 * n) = ofNat n by
       rw [Nat.one_mul]
   | -[1+ n] =>
     show -[1+ 1 * n] = -[1+ n] by
@@ -687,11 +687,11 @@ protected theorem neg_eq_neg_one_mul : ∀ a : ℤ, -a = -1 * a
       rw [Nat.one_mul]
       rfl
   | -[1+ n] =>
-    show _ = of_nat _ by
+    show _ = ofNat _ by
       rw [Nat.one_mul]
       rfl
 
-theorem sign_mul_nat_abs : ∀ a : ℤ, sign a * nat_abs a = a
+theorem sign_mul_nat_abs : ∀ a : ℤ, sign a * natAbs a = a
   | (n + 1 : ℕ) => Int.one_mul _
   | 0 => rfl
   | -[1+ n] => (Int.neg_eq_neg_one_mul _).symm

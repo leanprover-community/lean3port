@@ -51,9 +51,9 @@ instance : Monadₓ Parser where
   bind := @Parser.bind
 
 instance : IsLawfulMonad Parser where
-  id_map := @parser.id_map
+  id_map := @Parser.id_map
   pure_bind := fun _ _ _ _ => rfl
-  bind_assoc := @parser.bind_assoc
+  bind_assoc := @Parser.bind_assoc
 
 instance : MonadFail Parser :=
   { Parser.monad with fail := @Parser.fail }
@@ -87,7 +87,7 @@ def decorate_errors (msgs : Thunkₓ (List Stringₓ)) (p : Parser α) : Parser 
 
 /-- Overrides the expected token name, and does not consume input on failure. -/
 def decorate_error (msg : Thunkₓ Stringₓ) (p : Parser α) : Parser α :=
-  decorate_errors [msg ()] p
+  decorateErrors [msg ()] p
 
 /-- Matches a single character. Fails only if there is no more input. -/
 def any_char : Parser Charₓ := fun input pos =>
@@ -109,32 +109,32 @@ def eps : Parser Unit :=
 
 /-- Matches the given character. -/
 def ch (c : Charₓ) : Parser Unit :=
-  decorate_error c.to_string <| sat (· = c) >> eps
+  decorateError c.toString <| sat (· = c) >> eps
 
 /-- Matches a whole char_buffer.  Does not consume input in case of failure. -/
 def char_buf (s : CharBuffer) : Parser Unit :=
-  decorate_error s.to_string <| s.to_list.mmap' ch
+  decorateError s.toString <| s.toList.mmap' ch
 
 /-- Matches one out of a list of characters. -/
 def one_of (cs : List Charₓ) : Parser Charₓ :=
-  (decorate_errors do
+  (decorateErrors do
       let c ← cs
-      return c.to_string) <|
+      return c) <|
     sat (· ∈ cs)
 
 def one_of' (cs : List Charₓ) : Parser Unit :=
-  one_of cs >> eps
+  oneOf cs >> eps
 
 /-- Matches a string.  Does not consume input in case of failure. -/
 def str (s : Stringₓ) : Parser Unit :=
-  decorate_error s <| s.to_list.mmap' ch
+  decorateError s <| s.toList.mmap' ch
 
 /-- Number of remaining input characters. -/
 def remaining : Parser ℕ := fun input pos => ParseResult.done Pos (input.size - Pos)
 
 /-- Matches the end of the input. -/
 def eof : Parser Unit :=
-  decorate_error "<end-of-file>" <| do
+  decorateError "<end-of-file>" <| do
     let rem ← remaining
     guardₓ <| rem = 0
 
@@ -149,7 +149,7 @@ def foldr_core (f : α → β → β) (p : Parser α) (b : β) : ∀ reps : ℕ,
 
 /-- Matches zero or more occurrences of `p`, and folds the result. -/
 def foldr (f : α → β → β) (p : Parser α) (b : β) : Parser β := fun input pos =>
-  foldr_core f p b (input.size - Pos + 1) input Pos
+  foldrCore f p b (input.size - Pos + 1) input Pos
 
 def foldl_core (f : α → β → α) : ∀ a : α p : Parser β reps : ℕ, Parser α
   | a, p, 0 => failure
@@ -161,7 +161,7 @@ def foldl_core (f : α → β → α) : ∀ a : α p : Parser β reps : ℕ, Par
 
 /-- Matches zero or more occurrences of `p`, and folds the result. -/
 def foldl (f : α → β → α) (a : α) (p : Parser β) : Parser α := fun input pos =>
-  foldl_core f a p (input.size - Pos + 1) input Pos
+  foldlCore f a p (input.size - Pos + 1) input Pos
 
 /-- Matches zero or more occurrences of `p`. -/
 def many (p : Parser α) : Parser (List α) :=
@@ -188,7 +188,7 @@ def sep_by1 (sep : Parser Unit) (p : Parser α) : Parser (List α) :=
 
 /-- Matches zero or more occurrences of `p`, separated by `sep`. -/
 def sep_by (sep : Parser Unit) (p : Parser α) : Parser (List α) :=
-  sep_by1 sep p <|> return []
+  sepBy1 sep p <|> return []
 
 def fix_core (F : Parser α → Parser α) : ∀ max_depth : ℕ, Parser α
   | 0 => failure
@@ -196,19 +196,19 @@ def fix_core (F : Parser α → Parser α) : ∀ max_depth : ℕ, Parser α
 
 /-- Matches a digit (0-9). -/
 def digit : Parser Nat :=
-  decorate_error "<digit>" <| do
+  decorateError "<digit>" <| do
     let c ← sat fun c => '0' ≤ c ∧ c ≤ '9'
-    pure <| c.to_nat - '0'.toNat
+    pure <| c - '0'.toNat
 
 /-- Matches a natural number. Large numbers may cause performance issues, so
 don't run this parser on untrusted input. -/
 def Nat : Parser Nat :=
-  decorate_error "<natural>" <| do
+  decorateError "<natural>" <| do
     let digits ← many1 digit
-    pure <| Prod.fst <| digits.foldr (fun digit ⟨Sum, magnitude⟩ => ⟨Sum + digit * magnitude, magnitude * 10⟩) ⟨0, 1⟩
+    pure <| Prod.fst <| digits (fun digit ⟨Sum, magnitude⟩ => ⟨Sum + digit * magnitude, magnitude * 10⟩) ⟨0, 1⟩
 
 /-- Fixpoint combinator satisfying `fix F = F (fix F)`. -/
-def fix (F : Parser α → Parser α) : Parser α := fun input pos => fix_core F (input.size - Pos + 1) input Pos
+def fix (F : Parser α → Parser α) : Parser α := fun input pos => fixCore F (input.size - Pos + 1) input Pos
 
 private def make_monospaced : Charₓ → Charₓ
   | '\n' => ' '
@@ -219,22 +219,22 @@ private def make_monospaced : Charₓ → Charₓ
 def mk_error_msg (input : CharBuffer) (pos : ℕ) (expected : Dlist Stringₓ) : CharBuffer :=
   let left_ctx := (input.take Pos).takeRight 10
   let right_ctx := (input.drop Pos).take 10
-  (left_ctx.map make_monospaced ++ right_ctx.map make_monospaced ++ "\n".toCharBuffer ++ left_ctx.map fun _ => ' ') ++
+  (left_ctx.map makeMonospaced ++ right_ctx.map makeMonospaced ++ "\n".toCharBuffer ++ left_ctx.map fun _ => ' ') ++
             "^\n".toCharBuffer ++
           "\n".toCharBuffer ++
         "expected: ".toCharBuffer ++
-      Stringₓ.toCharBuffer (" | ".intercalate expected.to_list) ++
+      Stringₓ.toCharBuffer (" | ".intercalate expected.toList) ++
     "\n".toCharBuffer
 
 /-- Runs a parser on the given input.  The parser needs to match the complete input. -/
 def run (p : Parser α) (input : CharBuffer) : Sum Stringₓ α :=
   match (p <* eof) input 0 with
   | ParseResult.done Pos res => Sum.inr res
-  | ParseResult.fail Pos expected => Sum.inl <| Buffer.toString <| mk_error_msg input Pos expected
+  | ParseResult.fail Pos expected => Sum.inl <| Buffer.toString <| mkErrorMsg input Pos expected
 
 /-- Runs a parser on the given input.  The parser needs to match the complete input. -/
 def run_string (p : Parser α) (input : Stringₓ) : Sum Stringₓ α :=
-  run p input.to_char_buffer
+  run p input.toCharBuffer
 
 end Parser
 

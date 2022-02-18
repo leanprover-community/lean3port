@@ -43,12 +43,12 @@ instance {p : Prop} : HasRepr (Decidable p) :=
 
 protected def List.reprAux {α : Type u} [HasRepr α] : Bool → List α → Stringₓ
   | b, [] => ""
-  | tt, x :: xs => reprₓ x ++ List.reprAux ff xs
-  | ff, x :: xs => ", " ++ reprₓ x ++ List.reprAux ff xs
+  | tt, x :: xs => reprₓ x ++ List.reprAux false xs
+  | ff, x :: xs => ", " ++ reprₓ x ++ List.reprAux false xs
 
 protected def List.repr {α : Type u} [HasRepr α] : List α → Stringₓ
   | [] => "[]"
-  | x :: xs => "[" ++ List.reprAux tt (x :: xs) ++ "]"
+  | x :: xs => "[" ++ List.reprAux true (x :: xs) ++ "]"
 
 instance {α : Type u} [HasRepr α] : HasRepr (List α) :=
   ⟨List.repr⟩
@@ -113,10 +113,10 @@ def digit_succ (base : ℕ) : List ℕ → List ℕ
 
 def to_digits (base : ℕ) : ℕ → List ℕ
   | 0 => [0]
-  | n + 1 => digit_succ base (to_digits n)
+  | n + 1 => digitSucc base (to_digits n)
 
 protected def reprₓ (n : ℕ) : Stringₓ :=
-  ((to_digits 10 n).map digit_char).reverse.asString
+  ((toDigitsₓ 10 n).map digitCharₓ).reverse.asString
 
 end Nat
 
@@ -138,8 +138,7 @@ def Charₓ.quoteCore (c : Charₓ) : Stringₓ :=
     if c = '\t' then "\\t"
     else
       if c = '\\' then "\\\\"
-      else
-        if c = '\"' then "\\\"" else if c.to_nat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHexₓ c else Stringₓ.singleton c
+      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHexₓ c else Stringₓ.singleton c
 
 instance : HasRepr Charₓ :=
   ⟨fun c => "'" ++ Charₓ.quoteCore c ++ "'"⟩
@@ -149,7 +148,7 @@ def Stringₓ.quoteAux : List Charₓ → Stringₓ
   | x :: xs => Charₓ.quoteCore x ++ Stringₓ.quoteAux xs
 
 def Stringₓ.quote (s : Stringₓ) : Stringₓ :=
-  if s.is_empty = tt then "\"\"" else "\"" ++ Stringₓ.quoteAux s.to_list ++ "\""
+  if s.isEmpty = tt then "\"\"" else "\"" ++ Stringₓ.quoteAux s.toList ++ "\""
 
 instance : HasRepr Stringₓ :=
   ⟨Stringₓ.quote⟩

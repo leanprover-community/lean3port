@@ -59,7 +59,7 @@ def to_list (v : Vector α n) : List α :=
 
 def nth : ∀ v : Vector α n, Finₓ n → α
   | ⟨l, h⟩, i =>
-    l.nth_le i.1
+    l.nthLe i.1
       (by
         rw [h] <;> exact i.2)
 
@@ -133,43 +133,42 @@ def map_accumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vec
 
 end Accum
 
-protected theorem Eq {n : ℕ} : ∀ a1 a2 : Vector α n, to_list a1 = to_list a2 → a1 = a2
+protected theorem Eq {n : ℕ} : ∀ a1 a2 : Vector α n, toList a1 = toList a2 → a1 = a2
   | ⟨x, h1⟩, ⟨_, h2⟩, rfl => rfl
 
 protected theorem eq_nil (v : Vector α 0) : v = nil :=
-  v.eq nil (List.eq_nil_of_length_eq_zero v.2)
+  v.Eq nil (List.eq_nil_of_length_eq_zero v.2)
 
 @[simp]
-theorem to_list_mk (v : List α) (P : List.length v = n) : to_list (Subtype.mk v P) = v :=
+theorem to_list_mk (v : List α) (P : List.length v = n) : toList (Subtype.mk v P) = v :=
   rfl
 
 @[simp]
-theorem to_list_nil : to_list nil = @List.nil α :=
+theorem to_list_nil : toList nil = @List.nil α :=
   rfl
 
 @[simp]
-theorem to_list_length (v : Vector α n) : (to_list v).length = n :=
+theorem to_list_length (v : Vector α n) : (toList v).length = n :=
   v.2
 
 @[simp]
-theorem to_list_cons (a : α) (v : Vector α n) : to_list (cons a v) = a :: to_list v := by
+theorem to_list_cons (a : α) (v : Vector α n) : toList (cons a v) = a :: toList v := by
   cases v
   rfl
 
 @[simp]
-theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) : to_list (append v w) = to_list v ++ to_list w :=
-  by
+theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) : toList (append v w) = toList v ++ toList w := by
   cases v
   cases w
   rfl
 
 @[simp]
-theorem to_list_drop {n m : ℕ} (v : Vector α m) : to_list (drop n v) = List.dropₓ n (to_list v) := by
+theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.dropₓ n (toList v) := by
   cases v
   rfl
 
 @[simp]
-theorem to_list_take {n m : ℕ} (v : Vector α m) : to_list (take n v) = List.takeₓ n (to_list v) := by
+theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.takeₓ n (toList v) := by
   cases v
   rfl
 

@@ -30,8 +30,8 @@ namespace Exceptional
 variable {α β : Type}
 
 protected unsafe def to_bool : exceptional α → Bool
-  | success _ => tt
-  | exception _ => ff
+  | success _ => true
+  | exception _ => false
 
 protected unsafe def to_option : exceptional α → Option α
   | success a => some a

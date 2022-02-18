@@ -32,6 +32,9 @@ namespace WellFoundedTactics
 
 open Tactic
 
+def id_tag.wf : Unit :=
+  ()
+
 unsafe def mk_alt_sizeof : expr → expr
   | expr.app (expr.app (expr.app (expr.app (expr.const `` Psum.hasSizeof l) α) β) iα) iβ =>
     (expr.const `` Psum.hasSizeofAlt l : expr) α β iα (mk_alt_sizeof iβ)
@@ -54,20 +57,20 @@ unsafe def clear_internals : tactic Unit :=
   local_context >>= clear_wf_rec_goal_aux
 
 unsafe def unfold_wf_rel : tactic Unit :=
-  dunfold_target [`` HasWellFounded.R] { failIfUnchanged := ff }
+  dunfold_target [`` HasWellFounded.R] { failIfUnchanged := false }
 
 unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | quote.1 (Psigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
-    if t.is_napp_of `psigma.lex 6 then
-        let a := t.app_fn.app_arg
-        let b := t.app_arg
+    if t `psigma.lex 6 then
+        let a := t
+        let b := t
         do
         let (a₁, a₂) ← is_psigma_mk a
         let (b₁, b₂) ← is_psigma_mk b
@@ -75,12 +78,12 @@ unsafe def process_lex : tactic Unit → tactic Unit
       else tac
 
 private unsafe def unfold_sizeof_measure : tactic Unit :=
-  dunfold_target [`` SizeofMeasure, `` Measureₓ, `` InvImage] { failIfUnchanged := ff }
+  dunfold_target [`` SizeofMeasure, `` Measureₓ, `` InvImage] { failIfUnchanged := false }
 
 private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
   | s, [] => return s
   | s, n :: ns => do
-    let s' ← s.add_simp n ff
+    let s' ← s.add_simp n false
     add_simps s' ns
 
 private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
@@ -88,12 +91,12 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
     if c.is_constant then
       match c.const_name with
       | Name.mk_string "sizeof" p => do
-        let eqns ← get_eqn_lemmas_for tt c.const_name
+        let eqns ← get_eqn_lemmas_for true c.const_name
         add_simps s eqns
       | _ => return s
     else return s
 
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -133,40 +136,44 @@ private unsafe def prove_eq_by_perm (a b : expr) : tactic expr :=
     perm_ac (get_add_fn a) (quote.1 Nat.add_assoc) (quote.1 Nat.add_comm) a b
 
 private unsafe def num_small_lt (a b : expr) : Bool :=
-  if a = b then ff else if is_napp_of a `has_one.one 2 then tt else if is_napp_of b `has_one.one 2 then ff else a.lt b
+  if a = b then false
+  else if is_napp_of a `has_one.one 2 then true else if is_napp_of b `has_one.one 2 then false else a.lt b
 
 private unsafe def sort_args (args : List expr) : List expr :=
   args.qsort num_small_lt
 
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+private def tagged_proof.wf : Unit :=
+  ()
+
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
 unsafe def cancel_nat_add_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   let ty ← infer_type lhs >>= whnf
   guardₓ (ty = quote.1 Nat)
   let lhs_args := collect_add_args lhs
   let rhs_args := collect_add_args rhs
-  let common := lhs_args.bag_inter rhs_args
+  let common := lhs_args.bagInter rhs_args
   if common = [] then return ()
     else do
-      let lhs_rest := lhs_args.diff common
-      let rhs_rest := rhs_args.diff common
+      let lhs_rest := lhs_args common
+      let rhs_rest := rhs_args common
       let new_lhs ← mk_nat_add_add common (sort_args lhs_rest)
       let new_rhs ← mk_nat_add_add common (sort_args rhs_rest)
       let lhs_pr ← prove_eq_by_perm lhs new_lhs
       let rhs_pr ← prove_eq_by_perm rhs new_rhs
       let target_pr ← to_expr (pquote.1 (congr (congr_argₓ (· < ·) (%%ₓlhs_pr)) (%%ₓrhs_pr)))
       let new_target ← to_expr (pquote.1 ((%%ₓnew_lhs) < %%ₓnew_rhs))
-      replace_target new_target target_pr
+      replace_target new_target target_pr `` id_tag.wf
       sorry <|> sorry
 
 unsafe def check_target_is_value_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
-  guardₓ lhs.is_numeral
+  guardₓ lhs
 
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>

@@ -13,5 +13,5 @@ instance : Subsingleton PUnit :=
 instance : Inhabited PUnit :=
   ⟨PUnit.unit⟩
 
-instance : DecidableEq PUnit := fun a b => is_true (punit_eq a b)
+instance : DecidableEq PUnit := fun a b => isTrue (punit_eq a b)
 

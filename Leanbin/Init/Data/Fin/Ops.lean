@@ -9,7 +9,7 @@ open Nat
 variable {n : Nat}
 
 protected def succ : Finₓ n → Finₓ (succ n)
-  | ⟨a, h⟩ => ⟨Nat.succ a, succ_lt_succ h⟩
+  | ⟨a, h⟩ => ⟨Nat.succ a, succ_lt_succₓ h⟩
 
 def of_nat {n : Nat} (a : Nat) : Finₓ (succ n) :=
   ⟨a % succ n, Nat.mod_ltₓ _ (Nat.zero_lt_succₓ _)⟩
@@ -52,10 +52,10 @@ protected def div : Finₓ n → Finₓ n → Finₓ n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨a / b, divlt h⟩
 
 instance : Zero (Finₓ (succ n)) :=
-  ⟨⟨0, succ_pos n⟩⟩
+  ⟨⟨0, succ_posₓ n⟩⟩
 
 instance : One (Finₓ (succ n)) :=
-  ⟨of_nat 1⟩
+  ⟨ofNat 1⟩
 
 instance : Add (Finₓ n) :=
   ⟨Finₓ.add⟩
@@ -72,7 +72,7 @@ instance : Mod (Finₓ n) :=
 instance : Div (Finₓ n) :=
   ⟨Finₓ.div⟩
 
-theorem of_nat_zero : @of_nat n 0 = 0 :=
+theorem of_nat_zero : @ofNat n 0 = 0 :=
   rfl
 
 theorem add_def (a b : Finₓ n) : (a + b).val = (a.val + b.val) % n :=

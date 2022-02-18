@@ -103,8 +103,8 @@ unsafe axiom get_spec_subsingleton_info (t : expr) (md := semireducible) : tacti
 unsafe axiom get_spec_prefix_size (t : expr) (nargs : Nat) (md := semireducible) : tactic Nat
 
 private unsafe def is_next_explicit : List ParamInfo → Bool
-  | [] => tt
-  | p :: ps => bnot p.is_implicit && bnot p.is_inst_implicit
+  | [] => true
+  | p :: ps => bnot p.isImplicit && bnot p.isInstImplicit
 
 unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) : List expr → List ParamInfo → α → tactic α
   | [], _, a => return a
@@ -114,7 +114,7 @@ unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) : List ex
 unsafe def fold_explicit_args {α} (e : expr) (a : α) (f : α → expr → tactic α) : tactic α :=
   if e.is_app then do
     let info ← get_fun_info e.get_app_fn (some e.get_app_num_args)
-    fold_explicit_args_aux f e.get_app_args info.params a
+    fold_explicit_args_aux f e info a
   else return a
 
 end Tactic

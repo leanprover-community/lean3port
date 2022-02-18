@@ -53,14 +53,14 @@ inductive implicit_infer_kind
   | relaxed_implicit
   | none
 
-instance implicit_infer_kind.inhabited : Inhabited implicit_infer_kind :=
-  ⟨implicit_infer_kind.implicit⟩
+instance implicit_infer_kind.inhabited : Inhabited ImplicitInferKind :=
+  ⟨ImplicitInferKind.implicit⟩
 
 /-- One introduction rule in an inductive declaration -/
 unsafe structure intro_rule where
   constr : Name
   type : expr
-  infer : implicit_infer_kind := implicit_infer_kind.implicit
+  infer : ImplicitInferKind := ImplicitInferKind.implicit
 
 /-- Create a standard environment using the given trust level -/
 unsafe axiom mk_std : Nat → environment
@@ -77,7 +77,7 @@ unsafe axiom mk_protected : environment → Name → environment
 /-- add declaration `d` and make it protected -/
 unsafe def add_protected (env : environment) (d : declaration) : exceptional environment := do
   let env ← env.add d
-  pure <| env.mk_protected d.to_name
+  pure <| env d
 
 /-- check if `n` is the name of a protected declaration -/
 unsafe axiom is_protected : environment → Name → Bool
@@ -87,11 +87,11 @@ unsafe axiom get : environment → Name → exceptional declaration
 
 unsafe def contains (env : environment) (d : Name) : Bool :=
   match env.get d with
-  | exceptional.success _ => tt
-  | exceptional.exception _ => ff
+  | exceptional.success _ => true
+  | exceptional.exception _ => false
 
 unsafe axiom add_defn_eqns (env : environment) (opt : options) (lp_params : List Name) (params : List expr) (sig : expr)
-    (eqns : List (List (expr ff) × expr)) (is_meta : Bool) : exceptional environment
+    (eqns : List (List (expr false) × expr)) (is_meta : Bool) : exceptional environment
 
 /-- Register the given name as a namespace, making it available to the `open` command -/
 unsafe axiom add_namespace : environment → Name → environment
@@ -168,7 +168,7 @@ But there are no `is_inductive`s which are not `is_ginductive`.
 unsafe axiom is_ginductive : environment → Name → Bool
 
 /-- See the docstring for `projection_info`. -/
-unsafe axiom is_projection : environment → Name → Option projection_info
+unsafe axiom is_projection : environment → Name → Option ProjectionInfo
 
 /-- Fold over declarations in the environment. -/
 unsafe axiom fold {α : Type} : environment → α → (declaration → α → α) → α
@@ -242,8 +242,8 @@ unsafe def in_current_file (env : environment) (n : Name) : Bool :=
 
 unsafe def is_definition (env : environment) (n : Name) : Bool :=
   match env.get n with
-  | exceptional.success (declaration.defn _ _ _ _ _ _) => tt
-  | _ => ff
+  | exceptional.success (declaration.defn _ _ _ _ _ _) => true
+  | _ => false
 
 end Environment
 

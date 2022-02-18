@@ -114,7 +114,7 @@ variable {σ : Type u} {m : Type u → Type v}
 
 instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadStateₓ σ m] [HasMonadLift m n] :
     MonadStateₓ σ n :=
-  ⟨fun α x => monad_lift (MonadStateₓ.lift x : m α)⟩
+  ⟨fun α x => monadLift (MonadStateₓ.lift x : m α)⟩
 
 instance [Monadₓ m] : MonadStateₓ σ (StateTₓ σ m) :=
   ⟨fun α x => ⟨fun s => pure (x.run s)⟩⟩
@@ -185,7 +185,7 @@ variable {σ σ' : Type u} {m m' : Type u → Type v}
 
 instance (priority := 100) monadStateAdapterTrans {n n' : Type u → Type v} [MonadStateAdapter σ σ' m m']
     [MonadFunctorₓ m m' n n'] : MonadStateAdapter σ σ' n n' :=
-  ⟨fun σ'' α split join => monad_map fun α => (adapt_state split join : m α → m' α)⟩
+  ⟨fun σ'' α split join => monadMap fun α => (adaptState split join : m α → m' α)⟩
 
 instance [Monadₓ m] : MonadStateAdapter σ σ' (StateTₓ σ m) (StateTₓ σ' m) :=
   ⟨fun σ'' α => StateTₓ.adapt⟩

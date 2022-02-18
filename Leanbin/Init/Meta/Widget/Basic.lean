@@ -208,7 +208,7 @@ mutual
     | of_component {α : Type} {Props : Type} : Props → component Props α → html α
   unsafe inductive attr : Type → Type
     | val {α : Type} (name : Stringₓ) (value : json) : attr α
-    | mouse_event {α : Type} (kind : mouse_event_kind) (handler : Unit → α) : attr α
+    | mouse_event {α : Type} (kind : MouseEventKind) (handler : Unit → α) : attr α
     | style {α : Type} : List (Stringₓ × Stringₓ) → attr α
     | tooltip {α : Type} : html α → attr α
     | text_change_event {α : Type} (handler : Stringₓ → α) : attr α
@@ -226,7 +226,7 @@ unsafe def ignore_action : component π α → component π β
   | c => component.filter_map_action (fun p a => none) c
 
 unsafe def ignore_props : component Unit α → component π α
-  | c => (with_should_update fun a b => ff) <| component.map_props (fun p => ()) c
+  | c => (with_should_update fun a b => false) <| component.map_props (fun p => ()) c
 
 unsafe instance : Coe (component π Empty) (component π α) :=
   ⟨component.filter_map_action fun p x => none⟩
@@ -291,13 +291,13 @@ unsafe def className : Stringₓ → attr α
   | s => attr.val "className" <| s
 
 unsafe def on_click : (Unit → α) → attr α
-  | a => attr.mouse_event mouse_event_kind.on_click a
+  | a => attr.mouse_event MouseEventKind.on_click a
 
 unsafe def on_mouse_enter : (Unit → α) → attr α
-  | a => attr.mouse_event mouse_event_kind.on_mouse_enter a
+  | a => attr.mouse_event MouseEventKind.on_mouse_enter a
 
 unsafe def on_mouse_leave : (Unit → α) → attr α
-  | a => attr.mouse_event mouse_event_kind.on_mouse_leave a
+  | a => attr.mouse_event MouseEventKind.on_mouse_leave a
 
 /-- Alias for `html.element`. -/
 unsafe def h : Stringₓ → List (attr α) → List (html α) → html α :=

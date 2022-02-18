@@ -3,22 +3,25 @@ import Leanbin.Init.Meta.Smt.SmtTactic
 import Leanbin.Init.Meta.FunInfo
 import Leanbin.Init.Meta.RbMap
 
+def Tactic.IdTag.rsimp : Unit :=
+  ()
+
 open Tactic
 
-private unsafe def add_lemma (m : transparency) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
+private unsafe def add_lemma (m : Transparency) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
   (do
-      let h ← hinst_lemma.mk_from_decl_core m h tt
-      return <| hs.add h) <|>
+      let h ← hinst_lemma.mk_from_decl_core m h true
+      return <| hs h) <|>
     return hs
 
-private unsafe def to_hinst_lemmas (m : transparency) (ex : name_set) : List Name → hinst_lemmas → tactic hinst_lemmas
+private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) : List Name → hinst_lemmas → tactic hinst_lemmas
   | [], hs => return hs
   | n :: ns, hs =>
     if ex.contains n then to_hinst_lemmas ns hs
     else
       let add n := add_lemma m n hs >>= to_hinst_lemmas ns
       do
-      let eqns ← tactic.get_eqn_lemmas_for tt n
+      let eqns ← tactic.get_eqn_lemmas_for true n
       match eqns with
         | [] => add n
         | _ => mcond (is_prop_decl n) (add n) (to_hinst_lemmas eqns hs >>= to_hinst_lemmas ns)
@@ -62,21 +65,21 @@ namespace Rsimp
 
 unsafe def is_value_like : expr → Bool
   | e =>
-    if ¬e.is_app then ff
+    if ¬e.is_app then false
     else
       let fn := e.get_app_fn
-      if ¬fn.is_constant then ff
+      if ¬fn.is_constant then false
       else
         let nargs := e.get_app_num_args
         let fname := fn.const_name
-        if fname = `` Zero.zero ∧ nargs = 2 then tt
+        if fname = `` Zero.zero ∧ nargs = 2 then true
         else
-          if fname = `` One.one ∧ nargs = 2 then tt
+          if fname = `` One.one ∧ nargs = 2 then true
           else
             if fname = `` bit0 ∧ nargs = 3 then is_value_like e.app_arg
             else
               if fname = `` bit1 ∧ nargs = 4 then is_value_like e.app_arg
-              else if fname = `` Charₓ.ofNat ∧ nargs = 1 then is_value_like e.app_arg else ff
+              else if fname = `` Charₓ.ofNat ∧ nargs = 1 then is_value_like e.app_arg else false
 
 /-- Return the size of term by considering only explicit arguments. -/
 unsafe def explicit_size : expr → tactic Nat
@@ -110,7 +113,7 @@ unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
   ccs.roots.mfoldl
     (fun S e => do
       let r ← choose ccs e
-      return <| S.insert e r)
+      return <| S e r)
     mk_repr_map
 
 unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) : tactic (expr × expr) := do
@@ -135,18 +138,21 @@ structure config where
 
 open SmtTactic
 
-unsafe def collect_implied_eqs (cfg : config := {  }) (extra := hinst_lemmas.mk) : tactic cc_state := do
+private def tagged_proof.rsimp : Unit :=
+  ()
+
+unsafe def collect_implied_eqs (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic cc_state := do
   focus1 <|
-      using_smt_with { emAttr := cfg.attr_name } <| do
+      using_smt_with { emAttr := cfg } <| do
         add_lemmas_from_facts
         add_lemmas extra
-        iterate_at_most cfg.max_rounds (ematch >> try smt_tactic.close)
+        iterate_at_most cfg (ematch >> try smt_tactic.close)
         done >> return cc_state.mk <|> to_cc_state
 
 unsafe def rsimplify_goal (ccs : cc_state) (m : Option repr_map := none) : tactic Unit := do
   let t ← target
   let (new_t, pr) ← rsimplify ccs t m
-  try (replace_target new_t pr)
+  try (replace_target new_t pr `` id_tag.rsimp)
 
 unsafe def rsimplify_at (ccs : cc_state) (h : expr) (m : Option repr_map := none) : tactic Unit := do
   when (expr.is_local_constant h = ff)
@@ -164,11 +170,11 @@ open Rsimp
 
 namespace Tactic
 
-unsafe def rsimp (cfg : config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
+unsafe def rsimp (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
   try <| rsimplify_goal ccs
 
-unsafe def rsimp_at (h : expr) (cfg : config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
+unsafe def rsimp_at (h : expr) (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
   try <| rsimplify_at ccs h
 

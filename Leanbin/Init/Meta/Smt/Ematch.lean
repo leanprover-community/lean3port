@@ -15,9 +15,9 @@ unsafe axiom hinst_lemmas : Type
 /-- `mk_core m e as_simp`, m is used to decide which definitions will be unfolded in patterns.
    If as_simp is tt, then this tactic will try to use the left-hand-side of the conclusion
    as a pattern. -/
-unsafe axiom hinst_lemma.mk_core : transparency → expr → Bool → tactic hinst_lemma
+unsafe axiom hinst_lemma.mk_core : Transparency → expr → Bool → tactic hinst_lemma
 
-unsafe axiom hinst_lemma.mk_from_decl_core : transparency → Name → Bool → tactic hinst_lemma
+unsafe axiom hinst_lemma.mk_from_decl_core : Transparency → Name → Bool → tactic hinst_lemma
 
 unsafe axiom hinst_lemma.pp : hinst_lemma → tactic format
 
@@ -27,10 +27,10 @@ unsafe instance : has_to_tactic_format hinst_lemma :=
   ⟨hinst_lemma.pp⟩
 
 unsafe def hinst_lemma.mk (h : expr) : tactic hinst_lemma :=
-  hinst_lemma.mk_core reducible h ff
+  hinst_lemma.mk_core reducible h false
 
 unsafe def hinst_lemma.mk_from_decl (h : Name) : tactic hinst_lemma :=
-  hinst_lemma.mk_from_decl_core reducible h ff
+  hinst_lemma.mk_from_decl_core reducible h false
 
 unsafe axiom hinst_lemmas.mk : hinst_lemmas
 
@@ -48,7 +48,7 @@ unsafe def hinst_lemmas.pp (s : hinst_lemmas) : tactic format :=
     s.fold (return format.nil) fun h tac => do
       let hpp ← h.pp
       let r ← tac
-      if r.is_nil then return hpp
+      if r then return hpp
         else
           return
             f! "{r },
@@ -62,17 +62,17 @@ unsafe instance : has_to_tactic_format hinst_lemmas :=
 
 open Tactic
 
-private unsafe def add_lemma (m : transparency) (as_simp : Bool) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
+private unsafe def add_lemma (m : Transparency) (as_simp : Bool) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
   do
   let h ← hinst_lemma.mk_from_decl_core m h as_simp
-  return <| hs.add h
+  return <| hs h
 
-unsafe def to_hinst_lemmas_core (m : transparency) : Bool → List Name → hinst_lemmas → tactic hinst_lemmas
+unsafe def to_hinst_lemmas_core (m : Transparency) : Bool → List Name → hinst_lemmas → tactic hinst_lemmas
   | as_simp, [], hs => return hs
   | as_simp, n :: ns, hs =>
     let add n := add_lemma m as_simp n hs >>= to_hinst_lemmas_core as_simp ns
     do
-    let eqns ← tactic.get_eqn_lemmas_for tt n
+    let eqns ← tactic.get_eqn_lemmas_for true n
     match eqns with
       | [] => do
         add n
@@ -109,7 +109,7 @@ unsafe def mk_hinst_lemma_attrs_core (as_simp : Bool) : List Name → Tactic Uni
           fail f! "failed to create hinst_lemma attribute '{n}', declaration already exists and has different type."
       mk_hinst_lemma_attrs_core ns
 
-unsafe def merge_hinst_lemma_attrs (m : transparency) (as_simp : Bool) : List Name → hinst_lemmas → tactic hinst_lemmas
+unsafe def merge_hinst_lemma_attrs (m : Transparency) (as_simp : Bool) : List Name → hinst_lemmas → tactic hinst_lemmas
   | [], hs => return hs
   | attr :: attrs, hs => do
     let ns ← attribute.get_instances attr
@@ -132,12 +132,12 @@ unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name) (
       ({ Name := attr_name, descr := "hinst_lemma attribute set",
         after_set :=
           some fun n _ _ =>
-            to_hinst_lemmas_core reducible ff [n] hinst_lemmas.mk >> skip <|> fail f! "invalid ematch lemma '{n}'",
+            to_hinst_lemmas_core reducible false [n] hinst_lemmas.mk >> skip <|> fail f! "invalid ematch lemma '{n}'",
         before_unset := some fun _ _ => skip,
         cache_cfg :=
           { mk_cache := fun ns => do
-              let hs₁ ← to_hinst_lemmas_core reducible ff ns hinst_lemmas.mk
-              let hs₂ ← merge_hinst_lemma_attrs reducible ff attr_names hs₁
+              let hs₁ ← to_hinst_lemmas_core reducible false ns hinst_lemmas.mk
+              let hs₂ ← merge_hinst_lemma_attrs reducible false attr_names hs₁
               merge_hinst_lemma_attrs reducible tt simp_attr_names hs₂,
             dependencies := [`reducibility] ++ attr_names ++ simp_attr_names } } :
         user_attribute hinst_lemmas)
@@ -160,10 +160,10 @@ unsafe axiom ematch_state.internalize : ematch_state → expr → tactic ematch_
 namespace Tactic
 
 unsafe axiom ematch_core :
-    transparency → cc_state → ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state)
+    Transparency → cc_state → ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state)
 
 unsafe axiom ematch_all_core :
-    transparency → cc_state → ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state)
+    Transparency → cc_state → ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state)
 
 unsafe def ematch :
     cc_state → ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state) :=

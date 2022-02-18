@@ -86,7 +86,7 @@ unsafe axiom mk_congr_lemma_simp (f : expr) (nargs : Option Nat := none) (md := 
 An example of usage can be found in `tests/lean/simp_subsingleton.lean`.
 For more information on specialization see the comment in the method body for `get_specialization_prefix_size` in `src/library/fun_info.cpp`.
  -/
-unsafe axiom mk_specialized_congr_lemma_simp (h : expr) (md : transparency := semireducible) : tactic congr_lemma
+unsafe axiom mk_specialized_congr_lemma_simp (h : expr) (md : Transparency := semireducible) : tactic congr_lemma
 
 /-- Similar to `mk_congr_lemma_simp`, this will make a `congr_lemma` object.
 The difference is that for each `congr_arg_kind.cast` argument, two proof arguments are generated.

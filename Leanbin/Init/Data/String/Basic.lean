@@ -21,8 +21,8 @@ instance has_decidable_lt (s₁ s₂ : Stringₓ) : Decidable (s₁ < s₂) :=
 
 instance has_decidable_eq : DecidableEq Stringₓ := fun ⟨x⟩ ⟨y⟩ =>
   match List.hasDecEqₓ x y with
-  | is_true p => is_true (congr_argₓ StringImp.mk p)
-  | is_false p => is_false fun q => p (StringImp.mk.inj q)
+  | is_true p => isTrue (congr_argₓ StringImp.mk p)
+  | is_false p => isFalse fun q => p (StringImp.mk.inj q)
 
 def Empty : Stringₓ :=
   ⟨[]⟩
@@ -40,7 +40,7 @@ def to_list : Stringₓ → List Charₓ
   | ⟨s⟩ => s
 
 def fold {α} (a : α) (f : α → Charₓ → α) (s : Stringₓ) : α :=
-  s.to_list.foldl f a
+  s.toList.foldl f a
 
 structure iterator_imp where
   fst : List Charₓ
@@ -49,51 +49,51 @@ structure iterator_imp where
 def iterator :=
   iterator_imp
 
-def mk_iterator : Stringₓ → iterator
+def mk_iterator : Stringₓ → Iterator
   | ⟨s⟩ => ⟨[], s⟩
 
 namespace Iterator
 
-def curr : iterator → Charₓ
+def curr : Iterator → Charₓ
   | ⟨p, c :: n⟩ => c
   | _ => default
 
-def set_curr : iterator → Charₓ → iterator
+def set_curr : Iterator → Charₓ → Iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩
   | it, c' => it
 
-def next : iterator → iterator
+def next : Iterator → Iterator
   | ⟨p, c :: n⟩ => ⟨c :: p, n⟩
   | ⟨p, []⟩ => ⟨p, []⟩
 
-def prev : iterator → iterator
+def prev : Iterator → Iterator
   | ⟨c :: p, n⟩ => ⟨p, c :: n⟩
   | ⟨[], n⟩ => ⟨[], n⟩
 
-def has_next : iterator → Bool
-  | ⟨p, []⟩ => ff
-  | _ => tt
+def has_next : Iterator → Bool
+  | ⟨p, []⟩ => false
+  | _ => true
 
-def has_prev : iterator → Bool
-  | ⟨[], n⟩ => ff
-  | _ => tt
+def has_prev : Iterator → Bool
+  | ⟨[], n⟩ => false
+  | _ => true
 
-def insert : iterator → Stringₓ → iterator
+def insert : Iterator → Stringₓ → Iterator
   | ⟨p, n⟩, ⟨s⟩ => ⟨p, s ++ n⟩
 
-def remove : iterator → Nat → iterator
+def remove : Iterator → Nat → Iterator
   | ⟨p, n⟩, m => ⟨p, n.drop m⟩
 
-def to_string : iterator → Stringₓ
+def to_string : Iterator → Stringₓ
   | ⟨p, n⟩ => ⟨p.reverse ++ n⟩
 
-def to_end : iterator → iterator
+def to_end : Iterator → Iterator
   | ⟨p, n⟩ => ⟨n.reverse ++ p, []⟩
 
-def next_to_string : iterator → Stringₓ
+def next_to_string : Iterator → Stringₓ
   | ⟨p, n⟩ => ⟨n⟩
 
-def prev_to_string : iterator → Stringₓ
+def prev_to_string : Iterator → Stringₓ
   | ⟨p, n⟩ => ⟨p.reverse⟩
 
 protected def extract_core : List Charₓ → List Charₓ → Option (List Charₓ)
@@ -105,13 +105,13 @@ protected def extract_core : List Charₓ → List Charₓ → Option (List Char
       | none => none
       | some r => some (c :: r)
 
-def extract : iterator → iterator → Option Stringₓ
+def extract : Iterator → Iterator → Option Stringₓ
   | ⟨p₁, n₁⟩, ⟨p₂, n₂⟩ =>
     if p₁.reverse ++ n₁ ≠ p₂.reverse ++ n₂ then none
     else
       if n₁ = n₂ then some ""
       else
-        match iterator.extract_core n₁ n₂ with
+        match Iterator.extractCore n₁ n₂ with
         | none => none
         | some r => some ⟨r⟩
 
@@ -134,43 +134,43 @@ def str : Stringₓ → Charₓ → Stringₓ :=
   push
 
 def is_empty (s : Stringₓ) : Bool :=
-  to_bool (s.length = 0)
+  toBool (s.length = 0)
 
 def front (s : Stringₓ) : Charₓ :=
-  s.mk_iterator.curr
+  s.mkIterator.curr
 
 def back (s : Stringₓ) : Charₓ :=
-  s.mk_iterator.to_end.prev.curr
+  s.mkIterator.toEnd.prev.curr
 
 def join (l : List Stringₓ) : Stringₓ :=
   l.foldl (fun r s => r ++ s) ""
 
 def singleton (c : Charₓ) : Stringₓ :=
-  Empty.push c
+  empty.push c
 
 def intercalate (s : Stringₓ) (ss : List Stringₓ) : Stringₓ :=
-  (List.intercalate s.to_list (ss.map to_list)).asString
+  (List.intercalate s.toList (ss.map toList)).asString
 
 namespace Iterator
 
-def nextn : iterator → Nat → iterator
+def nextn : Iterator → Nat → Iterator
   | it, 0 => it
   | it, i + 1 => nextn it.next i
 
-def prevn : iterator → Nat → iterator
+def prevn : Iterator → Nat → Iterator
   | it, 0 => it
   | it, i + 1 => prevn it.prev i
 
 end Iterator
 
 def pop_back (s : Stringₓ) : Stringₓ :=
-  s.mk_iterator.to_end.prev.prev_to_string
+  s.mkIterator.toEnd.prev.prevToString
 
 def popn_back (s : Stringₓ) (n : Nat) : Stringₓ :=
-  (s.mk_iterator.to_end.prevn n).prevToString
+  (s.mkIterator.toEnd.prevn n).prevToString
 
 def backn (s : Stringₓ) (n : Nat) : Stringₓ :=
-  (s.mk_iterator.to_end.prevn n).nextToString
+  (s.mkIterator.toEnd.prevn n).nextToString
 
 end Stringₓ
 
@@ -181,11 +181,11 @@ private def to_nat_core : Stringₓ.Iterator → Nat → Nat → Nat
   | it, 0, r => r
   | it, i + 1, r =>
     let c := it.curr
-    let r := r * 10 + c.to_nat - '0'.toNat
+    let r := r * 10 + c.toNat - '0'.toNat
     to_nat_core it.next i r
 
 def Stringₓ.toNat (s : Stringₓ) : Nat :=
-  to_nat_core s.mk_iterator s.length 0
+  toNatCore s.mkIterator s.length 0
 
 namespace Stringₓ
 

@@ -31,8 +31,8 @@ protected def bind {α β : Type v} (ma : Except ε α) (f : α → Except ε β
   | Except.ok v => f v
 
 protected def to_bool {α : Type v} : Except ε α → Bool
-  | Except.ok _ => tt
-  | Except.error _ => ff
+  | Except.ok _ => true
+  | Except.error _ => false
 
 protected def to_option {α : Type v} : Except ε α → Option α
   | Except.ok a => some a
@@ -116,7 +116,7 @@ protected def orelse [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) : m α 
 
 /-- Alternative orelse operator that allows to select which exception should be used.
     The default is to use the first exception since the standard `orelse` uses the second. -/
-unsafe def orelse' [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) (use_first_ex := tt) : m α :=
+unsafe def orelse' [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) (use_first_ex := true) : m α :=
   (catch t₁) fun e₁ => (catch t₂) fun e₂ => throw (if use_first_ex then e₁ else e₂)
 
 end MonadExcept
@@ -146,7 +146,7 @@ variable {ε ε' : Type u} {m m' : Type u → Type v}
 
 instance (priority := 100) monadExceptAdapterTrans {n n' : Type u → Type v} [MonadExceptAdapter ε ε' m m']
     [MonadFunctorₓ m m' n n'] : MonadExceptAdapter ε ε' n n' :=
-  ⟨fun α f => monad_map fun α => (adapt_except f : m α → m' α)⟩
+  ⟨fun α f => monadMap fun α => (adaptExcept f : m α → m' α)⟩
 
 instance [Monadₓ m] : MonadExceptAdapter ε ε' (ExceptTₓ ε m) (ExceptTₓ ε' m) :=
   ⟨fun α => ExceptTₓ.adapt⟩

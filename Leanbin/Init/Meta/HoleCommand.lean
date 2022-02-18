@@ -51,6 +51,6 @@ unsafe def use_cmd : hole_command where
     is_def_eq t ty
     let fmt ← tactic_format_expr e
     let o ← get_options
-    let s := fmt.to_string o
+    let s := fmt.toString o
     return [(s, "")]
 

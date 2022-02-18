@@ -45,7 +45,7 @@ variable {r : α → α → Prop}
 
 variable {β : Quot r → Sort v}
 
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
 local notation:999 "⟦" a "⟧" => Quot.mk r a
 
 @[reducible]
@@ -96,7 +96,7 @@ namespace Quotientₓ
 protected def mk {α : Sort u} [s : Setoidₓ α] (a : α) : Quotientₓ s :=
   Quot.mk Setoidₓ.R a
 
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
 notation:999 "⟦" a "⟧" => Quotientₓ.mk a
 
 theorem sound {α : Sort u} [s : Setoidₓ α] {a b : α} : a ≈ b → ⟦a⟧ = ⟦b⟧ :=
@@ -209,11 +209,11 @@ private def rel (q₁ q₂ : Quotientₓ s) : Prop :=
       (Iff.intro (fun a₁a₂ => Setoidₓ.trans (Setoidₓ.symm a₁b₁) (Setoidₓ.trans a₁a₂ a₂b₂)) fun b₁b₂ =>
         Setoidₓ.trans a₁b₁ (Setoidₓ.trans b₁b₂ (Setoidₓ.symm a₂b₂)))
 
-local infixl:50 " ~ " => rel
+local infixl:50 " ~ " => Rel
 
 private theorem rel.refl : ∀ q : Quotientₓ s, q ~ q := fun q => Quot.induction_on q fun a => Setoidₓ.refl a
 
-private theorem eq_imp_rel {q₁ q₂ : Quotientₓ s} : q₁ = q₂ → q₁ ~ q₂ := fun h => Eq.recOnₓ h (rel.refl q₁)
+private theorem eq_imp_rel {q₁ q₂ : Quotientₓ s} : q₁ = q₂ → q₁ ~ q₂ := fun h => Eq.recOnₓ h (Rel.refl q₁)
 
 theorem exact {a b : α} : ⟦a⟧ = ⟦b⟧ → a ≈ b := fun h => eq_imp_rel h
 
@@ -274,6 +274,6 @@ instance {α : Sort u} {s : Setoidₓ α} [d : ∀ a b : α, Decidable (a ≈ b)
   fun q₁ q₂ : Quotientₓ s =>
   Quotientₓ.recOnSubsingleton₂ q₁ q₂ fun a₁ a₂ =>
     match d a₁ a₂ with
-    | is_true h₁ => is_true (Quotientₓ.sound h₁)
-    | is_false h₂ => is_false fun h => absurd (Quotientₓ.exact h) h₂
+    | is_true h₁ => isTrue (Quotientₓ.sound h₁)
+    | is_false h₂ => isFalse fun h => absurd (Quotientₓ.exact h) h₂
 

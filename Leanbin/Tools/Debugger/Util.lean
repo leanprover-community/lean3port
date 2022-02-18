@@ -2,30 +2,30 @@
 namespace Debugger
 
 def is_space (c : Charₓ) : Bool :=
-  if c = ' ' ∨ c = Charₓ.ofNat 11 ∨ c = '\n' then tt else ff
+  if c = ' ' ∨ c = Charₓ.ofNat 11 ∨ c = '\n' then true else false
 
 private def split_core : List Charₓ → Option Stringₓ → List Stringₓ
-  | c :: cs, none => if is_space c then split_core cs none else split_core cs (some <| Stringₓ.singleton c)
-  | c :: cs, some s => if is_space c then s :: split_core cs none else split_core cs (s.str c)
+  | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some <| Stringₓ.singleton c)
+  | c :: cs, some s => if isSpace c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
 
 def split (s : Stringₓ) : List Stringₓ :=
-  split_core s.to_list none
+  splitCore s.toList none
 
 def to_qualified_name_core : List Charₓ → Name → Stringₓ → Name
-  | [], r, s => if s.is_empty then r else r <.> s
+  | [], r, s => if s.isEmpty then r else r <.> s
   | c :: cs, r, s =>
-    if is_space c then to_qualified_name_core cs r s
+    if isSpace c then to_qualified_name_core cs r s
     else
-      if c = '.' then if s.is_empty then to_qualified_name_core cs r "" else to_qualified_name_core cs (r <.> s) ""
+      if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (r <.> s) ""
       else to_qualified_name_core cs r (s.str c)
 
 def to_qualified_name (s : Stringₓ) : Name :=
-  to_qualified_name_core s.to_list Name.anonymous ""
+  toQualifiedNameCore s.toList Name.anonymous ""
 
 def olean_to_lean (s : Stringₓ) :=
-  s.popn_back 5 ++ "lean"
+  s.popnBack 5 ++ "lean"
 
 unsafe def get_file (fn : Name) : vm Stringₓ :=
   (do
@@ -39,7 +39,7 @@ unsafe def pos_info (fn : Name) : vm Stringₓ :=
       let d ← vm.get_decl fn
       let some p ← return (vm_decl.pos d) | failure
       let file ← get_file fn
-      return s! "{file }:{p.line }:{p.column}") <|>
+      return s! "{file }:{p }:{p}") <|>
     return "<position not available>"
 
 unsafe def show_fn (header : Stringₓ) (fn : Name) (frame : Nat) : vm Unit := do
@@ -58,10 +58,10 @@ unsafe def show_curr_fn (header : Stringₓ) : vm Unit := do
 unsafe def is_valid_fn_prefix (p : Name) : vm Bool := do
   let env ← vm.get_env
   return <|
-      env.fold ff fun d r =>
+      env ff fun d r =>
         r ||
-          let n := d.to_name
-          p.is_prefix_of n
+          let n := d
+          p n
 
 unsafe def show_frame (frame_idx : Nat) : vm Unit := do
   let sz ← vm.call_stack_size
@@ -71,7 +71,7 @@ unsafe def show_frame (frame_idx : Nat) : vm Unit := do
 unsafe def type_to_string : Option expr → Nat → vm Stringₓ
   | none, i => do
     let o ← vm.stack_obj i
-    match o.kind with
+    match o with
       | VmObjKind.simple => return "[tagged value]"
       | VmObjKind.constructor => return "[constructor]"
       | VmObjKind.closure => return "[closure]"
@@ -89,7 +89,7 @@ unsafe def type_to_string : Option expr → Nat → vm Stringₓ
   | some type, i => do
     let fmt ← vm.pp_expr type
     let opts ← vm.get_options
-    return <| fmt.to_string opts
+    return <| fmt opts
 
 unsafe def show_vars_core : Nat → Nat → Nat → vm Unit
   | c, i, e =>

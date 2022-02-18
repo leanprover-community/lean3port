@@ -18,14 +18,14 @@ def get_or_else {α : Type u} : Option α → α → α
   | none, e => e
 
 def is_some {α : Type u} : Option α → Bool
-  | some _ => tt
-  | none => ff
+  | some _ => true
+  | none => false
 
 def is_none {α : Type u} : Option α → Bool
-  | some _ => ff
-  | none => tt
+  | some _ => false
+  | none => true
 
-def get {α : Type u} : ∀ {o : Option α}, is_some o → α
+def get {α : Type u} : ∀ {o : Option α}, isSome o → α
   | some x, h => x
   | none, h => False.ndrec _ <| Bool.ff_ne_tt h
 
@@ -71,11 +71,11 @@ instance (α : Type u) : Inhabited (Option α) :=
   ⟨none⟩
 
 instance {α : Type u} [d : DecidableEq α] : DecidableEq (Option α)
-  | none, none => is_true rfl
-  | none, some v₂ => is_false fun h => Option.noConfusion h
-  | some v₁, none => is_false fun h => Option.noConfusion h
+  | none, none => isTrue rfl
+  | none, some v₂ => isFalse fun h => Option.noConfusion h
+  | some v₁, none => isFalse fun h => Option.noConfusion h
   | some v₁, some v₂ =>
     match d v₁ v₂ with
-    | is_true e => is_true (congr_argₓ (@some α) e)
-    | is_false n => is_false fun h => Option.noConfusion h fun e => absurd e n
+    | is_true e => isTrue (congr_argₓ (@some α) e)
+    | is_false n => isFalse fun h => Option.noConfusion h fun e => absurd e n
 

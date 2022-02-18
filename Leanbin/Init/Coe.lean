@@ -87,12 +87,12 @@ def coeSort {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 /-! ### Notation -/
 
 
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
 notation:999 "⇑" x:999 => coeFn x
 
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:342:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
 notation:999 "↥" x:999 => coeSort x
 
 universe u₁ u₂ u₃
@@ -168,7 +168,7 @@ instance coeSortBool : CoeSort Bool Prop :=
   ⟨fun y => y = tt⟩
 
 instance coeDecidableEq (x : Bool) : Decidable (coe x) :=
-  show Decidable (x = tt) from Bool.decidableEq x tt
+  show Decidable (x = tt) from Bool.decidableEq x true
 
 instance coeSubtype {a : Sort u} {p : a → Prop} : Coe { x // p x } a :=
   ⟨Subtype.val⟩

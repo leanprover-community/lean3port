@@ -41,21 +41,21 @@ instance bin_tree_to_list : Coe (BinTree α) (List α) :=
 
 instance decidable_bex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] =>
-    is_false
+    isFalse
       (by
         simp [List.not_bex_nilₓ])
   | x :: xs =>
-    if h₁ : p x then is_true ⟨x, mem_cons_self _ _, h₁⟩
+    if h₁ : p x then isTrue ⟨x, mem_cons_selfₓ _ _, h₁⟩
     else
       match decidable_bex xs with
       | is_true h₂ =>
-        is_true
+        isTrue
           (by
             cases' h₂ with y h
             cases' h with hm hp
             exact ⟨y, mem_cons_of_mem _ hm, hp⟩)
       | is_false h₂ =>
-        is_false
+        isFalse
           (by
             intro h
             cases' h with y h

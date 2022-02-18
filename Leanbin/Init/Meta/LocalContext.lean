@@ -57,10 +57,10 @@ unsafe instance DecidableRel : DecidableRel (· ≤ · : local_context → local
   inferInstance
 
 unsafe instance : HasEmptyc local_context :=
-  ⟨Empty⟩
+  ⟨empty⟩
 
 unsafe instance : Inhabited local_context :=
-  ⟨Empty⟩
+  ⟨empty⟩
 
 unsafe instance : HasMem expr local_context :=
   ⟨fun e lc => Option.isSome <| get_local (expr.local_uniq_name e) lc⟩

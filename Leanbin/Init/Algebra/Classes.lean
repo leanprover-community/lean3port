@@ -288,7 +288,7 @@ instance IsEquiv : IsEquiv α equiv where
 
 end
 
-notation:50 a " ≈[" lt "]" b:50 => @equiv _ lt a b
+notation:50 a " ≈[" lt "]" b:50 => @Equiv _ lt a b
 
 end StrictWeakOrder
 

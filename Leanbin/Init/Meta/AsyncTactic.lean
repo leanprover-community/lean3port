@@ -28,21 +28,21 @@ unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
   let tgt ← instantiate_mvars tgt
   let env ← get_env
   let tgt ← return <| env.unfold_untrusted_macros tgt
-  when tgt.has_meta_var (fail "goal contains metavariables")
+  when tgt (fail "goal contains metavariables")
   let params ← return tgt.collect_univ_params
   let lemma_name ← new_aux_decl_name
   let proof ←
     run_async do
         let goal_meta ← mk_meta_var tgt
         set_goals [goal_meta]
-        ctx.mmap' fun c => intro c.local_pp_name
+        ctx fun c => intro c
         tac
         let proof ← instantiate_mvars goal_meta
         let proof ← return <| env.unfold_untrusted_macros proof
-        when proof.has_meta_var <| fail "async proof failed: contains metavariables"
+        when proof <| fail "async proof failed: contains metavariables"
         return proof
   add_decl <| declaration.thm lemma_name params tgt proof
-  exact (expr.const lemma_name (params.map level.param))
+  exact (expr.const lemma_name (params level.param))
 
 namespace Interactive
 

@@ -26,7 +26,7 @@ def stdNextₓ : StdGen → Nat × StdGen
     let s2'' : Int := if s2' < 0 then s2' + 2147483399 else s2'
     let z : Int := s1'' - s2''
     let z' : Int := if z < 1 then z + 2147483562 else z % 2147483562
-    (z'.to_nat, ⟨s1''.to_nat, s2''.to_nat⟩)
+    (z'.toNat, ⟨s1''.toNat, s2''.toNat⟩)
 
 def stdSplitₓ : StdGen → StdGen × StdGen
   | g@⟨s1, s2⟩ =>
@@ -82,7 +82,7 @@ def randNatₓ {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × g
   let q := 1000
   let k := hi' - lo' + 1
   let tgt_mag := k * q
-  let (v, g') := rand_nat_aux gen_lo gen_mag (Nat.zero_lt_succₓ _) tgt_mag 0 g
+  let (v, g') := randNatAuxₓ gen_lo gen_mag (Nat.zero_lt_succₓ _) tgt_mag 0 g
   let v' := lo' + v % k
   (v', g')
 

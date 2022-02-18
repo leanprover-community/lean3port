@@ -37,9 +37,9 @@ unsafe axiom get_env : type_context environment
 
 unsafe axiom whnf : expr → type_context expr
 
-unsafe axiom is_def_eq (e₁ e₂ : expr) (approx := ff) : type_context Bool
+unsafe axiom is_def_eq (e₁ e₂ : expr) (approx := false) : type_context Bool
 
-unsafe axiom unify (e₁ e₂ : expr) (approx := ff) : type_context Bool
+unsafe axiom unify (e₁ e₂ : expr) (approx := false) : type_context Bool
 
 /-- Infer the type of the given expr. Inferring the type does not mean that it typechecks.
 Will fail if type can't be inferred. -/
@@ -140,7 +140,7 @@ unsafe axiom kdepends_on (e t : expr) : type_context Bool
 /-- Abstracts all occurrences of the term `t` in `e` using keyed matching.
     If `unify` is `ff`, then matching is used instead of unification.
     That is, metavariables occurring in `e` are not assigned. -/
-unsafe axiom kabstract (e t : expr) (unify := tt) : type_context expr
+unsafe axiom kabstract (e t : expr) (unify := true) : type_context expr
 
 /-- Run the provided type_context within a backtracking scope.
 This means that any changes to the metavariable context will not be committed if the inner monad fails.

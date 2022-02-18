@@ -42,7 +42,7 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
   let ty ← infer_type pr
   assertv `h' ty pr >> skip
 
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
     let (lhs, rhs) ← get_lhs_rhs
@@ -67,7 +67,7 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         intros
         contradiction <|> do
             let lc ← local_context
-            lc.mmap' fun h => try (apply_eq_of_heq h) <|> skip
+            lc fun h => try (apply_eq_of_heq h) <|> skip
             contradiction
         return ()
 
@@ -98,7 +98,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   get_local v_name >>= cases
   all_goals' (dec_eq_case_1 I_name F_name)
 
--- ././Mathport/Syntax/Translate/Basic.lean:794:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
 unsafe def mk_dec_eq_instance : tactic Unit := do
   let env ← get_env
   let pi x1 i1 d1 (pi x2 i2 d2 b) ← target >>= whnf

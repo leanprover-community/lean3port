@@ -6,9 +6,9 @@ namespace Tactic
 
 unsafe axiom back_lemmas : Type
 
-unsafe axiom mk_back_lemmas_core : transparency → tactic back_lemmas
+unsafe axiom mk_back_lemmas_core : Transparency → tactic back_lemmas
 
-unsafe axiom back_lemmas_insert_core : transparency → back_lemmas → expr → tactic back_lemmas
+unsafe axiom back_lemmas_insert_core : Transparency → back_lemmas → expr → tactic back_lemmas
 
 unsafe axiom back_lemmas_find : back_lemmas → expr → tactic (List expr)
 
@@ -18,9 +18,9 @@ unsafe def mk_back_lemmas : tactic back_lemmas :=
 unsafe def back_lemmas_insert : back_lemmas → expr → tactic back_lemmas :=
   back_lemmas_insert_core reducible
 
-unsafe axiom backward_chaining_core : transparency → Bool → Nat → tactic Unit → tactic Unit → back_lemmas → tactic Unit
+unsafe axiom backward_chaining_core : Transparency → Bool → Nat → tactic Unit → tactic Unit → back_lemmas → tactic Unit
 
-unsafe def back_lemmas_add_extra : transparency → back_lemmas → List expr → tactic back_lemmas
+unsafe def back_lemmas_add_extra : Transparency → back_lemmas → List expr → tactic back_lemmas
   | m, bls, [] => return bls
   | m, bls, l :: ls => do
     let new_bls ← back_lemmas_insert_core m bls l

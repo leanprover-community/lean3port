@@ -22,13 +22,13 @@ def test_bit : ℤ → ℕ → Bool
   | -[1+ m], n => bnot (Nat.testBit m n)
 
 def nat_bitwise (f : Bool → Bool → Bool) (m n : ℕ) : ℤ :=
-  cond (f ff ff) -[1+ Nat.bitwiseₓ (fun x y => bnot (f x y)) m n] (Nat.bitwiseₓ f m n)
+  cond (f false false) -[1+ Nat.bitwiseₓ (fun x y => bnot (f x y)) m n] (Nat.bitwiseₓ f m n)
 
 def bitwise (f : Bool → Bool → Bool) : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => nat_bitwise f m n
-  | (m : ℕ), -[1+ n] => nat_bitwise (fun x y => f x (bnot y)) m n
-  | -[1+ m], (n : ℕ) => nat_bitwise (fun x y => f (bnot x) y) m n
-  | -[1+ m], -[1+ n] => nat_bitwise (fun x y => f (bnot x) (bnot y)) m n
+  | (m : ℕ), (n : ℕ) => natBitwise f m n
+  | (m : ℕ), -[1+ n] => natBitwise (fun x y => f x (bnot y)) m n
+  | -[1+ m], (n : ℕ) => natBitwise (fun x y => f (bnot x) y) m n
+  | -[1+ m], -[1+ n] => natBitwise (fun x y => f (bnot x) (bnot y)) m n
 
 def lnot : ℤ → ℤ
   | (m : ℕ) => -[1+ m]
@@ -61,7 +61,7 @@ def lxor : ℤ → ℤ → ℤ
 def shiftl : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.shiftl m n
   | (m : ℕ), -[1+ n] => Nat.shiftr m (Nat.succ n)
-  | -[1+ m], (n : ℕ) => -[1+ Nat.shiftl' tt m n]
+  | -[1+ m], (n : ℕ) => -[1+ Nat.shiftl' true m n]
   | -[1+ m], -[1+ n] => -[1+ Nat.shiftr m (Nat.succ n)]
 
 def shiftr (m n : ℤ) : ℤ :=

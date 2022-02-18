@@ -57,8 +57,7 @@ unsafe def mk_has_reflect_instance : tactic Unit := do
   let env ← get_env
   let v_name : Name ← return `_v
   let F_name : Name ← return `_F
-  guardₓ (env.inductive_num_indices I_name = 0) <|>
-      fail "mk_has_reflect_instance failed, indexed families are currently not supported"
+  guardₓ (env I_name = 0) <|> fail "mk_has_reflect_instance failed, indexed families are currently not supported"
   if is_recursive env I_name then
       intro `_v >>= fun x => induction x [v_name, F_name] (some <| I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()

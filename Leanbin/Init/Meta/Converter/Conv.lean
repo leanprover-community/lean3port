@@ -7,6 +7,9 @@ import Leanbin.Init.Meta.MatchTactic
 
 open Tactic
 
+def Tactic.IdTag.conv : Unit :=
+  ()
+
 universe u
 
 /--
@@ -76,13 +79,13 @@ unsafe def whnf : conv Unit :=
   lhs >>= tactic.whnf >>= change
 
 /-- dsimp the LHS. -/
-unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : dsimp_config := {  }) : conv Unit := do
+unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : DsimpConfig := {  }) : conv Unit := do
   let s ←
     match s with
       | some s => return s
       | none => simp_lemmas.mk_default
   let l ← lhs
-  s.dsimplify u l cfg >>= change
+  s u l cfg >>= change
 
 private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List expr × List expr)
   | [], [] => return ([], [])

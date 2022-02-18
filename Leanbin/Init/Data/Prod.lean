@@ -19,9 +19,9 @@ instance [h₁ : DecidableEq α] [h₂ : DecidableEq β] : DecidableEq (α × β
     match h₁ a a' with
     | is_true e₁ =>
       match h₂ b b' with
-      | is_true e₂ => is_true (Eq.recOnₓ e₁ (Eq.recOnₓ e₂ rfl))
-      | is_false n₂ => is_false fun h => Prod.noConfusion h fun e₁' e₂' => absurd e₂' n₂
-    | is_false n₁ => is_false fun h => Prod.noConfusion h fun e₁' e₂' => absurd e₁' n₁
+      | is_true e₂ => isTrue (Eq.recOnₓ e₁ (Eq.recOnₓ e₂ rfl))
+      | is_false n₂ => isFalse fun h => Prod.noConfusion h fun e₁' e₂' => absurd e₂' n₂
+    | is_false n₁ => isFalse fun h => Prod.noConfusion h fun e₁' e₂' => absurd e₁' n₁
 
 end
 

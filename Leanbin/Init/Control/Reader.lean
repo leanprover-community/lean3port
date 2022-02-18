@@ -101,7 +101,7 @@ export MonadReader (read)
 
 instance (priority := 100) monadReaderTrans {ρ : Type u} {m : Type u → Type v} {n : Type u → Type w} [MonadReader ρ m]
     [HasMonadLift m n] : MonadReader ρ n :=
-  ⟨monad_lift (MonadReader.read : m ρ)⟩
+  ⟨monadLift (MonadReader.read : m ρ)⟩
 
 instance {ρ : Type u} {m : Type u → Type v} [Monadₓ m] : MonadReader ρ (ReaderTₓ ρ m) :=
   ⟨ReaderTₓ.read⟩
@@ -127,7 +127,7 @@ variable {ρ ρ' : Type u} {m m' : Type u → Type v}
 
 instance (priority := 100) monadReaderAdapterTrans {n n' : Type u → Type v} [MonadReaderAdapter ρ ρ' m m']
     [MonadFunctorₓ m m' n n'] : MonadReaderAdapter ρ ρ' n n' :=
-  ⟨fun α f => monad_map fun α => (adapt_reader f : m α → m' α)⟩
+  ⟨fun α f => monadMap fun α => (adaptReader f : m α → m' α)⟩
 
 instance [Monadₓ m] : MonadReaderAdapter ρ ρ' (ReaderTₓ ρ m) (ReaderTₓ ρ' m) :=
   ⟨fun α => ReaderTₓ.adapt⟩

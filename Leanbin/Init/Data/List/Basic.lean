@@ -16,16 +16,16 @@ variable {α : Type u} {β : Type v} {γ : Type w}
 namespace List
 
 protected def has_dec_eq [s : DecidableEq α] : DecidableEq (List α)
-  | [], [] => is_true rfl
-  | a :: as, [] => is_false fun h => List.noConfusion h
-  | [], b :: bs => is_false fun h => List.noConfusion h
+  | [], [] => isTrue rfl
+  | a :: as, [] => isFalse fun h => List.noConfusion h
+  | [], b :: bs => isFalse fun h => List.noConfusion h
   | a :: as, b :: bs =>
     match s a b with
     | is_true hab =>
       match has_dec_eq as bs with
-      | is_true habs => is_true (Eq.subst hab (Eq.subst habs rfl))
-      | is_false nabs => is_false fun h => List.noConfusion h fun _ habs => absurd habs nabs
-    | is_false nab => is_false fun h => List.noConfusion h fun hab _ => absurd hab nab
+      | is_true habs => isTrue (Eq.subst hab (Eq.subst habs rfl))
+      | is_false nabs => isFalse fun h => List.noConfusion h fun _ habs => absurd habs nabs
+    | is_false nab => isFalse fun h => List.noConfusion h fun hab _ => absurd hab nab
 
 instance [DecidableEq α] : DecidableEq (List α) :=
   List.hasDecEqₓ
@@ -46,13 +46,13 @@ instance : HasMem α (List α) :=
   ⟨List.Mem⟩
 
 instance decidable_mem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a ∈ l)
-  | [] => is_false not_false
+  | [] => isFalse not_false
   | b :: l =>
-    if h₁ : a = b then is_true (Or.inl h₁)
+    if h₁ : a = b then isTrue (Or.inl h₁)
     else
       match decidable_mem l with
-      | is_true h₂ => is_true (Or.inr h₂)
-      | is_false h₂ => is_false (not_orₓ h₁ h₂)
+      | is_true h₂ => isTrue (Or.inr h₂)
+      | is_false h₂ => isFalse (not_orₓ h₁ h₂)
 
 instance : HasEmptyc (List α) :=
   ⟨List.nil⟩
@@ -76,8 +76,8 @@ def length : List α → Nat
   | a :: l => length l + 1
 
 def Empty : List α → Bool
-  | [] => tt
-  | _ :: _ => ff
+  | [] => true
+  | _ :: _ => false
 
 open Option Nat
 
@@ -91,7 +91,7 @@ def nth : List α → Nat → Option α
 def nth_le : ∀ l : List α n, n < l.length → α
   | [], n, h => absurd h n.not_lt_zero
   | a :: l, 0, h => a
-  | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succ h)
+  | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succₓ h)
 
 @[simp]
 def head [Inhabited α] : List α → α
@@ -107,7 +107,7 @@ def reverse_core : List α → List α → List α
   | [], r => r
   | a :: l, r => reverse_core l (a :: r)
 
-def reverse : List α → List α := fun l => reverse_core l []
+def reverse : List α → List α := fun l => reverseCore l []
 
 @[simp]
 def map (f : α → β) : List α → List β
@@ -127,7 +127,7 @@ def map_with_index_core (f : ℕ → α → β) : ℕ → List α → List β
 /-- Given a function `f : ℕ → α → β` and `as : list α`, `as = [a₀, a₁, ...]`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`. -/
 def map_with_index (f : ℕ → α → β) (as : List α) : List β :=
-  map_with_index_core f 0 as
+  mapWithIndexCore f 0 as
 
 def join : List (List α) → List α
   | [] => []
@@ -179,10 +179,10 @@ def find_index (p : α → Prop) [DecidablePred p] : List α → Nat
   | a :: l => if p a then 0 else succ (find_index l)
 
 def index_of [DecidableEq α] (a : α) : List α → Nat :=
-  find_index (Eq a)
+  findIndex (Eq a)
 
 def remove_all [DecidableEq α] (xs ys : List α) : List α :=
-  filter (· ∉ ys) xs
+  filterₓ (· ∉ ys) xs
 
 def update_nth : List α → ℕ → α → List α
   | x :: xs, 0, a => a :: xs
@@ -217,10 +217,10 @@ def foldr (f : α → β → β) (b : β) : List α → β
   | a :: l => f a (foldr l)
 
 def any (l : List α) (p : α → Bool) : Bool :=
-  foldr (fun a r => p a || r) ff l
+  foldr (fun a r => p a || r) false l
 
 def all (l : List α) (p : α → Bool) : Bool :=
-  foldr (fun a r => p a && r) tt l
+  foldr (fun a r => p a && r) true l
 
 def bor (l : List Bool) : Bool :=
   any l id
@@ -233,7 +233,7 @@ def zip_with (f : α → β → γ) : List α → List β → List γ
   | _, _ => []
 
 def zip : List α → List β → List (Prod α β) :=
-  zip_with Prod.mk
+  zipWithₓ Prod.mk
 
 def unzip : List (α × β) → List α × List β
   | [] => ([], [])
@@ -260,7 +260,7 @@ instance [DecidableEq α] : HasUnion (List α) :=
   ⟨List.unionₓ⟩
 
 protected def inter [DecidableEq α] (l₁ l₂ : List α) : List α :=
-  filter (· ∈ l₂) l₁
+  filterₓ (· ∈ l₂) l₁
 
 instance [DecidableEq α] : HasInter (List α) :=
   ⟨List.interₓ⟩
@@ -275,7 +275,7 @@ def range_core : ℕ → List ℕ → List ℕ
   | succ n, l => range_core n (n :: l)
 
 def range (n : ℕ) : List ℕ :=
-  range_core n []
+  rangeCore n []
 
 def iota : ℕ → List ℕ
   | 0 => []
@@ -286,7 +286,7 @@ def enum_from : ℕ → List α → List (ℕ × α)
   | n, x :: xs => (n, x) :: enum_from (n + 1) xs
 
 def enum : List α → List (ℕ × α) :=
-  enum_from 0
+  enumFrom 0
 
 @[simp]
 def last : ∀ l : List α, l ≠ [] → α
@@ -331,19 +331,19 @@ instance [LT α] : LT (List α) :=
   ⟨List.Lt⟩
 
 instance has_decidable_lt [LT α] [h : DecidableRel (· < · : α → α → Prop)] : ∀ l₁ l₂ : List α, Decidable (l₁ < l₂)
-  | [], [] => is_false not_false
-  | [], b :: bs => is_true trivialₓ
-  | a :: as, [] => is_false not_false
+  | [], [] => isFalse not_false
+  | [], b :: bs => isTrue trivialₓ
+  | a :: as, [] => isFalse not_false
   | a :: as, b :: bs =>
     match h a b with
-    | is_true h₁ => is_true (Or.inl h₁)
+    | is_true h₁ => isTrue (Or.inl h₁)
     | is_false h₁ =>
       match h b a with
-      | is_true h₂ => is_false fun h => Or.elim h (fun h => absurd h h₁) fun ⟨h, _⟩ => absurd h₂ h
+      | is_true h₂ => isFalse fun h => Or.elim h (fun h => absurd h h₁) fun ⟨h, _⟩ => absurd h₂ h
       | is_false h₂ =>
         match has_decidable_lt as bs with
-        | is_true h₃ => is_true (Or.inr ⟨h₂, h₃⟩)
-        | is_false h₃ => is_false fun h => Or.elim h (fun h => absurd h h₁) fun ⟨_, h⟩ => absurd h h₃
+        | is_true h₃ => isTrue (Or.inr ⟨h₂, h₃⟩)
+        | is_false h₃ => isFalse fun h => Or.elim h (fun h => absurd h h₁) fun ⟨_, h⟩ => absurd h h₃
 
 @[reducible]
 protected def le [LT α] (a b : List α) : Prop :=
@@ -362,13 +362,13 @@ theorem lt_eq_not_ge [LT α] [DecidableRel (· < · : α → α → Prop)] : ∀
 
 /-- `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/
 def is_prefix_of [DecidableEq α] : List α → List α → Bool
-  | [], _ => tt
-  | _, [] => ff
-  | a :: as, b :: bs => to_bool (a = b) && is_prefix_of as bs
+  | [], _ => true
+  | _, [] => false
+  | a :: as, b :: bs => toBool (a = b) && is_prefix_of as bs
 
 /-- `is_suffix_of l₁ l₂` returns `tt` iff `l₁` is a suffix of `l₂`. -/
 def is_suffix_of [DecidableEq α] (l₁ l₂ : List α) : Bool :=
-  is_prefix_of l₁.reverse l₂.reverse
+  isPrefixOfₓ l₁.reverse l₂.reverse
 
 end List
 
@@ -380,7 +380,7 @@ private def to_list_aux : BinTree α → List α → List α
   | node l r, as => to_list_aux l (to_list_aux r as)
 
 def to_list (t : BinTree α) : List α :=
-  to_list_aux t []
+  toListAux t []
 
 end BinTree
 

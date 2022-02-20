@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Jeremy Avigad, Floris van Doorn
+-/
 prelude
 import Leanbin.Init.Core
 
@@ -13,6 +18,7 @@ def id {α : Sort u} (a : α) : α :=
 
 def flip {α : Sort u} {β : Sort v} {φ : Sort w} (f : α → β → φ) : β → α → φ := fun b a => f a b
 
+-- implication
 def Implies (a b : Prop) :=
   a → b
 
@@ -34,6 +40,7 @@ theorem Not.intro {a : Prop} (h : a → False) : ¬a :=
 /-- Modus tollens. If an implication is true, then so is its contrapositive. -/
 theorem mt {a b : Prop} (h₁ : a → b) (h₂ : ¬b) : ¬a := fun ha : a => h₂ (h₁ ha)
 
+-- not
 theorem not_false : ¬False :=
   id
 
@@ -42,10 +49,13 @@ def NonContradictory (a : Prop) : Prop :=
 
 theorem non_contradictory_intro {a : Prop} (ha : a) : ¬¬a := fun hna : ¬a => absurd ha hna
 
+-- false
 @[inline]
 def False.elim {C : Sort u} (h : False) : C :=
   False.ndrec C h
 
+-- eq 
+-- proof irrelevance is built in
 theorem proof_irrelₓ {a : Prop} (h₁ h₂ : a) : h₁ = h₂ :=
   rfl
 
@@ -94,6 +104,7 @@ theorem cast_proof_irrel {α β : Sort u} (h₁ h₂ : α = β) (a : α) : cast 
 theorem cast_eq {α : Sort u} (h : α = α) (a : α) : cast h a = a :=
   rfl
 
+-- ne
 @[reducible]
 def Ne {α : Sort u} (a b : α) :=
   ¬a = b
@@ -128,9 +139,9 @@ section
 
 variable {p : Prop}
 
-theorem ne_false_of_self : p → p ≠ False := fun hp : p heq : p = False => HEq ▸ hp
+theorem ne_false_of_self : p → p ≠ False := fun heq : p = False => HEq ▸ hp
 
-theorem ne_true_of_not : ¬p → p ≠ True := fun hnp : ¬p heq : p = True => (HEq ▸ hnp) trivialₓ
+theorem ne_true_of_not : ¬p → p ≠ True := fun heq : p = True => (HEq ▸ hnp) trivialₓ
 
 theorem true_ne_false : ¬True = False :=
   ne_false_of_self trivialₓ
@@ -197,6 +208,7 @@ theorem eq_rec_compose :
 theorem cast_heq : ∀ {α β : Sort u} h : α = β a : α, HEq (cast h a) a
   | α, _, rfl, a => HEq.refl a
 
+-- and
 variable {a b c d : Prop}
 
 theorem And.elimₓ (h₁ : a ∧ b) (h₂ : a → b → c) : c :=
@@ -207,6 +219,7 @@ theorem And.swap : a ∧ b → b ∧ a := fun ⟨ha, hb⟩ => ⟨hb, ha⟩
 theorem And.symm : a ∧ b → b ∧ a :=
   And.swap
 
+-- or
 namespace Or
 
 theorem elim (h₁ : a ∨ b) (h₂ : a → c) (h₃ : b → c) : c :=
@@ -224,11 +237,13 @@ theorem Or.swap : a ∨ b → b ∨ a :=
 theorem Or.symm : a ∨ b → b ∨ a :=
   Or.swap
 
+-- xor
 def Xorₓ (a b : Prop) :=
   a ∧ ¬b ∨ b ∧ ¬a
 
 /-- `iff P Q`, with notation `P ↔ Q`, is the proposition asserting that `P` and `Q` are equivalent,
 that is, have the same truth value. -/
+-- iff
 structure Iff (a b : Prop) : Prop where intro ::
   mp : a → b
   mpr : b → a
@@ -273,7 +288,7 @@ theorem neq_of_not_iff {a b : Prop} : ¬(a ↔ b) → a ≠ b := fun h₁ h₂ =
   absurd this h₁
 
 theorem not_iff_not_of_iff (h₁ : a ↔ b) : ¬a ↔ ¬b :=
-  Iff.intro (fun hna : ¬a hb : b => hna (Iff.elim_rightₓ h₁ hb)) fun hnb : ¬b ha : a => hnb (Iff.elim_leftₓ h₁ ha)
+  Iff.intro (fun hb : b => hna (Iff.elim_rightₓ h₁ hb)) fun ha : a => hnb (Iff.elim_leftₓ h₁ ha)
 
 theorem of_iff_true (h : a ↔ True) : a :=
   Iff.mp (Iff.symm h) trivialₓ
@@ -288,7 +303,7 @@ theorem iff_false_intro (h : ¬a) : a ↔ False :=
   Iff.intro h (False.ndrec a)
 
 theorem not_non_contradictory_iff_absurd (a : Prop) : ¬¬¬a ↔ ¬a :=
-  Iff.intro (fun hl : ¬¬¬a ha : a => hl (non_contradictory_intro ha)) absurd
+  Iff.intro (fun ha : a => hl (non_contradictory_intro ha)) absurd
 
 theorem imp_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a → b ↔ c → d :=
   Iff.intro (fun hab hc => Iff.mp h₂ (hab (Iff.mpr h₁ hc))) fun hcd ha => Iff.mpr h₂ (hcd (Iff.mp h₁ ha))
@@ -361,6 +376,7 @@ theorem true_eq_false_of_false : False → True = False :=
 theorem eq_comm {α : Sort u} {a b : α} : a = b ↔ b = a :=
   ⟨Eq.symm, Eq.symm⟩
 
+-- and simp rules
 theorem And.imp (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
 
 theorem and_implies (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d :=
@@ -422,6 +438,7 @@ theorem and_not_selfₓ (a : Prop) : a ∧ ¬a ↔ False :=
 theorem and_selfₓ (a : Prop) : a ∧ a ↔ a :=
   Iff.intro And.left fun h => ⟨h, h⟩
 
+-- or simp rules
 theorem Or.imp (h₂ : a → c) (h₃ : b → d) : a ∨ b → c ∨ d :=
   Or.ndrec (fun h => Or.inl (h₂ h)) fun h => Or.inr (h₃ h)
 
@@ -481,6 +498,7 @@ theorem not_orₓ {a b : Prop} : ¬a → ¬b → ¬(a ∨ b)
   | hna, hnb, Or.inl ha => absurd ha hna
   | hna, hnb, Or.inr hb => absurd hb hnb
 
+-- or resolution rulse
 theorem Or.resolve_left {a b : Prop} (h : a ∨ b) (na : ¬a) : b :=
   Or.elim h (fun ha => absurd ha na) id
 
@@ -493,6 +511,7 @@ theorem Or.resolve_right {a b : Prop} (h : a ∨ b) (nb : ¬b) : a :=
 theorem Or.neg_resolve_right {a b : Prop} (h : a ∨ ¬b) (hb : b) : a :=
   Or.elim h id fun nb => absurd hb nb
 
+-- iff simp rules
 @[simp]
 theorem iff_trueₓ (a : Prop) : (a ↔ True) ↔ a :=
   Iff.intro (fun h => Iff.mpr h trivialₓ) iff_true_intro
@@ -518,6 +537,7 @@ theorem iff_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ↔ b) ↔ (c ↔ d) :=
   (iff_iff_implies_and_implies a b).trans
     ((and_congr (imp_congr h₁ h₂) (imp_congr h₂ h₁)).trans (iff_iff_implies_and_implies c d).symm)
 
+-- implies simp rule
 @[simp]
 theorem implies_true_iff (α : Sort u) : α → True ↔ True :=
   Iff.intro (fun h => trivialₓ) fun ha h => trivialₓ
@@ -543,6 +563,7 @@ inductive Exists {α : Sort u} (p : α → Prop) : Prop
 
 attribute [intro] Exists.intro
 
+-- This is a `def`, so that it can be used as pattern in the equation compiler.
 @[matchPattern]
 def Exists.introₓ {α : Sort u} {p : α → Prop} (w : α) (h : p w) : ∃ x, p x :=
   ⟨w, h⟩
@@ -550,6 +571,7 @@ def Exists.introₓ {α : Sort u} {p : α → Prop} (w : α) (h : p w) : ∃ x, 
 theorem Exists.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₁ : ∃ x, p x) (h₂ : ∀ a : α, p a → b) : b :=
   Exists.ndrec h₂ h₁
 
+-- exists unique
 def ExistsUnique {α : Sort u} (p : α → Prop) :=
   ∃ x, p x ∧ ∀ y, p y → y = x
 
@@ -576,6 +598,7 @@ theorem unique_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x
   ExistsUnique.elim h fun x => fun this : p x => fun unique : ∀ y, p y → y = x =>
     show y₁ = y₂ from Eq.trans (unique _ py₁) (Eq.symm (unique _ py₂))
 
+-- exists, forall, exists unique congruences
 @[congr]
 theorem forall_congrₓ {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) : (∀ a, p a) ↔ ∀ a, q a :=
   Iff.intro (fun p a => Iff.mp (h a) (p a)) fun q a => Iff.mpr (h a) (q a)
@@ -589,10 +612,13 @@ theorem exists_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) 
 
 @[congr]
 theorem exists_unique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) : ExistsUnique p₁ ↔ ∃! x, p₂ x :=
-  exists_congr fun x => and_congr (h x) (forall_congrₓ fun y => imp_congr (h y) Iff.rfl)
+  --
+    exists_congr
+    fun x => and_congr (h x) (forall_congrₓ fun y => imp_congr (h y) Iff.rfl)
 
 theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x) → ∀ x, ¬p x := fun hne x hp => hne ⟨x, hp⟩
 
+-- decidable
 def Decidable.toBool (p : Prop) [h : Decidable p] : Bool :=
   Decidable.casesOn h (fun h₁ => Bool.false) fun h₂ => Bool.true
 
@@ -612,9 +638,12 @@ instance Decidable.true : Decidable True :=
 instance Decidable.false : Decidable False :=
   isFalse not_false
 
+-- We use "dependent" if-then-else to be able to communicate the if-then-else condition
+-- to the branches
 @[inline]
 def dite {α : Sort u} (c : Prop) [h : Decidable c] : (c → α) → (¬c → α) → α := fun t e => Decidable.recOn h e t
 
+-- if-then-else
 @[inline]
 def ite {α : Sort u} (c : Prop) [h : Decidable c] (t e : α) : α :=
   Decidable.recOn h (fun hnc => e) fun hc => t
@@ -623,15 +652,14 @@ namespace Decidable
 
 variable {p q : Prop}
 
-def rec_on_true [h : Decidable p] {h₁ : p → Sort u} {h₂ : ¬p → Sort u} (h₃ : p) (h₄ : h₁ h₃) :
-    Decidable.recOn h h₂ h₁ :=
+def recOnTrue [h : Decidable p] {h₁ : p → Sort u} {h₂ : ¬p → Sort u} (h₃ : p) (h₄ : h₁ h₃) : Decidable.recOn h h₂ h₁ :=
   Decidable.recOn h (fun h => False.ndrec _ (h h₃)) fun h => h₄
 
-def rec_on_false [h : Decidable p] {h₁ : p → Sort u} {h₂ : ¬p → Sort u} (h₃ : ¬p) (h₄ : h₂ h₃) :
+def recOnFalse [h : Decidable p] {h₁ : p → Sort u} {h₂ : ¬p → Sort u} (h₃ : ¬p) (h₄ : h₂ h₃) :
     Decidable.recOn h h₂ h₁ :=
   Decidable.recOn h (fun h => h₄) fun h => False.ndrec _ (h₃ h)
 
-def by_cases {q : Sort u} [φ : Decidable p] : (p → q) → (¬p → q) → q :=
+def byCases {q : Sort u} [φ : Decidable p] : (p → q) → (¬p → q) → q :=
   dite _
 
 /-- Law of Excluded Middle. -/
@@ -666,7 +694,7 @@ theorem not_or_iff_and_not p q [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p 
         match d₂ with
         | is_true h₂ => False.elim <| h (Or.inr h₂)
         | is_false h₂ => ⟨h₁, h₂⟩)
-    fun ⟨np, nq⟩ h => Or.elim h np nq
+    fun h => Or.elim h np nq
 
 end Decidable
 
@@ -759,6 +787,7 @@ theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} : ∀
   | is_true e => absurd e n
   | is_false n₁ => proof_irrelₓ n n₁ ▸ Eq.refl (isFalse n)
 
+-- inhabited
 class Inhabited (α : Sort u) where
   default : α
 
@@ -792,6 +821,7 @@ instance (priority := 100) nonempty_of_inhabited {α : Sort u} [Inhabited α] : 
 theorem nonempty_of_exists {α : Sort u} {p : α → Prop} : (∃ x, p x) → Nonempty α
   | ⟨w, h⟩ => ⟨w⟩
 
+-- subsingleton
 class inductive Subsingleton (α : Sort u) : Prop
   | intro (h : ∀ a b : α, a = b) : Subsingleton
 
@@ -914,6 +944,7 @@ theorem dif_ctx_simp_congr {α : Sort u} {b c : Prop} [dec_b : Decidable b] {x :
     @dite α b dec_b x y = @dite α c (decidableOfDecidableOfIff dec_b h_c) u v :=
   @dif_ctx_congr α b c dec_b (decidableOfDecidableOfIff dec_b h_c) x u y v h_c h_t h_e
 
+-- Remark: dite and ite are "defally equal" when we ignore the proofs.
 theorem dif_eq_if (c : Prop) [h : Decidable c] {α : Sort u} (t : α) (e : α) :
     (dite c (fun h => t) fun h => e) = ite c t e :=
   match h with
@@ -948,6 +979,7 @@ structure Ulift.{r, s} (α : Type s) : Type max s r where up ::
 
 namespace Ulift
 
+-- Bijection between α and ulift.{v} α
 theorem up_down {α : Type u} : ∀ b : Ulift.{v} α, up (down b) = b
   | up a => rfl
 
@@ -962,6 +994,7 @@ structure Plift (α : Sort u) : Type u where up ::
 
 namespace Plift
 
+-- Bijection between α and plift α
 theorem up_down {α : Sort u} : ∀ b : Plift α, up (down b) = b
   | up a => rfl
 
@@ -970,6 +1003,7 @@ theorem down_up {α : Sort u} (a : α) : down (up a) = a :=
 
 end Plift
 
+-- Equalities for rewriting let-expressions
 theorem let_value_eq {α : Sort u} {β : Sort v} {a₁ a₂ : α} (b : α → β) :
     a₁ = a₂ →
       (let x : α := a₁
@@ -1041,11 +1075,11 @@ def Subrelation (q r : β → β → Prop) :=
 
 def InvImage (f : α → β) : α → α → Prop := fun a₁ a₂ => f a₁≺f a₂
 
-theorem InvImage.trans (f : α → β) (h : Transitive r) : Transitive (InvImage r f) :=
-  fun a₁ a₂ a₃ : α h₁ : InvImage r f a₁ a₂ h₂ : InvImage r f a₂ a₃ => h h₁ h₂
+theorem InvImage.trans (f : α → β) (h : Transitive r) : Transitive (InvImage r f) := fun h₂ : InvImage r f a₂ a₃ =>
+  h h₁ h₂
 
 theorem InvImage.irreflexive (f : α → β) (h : Irreflexive r) : Irreflexive (InvImage r f) :=
-  fun a : α h₁ : InvImage r f a a => h (f a) h₁
+  fun h₁ : InvImage r f a a => h (f a) h₁
 
 inductive Tc {α : Sort u} (r : α → α → Prop) : α → α → Prop
   | base : ∀ a b, r a b → Tc a b

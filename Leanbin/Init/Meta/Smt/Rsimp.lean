@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Smt.SmtTactic
 import Leanbin.Init.Meta.FunInfo
@@ -58,6 +63,8 @@ run_cmd
 run_cmd
   mk_hinst_lemma_attr_from_simp_attr `rsimp_attr `rsimp `simp `no_rsimp
 
+/- The following lemmas are not needed by rsimp, and they actually hurt performance since they generate a lot of
+   instances. -/
 attribute [no_rsimp]
   id.def Ne.def not_true not_false_iff ne_self_iff_false eq_self_iff_true heq_self_iff_true iff_not_selfₓ not_iff_selfₓ true_iff_false false_iff_true And.comm And.assoc And.left_comm and_trueₓ true_andₓ and_falseₓ false_andₓ not_and_selfₓ and_not_selfₓ and_selfₓ Or.comm Or.assoc Or.left_comm or_trueₓ true_orₓ or_falseₓ false_orₓ or_selfₓ iff_trueₓ true_iffₓ iff_falseₓ false_iffₓ iff_selfₓ implies_true_iff false_implies_iff if_t_t if_true if_false
 
@@ -132,7 +139,7 @@ unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) :
         e
   return r.2
 
-structure config where
+structure Config where
   attrName := `rsimp_attr
   maxRounds := 8
 
@@ -180,6 +187,7 @@ unsafe def rsimp_at (h : expr) (cfg : Config := {  }) (extra := hinst_lemmas.mk)
 
 namespace Interactive
 
+-- TODO(Leo): allow user to provide extra lemmas manually
 unsafe def rsimp : tactic Unit :=
   tactic.rsimp
 

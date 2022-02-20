@@ -1,10 +1,15 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Meta.Default
 import Leanbin.Init.Algebra.Classes
 import Leanbin.Init.IteSimp
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option default_priority
+-- ././Mathport/Syntax/Translate/Basic.lean:211:40: warning: unsupported option default_priority
 set_option default_priority 100
 
 universe u
@@ -26,6 +31,7 @@ theorem ite_eq_gt_distrib (c : Prop) [Decidable c] (a b : Ordering) :
     ((if c then a else b) = Ordering.gt) = if c then a = Ordering.gt else b = Ordering.gt := by
   by_cases' c <;> simp [*]
 
+-- ------------------------------------------------------------------
 end Ordering
 
 section

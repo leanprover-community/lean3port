@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.HasReflect
@@ -5,6 +10,7 @@ import Leanbin.Init.Control.Alternative
 
 namespace Lean
 
+-- TODO: make inspectable (and pure)
 unsafe axiom parser_state : Type
 
 unsafe axiom parser_state.env : parser_state → environment
@@ -120,6 +126,7 @@ unsafe def parser_orelse (p₁ p₂ : parser α) : parser α := fun s =>
 unsafe instance : Alternativeₓ parser :=
   { interaction_monad.monad with failure := @interaction_monad.failed _, orelse := @parser_orelse }
 
+-- TODO: move
 unsafe def many.{u, v} {f : Type u → Type v} [Monadₓ f] [Alternativeₓ f] {a : Type u} : f a → f (List a)
   | x =>
     (do
@@ -150,7 +157,7 @@ unsafe instance has_reflect [r : has_reflect α] (p : lean.parser α) : reflecta
     let rp ← p
     return ⟨rp⟩
 
-unsafe instance optionalₓ {α : Type} [reflected α] (p : parser α) [r : reflectable p] : reflectable (optionalₓ p) where
+unsafe instance optional {α : Type} [reflected α] (p : parser α) [r : reflectable p] : reflectable (optionalₓ p) where
   full := reflected_value.subst some <$> r.full <|> return ⟨none⟩
 
 end Reflectable

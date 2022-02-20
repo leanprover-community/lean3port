@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 
 namespace Debugger
 
-def is_space (c : Charₓ) : Bool :=
+def isSpace (c : Charₓ) : Bool :=
   if c = ' ' ∨ c = Charₓ.ofNat 11 ∨ c = '\n' then true else false
 
 private def split_core : List Charₓ → Option Stringₓ → List Stringₓ
@@ -13,7 +18,7 @@ private def split_core : List Charₓ → Option Stringₓ → List Stringₓ
 def split (s : Stringₓ) : List Stringₓ :=
   splitCore s.toList none
 
-def to_qualified_name_core : List Charₓ → Name → Stringₓ → Name
+def toQualifiedNameCore : List Charₓ → Name → Stringₓ → Name
   | [], r, s => if s.isEmpty then r else r <.> s
   | c :: cs, r, s =>
     if isSpace c then to_qualified_name_core cs r s
@@ -21,10 +26,10 @@ def to_qualified_name_core : List Charₓ → Name → Stringₓ → Name
       if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (r <.> s) ""
       else to_qualified_name_core cs r (s.str c)
 
-def to_qualified_name (s : Stringₓ) : Name :=
+def toQualifiedName (s : Stringₓ) : Name :=
   toQualifiedNameCore s.toList Name.anonymous ""
 
-def olean_to_lean (s : Stringₓ) :=
+def oleanToLean (s : Stringₓ) :=
   s.popnBack 5 ++ "lean"
 
 unsafe def get_file (fn : Name) : vm Stringₓ :=

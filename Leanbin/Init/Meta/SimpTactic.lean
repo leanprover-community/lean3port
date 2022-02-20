@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Attribute
@@ -116,6 +121,7 @@ unsafe instance : has_to_tactic_format simp_lemmas :=
 namespace Tactic
 
 /-- Revert a local constant, change its type using `transform`.  -/
+-- Remark: `transform` should not change the target.
 unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : tactic Unit := do
   let num_reverted : ℕ ← revert h
   let t ← target
@@ -135,20 +141,32 @@ unsafe def get_eqn_lemmas_for (deps : Bool) (d : Name) : tactic (List Name) := d
   let env ← get_env
   pure <| if deps then env d else env d
 
-structure dsimp_config where
+structure DsimpConfig where
   md := reducible
+  -- reduction mode: how aggressively constants are replaced with their definitions.
   maxSteps : Nat := Simp.defaultMaxSteps
+  -- The maximum number of steps allowed before failing.
   canonizeInstances : Bool := true
+  -- See the documentation in `src/library/defeq_canonizer.h`
   singlePass : Bool := false
+  -- Visit each subterm no more than once.
   failIfUnchanged := true
+  -- Don't throw if dsimp didn't do anything.
   eta := true
+  -- allow eta-equivalence: `(λ x, F $ x) ↝ F`
   zeta : Bool := true
+  -- do zeta-reductions: `let x : a := b in c ↝ c[x/b]`.
   beta : Bool := true
+  -- do beta-reductions: `(λ x, E) $ (y) ↝ E[x/y]`.
   proj : Bool := true
+  -- reduce projections: `⟨a,b⟩.1 ↝ a`.
   iota : Bool := true
+  -- reduce recursors for inductive datatypes: eg `nat.rec_on (succ n) Z R ↝ R n $ nat.rec_on n Z R`
   unfoldReducible := false
+  -- if tt, definitions with `reducible` transparency will be unfolded (delta-reduced)
   memoize := true
 
+-- Perform caching of dsimps of subterms.
 end Tactic
 
 /-- (Definitional) Simplify the given expression using *only* reflexivity equality lemmas from the given set of lemmas.
@@ -160,8 +178,23 @@ unsafe axiom simp_lemmas.dsimplify (s : simp_lemmas) (u : List Name := []) (e : 
 
 namespace Tactic
 
-unsafe axiom dsimplify_core {α : Type} (a : α) (pre : α → expr → tactic (α × expr × Bool))
-    (post : α → expr → tactic (α × expr × Bool)) (e : expr) (cfg : DsimpConfig := {  }) : tactic (α × expr)
+-- Remark: the configuration parameters `cfg.md` and `cfg.eta` are ignored by this tactic.
+unsafe axiom dsimplify_core
+    -- The user state type.
+    {α : Type}
+    -- Initial user data
+    (a : α)
+    /- (pre a e) is invoked before visiting the children of subterm 'e',
+         if it succeeds the result (new_a, new_e, flag) where
+           - 'new_a' is the new value for the user data
+           - 'new_e' is a new expression that must be definitionally equal to 'e',
+           - 'flag'  if tt 'new_e' children should be visited, and 'post' invoked. -/
+    (pre : α → expr → tactic (α × expr × Bool))
+    /- (post a e) is invoked after visiting the children of subterm 'e',
+         The output is similar to (pre a e), but the 'flag' indicates whether
+         the new expression should be revisited or not. -/
+    (post : α → expr → tactic (α × expr × Bool))
+    (e : expr) (cfg : DsimpConfig := {  }) : tactic (α × expr)
 
 unsafe def dsimplify (pre : expr → tactic (expr × Bool)) (post : expr → tactic (expr × Bool)) : expr → tactic expr :=
   fun e => do
@@ -193,11 +226,18 @@ unsafe def dsimp_hyp (h : expr) (s : Option simp_lemmas := none) (u : List Name 
 
 /-- Tries to unfold `e` if it is a constant or a constant application.
     Remark: this is not a recursive procedure. -/
+/- Remark: we use transparency.instances by default to make sure that we
+   can unfold projections of type classes. Example:
+
+          (@has_add.add nat nat.has_add a b)
+-/
 unsafe axiom dunfold_head (e : expr) (md := Transparency.instances) : tactic expr
 
-structure dunfold_config extends DsimpConfig where
+structure DunfoldConfig extends DsimpConfig where
   md := Transparency.instances
 
+/- Remark: in principle, dunfold can be implemented on top of dsimp. We don't do it for
+   performance reasons. -/
 unsafe axiom dunfold (cs : List Name) (e : expr) (cfg : DunfoldConfig := {  }) : tactic expr
 
 unsafe def dunfold_target (cs : List Name) (cfg : DunfoldConfig := {  }) : tactic Unit := do
@@ -207,16 +247,19 @@ unsafe def dunfold_target (cs : List Name) (cfg : DunfoldConfig := {  }) : tacti
 unsafe def dunfold_hyp (cs : List Name) (h : expr) (cfg : DunfoldConfig := {  }) : tactic Unit :=
   revert_and_transform (fun e => dunfold cs e cfg) h
 
-structure delta_config where
+structure DeltaConfig where
   maxSteps := Simp.defaultMaxSteps
   visitInstances := true
 
 private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
   cs.any fun c =>
     if e.is_app_of c then true
-    else
+    else-- Exact match
       let f := e.get_app_fn
-      f.is_constant && f.const_name.is_internal && f.const_name.getPrefix = c
+      -- f is an auxiliary constant generated when compiling c
+            f.is_constant &&
+          f.const_name.is_internal &&
+        f.const_name.getPrefix = c
 
 /-- Delta reduce the given constant names -/
 unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tactic expr :=
@@ -240,7 +283,7 @@ unsafe def delta_target (cs : List Name) (cfg : DeltaConfig := {  }) : tactic Un
 unsafe def delta_hyp (cs : List Name) (h : expr) (cfg : DeltaConfig := {  }) : tactic Unit :=
   revert_and_transform (fun e => delta cs e cfg) h
 
-structure unfold_proj_config extends DsimpConfig where
+structure UnfoldProjConfig extends DsimpConfig where
   md := Transparency.instances
 
 /-- If `e` is a projection application, try to unfold it, otherwise fail. -/
@@ -262,7 +305,7 @@ unsafe def unfold_projs_target (cfg : UnfoldProjConfig := {  }) : tactic Unit :=
 unsafe def unfold_projs_hyp (h : expr) (cfg : UnfoldProjConfig := {  }) : tactic Unit :=
   revert_and_transform (fun e => unfold_projs e cfg) h
 
-structure simp_config where
+structure SimpConfig where
   maxSteps : Nat := Simp.defaultMaxSteps
   contextual : Bool := false
   liftEq : Bool := true
@@ -273,8 +316,10 @@ structure simp_config where
   beta : Bool := true
   eta : Bool := true
   proj : Bool := true
+  -- reduce projections
   iota : Bool := true
   iotaEqn : Bool := false
+  -- reduce using all equation lemmas generated by equation/pattern-matching compiler
   constructorEq : Bool := true
   singlePass : Bool := false
   failIfUnchanged := true
@@ -364,7 +409,7 @@ unsafe def intro1_aux : Bool → List Name → tactic expr
   | tt, n :: ns => intro n
   | _, _ => failed
 
-structure simp_intros_config extends SimpConfig where
+structure SimpIntrosConfig extends SimpConfig where
   useHyps := false
 
 unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : List Name) :
@@ -384,8 +429,10 @@ unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : Lis
               clear h_d
               let h_new ← intro1
               let new_S ← if use_hyps then mcond (is_prop new_d) (S h_new ff) (return S) else return S
-              simp_intros_aux new_S use_ns ns) <|>
-            intro1_aux use_ns ns >> simp_intros_aux S use_ns ns
+              simp_intros_aux new_S use_ns ns) <|>-- failed to simplify... we just introduce and continue
+                intro1_aux
+                use_ns ns >>
+              simp_intros_aux S use_ns ns
         else
           if t || t then intro1_aux use_ns ns >> simp_intros_aux S use_ns ns
           else do
@@ -408,6 +455,7 @@ unsafe def mk_eq_simp_ext (simp_ext : expr → tactic (expr × expr)) : tactic U
   unify rhs new_rhs
   exact HEq
 
+-- Simp attribute support
 unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
   | S, [] => return S
   | S, n :: ns => do
@@ -502,6 +550,8 @@ unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpCon
 private unsafe def remove_deps (s : name_set) (h : expr) : name_set :=
   if s.Empty then s else h.fold s fun e o s => if e.is_local_constant then s.erase e.local_uniq_name else s
 
+/- Return the list of hypothesis that are propositions and do not have
+   forward dependencies. -/
 unsafe def non_dep_prop_hyps : tactic (List expr) := do
   let ctx ← local_context
   let s ←
@@ -521,15 +571,22 @@ section SimpAll
 
 unsafe structure simp_all_entry where
   h : expr
+  -- hypothesis
   new_type : expr
+  -- new type
   pr : Option expr
+  -- proof that type of h is equal to new_type
   s : simp_lemmas
 
+-- simplification lemmas for simplifying new_type
 private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) : tactic (List simp_all_entry) :=
   es.mmap fun e => do
     let new_s ← e.s.add h false
     return { e with s := new_s }
 
+/- Helper tactic for `init`.
+   Remark: the following tactic is quadratic on the length of list expr (the list of non dependent propositions).
+   We can make it more efficient as soon as we have an efficient simp_lemmas.erase. -/
 private unsafe def init_aux : List expr → simp_lemmas → List simp_all_entry → tactic (simp_lemmas × List simp_all_entry)
   | [], s, r => return (s, r)
   | h :: hs, s, r => do
@@ -596,6 +653,7 @@ unsafe def simp_all (s : simp_lemmas) (to_unfold : List Name) (cfg : SimpConfig 
 
 end SimpAll
 
+-- debugging support for algebraic normalizer
 unsafe axiom trace_algebra_info : expr → tactic Unit
 
 end Tactic

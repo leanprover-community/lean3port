@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+
+Simple command line interface for debugging Lean programs and tactics.
+-/
 import Leanbin.Tools.Debugger.Util
 
 namespace Debugger
 
-inductive mode
+inductive Mode
   | init
   | step
   | run
@@ -15,7 +22,7 @@ structure State where
   fnBps : List Name
   activeBps : List (Nat × Name)
 
-def init_state : State where
+def initState : State where
   md := Mode.init
   csz := 0
   fnBps := []
@@ -171,7 +178,7 @@ unsafe def cmd_loop (s : State) (default_cmd : List Stringₓ) : vm State := do
   let csz ← vm.call_stack_size
   cmd_loop_core s (csz - 1) default_cmd
 
-def prune_active_bps_core (csz : Nat) : List (Nat × Name) → List (Nat × Name)
+def pruneActiveBpsCore (csz : Nat) : List (Nat × Name) → List (Nat × Name)
   | [] => []
   | (csz', n) :: ls => if csz < csz' then prune_active_bps_core ls else (csz', n) :: ls
 

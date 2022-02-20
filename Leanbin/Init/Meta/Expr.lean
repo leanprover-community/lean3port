@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Level
 import Leanbin.Init.Control.Monad
@@ -33,11 +38,17 @@ def bar ⦃x : ℕ⦄ : ℕ := x
 #check bar -- bar : Π ⦃x : ℕ⦄, ℕ
 ```
     -/
-inductive BinderInfo
-  | default
-  | implicit
-  | strict_implicit
-  | inst_implicit
+inductive BinderInfo-- `(x : α)`
+
+  | default-- `{x : α}`
+
+  | implicit-- `⦃x:α⦄`
+
+  | strict_implicit-- `[x : α]`. Should be inferred with typeclass resolution.
+
+  | inst_implicit/- Auxiliary internal attribute used to mark local constants representing recursive functions
+        in recursive equations and `match` statements. -/
+
   | aux_decl
 
 instance : HasRepr BinderInfo :=
@@ -78,16 +89,34 @@ unsafe axiom macro_def : Type
     The `elab` flag is indicates whether the `expr` has been elaborated and doesn't contain any placeholder macros.
     For example the equality `x = x` is represented in `expr ff` as ``app (app (const `eq _) x) x`` while in `expr tt` it is represented as ``app (app (app (const `eq _) t) x) x`` (one more argument).
     The VM replaces instances of this datatype with the C++ implementation. -/
-unsafe inductive expr (elaborated : Bool := true)
-  | var : Nat → expr
-  | sort : level → expr
-  | const : Name → List level → expr
-  | mvar (unique : Name) (pretty : Name) (type : expr) : expr
-  | local_const (unique : Name) (pretty : Name) (bi : BinderInfo) (type : expr) : expr
-  | app : expr → expr → expr
-  | lam (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) : expr
-  | pi (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) : expr
-  | elet (var_name : Name) (type : expr) (assignment : expr) (body : expr) : expr
+unsafe inductive expr (elaborated : Bool := true)-- A bound variable with a de-Bruijn index.
+
+  | var : Nat → expr-- A type universe: `Sort u`
+
+  | sort : level → expr/- A global constant. These include definitions, constants and inductive type stuff present
+in the environment as well as hard-coded definitions. -/
+
+  | const : Name → List level → expr/- [WARNING] Do not trust the types for `mvar` and `local_const`,
+they are sometimes dummy values. Use `tactic.infer_type` instead. -/
+-- An `mvar` is a 'hole' yet to be filled in by the elaborator or tactic state.
+
+  | mvar (unique : Name) (pretty : Name) (type : expr) :
+    expr-- A local constant. For example, if our tactic state was `h : P ⊢ Q`, `h` would be a local constant.
+
+  | local_const (unique : Name) (pretty : Name) (bi : BinderInfo) (type : expr) : expr-- Function application.
+
+  | app : expr → expr → expr-- Lambda abstraction. eg ```(λ a : α, x)``
+
+  | lam (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) :
+    expr-- Pi type constructor. eg ```(Π a : α, x)`` and ```(α → β)``
+
+  | pi (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) : expr-- An explicit let binding.
+
+  | elet (var_name : Name) (type : expr) (assignment : expr) (body : expr) :
+    expr/- A macro, see the docstring for `macro_def`.
+  The list of expressions are local constants and metavariables that the macro depends on.
+  -/
+
   | macro : macro_def → List expr → expr
 
 variable {elab : Bool}

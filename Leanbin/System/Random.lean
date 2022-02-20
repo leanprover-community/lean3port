@@ -1,11 +1,31 @@
+/-
+Copyright (c) 2018 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 
 universe u
 
+/-
+Basic random number generator support based on the one
+available on the Haskell library
+-/
+-- Interface for random number generators.
 class RandomGen (g : Type u) where
+  /- `range` returns the range of values returned by
+      the generator. -/
   range : g → Nat × Nat
+  /- `next` operation returns a natural number that is uniformly distributed
+      the range returned by `range` (including both end points),
+     and a new generator. -/
   next : g → Nat × g
+  /-
+    The 'split' operation allows one to obtain two distinct random number
+    generators. This is very useful in functional programs (for example, when
+    passing a random number generator down to recursive calls). -/
   split : g → g × g
 
+-- "Standard" random number generator.
 structure StdGen where
   s1 : Nat
   s2 : Nat
@@ -49,6 +69,12 @@ def mkStdGenₓ (s : Nat := 0) : StdGen :=
   let s2 := q % 2147483398
   ⟨s1 + 1, s2 + 1⟩
 
+/-
+Auxiliary function for random_nat_val.
+Generate random values until we exceed the target magnitude.
+`gen_lo` and `gen_mag` are the generator lower bound and magnitude.
+The parameter `r` is the "remaining" magnitude.
+-/
 private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (h : gen_mag > 0) :
     Nat → Nat → gen → Nat × gen
   | 0, v, g => (v, g)
@@ -79,7 +105,13 @@ def randNatₓ {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × g
   let hi' := if lo > hi then lo else hi
   let (gen_lo, gen_hi) := RandomGen.range g
   let gen_mag := gen_hi - gen_lo + 1
-  let q := 1000
+  let
+    q :=/-
+          Probabilities of the most likely and least likely result
+          will differ at most by a factor of (1 +- 1/q).  Assuming the RandomGen
+          is uniform, of course
+        -/
+    1000
   let k := hi' - lo' + 1
   let tgt_mag := k * q
   let (v, g') := randNatAuxₓ gen_lo gen_mag (Nat.zero_lt_succₓ _) tgt_mag 0 g

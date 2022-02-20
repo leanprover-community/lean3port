@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Sebastian Ullrich
+-/
 prelude
 import Leanbin.Init.Control.Alternative
 import Leanbin.Init.Control.Lift
@@ -13,7 +18,7 @@ namespace OptionTₓ
 variable {m : Type u → Type v} [Monadₓ m] {α β : Type u}
 
 @[inline]
-protected def bind_cont {α β : Type u} (f : α → OptionTₓ m β) : Option α → m (Option β)
+protected def bindCont {α β : Type u} (f : α → OptionTₓ m β) : Option α → m (Option β)
   | some a => (f a).run
   | none => pure none
 
@@ -39,7 +44,7 @@ protected def fail : OptionTₓ m α :=
   ⟨pure none⟩
 
 @[inline]
-def of_option : Option α → OptionTₓ m α
+def ofOption : Option α → OptionTₓ m α
   | o => ⟨pure o⟩
 
 instance : Alternativeₓ (OptionTₓ m) :=
@@ -53,8 +58,7 @@ instance : HasMonadLift m (OptionTₓ m) :=
   ⟨@OptionTₓ.lift _ _⟩
 
 @[inline]
-protected def monad_map {m'} [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : OptionTₓ m α → OptionTₓ m' α := fun x =>
-  ⟨f x.run⟩
+protected def monadMap {m'} [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : OptionTₓ m α → OptionTₓ m' α := fun x => ⟨f x.run⟩
 
 instance m' [Monadₓ m'] : MonadFunctorₓ m m' (OptionTₓ m) (OptionTₓ m') :=
   ⟨fun α => OptionTₓ.monadMap⟩

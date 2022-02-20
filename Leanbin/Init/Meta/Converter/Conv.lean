@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+
+Converter monad for building simplifiers.
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.SimpTactic
@@ -92,14 +99,20 @@ private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List 
   | k :: ks, a :: as => do
     let (gs, largs) ← congr_aux ks as
     match k with
-      | CongrArgKind.fixed => return <| (gs, a :: largs)
-      | CongrArgKind.fixed_no_param => return <| (gs, largs)
+      |-- parameter for the congruence lemma
+        CongrArgKind.fixed =>
+        return <| (gs, a :: largs)
+      |-- parameter which is a subsingleton
+        CongrArgKind.fixed_no_param =>
+        return <| (gs, largs)
       | CongrArgKind.eq => do
         let a_type ← infer_type a
         let rhs ← mk_meta_var a_type
         let g_type ← mk_app `eq [a, rhs]
         let g ← mk_meta_var g_type
-        return (g :: gs, a :: rhs :: g :: largs)
+        -- proof that `a = rhs`
+            return
+            (g :: gs, a :: rhs :: g :: largs)
       | CongrArgKind.cast => return <| (gs, a :: largs)
       | _ => fail "congr tactic failed, unsupported congruence lemma"
   | ks, as => fail "congr tactic failed, unsupported congruence lemma"

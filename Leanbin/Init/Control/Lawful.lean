@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+-/
 prelude
 import Leanbin.Init.Control.Monad
 import Leanbin.Init.Meta.Interactive
@@ -16,9 +21,10 @@ unsafe def control_laws_tac :=
   (whnf_target >> intros) >> to_expr (pquote.1 rfl) >>= exact
 
 class IsLawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
-  map_const_eq : ∀ {α β : Type u}, (· <$ · : α → f β → f α) = · <$> · ∘ const β := by
+  map_const_eq : ∀ {α β : Type u}, ((· <$ ·) : α → f β → f α) = (· <$> ·) ∘ const β := by
     run_tac
       control_laws_tac
+  -- `functor` is indeed a categorical functor
   id_map : ∀ {α : Type u} x : f α, id <$> x = x
   comp_map : ∀ {α β γ : Type u} g : α → β h : β → γ x : f α, (h ∘ g) <$> x = h <$> g <$> x
 
@@ -26,6 +32,7 @@ export IsLawfulFunctor (map_const_eq id_map comp_map)
 
 attribute [simp] id_map
 
+-- `comp_map` does not make a good simp lemma
 class IsLawfulApplicative (f : Type u → Type v) [Applicativeₓ f] extends IsLawfulFunctor f : Prop where
   seq_left_eq : ∀ {α β : Type u} a : f α b : f β, a <* b = const β <$> a <*> b := by
     run_tac
@@ -33,10 +40,12 @@ class IsLawfulApplicative (f : Type u → Type v) [Applicativeₓ f] extends IsL
   seq_right_eq : ∀ {α β : Type u} a : f α b : f β, a *> b = const α id <$> a <*> b := by
     run_tac
       control_laws_tac
+  -- applicative laws
   pure_seq_eq_map : ∀ {α β : Type u} g : α → β x : f α, pure g <*> x = g <$> x
   map_pure : ∀ {α β : Type u} g : α → β x : α, g <$> (pure x : f α) = pure (g x)
   seq_pure : ∀ {α β : Type u} g : f (α → β) x : α, g <*> pure x = (fun g : α → β => g x) <$> g
   seq_assoc : ∀ {α β γ : Type u} x : f α g : f (α → β) h : f (β → γ), h <*> (g <*> x) = @comp α β γ <$> h <*> g <*> x
+  -- default functor law
   comp_map := by
     intros <;> simp [(pure_seq_eq_map _ _).symm, seq_assoc, map_pure, seq_pure]
 
@@ -44,6 +53,7 @@ export IsLawfulApplicative (seq_left_eq seq_right_eq pure_seq_eq_map map_pure se
 
 attribute [simp] map_pure seq_pure
 
+-- applicative "law" derivable from other laws
 @[simp]
 theorem pure_id_seqₓ {α : Type u} {f : Type u → Type v} [Applicativeₓ f] [IsLawfulApplicative f] (x : f α) :
     pure id <*> x = x := by
@@ -53,9 +63,10 @@ class IsLawfulMonad (m : Type u → Type v) [Monadₓ m] extends IsLawfulApplica
   bind_pure_comp_eq_map : ∀ {α β : Type u} f : α → β x : m α, x >>= pure ∘ f = f <$> x := by
     run_tac
       control_laws_tac
-  bind_map_eq_seq : ∀ {α β : Type u} f : m (α → β) x : m α, f >>= · <$> x = f <*> x := by
+  bind_map_eq_seq : ∀ {α β : Type u} f : m (α → β) x : m α, f >>= (· <$> x) = f <*> x := by
     run_tac
       control_laws_tac
+  -- monad laws
   pure_bind : ∀ {α β : Type u} x : α f : α → m β, pure x >>= f = f x
   bind_assoc : ∀ {α β γ : Type u} x : m α f : α → m β g : β → m γ, x >>= f >>= g = x >>= fun x => f x >>= g
   pure_seq_eq_map := by
@@ -71,6 +82,7 @@ export IsLawfulMonad (bind_pure_comp_eq_map bind_map_eq_seq pure_bind bind_assoc
 
 attribute [simp] pure_bind
 
+-- monad "law" derivable from other laws
 @[simp]
 theorem bind_pureₓ {α : Type u} {m : Type u → Type v} [Monadₓ m] [IsLawfulMonad m] (x : m α) : x >>= pure = x :=
   show x >>= pure ∘ id = x by
@@ -84,6 +96,7 @@ theorem map_ext_congr {α β} {m : Type u → Type v} [Functor m] {x : m α} {f 
     (∀ a, f a = g a) → (f <$> x : m β) = g <$> x := fun h => by
   simp [show f = g from funext h]
 
+-- instances of previously defined monads
 namespace id
 
 variable {α β : Type}

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2015 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Jeremy Avigad, Mario Carneiro
+-/
 prelude
 import Leanbin.Init.Data.Subtype.Basic
 import Leanbin.Init.Funext
@@ -6,9 +11,10 @@ namespace Classical
 
 universe u v
 
+-- the axiom
 axiom choice {α : Sort u} : Nonempty α → α
 
-noncomputable irreducible_def indefinite_description {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
+noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
   choice <|
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
@@ -19,6 +25,8 @@ noncomputable def some {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
 theorem some_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (some h) :=
   (indefiniteDescription p h).property
 
+/- Diaconescu's theorem: using function extensionality and propositional extensionality,
+   we can get excluded middle from this. -/
 section Diaconescu
 
 parameter (p : Prop)
@@ -35,13 +43,15 @@ private theorem exU : ∃ x, U x :=
 private theorem exV : ∃ x, V x :=
   ⟨False, Or.inl rfl⟩
 
+/- TODO(Leo): check why the code generator is not ignoring (some exU)
+   when we mark u as def. -/
 private theorem u : Prop :=
   some exU
 
 private theorem v : Prop :=
   some exV
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option type_context.unfold_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:211:40: warning: unsupported option type_context.unfold_lemmas
 set_option type_context.unfold_lemmas true
 
 private theorem u_def : U u :=
@@ -77,36 +87,38 @@ end Diaconescu
 theorem exists_true_of_nonempty {α : Sort u} : Nonempty α → ∃ x : α, True
   | ⟨x⟩ => ⟨x, trivialₓ⟩
 
-noncomputable def inhabited_of_nonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
+noncomputable def inhabitedOfNonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
   ⟨choice h⟩
 
-noncomputable def inhabited_of_exists {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : Inhabited α :=
+noncomputable def inhabitedOfExists {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : Inhabited α :=
   inhabitedOfNonempty (Exists.elim h fun w hw => ⟨w⟩)
 
-noncomputable def prop_decidable (a : Prop) : Decidable a :=
+-- all propositions are decidable
+noncomputable def propDecidable (a : Prop) : Decidable a :=
   choice <| Or.elim (em a) (fun ha => ⟨isTrue ha⟩) fun hna => ⟨isFalse hna⟩
 
 attribute [local instance] prop_decidable
 
-noncomputable def decidable_inhabited (a : Prop) : Inhabited (Decidable a) :=
+noncomputable def decidableInhabited (a : Prop) : Inhabited (Decidable a) :=
   ⟨propDecidable a⟩
 
 attribute [local instance] decidable_inhabited
 
-noncomputable def type_decidable_eq (α : Sort u) : DecidableEq α := fun x y => propDecidable (x = y)
+noncomputable def typeDecidableEq (α : Sort u) : DecidableEq α := fun x y => propDecidable (x = y)
 
-noncomputable def type_decidable (α : Sort u) : Psum α (α → False) :=
+noncomputable def typeDecidableₓ (α : Sort u) : Psum α (α → False) :=
   match propDecidable (Nonempty α) with
   | is_true hp => Psum.inl (@Inhabited.default _ (inhabitedOfNonempty hp))
   | is_false hn => Psum.inr fun a => absurd (Nonempty.intro a) hn
 
-noncomputable irreducible_def strong_indefinite_description {α : Sort u} (p : α → Prop) (h : Nonempty α) :
+noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α → Prop) (h : Nonempty α) :
   { x : α // (∃ y : α, p y) → p x } :=
   if hp : ∃ x : α, p x then
     let xp := indefiniteDescription _ hp
     ⟨xp.val, fun h' => xp.property⟩
   else ⟨choice h, fun h => absurd h hp⟩
 
+-- the Hilbert epsilon function
 noncomputable def epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α :=
   (strongIndefiniteDescription p h).val
 
@@ -119,13 +131,14 @@ theorem epsilon_spec {α : Sort u} {p : α → Prop} (hex : ∃ y, p y) : p (@ep
 theorem epsilon_singleton {α : Sort u} (x : α) : (@epsilon α ⟨x⟩ fun y => y = x) = x :=
   @epsilon_spec α (fun y => y = x) ⟨x, rfl⟩
 
+-- the axiom of choice
 theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → Prop} (h : ∀ x, ∃ y, r x y) :
     ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
   ⟨_, fun x => some_spec (h x)⟩
 
 theorem skolem {α : Sort u} {b : α → Sort v} {p : ∀ x, b x → Prop} :
     (∀ x, ∃ y, p x y) ↔ ∃ f : ∀ x, b x, ∀ x, p x (f x) :=
-  ⟨axiom_of_choice, fun ⟨f, hw⟩ x => ⟨f x, hw x⟩⟩
+  ⟨axiom_of_choice, fun x => ⟨f x, hw x⟩⟩
 
 theorem prop_complete (a : Prop) : a = True ∨ a = False :=
   Or.elim (em a) (fun t => Or.inl (eq_true_intro t)) fun f => Or.inr (eq_false_intro f)
@@ -139,9 +152,11 @@ theorem cases_true_false (p : Prop → Prop) (h1 : p True) (h2 : p False) (a : P
 theorem cases_on (a : Prop) {p : Prop → Prop} (h1 : p True) (h2 : p False) : p a :=
   cases_true_false p h1 h2 a
 
+-- this supercedes by_cases in decidable
 theorem by_cases {p q : Prop} (hpq : p → q) (hnpq : ¬p → q) : q :=
   Decidable.byCases hpq hnpq
 
+-- this supercedes by_contradiction in decidable
 theorem by_contradiction {p : Prop} (h : ¬p → False) : p :=
   Decidable.by_contradiction h
 

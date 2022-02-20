@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+
+Attribute that can automatically derive typeclass instances.
+-/
 prelude
 import Leanbin.Init.Meta.Attribute
 import Leanbin.Init.Meta.InteractiveBase
@@ -50,16 +57,20 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     let env ← get_env
     guardₓ (env n) <|> fail f! "failed to derive '{cls }', '{n}' is not an inductive type"
     let ls := decl.univ_params.map fun n => if univ_poly then level.param n else level.zero
-    let tgt : expr := expr.const n ls
+    let-- incrementally build up target expression `Π (hp : p) [cls hp] ..., cls (n.{ls} hp ...)`
+    -- where `p ...` are the inductive parameter types of `n`
+    tgt : expr := expr.const n ls
     let ⟨params, _⟩ ← mk_local_pis (decl.type.instantiate_univ_params (decl.univ_params.zip ls))
     let tgt := tgt.mk_app params
     let tgt ← mk_app cls [tgt]
     let tgt ← modify_target n params tgt
     let tgt ←
       params.enum.mfoldr
-          (fun ⟨i, param⟩ tgt => do
+          (fun tgt => do
             let tgt ←
-              (do
+              (-- add typeclass hypothesis for each inductive parameter
+                  -- TODO(sullrich): omit some typeclass parameters based on usage of `param`?
+                  do
                     guardₓ <| i < env n
                     let param_cls ← mk_app cls [param]
                     pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt) <|>
@@ -78,7 +89,8 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
 @[derive_handler]
 unsafe def has_reflect_derive_handler :=
   instance_derive_handler `` has_reflect mk_has_reflect_instance false fun n params tgt =>
-    params.mfoldr
+    -- add additional `reflected` assumption for each parameter
+        params.mfoldr
       (fun param tgt => do
         let param_cls ← mk_app `reflected [param]
         pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt)

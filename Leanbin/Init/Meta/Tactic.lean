@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Function
 import Leanbin.Init.Data.Option.Basic
@@ -385,7 +390,7 @@ unsafe def trace {α : Type u} [has_to_tactic_format α] (a : α) : tactic Unit 
   let fmt ← pp a
   return <| _root_.trace_fmt fmt fun u => ()
 
-unsafe def traceCallStack : tactic Unit := fun state => traceCallStack (success () state)
+unsafe def trace_call_stack : tactic Unit := fun state => traceCallStack (success () state)
 
 unsafe def timetac {α : Type u} (desc : Stringₓ) (t : Thunkₓ (tactic α)) : tactic α := fun s => timeitₓ desc (t () s)
 
@@ -404,7 +409,7 @@ By default, theorem declarations are never unfolded.
 [NOTE] You are not allowed to tag a definition with more than one of `reducible`, `irreducible`, `semireducible` attributes.
 [NOTE] there is a config flag `m_unfold_lemmas`that will make it unfold theorems.
  -/
-inductive transparency
+inductive Transparency
   | all
   | semireducible
   | instances
@@ -610,7 +615,7 @@ Supposing we were applying `e : ∀ (a:α) (p : P(a)), Q`
 - `non_dep_only` would produce goal `⊢ P(?m)`.
 - `all` would produce goals `⊢ α`, `⊢ P(?m)`.
 -/
-inductive new_goals
+inductive NewGoals
   | non_dep_first
   | non_dep_only
   | all
@@ -626,7 +631,7 @@ inductive new_goals
    but `apply_with succ_lt_succ {unify := ff}` doesn't since it would require Lean to assign `?x` to `succ ?y` where
    `?y` is a fresh metavariable.
 -/
-structure apply_cfg where
+structure ApplyCfg where
   md := semireducible
   approx := true
   NewGoals := NewGoals.non_dep_first
@@ -645,8 +650,11 @@ structure apply_cfg where
     It returns a list of all introduced meta variables and the parameter name associated with them, even the assigned ones. -/
 unsafe axiom apply_core (e : expr) (cfg : ApplyCfg := {  }) : tactic (List (Name × expr))
 
+-- Create a fresh meta universe variable.
 unsafe axiom mk_meta_univ : tactic level
 
+/- Create a fresh meta-variable with the given type.
+   The scope of the new meta-variable is the local context of the main goal. -/
 unsafe axiom mk_meta_var : expr → tactic expr
 
 /-- Return the value assigned to the given universe meta-variable.
@@ -742,16 +750,23 @@ unsafe axiom olean_doc_strings : tactic (List (Option Stringₓ × List (Pos × 
 - a top-level (`/-! ... -/`) docstring, represented as `(none, docstring)`
 - a declaration-specific (`/-- ... -/`) docstring, represented as `(some decl_name, docstring)` -/
 unsafe def module_doc_strings : tactic (List (Option Name × Stringₓ)) := do
-  let mod_docs ← olean_doc_strings
+  let mod_docs
+    ←-- Obtain a list of top-level docs in current module.
+      olean_doc_strings
   let mod_docs : List (List (Option Name × Stringₓ)) :=
     mod_docs.filterMap fun d => if d.1.isNone then some (d.2.map fun pos_doc => ⟨none, pos_doc.2⟩) else none
   let mod_docs := mod_docs.join
-  let e ← get_env
+  let e
+    ←-- Obtain list of declarations in current module.
+      get_env
   let decls :=
     environment.fold e ([] : List Name) fun d acc =>
       let n := d.to_name
       if (environment.decl_olean e n).isNone then n :: Acc else Acc
-  let decls ← decls.mfoldl (fun a n => (doc_string n >>= fun doc => pure <| (some n, doc) :: a) <|> pure a) []
+  let decls
+    ←-- Map declarations to those which have docstrings.
+          decls.mfoldl
+        (fun a n => (doc_string n >>= fun doc => pure <| (some n, doc) :: a) <|> pure a) []
   pure (mod_docs ++ decls)
 
 /-- Set attribute `attr_name` for constant `c_name` with the given priority.
@@ -813,7 +828,7 @@ unsafe axiom type_check (e : expr) (md := semireducible) : tactic Unit
 open List Nat
 
 /-- A `tag` is a list of `names`. These are attached to goals to help tactics track them.-/
-def tag : Type :=
+def Tag : Type :=
   List Name
 
 /-- Enable/disable goal tagging.  -/
@@ -852,6 +867,7 @@ unsafe axiom unfreeze_local_instances : tactic Unit
 -/
 unsafe axiom freeze_local_instances : tactic Unit
 
+-- Return the list of frozen local instances. Return `none` if local instances were not frozen.
 unsafe axiom frozen_local_instances : tactic (Option (List expr))
 
 /-- Run the provided tactic, associating it to the given AST node. -/
@@ -965,7 +981,9 @@ unsafe def intros_dep : tactic (List expr) := do
       let h ← intro1
       let hs ← intros_dep
       return (h :: hs)
-    else return []
+    else-- body doesn't depend on new hypothesis
+        return
+        []
   match t with
     | expr.pi _ _ _ b => proc b
     | expr.elet _ _ _ b => proc b
@@ -1029,13 +1047,20 @@ unsafe def to_expr_strict (q : pexpr) : tactic expr :=
 unsafe def revert (l : expr) : tactic Nat :=
   revert_lst [l]
 
+/- Revert "all" hypotheses. Actually, the tactic only reverts
+   hypotheses occurring after the last frozen local instance.
+   Recall that frozen local instances cannot be reverted,
+   use `unfreezing revert_all` instead. -/
 unsafe def revert_all : tactic Nat := do
   let lctx ← local_context
   let lis ← frozen_local_instances
   match lis with
     | none => revert_lst lctx
     | some [] => revert_lst lctx
-    | some (hi :: his) => revert_lst <| lctx (fun r h => if h = hi then [] else h :: r) []
+    |-- `hi` is the last local instance. We shoul truncate `lctx` at `hi`.
+        some
+        (hi :: his) =>
+      revert_lst <| lctx (fun r h => if h = hi then [] else h :: r) []
 
 unsafe def clear_lst : List Name → tactic Unit
   | [] => skip
@@ -1549,7 +1574,10 @@ unsafe def triv : tactic Unit :=
 unsafe def by_contradiction (H : Name) : tactic expr := do
   let tgt ← target
   let tgt_wh ← whnf tgt reducible
-  match_not tgt_wh $> () <|>
+  -- to ensure that `not` in `ne` is found
+          match_not
+          tgt_wh $>
+        () <|>
       (mk_mapp `decidable.by_contradiction [some tgt, none] >>= eapply) >> skip <|>
         (mk_mapp `classical.by_contradiction [some tgt] >>= eapply) >> skip <|>
           fail "tactic by_contradiction failed, target is not a proposition"
@@ -1621,7 +1649,7 @@ unsafe def cases (e : expr) (ids : List Name := []) (md := semireducible) (dmd :
     focus1 <| do
         let r ← cases_core h ids md
         let hs' ← all_goals (intron' n)
-        return <| cases_postprocess <| r (fun ⟨n, hs, x⟩ hs' => (n, hs ++ hs', x)) hs'
+        return <| cases_postprocess <| r (fun hs' => (n, hs ++ hs', x)) hs'
 
 /-- The same as `exact` except you can add proof holes. -/
 unsafe def refine (e : pexpr) : tactic Unit := do
@@ -1734,6 +1762,8 @@ unsafe def updateex_env (f : environment → exceptional environment) : tactic U
   let env ← returnex <| f env
   set_env env
 
+/- Add a new inductive datatype to the environment
+   name, universe parameters, number of parameters, type, constructors (name and type), is_meta -/
 unsafe def add_inductive (n : Name) (ls : List Name) (p : Nat) (ty : expr) (is : List (Name × expr))
     (is_meta : Bool := false) : tactic Unit :=
   updateex_env fun e => e.add_inductive n ls p ty is is_meta
@@ -1821,7 +1851,9 @@ renamed.
 unsafe def rename_many (renames : name_map Name) (strict := true) (use_unique_names := false) : tactic Unit := do
   let hyp_name : expr → Name := if use_unique_names then expr.local_uniq_name else expr.local_pp_name
   let ctx ← revertible_local_context
-  let ctx_suffix := ctx.dropWhile fun h => (renames.find <| hyp_name h).isNone
+  let-- The part of the context after (but including) the first hypthesis that
+  -- must be renamed.
+  ctx_suffix := ctx.dropWhile fun h => (renames.find <| hyp_name h).isNone
   when strict <| do
       let ctx_names := rb_map.set_of_list (ctx_suffix hyp_name)
       let invalid_renames := (renames Prod.fst).filter fun h => ¬ctx_names h
@@ -1832,7 +1864,8 @@ unsafe def rename_many (renames : name_map Name) (strict := true) (use_unique_na
                 format.line, "This is because these hypotheses either do not occur in the\n",
                 "context or they occur before a frozen local instance.\n",
                 "In the latter case, try `unfreezingI { ... }`."]
-  let new_names := ctx_suffix.map fun h => (renames.find <| hyp_name h).getOrElse h.local_pp_name
+  let-- The new names for all hypotheses in ctx_suffix.
+  new_names := ctx_suffix.map fun h => (renames.find <| hyp_name h).getOrElse h.local_pp_name
   revert_lst ctx_suffix
   intro_lst new_names
   pure ()
@@ -1871,6 +1904,7 @@ unsafe def main_goal : tactic expr := do
   let g :: gs ← get_goals
   return g
 
+-- Goal tagging support
 unsafe def with_enable_tags {α : Type} (t : tactic α) (b := true) : tactic α := do
   let old ← tags_enabled
   enable_tags b
@@ -1920,6 +1954,7 @@ unsafe def any_of {α β} : List α → (α → tactic β) → tactic β
 end List
 
 /-- Try to prove with `iff.refl`.-/
+-- Install monad laws tactic and use it to prove some instances.
 unsafe def order_laws_tac :=
   (whnf_target >> intros) >> to_expr (pquote.1 (Iff.refl _)) >>= exact
 

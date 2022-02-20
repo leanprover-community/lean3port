@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jeremy Avigad, Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Algebra.Order
 import Leanbin.Init.Meta.Default
@@ -18,10 +23,10 @@ theorem min_def (a b : α) : min a b = if a ≤ b then a else b := by
 theorem max_def (a b : α) : max a b = if b ≤ a then a else b := by
   rw [congr_funₓ LinearOrderₓ.max_def a, maxDefault]
 
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
 private unsafe def min_tac_step : tactic Unit :=
   solve1 <| (((intros >> sorry) >> try sorry) >> try sorry) >> try sorry
 
@@ -132,6 +137,7 @@ theorem max_eq_leftₓ {a b : α} (h : b ≤ a) : max a b = a := by
 theorem max_eq_rightₓ {a b : α} (h : a ≤ b) : max a b = b :=
   Eq.subst (max_commₓ b a) (max_eq_leftₓ h)
 
+-- these rely on lt_of_lt
 theorem min_eq_left_of_ltₓ {a b : α} (h : a < b) : min a b = a :=
   min_eq_leftₓ (le_of_ltₓ h)
 
@@ -144,6 +150,7 @@ theorem max_eq_left_of_ltₓ {a b : α} (h : b < a) : max a b = a :=
 theorem max_eq_right_of_ltₓ {a b : α} (h : a < b) : max a b = b :=
   max_eq_rightₓ (le_of_ltₓ h)
 
+-- these use the fact that it is a linear ordering
 theorem lt_minₓ {a b c : α} (h₁ : a < b) (h₂ : a < c) : a < min b c :=
   Or.elim (le_or_gtₓ b c) (fun h : b ≤ c => minTac.1 b c) fun h : b > c => minTac.1 b c
 

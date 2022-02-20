@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.InteractiveBase
 import Leanbin.Init.Function
@@ -77,7 +82,11 @@ private unsafe def to_pattern_core : expr → tactic (expr × List expr)
 /-- Given a pre-term of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, converts it
    into the pattern `t[?x₁, ..., ?xₙ]` with outputs `[?x₁, ..., ?xₙ]` -/
 unsafe def pexpr_to_pattern (p : pexpr) : tactic pattern := do
-  let e ← to_expr p true false
+  let e
+    ←/- Remark: in the following to_expr, we allow metavars but we do *not* create new goals for them.
+              mk_pattern will convert them into temporary metavars. -/
+        to_expr
+        p true false
   let (new_p, xs) ← to_pattern_core e
   mk_pattern [] xs new_p [] xs
 

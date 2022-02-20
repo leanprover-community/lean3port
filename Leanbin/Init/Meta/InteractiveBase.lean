@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Option.Basic
 import Leanbin.Init.Meta.Lean.Parser
@@ -23,7 +28,7 @@ unsafe def parse {α : Type} (p : parser α) [lean.parser.reflectable p] : Type 
 
 /--
 A `loc` is either a 'wildcard', which means "everywhere", or a list of `option name`s. `none` means `target` and `some n` means `n` in the local context.-/
-inductive loc : Type
+inductive Loc : Type
   | wildcard : loc
   | ns : List (Option Name) → loc
 
@@ -61,14 +66,15 @@ namespace Types
 
 variable {α β : Type}
 
+-- optimized pretty printer
 unsafe def brackets (l r : Stringₓ) (p : parser α) :=
   tk l *> p <* tk r
 
 unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
 
--- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
--- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1514:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1514:35: warning: unsupported: precedence command
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -114,7 +120,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
--- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1514:35: warning: unsupported: precedence command
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format
@@ -181,7 +187,9 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
     let f ← parser_desc_aux p
     let l ← eval_expr Stringₓ l
     let r ← eval_expr Stringₓ r
-    return [to_fmt l ++ join f ++ to_fmt r]
+    -- much better than the naive [l, " ", f, " ", r]
+        return
+        [to_fmt l ++ join f ++ to_fmt r]
   | e => do
     let e' ←
       (do

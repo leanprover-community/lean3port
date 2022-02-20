@@ -1,12 +1,24 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.InteractiveBase
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.SetGetOptionTactics
 
 structure CcConfig where
+  -- If tt, congruence closure will treat implicit instance arguments as constants.
   ignoreInstances : Bool := true
+  -- If tt, congruence closure modulo AC.
   ac : Bool := true
+  /- If ho_fns is (some fns), then full (and more expensive) support for higher-order functions is
+     *only* considered for the functions in fns and local functions. The performance overhead is described in the paper
+     "Congruence Closure in Intensional Type Theory". If ho_fns is none, then full support is provided
+     for *all* constants. -/
   hoFns : Option (List Name) := none
+  -- If true, then use excluded middle
   em : Bool := true
 
 /-- Congruence closure state.

@@ -1,3 +1,4 @@
+-- Authors: E.W.Ayers 
 prelude
 import Leanbin.Init.Data.Default
 
@@ -7,6 +8,7 @@ unsafe axiom float : Type
 
 namespace Float
 
+-- fixed values based on the underlying C++ float implementation.
 namespace Specification
 
 /-- The base. Either 2 or 10. -/
@@ -73,6 +75,12 @@ unsafe axiom modf : float → float × float
 unsafe def mantissa : float → float :=
   Prod.fst ∘ frexp
 
+-- [TODO]
+-- /-- List of digits in the mantissa of the float. `d₀.d₁d₂d₃ ⋯`
+--     The length is `precision` and `0 ≤ dᵢ < radix` for each digit `dᵢ`.
+--     The head of the list is the most significant digit.
+--      -/
+-- meta constant mantissa_digits : float → array precision nat
 unsafe axiom add : float → float → float
 
 unsafe instance : Add float :=

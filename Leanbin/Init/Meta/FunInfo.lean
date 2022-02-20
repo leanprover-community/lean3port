@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Format
@@ -5,12 +10,15 @@ import Leanbin.Init.Function
 
 structure ParamInfo where
   isImplicit : Bool
+  -- is an implicit parameter.
   isInstImplicit : Bool
+  -- is a typeclass instance
   isProp : Bool
   hasFwdDeps : Bool
   isDecInst : Bool
   backDeps : List Nat
 
+-- previous parameters it depends on
 open Format List Decidable
 
 private unsafe def ppfield {α : Type} [has_to_format α] (fname : Stringₓ) (v : α) : format :=
@@ -37,6 +45,7 @@ structure FunInfo where
   params : List ParamInfo
   resultDeps : List Nat
 
+-- parameters the result type depends on
 unsafe def fun_info_to_format : FunInfo → format
   | FunInfo.mk ps ds => group ∘ dcbrace <| ppfield "params" ps+++ppfield "result_deps" ds
 

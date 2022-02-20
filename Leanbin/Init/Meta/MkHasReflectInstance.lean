@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+
+Helper tactic for constructing a has_reflect instance.
+-/
 prelude
 import Leanbin.Init.Meta.RecUtil
 
@@ -5,6 +12,7 @@ namespace Tactic
 
 open Expr Environment List
 
+-- Retrieve the name of the type we are building a has_reflect instance for.
 private unsafe def get_has_reflect_type_name : tactic Name :=
   (do
       let app (const n ls) t ← target
@@ -13,6 +21,7 @@ private unsafe def get_has_reflect_type_name : tactic Name :=
       return I) <|>
     fail "mk_has_reflect_instance tactic failed, target type is expected to be of the form (has_reflect ...)"
 
+-- Try to synthesize constructor argument using type class resolution
 private unsafe def mk_has_reflect_instance_for (a : expr) : tactic expr := do
   let t ← infer_type a
   do
@@ -25,6 +34,7 @@ private unsafe def mk_has_reflect_instance_for (a : expr) : tactic expr := do
                 format.nest 2 (format.line ++ f))
     mk_app `reflect [a, inst]
 
+-- Synthesize (recursive) instances of `reflected` for all fields
 private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (List expr)
   | I_name, F_name, [], num_rec => return []
   | I_name, F_name, fname :: fnames, num_rec => do
@@ -34,13 +44,21 @@ private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (
     let quotes ← mk_reflect I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (quote :: quotes)
 
+-- Solve the subgoal for constructor `F_name`
 private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List Name) : tactic Unit := do
   let field_quotes ← mk_reflect I_name F_name field_names 0
-  let quote.1 (reflected (%%ₓfn)) ← target
-  let fn := field_names.foldl (fun fn _ => expr.app_fn fn) fn
+  let-- fn should be of the form `F_name ps fs`, where ps are the inductive parameter arguments,
+      -- and `fs.length = field_names.length`
+      quote.1
+      (reflected (%%ₓfn))
+    ← target
+  let-- `reflected (F_name ps)` should be synthesizable directly, using instances from the context
+  fn := field_names.foldl (fun fn _ => expr.app_fn fn) fn
   let quote ← mk_app `reflected [fn] >>= mk_instance
-  let quote ←
-    field_quotes.mfoldl (fun quote fquote => to_expr (pquote.1 (reflected.subst (%%ₓquote) (%%ₓfquote)))) quote
+  let quote
+    ←-- now extend to an instance of `reflected (F_name ps fs)`
+          field_quotes.mfoldl
+        (fun quote fquote => to_expr (pquote.1 (reflected.subst (%%ₓquote) (%%ₓfquote)))) quote
   exact quote
 
 private unsafe def for_each_has_reflect_goal : Name → Name → List (List Name) → tactic Unit
@@ -58,7 +76,9 @@ unsafe def mk_has_reflect_instance : tactic Unit := do
   let v_name : Name ← return `_v
   let F_name : Name ← return `_F
   guardₓ (env I_name = 0) <|> fail "mk_has_reflect_instance failed, indexed families are currently not supported"
-  if is_recursive env I_name then
+  -- Use brec_on if type is recursive.
+      -- We store the functional in the variable F.
+      if is_recursive env I_name then
       intro `_v >>= fun x => induction x [v_name, F_name] (some <| I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p

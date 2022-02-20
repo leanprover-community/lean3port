@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+-/
 prelude
 import Leanbin.Init.Data.Bool.Lemmas
 import Leanbin.Init.Data.String.Basic
@@ -23,9 +28,12 @@ theorem zero_lt_length_next_to_string_of_has_next {it : Iterator} : it.hasNext �
 
 end Iterator
 
+-- TODO(Sebastian): generalize to something like
+-- https://doc.rust-lang.org/std/primitive.str.html#method.split
 private def split_core (p : Charₓ → Bool) : Iterator → Iterator → List Stringₓ
   | start, stop =>
     if h : stop.hasNext then
+      -- wf hint
       have : stop.nextToString.length - 1 < stop.nextToString.length :=
         Nat.sub_ltₓ (Iterator.zero_lt_length_next_to_string_of_has_next h)
           (by

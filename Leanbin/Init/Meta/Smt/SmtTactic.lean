@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Control.Default
 import Leanbin.Init.Meta.SimpTactic
@@ -74,6 +79,8 @@ unsafe instance : MonadStateₓ smt_state smt_tactic := by
 
 end
 
+/- We don't use the default state_t lift operation because only
+   tactics that do not change hypotheses can be automatically lifted to smt_tactic. -/
 unsafe axiom tactic_to_smt_tactic (α : Type) : tactic α → smt_tactic α
 
 unsafe instance : HasMonadLift tactic smt_tactic :=
@@ -205,6 +212,7 @@ private unsafe def mk_smt_goals_for (cfg : SmtConfig) :
     let [new_tg] ← get_goals | tactic.failed
     mk_smt_goals_for tgs (new_sg :: sr) (new_tg :: tr)
 
+-- See slift
 unsafe def slift_aux {α : Type} (t : tactic α) (cfg : SmtConfig) : smt_tactic α :=
   ⟨fun ss => do
     let _ :: sgs ← return ss | tactic.fail "slift tactic failed, there no smt goals to be solved"
@@ -238,6 +246,7 @@ unsafe def classical : smt_tactic Bool := do
 unsafe def num_goals : smt_tactic Nat :=
   List.length <$> get
 
+-- Low level primitives for managing set of goals
 unsafe def get_goals : smt_tactic (List smt_goal × List expr) := do
   let (g₁, _) ← smt_tactic.read
   let g₂ ← tactic.get_goals
@@ -395,7 +404,7 @@ unsafe def add_ematch_lhs_lemma_from_decl : Name → smt_tactic Unit :=
 unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
   add_ematch_eqn_lemmas_for_core reducible
 
--- ././Mathport/Syntax/Translate/Basic.lean:707:4: warning: unsupported notation `f
+-- ././Mathport/Syntax/Translate/Basic.lean:826:4: warning: unsupported notation `f
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do
@@ -408,6 +417,7 @@ unsafe def add_lemmas_from_facts : smt_tactic Unit :=
 unsafe def induction (e : expr) (ids : List Name := []) (rec : Option Name := none) : smt_tactic Unit :=
   slift (tactic.induction e ids rec >> return ())
 
+-- pass on the information?
 unsafe def when (c : Prop) [Decidable c] (tac : smt_tactic Unit) : smt_tactic Unit :=
   if c then tac else skip
 

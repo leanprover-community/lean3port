@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.List.Basic
 import Leanbin.Init.Data.Subtype.Basic
@@ -87,12 +92,12 @@ def coeSort {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 /-! ### Notation -/
 
 
--- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
 notation:999 "⇑" x:999 => coeFn x
 
--- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
--- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
 notation:999 "↥" x:999 => coeSort x
 
 universe u₁ u₂ u₃

@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jared Roesch, Sebastian Ullrich
+
+The except monad transformer.
+-/
 prelude
 import Leanbin.Init.Control.Alternative
 import Leanbin.Init.Control.Lift
@@ -17,24 +24,24 @@ parameter {ε : Type u}
 protected def return {α : Type v} (a : α) : Except ε α :=
   Except.ok a
 
-protected def map {α β : Type v} (f : α → β) : Except ε α → Except ε β
+protected def mapₓ {α β : Type v} (f : α → β) : Except ε α → Except ε β
   | Except.error err => Except.error err
   | Except.ok v => Except.ok <| f v
 
-protected def map_error {ε' : Type u} {α : Type v} (f : ε → ε') : Except ε α → Except ε' α
+protected def mapErrorₓ {ε' : Type u} {α : Type v} (f : ε → ε') : Except ε α → Except ε' α
   | Except.error err => Except.error <| f err
   | Except.ok v => Except.ok v
 
-protected def bind {α β : Type v} (ma : Except ε α) (f : α → Except ε β) : Except ε β :=
+protected def bindₓ {α β : Type v} (ma : Except ε α) (f : α → Except ε β) : Except ε β :=
   match ma with
   | Except.error err => Except.error err
   | Except.ok v => f v
 
-protected def to_bool {α : Type v} : Except ε α → Bool
+protected def toBool {α : Type v} : Except ε α → Bool
   | Except.ok _ => true
   | Except.error _ => false
 
-protected def to_option {α : Type v} : Except ε α → Option α
+protected def toOption {α : Type v} : Except ε α → Option α
   | Except.ok a => some a
   | Except.error _ => none
 
@@ -62,7 +69,7 @@ protected def return {α : Type u} (a : α) : ExceptTₓ ε m α :=
   ⟨pure <| Except.ok a⟩
 
 @[inline]
-protected def bind_cont {α β : Type u} (f : α → ExceptTₓ ε m β) : Except ε α → m (Except ε β)
+protected def bindCont {α β : Type u} (f : α → ExceptTₓ ε m β) : Except ε α → m (Except ε β)
   | Except.ok a => (f a).run
   | Except.error e => pure (Except.error e)
 
@@ -84,7 +91,7 @@ protected def catch {α : Type u} (ma : ExceptTₓ ε m α) (handle : ε → Exc
       | Except.error e => (handle e).run⟩
 
 @[inline]
-protected def monad_map {m'} [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : ExceptTₓ ε m α → ExceptTₓ ε m' α := fun x =>
+protected def monadMap {m'} [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : ExceptTₓ ε m α → ExceptTₓ ε m' α := fun x =>
   ⟨f x.run⟩
 
 instance m' [Monadₓ m'] : MonadFunctorₓ m m' (ExceptTₓ ε m) (ExceptTₓ ε m') :=

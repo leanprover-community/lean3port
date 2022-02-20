@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Nat.Default
 import Leanbin.Init.Data.Fin.Basic
@@ -11,7 +16,7 @@ variable {n : Nat}
 protected def succ : Finₓ n → Finₓ (succ n)
   | ⟨a, h⟩ => ⟨Nat.succ a, succ_lt_succₓ h⟩
 
-def of_nat {n : Nat} (a : Nat) : Finₓ (succ n) :=
+def ofNat {n : Nat} (a : Nat) : Finₓ (succ n) :=
   ⟨a % succ n, Nat.mod_ltₓ _ (Nat.zero_lt_succₓ _)⟩
 
 private theorem mlt {n b : Nat} : ∀ {a}, n > a → b % n < n

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Control.Option
@@ -89,7 +94,7 @@ unsafe axiom idx : vm_decl → Nat
 unsafe axiom arity : vm_decl → Nat
 
 /-- Return source position if available -/
-unsafe axiom Pos : vm_decl → Option Pos
+unsafe axiom pos : vm_decl → Option Pos
 
 /-- Return .olean file where the given VM declaration was imported from. -/
 unsafe axiom olean : vm_decl → Option Stringₓ

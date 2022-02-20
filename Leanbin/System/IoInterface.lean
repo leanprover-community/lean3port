@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2018 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 import Leanbin.Data.Buffer
 import Leanbin.System.Random
 
@@ -17,19 +22,28 @@ inductive Io.Process.Stdio
   | null
 
 structure Io.Process.SpawnArgs where
+  -- Command name.
   cmd : Stringₓ
+  -- Arguments for the process
   args : List Stringₓ := []
+  -- Configuration for the process' stdin handle.
   stdin := Stdio.inherit
+  -- Configuration for the process' stdout handle.
   stdout := Stdio.inherit
+  -- Configuration for the process' stderr handle.
   stderr := Stdio.inherit
+  -- Working directory for the process.
   cwd : Option Stringₓ := none
+  -- Environment variables for the process.
   env : List (Stringₓ × Option Stringₓ) := []
 
 class MonadIo (m : Type → Type → Type) where
   [Monad : ∀ e, Monadₓ (m e)]
+  -- TODO(Leo): use monad_except after it is merged
   catch : ∀ e₁ e₂ α, m e₁ α → (e₁ → m e₂ α) → m e₂ α
   fail : ∀ e α, e → m e α
   iterate : ∀ e α, α → (α → m e (Option α)) → m e α
+  -- Primitive Types
   Handle : Type
 
 class MonadIoTerminal (m : Type → Type → Type) where
@@ -49,6 +63,7 @@ class MonadIoNetSystem (m : Type → Type → Type) [MonadIo m] where
   close : socket → m Io.Error Unit
 
 class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
+  -- Remark: in Haskell, they also provide  (Maybe TextEncoding) and  NewlineMode
   mkFileHandle : Stringₓ → Io.Mode → Bool → m Io.Error (Handle m)
   isEof : Handle m → m Io.Error Bool
   flush : Handle m → m Io.Error Unit
@@ -72,6 +87,7 @@ unsafe class monad_io_serial (m : Type → Type → Type) [MonadIo m] where
 
 class MonadIoEnvironment (m : Type → Type → Type) where
   getEnv : Stringₓ → m Io.Error (Option Stringₓ)
+  -- we don't provide set_env as it is (thread-)unsafe (at least with glibc)
   getCwd : m Io.Error Stringₓ
   setCwd : Stringₓ → m Io.Error Unit
 

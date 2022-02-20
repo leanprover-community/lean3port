@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Smt.CongruenceClosure
 import Leanbin.Init.Meta.Attribute
@@ -72,15 +77,24 @@ unsafe def to_hinst_lemmas_core (m : Transparency) : Bool → List Name → hins
   | as_simp, n :: ns, hs =>
     let add n := add_lemma m as_simp n hs >>= to_hinst_lemmas_core as_simp ns
     do
-    let eqns ← tactic.get_eqn_lemmas_for true n
+    let eqns
+      ←-- First check if n is the name of a function with equational lemmas associated with it
+          tactic.get_eqn_lemmas_for
+          true n
     match eqns with
       | [] => do
-        add n
+        -- n is not the name of a function definition or it does not have equational lemmas, then check if it is a lemma
+            add
+            n
       | _ => do
         let p ← is_prop_decl n
         if p then add n
-          else do
-            let new_hs ← to_hinst_lemmas_core tt eqns hs
+          else-- n is a proposition
+          do
+            let new_hs
+              ←-- Add equational lemmas to resulting hinst_lemmas
+                  to_hinst_lemmas_core
+                  tt eqns hs
             to_hinst_lemmas_core as_simp ns new_hs
 
 unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : Tactic Unit := do
@@ -90,7 +104,8 @@ unsafe def mk_hinst_lemma_attr_core (attr_name : Name) (as_simp : Bool) : Tactic
       ({ Name := attr_name, descr := "hinst_lemma attribute",
         after_set :=
           some fun n _ _ =>
-            to_hinst_lemmas_core reducible as_simp [n] hinst_lemmas.mk >> skip <|> fail f! "invalid ematch lemma '{n}'",
+            to_hinst_lemmas_core reducible as_simp [n] hinst_lemmas.mk >> skip <|>
+              fail f! "invalid ematch lemma '{n}'",-- allow unsetting
         before_unset := some fun _ _ => skip,
         cache_cfg :=
           { mk_cache := fun ns => to_hinst_lemmas_core reducible as_simp ns hinst_lemmas.mk,
@@ -132,7 +147,8 @@ unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name) (
       ({ Name := attr_name, descr := "hinst_lemma attribute set",
         after_set :=
           some fun n _ _ =>
-            to_hinst_lemmas_core reducible false [n] hinst_lemmas.mk >> skip <|> fail f! "invalid ematch lemma '{n}'",
+            to_hinst_lemmas_core reducible false [n] hinst_lemmas.mk >> skip <|>
+              fail f! "invalid ematch lemma '{n}'",-- allow unsetting
         before_unset := some fun _ _ => skip,
         cache_cfg :=
           { mk_cache := fun ns => do
@@ -151,6 +167,7 @@ structure EmatchConfig where
   maxInstances : Nat := 10000
   maxGeneration : Nat := 10
 
+-- Ematching
 unsafe axiom ematch_state : Type
 
 unsafe axiom ematch_state.mk : EmatchConfig → ematch_state

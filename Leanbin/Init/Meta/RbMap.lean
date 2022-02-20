@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Jeremy Avigad
+-/
 prelude
 import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Function
@@ -20,7 +25,7 @@ unsafe axiom mk_core {key : Type} (data : Type) : (key → key → Ordering) →
 
 unsafe axiom size {key : Type} {data : Type} : rb_map key data → Nat
 
-unsafe axiom Empty {key : Type} {data : Type} : rb_map key data → Bool
+unsafe axiom empty {key : Type} {data : Type} : rb_map key data → Bool
 
 unsafe axiom insert {key : Type} {data : Type} : rb_map key data → key → data → rb_map key data
 
@@ -37,7 +42,7 @@ unsafe axiom max {key : Type} {data : Type} : rb_map key data → Option data
 unsafe axiom fold {key : Type} {data : Type} {α : Type} : rb_map key data → α → (key → data → α → α) → α
 
 @[inline]
-unsafe def mk (key : Type) [LT key] [DecidableRel (· < · : key → key → Prop)] (data : Type) : rb_map key data :=
+unsafe def mk (key : Type) [LT key] [DecidableRel ((· < ·) : key → key → Prop)] (data : Type) : rb_map key data :=
   mk_core data cmp
 
 open List
@@ -63,7 +68,7 @@ end
 
 section
 
-variable {key data data' : Type} [LT key] [DecidableRel (· < · : key → key → Prop)]
+variable {key data data' : Type} [LT key] [DecidableRel ((· < ·) : key → key → Prop)]
 
 unsafe def of_list : List (key × data) → rb_map key data
   | [] => mk key data
@@ -86,7 +91,7 @@ end
 
 end RbMap
 
-unsafe def mk_rb_map {key data : Type} [LT key] [DecidableRel (· < · : key → key → Prop)] : rb_map key data :=
+unsafe def mk_rb_map {key data : Type} [LT key] [DecidableRel ((· < ·) : key → key → Prop)] : rb_map key data :=
   rb_map.mk key data
 
 @[reducible]
@@ -143,7 +148,7 @@ unsafe def rb_lmap (key : Type) (data : Type) : Type :=
 
 namespace RbLmap
 
-protected unsafe def mk (key : Type) [LT key] [DecidableRel (· < · : key → key → Prop)] (data : Type) :
+protected unsafe def mk (key : Type) [LT key] [DecidableRel ((· < ·) : key → key → Prop)] (data : Type) :
     rb_lmap key data :=
   rb_map.mk key (List data)
 
@@ -168,7 +173,7 @@ end RbLmap
 unsafe def rb_set key :=
   rb_map key Unit
 
-unsafe def mk_rb_set {key} [LT key] [DecidableRel (· < · : key → key → Prop)] : rb_set key :=
+unsafe def mk_rb_set {key} [LT key] [DecidableRel ((· < ·) : key → key → Prop)] : rb_set key :=
   mk_rb_map
 
 namespace RbSet
@@ -185,7 +190,7 @@ unsafe def contains {key} (s : rb_set key) (k : key) : Bool :=
 unsafe def size {key} (s : rb_set key) : Nat :=
   rb_map.size s
 
-unsafe def Empty {key : Type} (s : rb_set key) : Bool :=
+unsafe def empty {key : Type} (s : rb_set key) : Bool :=
   rb_map.empty s
 
 unsafe def fold {key α : Type} (s : rb_set key) (a : α) (fn : key → α → α) : α :=
@@ -241,7 +246,7 @@ unsafe axiom contains : name_set → Name → Bool
 
 unsafe axiom size : name_set → Nat
 
-unsafe axiom Empty : name_set → Bool
+unsafe axiom empty : name_set → Bool
 
 unsafe axiom fold {α : Type} : name_set → α → (Name → α → α) → α
 

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Repr
 import Leanbin.Init.Data.Prod
@@ -25,7 +30,7 @@ def swap : Ordering → Ordering
   | Gt => lt
 
 @[inline]
-def or_else : Ordering → Ordering → Ordering
+def orElse : Ordering → Ordering → Ordering
   | lt, _ => lt
   | Eq, o => o
   | Gt, _ => gt
@@ -40,7 +45,7 @@ end Ordering
 def cmpUsing {α : Type u} (lt : α → α → Prop) [DecidableRel lt] (a b : α) : Ordering :=
   if lt a b then Ordering.lt else if lt b a then Ordering.gt else Ordering.eq
 
-def cmp {α : Type u} [LT α] [DecidableRel (· < · : α → α → Prop)] (a b : α) : Ordering :=
+def cmp {α : Type u} [LT α] [DecidableRel ((· < ·) : α → α → Prop)] (a b : α) : Ordering :=
   cmpUsing (· < ·) a b
 
 instance : DecidableEq Ordering := fun a b =>

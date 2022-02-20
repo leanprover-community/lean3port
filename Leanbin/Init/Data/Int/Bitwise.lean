@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Mario Carneiro. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Mario Carneiro
+-/
 prelude
 import Leanbin.Init.Data.Int.Basic
 import Leanbin.Init.Data.Nat.Bitwise
@@ -17,11 +22,11 @@ def bodd : ℤ → Bool
 def bit (b : Bool) : ℤ → ℤ :=
   cond b bit1 bit0
 
-def test_bit : ℤ → ℕ → Bool
+def testBit : ℤ → ℕ → Bool
   | (m : ℕ), n => Nat.testBit m n
   | -[1+ m], n => bnot (Nat.testBit m n)
 
-def nat_bitwise (f : Bool → Bool → Bool) (m n : ℕ) : ℤ :=
+def natBitwise (f : Bool → Bool → Bool) (m n : ℕ) : ℤ :=
   cond (f false false) -[1+ Nat.bitwiseₓ (fun x y => bnot (f x y)) m n] (Nat.bitwiseₓ f m n)
 
 def bitwise (f : Bool → Bool → Bool) : ℤ → ℤ → ℤ

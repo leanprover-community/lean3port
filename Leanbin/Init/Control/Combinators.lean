@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jeremy Avigad, Leonardo de Moura
+
+Monad combinators, as in Haskell's Control.Monad.
+-/
 prelude
 import Leanbin.Init.Control.Monad
 import Leanbin.Init.Control.Alternative

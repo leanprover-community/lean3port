@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura, Jeremy Avigad, Haitao Zhang
+-/
 prelude
 import Leanbin.Init.Data.Prod
 import Leanbin.Init.Funext
@@ -27,16 +32,16 @@ def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : �
 infixr:80 " ∘' " => Function.dcomp
 
 @[reducible]
-def comp_right (f : β → β → β) (g : α → β) : β → α → β := fun b a => f b (g a)
+def compRight (f : β → β → β) (g : α → β) : β → α → β := fun b a => f b (g a)
 
 @[reducible]
-def comp_left (f : β → β → β) (g : α → β) : α → β → β := fun a b => f (g a) b
+def compLeft (f : β → β → β) (g : α → β) : α → β → β := fun a b => f (g a) b
 
 /-- Given functions `f : β → β → φ` and `g : α → β`, produce a function `α → α → φ` that evaluates
 `g` on each argument, then applies `f` to the results. Can be used, e.g., to transfer a relation
 from `β` to `α`. -/
 @[reducible]
-def on_fun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y => f (g x) (g y)
+def onFun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y => f (g x) (g y)
 
 @[reducible]
 def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y => op (f x y) (g x y)
@@ -81,36 +86,36 @@ theorem comp_const_right (f : β → φ) (b : β) : f ∘ const α b = const α 
   rfl
 
 /-- A function `f : α → β` is called injective if `f x = f y` implies `x = y`. -/
-def injective (f : α → β) : Prop :=
+def Injective (f : α → β) : Prop :=
   ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂
 
-theorem injective.comp {g : β → φ} {f : α → β} (hg : Injective g) (hf : Injective f) : Injective (g ∘ f) := fun a₁ a₂ =>
+theorem Injective.comp {g : β → φ} {f : α → β} (hg : Injective g) (hf : Injective f) : Injective (g ∘ f) := fun a₁ a₂ =>
   fun h => hf (hg h)
 
 /-- A function `f : α → β` is called surjective if every `b : β` is equal to `f a`
 for some `a : α`. -/
 @[reducible]
-def surjective (f : α → β) : Prop :=
+def Surjective (f : α → β) : Prop :=
   ∀ b, ∃ a, f a = b
 
-theorem surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) : Surjective (g ∘ f) :=
+theorem Surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) : Surjective (g ∘ f) :=
   fun c : φ =>
   Exists.elim (hg c) fun b hb =>
     Exists.elim (hf b) fun a ha => Exists.introₓ a (show g (f a) = c from Eq.trans (congr_argₓ g ha) hb)
 
 /-- A function is called bijective if it is both injective and surjective. -/
-def bijective (f : α → β) :=
+def Bijective (f : α → β) :=
   Injective f ∧ Surjective f
 
-theorem bijective.comp {g : β → φ} {f : α → β} : Bijective g → Bijective f → Bijective (g ∘ f)
+theorem Bijective.comp {g : β → φ} {f : α → β} : Bijective g → Bijective f → Bijective (g ∘ f)
   | ⟨h_ginj, h_gsurj⟩, ⟨h_finj, h_fsurj⟩ => ⟨h_ginj.comp h_finj, h_gsurj.comp h_fsurj⟩
 
 /-- `left_inverse g f` means that g is a left inverse to f. That is, `g ∘ f = id`. -/
-def left_inverse (g : β → α) (f : α → β) : Prop :=
+def LeftInverse (g : β → α) (f : α → β) : Prop :=
   ∀ x, g (f x) = x
 
 /-- `has_left_inverse f` means that `f` has an unspecified left inverse. -/
-def has_left_inverse (f : α → β) : Prop :=
+def HasLeftInverse (f : α → β) : Prop :=
   ∃ finv : β → α, LeftInverse finv f
 
 /-- `right_inverse g f` means that g is a right inverse to f. That is, `f ∘ g = id`. -/
@@ -118,17 +123,17 @@ def RightInverse (g : β → α) (f : α → β) : Prop :=
   LeftInverse f g
 
 /-- `has_right_inverse f` means that `f` has an unspecified right inverse. -/
-def has_right_inverse (f : α → β) : Prop :=
+def HasRightInverse (f : α → β) : Prop :=
   ∃ finv : β → α, RightInverse finv f
 
-theorem left_inverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f := fun h a b faeqfb =>
+theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f := fun h a b faeqfb =>
   calc
     a = g (f a) := (h a).symm
     _ = g (f b) := congr_argₓ g faeqfb
     _ = b := h b
     
 
-theorem has_left_inverse.injective {f : α → β} : HasLeftInverse f → Injective f := fun h =>
+theorem HasLeftInverse.injective {f : α → β} : HasLeftInverse f → Injective f := fun h =>
   Exists.elim h fun finv inv => inv.Injective
 
 theorem right_inverse_of_injective_of_left_inverse {f : α → β} {g : β → α} (injf : Injective f)
@@ -136,9 +141,9 @@ theorem right_inverse_of_injective_of_left_inverse {f : α → β} {g : β → �
   have h : f (g (f x)) = f x := lfg (f x)
   injf h
 
-theorem right_inverse.surjective {f : α → β} {g : β → α} (h : RightInverse g f) : Surjective f := fun y => ⟨g y, h y⟩
+theorem RightInverse.surjective {f : α → β} {g : β → α} (h : RightInverse g f) : Surjective f := fun y => ⟨g y, h y⟩
 
-theorem has_right_inverse.surjective {f : α → β} : HasRightInverse f → Surjective f
+theorem HasRightInverse.surjective {f : α → β} : HasRightInverse f → Surjective f
   | ⟨finv, inv⟩ => inv.Surjective
 
 theorem left_inverse_of_surjective_of_right_inverse {f : α → β} {g : β → α} (surjf : Surjective f)
@@ -179,10 +184,10 @@ theorem curry_uncurry (f : α → β → φ) : curry (uncurry f) = f :=
 theorem uncurry_curry (f : α × β → φ) : uncurry (curry f) = f :=
   funext fun ⟨a, b⟩ => rfl
 
-protected theorem left_inverse.id {g : β → α} {f : α → β} (h : LeftInverse g f) : g ∘ f = id :=
+protected theorem LeftInverse.id {g : β → α} {f : α → β} (h : LeftInverse g f) : g ∘ f = id :=
   funext h
 
-protected theorem right_inverse.id {g : β → α} {f : α → β} (h : RightInverse g f) : f ∘ g = id :=
+protected theorem RightInverse.id {g : β → α} {f : α → β} (h : RightInverse g f) : f ∘ g = id :=
   funext h
 
 end Function

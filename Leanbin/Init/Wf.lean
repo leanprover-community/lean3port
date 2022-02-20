@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Nat.Basic
 import Leanbin.Init.Data.Prod
@@ -11,7 +16,7 @@ namespace Acc
 
 variable {α : Sort u} {r : α → α → Prop}
 
-theorem inv {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
+theorem invₓ {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
   Acc.recOnₓ h₁ (fun x₁ ac₁ ih h₂ => ac₁ y h₂) h₂
 
 end Acc
@@ -35,7 +40,7 @@ local infixl:50 "≺" => r
 
 parameter (hwf : WellFounded r)
 
-def recursion {C : α → Sort v} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
+def recursionₓ {C : α → Sort v} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
   Acc.recOnₓ (apply hwf a) fun x₁ ac₁ ih => h x₁ ih
 
 theorem induction {C : α → Prop} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
@@ -45,10 +50,10 @@ variable {C : α → Sort v}
 
 variable (F : ∀ x, (∀ y, y≺x → C y) → C x)
 
-def fix_F (x : α) (a : Acc r x) : C x :=
+def fixF (x : α) (a : Acc r x) : C x :=
   Acc.recOnₓ a fun x₁ ac₁ ih => F x₁ ih
 
-theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun y : α p : y≺x => fix_F F y (Acc.invₓ acx p) :=
+theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun p : y≺x => fix_F F y (Acc.invₓ acx p) :=
   Acc.drec (fun x r ih => rfl) acx
 
 end
@@ -70,8 +75,9 @@ open WellFounded
 
 /-- Empty relation is well-founded -/
 theorem empty_wf {α : Sort u} : WellFounded (@EmptyRelation α) :=
-  WellFounded.intro fun a : α => Acc.intro a fun b : α lt : False => False.ndrec _ lt
+  WellFounded.intro fun a : α => Acc.intro a fun lt : False => False.ndrec _ lt
 
+-- Subrelation of a well-founded relation is well-founded
 namespace Subrelation
 
 section
@@ -82,16 +88,17 @@ parameter (h₁ : Subrelation Q r)
 
 parameter (h₂ : WellFounded r)
 
-theorem accessible {a : α} (ac : Acc r a) : Acc Q a :=
-  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun y : α lt : Q y x => ih y (h₁ lt)
+theorem accessibleₓ {a : α} (ac : Acc r a) : Acc Q a :=
+  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun lt : Q y x => ih y (h₁ lt)
 
-theorem wf : WellFounded Q :=
+theorem wfₓ : WellFounded Q :=
   ⟨fun a => accessible (apply h₂ a)⟩
 
 end
 
 end Subrelation
 
+-- The inverse image of a well-founded relation is well-founded
 namespace InvImage
 
 section
@@ -105,16 +112,17 @@ parameter (h : WellFounded r)
 private def acc_aux {b : β} (ac : Acc r b) : ∀ x : α, f x = b → Acc (InvImage r f) x :=
   Acc.recOnₓ ac fun x acx ih z e => Acc.intro z fun y lt => Eq.recOnₓ e (fun acx ih => ih (f y) lt y rfl) acx ih
 
-theorem accessible {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
+theorem accessibleₓ {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
   acc_aux ac a rfl
 
-theorem wf : WellFounded (InvImage r f) :=
+theorem wfₓ : WellFounded (InvImage r f) :=
   ⟨fun a => accessible (apply h (f a))⟩
 
 end
 
 end InvImage
 
+-- The transitive closure of a well-founded relation is well-founded
 namespace Tc
 
 section
@@ -170,11 +178,13 @@ variable (ra : α → α → Prop)
 
 variable (rb : β → β → Prop)
 
-inductive lex : α × β → α × β → Prop
+-- Lexicographical order based on ra and rb
+inductive Lex : α × β → α × β → Prop
   | left {a₁} b₁ {a₂} b₂ (h : ra a₁ a₂) : lex (a₁, b₁) (a₂, b₂)
   | right a {b₁ b₂} (h : rb b₁ b₂) : lex (a, b₁) (a, b₂)
 
-inductive rprod : α × β → α × β → Prop
+-- relational product based on ra and rb
+inductive Rprod : α × β → α × β → Prop
   | intro {a₁ b₁ a₂ b₂} (h₁ : ra a₁ a₂) (h₂ : rb b₁ b₂) : rprod (a₁, b₁) (a₂, b₂)
 
 end
@@ -193,22 +203,25 @@ theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc
       Acc.intro (xa, xb) fun p lt =>
         have aux : xa = xa → xb = xb → Acc (Lex ra rb) p :=
           @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p (xa, xb) lt
-            (fun a₁ b₁ a₂ b₂ h eq₂ : a₂ = xa eq₃ : b₂ = xb => iha a₁ (Eq.recOnₓ eq₂ h) b₁)
-            fun a b₁ b₂ h eq₂ : a = xa eq₃ : b₂ = xb => Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
+            (fun eq₃ : b₂ = xb => iha a₁ (Eq.recOnₓ eq₂ h) b₁) fun eq₃ : b₂ = xb =>
+            Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
         aux rfl rfl
 
+-- The lexicographical order of well founded relations is well-founded
 theorem lex_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Lex ra rb) :=
   ⟨fun p => casesOn p fun a b => lex_accessible (apply ha a) (WellFounded.apply hb) b⟩
 
+-- relational product is a subrelation of the lex
 theorem rprod_sub_lex : ∀ a b, Rprod ra rb a b → Lex ra rb a b := fun a b h =>
   Prod.Rprod.rec_on h fun a₁ b₁ a₂ b₂ h₁ h₂ => Lex.left b₁ b₂ h₁
 
+-- The relational product of well founded relations is well-founded
 theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Rprod ra rb) :=
   Subrelation.wfₓ rprod_sub_lex (lex_wf ha hb)
 
 end
 
-instance HasWellFounded {α : Type u} {β : Type v} [s₁ : HasWellFounded α] [s₂ : HasWellFounded β] :
+instance hasWellFounded {α : Type u} {β : Type v} [s₁ : HasWellFounded α] [s₂ : HasWellFounded β] :
     HasWellFounded (α × β) where
   R := Lex s₁.R s₂.R
   wf := lex_wf s₁.wf s₂.wf

@@ -1,7 +1,22 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.List.Basic
 import Leanbin.Init.Data.Char.Basic
 
+/- In the VM, strings are implemented using a dynamic array and UTF-8 encoding.
+
+   TODO: we currently cannot mark string_imp as private because
+   we need to bind string_imp.mk and string_imp.cases_on in the VM.
+-/
+/- In the VM, strings are implemented using a dynamic array and UTF-8 encoding.
+
+   TODO: we currently cannot mark string_imp as private because
+   we need to bind string_imp.mk and string_imp.cases_on in the VM.
+-/
 structure StringImp where
   data : List Charₓ
 
@@ -16,40 +31,51 @@ namespace Stringₓ
 instance : LT Stringₓ :=
   ⟨fun s₁ s₂ => s₁.data < s₂.data⟩
 
-instance has_decidable_lt (s₁ s₂ : Stringₓ) : Decidable (s₁ < s₂) :=
+-- Remark: this function has a VM builtin efficient implementation.
+instance hasDecidableLt (s₁ s₂ : Stringₓ) : Decidable (s₁ < s₂) :=
   List.hasDecidableLtₓ s₁.data s₂.data
 
-instance has_decidable_eq : DecidableEq Stringₓ := fun ⟨x⟩ ⟨y⟩ =>
+instance hasDecidableEq : DecidableEq Stringₓ := fun ⟨x⟩ ⟨y⟩ =>
   match List.hasDecEqₓ x y with
   | is_true p => isTrue (congr_argₓ StringImp.mk p)
   | is_false p => isFalse fun q => p (StringImp.mk.inj q)
 
-def Empty : Stringₓ :=
+def empty : Stringₓ :=
   ⟨[]⟩
 
 def length : Stringₓ → Nat
   | ⟨s⟩ => s.length
 
+/- The internal implementation uses dynamic arrays and will perform destructive updates
+   if the string is not shared. -/
 def push : Stringₓ → Charₓ → Stringₓ
   | ⟨s⟩, c => ⟨s ++ [c]⟩
 
+/- The internal implementation uses dynamic arrays and will perform destructive updates
+   if the string is not shared. -/
 def append : Stringₓ → Stringₓ → Stringₓ
   | ⟨a⟩, ⟨b⟩ => ⟨a ++ b⟩
 
-def to_list : Stringₓ → List Charₓ
+-- O(n) in the VM, where n is the length of the string
+def toList : Stringₓ → List Charₓ
   | ⟨s⟩ => s
 
 def fold {α} (a : α) (f : α → Charₓ → α) (s : Stringₓ) : α :=
   s.toList.foldl f a
 
-structure iterator_imp where
+/- In the VM, the string iterator is implemented as a pointer to the string being iterated + index.
+
+   TODO: we currently cannot mark interator_imp as private because
+   we need to bind string_imp.mk and string_imp.cases_on in the VM.
+-/
+structure IteratorImp where
   fst : List Charₓ
   snd : List Charₓ
 
-def iterator :=
+def Iterator :=
   iterator_imp
 
-def mk_iterator : Stringₓ → Iterator
+def mkIterator : Stringₓ → Iterator
   | ⟨s⟩ => ⟨[], s⟩
 
 namespace Iterator
@@ -58,7 +84,9 @@ def curr : Iterator → Charₓ
   | ⟨p, c :: n⟩ => c
   | _ => default
 
-def set_curr : Iterator → Charₓ → Iterator
+/- In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
+   if it is. -/
+def setCurr : Iterator → Charₓ → Iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩
   | it, c' => it
 
@@ -70,11 +98,11 @@ def prev : Iterator → Iterator
   | ⟨c :: p, n⟩ => ⟨p, c :: n⟩
   | ⟨[], n⟩ => ⟨[], n⟩
 
-def has_next : Iterator → Bool
+def hasNext : Iterator → Bool
   | ⟨p, []⟩ => false
   | _ => true
 
-def has_prev : Iterator → Bool
+def hasPrev : Iterator → Bool
   | ⟨[], n⟩ => false
   | _ => true
 
@@ -84,19 +112,20 @@ def insert : Iterator → Stringₓ → Iterator
 def remove : Iterator → Nat → Iterator
   | ⟨p, n⟩, m => ⟨p, n.drop m⟩
 
-def to_string : Iterator → Stringₓ
+-- In the VM, `to_string` is a constant time operation.
+def toString : Iterator → Stringₓ
   | ⟨p, n⟩ => ⟨p.reverse ++ n⟩
 
-def to_end : Iterator → Iterator
+def toEnd : Iterator → Iterator
   | ⟨p, n⟩ => ⟨n.reverse ++ p, []⟩
 
-def next_to_string : Iterator → Stringₓ
+def nextToString : Iterator → Stringₓ
   | ⟨p, n⟩ => ⟨n⟩
 
-def prev_to_string : Iterator → Stringₓ
+def prevToString : Iterator → Stringₓ
   | ⟨p, n⟩ => ⟨p.reverse⟩
 
-protected def extract_core : List Charₓ → List Charₓ → Option (List Charₓ)
+protected def extractCore : List Charₓ → List Charₓ → Option (List Charₓ)
   | [], cs => none
   | c :: cs₁, cs₂ =>
     if cs₁ = cs₂ then some [c]
@@ -119,6 +148,7 @@ end Iterator
 
 end Stringₓ
 
+-- The following definitions do not have builtin support in the VM
 instance : Inhabited Stringₓ :=
   ⟨Stringₓ.empty⟩
 
@@ -133,7 +163,7 @@ namespace Stringₓ
 def str : Stringₓ → Charₓ → Stringₓ :=
   push
 
-def is_empty (s : Stringₓ) : Bool :=
+def isEmpty (s : Stringₓ) : Bool :=
   toBool (s.length = 0)
 
 def front (s : Stringₓ) : Charₓ :=
@@ -163,10 +193,10 @@ def prevn : Iterator → Nat → Iterator
 
 end Iterator
 
-def pop_back (s : Stringₓ) : Stringₓ :=
+def popBack (s : Stringₓ) : Stringₓ :=
   s.mkIterator.toEnd.prev.prevToString
 
-def popn_back (s : Stringₓ) (n : Nat) : Stringₓ :=
+def popnBack (s : Stringₓ) (n : Nat) : Stringₓ :=
   (s.mkIterator.toEnd.prevn n).prevToString
 
 def backn (s : Stringₓ) (n : Nat) : Stringₓ :=

@@ -1,9 +1,14 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 
 namespace Smt
 
 universe u v
 
-def Arrayₓ (α : Type u) (β : Type v) :=
+def Array (α : Type u) (β : Type v) :=
   α → β
 
 variable {α : Type u} {β : Type v}

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Sebastian Ullrich
+-/
 prelude
 import Leanbin.Init.Function
 import Leanbin.Init.Data.Option.Basic
@@ -93,6 +98,8 @@ unsafe def interaction_monad.silent_fail {α : Type u} : m α := fun s => except
 unsafe def interaction_monad.failed {α : Type u} : m α :=
   interaction_monad.fail "failed"
 
+/- Alternative orelse operator that allows to select which exception should be used.
+   The default is to use the first exception since the standard `orelse` uses the second. -/
 unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first_ex := true) : m α := fun s =>
   interaction_monad.result.cases_on (t₁ s) success fun e₁ ref₁ s₁' =>
     interaction_monad.result.cases_on (t₂ s) success fun e₂ ref₂ s₂' =>
@@ -108,5 +115,8 @@ unsafe def interaction_monad.bracket {α β γ} (x : m α) (inside : m β) (y : 
     | success r s' => (y >> success r) s'
     | exception msg p s' => (y >> exception msg p) s'
 
+-- TODO: unify `parser` and `tactic` behavior?
+-- meta instance interaction_monad.alternative : alternative m :=
+-- ⟨@interaction_monad_fmap, (λ α a s, success a s), (@fapp _ _), @interaction_monad.failed, @interaction_monad_orelse⟩
 end
 

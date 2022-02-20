@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+
+notation, basic datatypes and type classes
+-/
 prelude
 
 universe u v w
@@ -29,6 +36,10 @@ def optParam (α : Sort u) (default : α) : Sort u :=
 def outParam (α : Sort u) : Sort u :=
   α
 
+/-
+  id_rhs is an auxiliary declaration used in the equation compiler to address performance
+  issues when proving equational lemmas. The equation compiler uses it as a marker.
+-/
 abbrev idRhs (α : Sort u) (a : α) : α :=
   a
 
@@ -80,6 +91,24 @@ def Not (a : Prop) :=
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl {} : Eq a
 
+/-
+Initialize the quotient module, which effectively adds the following definitions:
+
+constant quot {α : Sort u} (r : α → α → Prop) : Sort u
+
+constant quot.mk {α : Sort u} (r : α → α → Prop) (a : α) : quot r
+
+constant quot.lift {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β) :
+  (∀ a b : α, r a b → eq (f a) (f b)) → quot r → β
+
+constant quot.ind {α : Sort u} {r : α → α → Prop} {β : quot r → Prop} :
+  (∀ a : α, β (quot.mk r a)) → ∀ q : quot r, β q
+
+Also the reduction rule:
+
+quot.lift f _ (quot.mk a) ~~> f a
+
+-/
 init_quot
 
 /-- Heterogeneous equality.
@@ -128,8 +157,10 @@ theorem And.elim_left {a b : Prop} (h : And a b) : a :=
 theorem And.elim_right {a b : Prop} (h : And a b) : b :=
   h.2
 
+-- eq basic support
 attribute [refl] Eq.refl
 
+-- This is a `def`, so that it can be used as pattern in the equation compiler.
 @[matchPattern]
 def rfl {α : Sort u} {a : α} : a = a :=
   Eq.refl a
@@ -146,15 +177,18 @@ theorem Eq.trans {α : Sort u} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = 
 theorem Eq.symm {α : Sort u} {a b : α} (h : a = b) : b = a :=
   h ▸ rfl
 
+-- This is a `def`, so that it can be used as pattern in the equation compiler.
 @[matchPattern]
 def HEq.rfl {α : Sort u} {a : α} : HEq a a :=
   HEq.refl a
 
 theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
-  have : ∀ α' : Sort u a' : α' h₁ : @HEq α a α' a' h₂ : α = α', (Eq.recOnₓ h₂ a : α') = a' :=
-    fun α' : Sort u a' : α' h₁ : @HEq α a α' a' => HEq.recOnₓ h₁ fun h₂ : α = α => rfl
+  have : ∀ α' : Sort u a' : α' h₁ : @HEq α a α' a' h₂ : α = α', (Eq.recOnₓ h₂ a : α') = a' := fun h₁ : @HEq α a α' a' =>
+    HEq.recOnₓ h₁ fun h₂ : α = α => rfl
   show (Eq.recOnₓ (Eq.refl α) a : α) = a' from this α a' h (Eq.refl α)
 
+/- The following four lemmas could not be automatically generated when the
+   structures were declared, so we prove them manually here. -/
 theorem Prod.mk.inj {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
     (x₁, y₁) = (x₂, y₂) → And (x₁ = x₂) (y₁ = y₂) := fun h => Prod.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
 
@@ -210,6 +244,7 @@ inductive Bool : Type
   | ff : Bool
   | tt : Bool
 
+-- Remark: subtype must take a Sort instead of Type because of the axiom strong_indefinite_description.
 structure Subtype {α : Sort u} (p : α → Prop) where
   val : α
   property : p val
@@ -244,7 +279,7 @@ inductive List (T : Type u)
   | nil : List
   | cons (hd : T) (tl : List) : List
 
--- ././Mathport/Syntax/Translate/Basic.lean:1257:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
+-- ././Mathport/Syntax/Translate/Basic.lean:1379:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
 notation3 "["  => l
 
 inductive Nat
@@ -264,6 +299,7 @@ structure UnificationHint where
   pattern : UnificationConstraint
   constraints : List UnificationConstraint
 
+-- Declare builtin and reserved notation
 class Zero (α : Type u) where
   zero : α
 
@@ -324,6 +360,9 @@ class HasSubset (α : Type u) where
 class HasSsubset (α : Type u) where
   Ssubset : α → α → Prop
 
+/- Type classes has_emptyc and has_insert are
+   used to implement polymorphic notation for collections.
+   Example: {a, b, c}. -/
 class HasEmptyc (α : Type u) where
   emptyc : α
 
@@ -333,9 +372,11 @@ class HasInsert (α : outParam <| Type u) (γ : Type v) where
 class HasSingleton (α : outParam <| Type u) (β : Type v) where
   singleton : α → β
 
+-- Type class used to implement the notation { a ∈ c | p a }
 class HasSep (α : outParam <| Type u) (γ : Type v) where
   sep : (α → Prop) → γ → γ
 
+-- Type class for set-like membership
 class HasMem (α : outParam <| Type u) (γ : Type v) where
   Mem : α → γ → Prop
 
@@ -350,7 +391,9 @@ notation:50 a " ∉ " s:50 => ¬HasMem.Mem a s
 
 infixl:50 " ∣ " => HasDvd.Dvd
 
-infixl:50 " ⊂ " => HasSsubset.Ssubset
+infixl:50
+  " ⊂ " =>-- Note this is different to `|`.
+  HasSsubset.Ssubset
 
 infixl:50 " ≈ " => HasEquivₓ.Equiv
 
@@ -395,12 +438,15 @@ export IsLawfulSingleton (insert_emptyc_eq)
 
 attribute [simp] insert_emptyc_eq
 
+-- nat basic instances
 namespace Nat
 
 protected def add : Nat → Nat → Nat
   | a, zero => a
   | a, succ b => succ (add a b)
 
+/- We mark the following definitions as pattern to make sure they can be used in recursive equations,
+     and reduced by the equation compiler. -/
 attribute [matchPattern] Nat.add Nat.add
 
 end Nat
@@ -427,21 +473,42 @@ protected def prio :=
 
 end Nat
 
+/-
+  Global declarations of right binding strength
+
+  If a module reassigns these, it will be incompatible with other modules that adhere to these
+  conventions.
+
+  When hovering over a symbol, use "C-c C-k" to see how to input it.
+-/
 def Std.Prec.max : Nat :=
   1024
 
+-- the strength of application, identifiers, (, [, etc.
 def Std.Prec.arrow : Nat :=
   25
 
+/-
+The next def is "max + 10". It can be used e.g. for postfix operations that should
+be stronger than application.
+-/
 def Std.Prec.maxPlus : Nat :=
   Std.Prec.max + 10
 
+-- input with \sy or \-1 or \inv
+-- notation for n-ary tuples
+-- sizeof
 class SizeOf (α : Sort u) where
   sizeof : α → Nat
 
 def sizeof {α : Sort u} [s : SizeOf α] : α → Nat :=
   SizeOf.sizeof
 
+/-
+Declare sizeof instances and lemmas for types declared before has_sizeof.
+From now on, the inductive compiler will automatically generate sizeof instances and lemmas.
+-/
+-- Every type `α` has a default has_sizeof instance that just returns 0 for every element of `α`
 protected def Default.sizeof (α : Sort u) : α → Nat
   | a => 0
 
@@ -521,17 +588,18 @@ instance {α : Type u} [SizeOf α] (p : α → Prop) : SizeOf (Subtype p) :=
 theorem nat_add_zero (n : Nat) : n + 0 = n :=
   rfl
 
+-- Combinator calculus
 namespace Combinator
 
 universe u₁ u₂ u₃
 
-def I {α : Type u₁} (a : α) :=
+def i {α : Type u₁} (a : α) :=
   a
 
-def K {α : Type u₁} {β : Type u₂} (a : α) (b : β) :=
+def k {α : Type u₁} {β : Type u₂} (a : α) (b : β) :=
   a
 
-def S {α : Type u₁} {β : Type u₂} {γ : Type u₃} (x : α → β → γ) (y : α → β) (z : α) :=
+def s {α : Type u₁} {β : Type u₂} {γ : Type u₃} (x : α → β → γ) (y : α → β) (z : α) :=
   x z (y z)
 
 end Combinator

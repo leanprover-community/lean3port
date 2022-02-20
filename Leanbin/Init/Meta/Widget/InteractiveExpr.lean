@@ -1,3 +1,9 @@
+/-
+Copyright (c) E.W.Ayers. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+
+Author: E.W.Ayers
+-/
 prelude
 import Leanbin.Init.Meta.Widget.Basic
 import Leanbin.Init.Meta.Widget.TacticComponent
@@ -95,7 +101,7 @@ unsafe def mk {γ} (tooltip : tc subexpr γ) : tc expr γ :=
     (component.with_should_update fun x y : tactic_state × expr × Expr.Address => x.2.2 ≠ y.2.2) <|
       component.map_action action.on_tooltip_action tooltip
   tc.mk_simple (action γ) (Option subexpr × Option subexpr) (fun e => pure <| (none, none))
-    (fun e ⟨ca, sa⟩ act =>
+    (fun act =>
       pure <|
         match act with
         | action.on_mouse_enter ⟨e, ea⟩ => ((ca, some (e, ea)), none)
@@ -107,7 +113,10 @@ unsafe def mk {γ} (tooltip : tc subexpr γ) : tc expr γ :=
     let ts ← tactic.read
     let m : sf := sf.flatten <| sf.of_eformat <| tactic_state.pp_tagged ts e
     let m : sf := sf.tag_expr [] e m
-    let v ← view tooltip_comp (Prod.snd <$> ca) (Prod.snd <$> sa) ⟨e, []⟩ m
+    let v
+      ←-- [hack] in pp.cpp I forgot to add an expr-boundary for the root expression.
+          view
+          tooltip_comp (Prod.snd <$> ca) (Prod.snd <$> sa) ⟨e, []⟩ m
     pure <| [h "span" [className "expr", key e, on_mouse_leave fun _ => action.on_mouse_leave_all] <| v]
 
 /-- Render the implicit arguments for an expression in fancy, little pills. -/
@@ -211,11 +220,11 @@ unsafe inductive tactic_view_action (γ : Type)
 /-- Component that displays all goals, together with the `$n goals` message. -/
 unsafe def tactic_view_component {γ} (local_c : tc local_collection γ) (target_c : tc expr γ) : tc Unit γ :=
   tc.mk_simple (tactic_view_action γ) filter_type (fun _ => pure <| filter_type.none)
-    (fun ⟨⟩ ft a =>
+    (fun ft a =>
       match a with
       | tactic_view_action.out a => pure (ft, some a)
       | tactic_view_action.filter ft => pure (ft, none))
-    fun ⟨⟩ ft => do
+    fun ft => do
     let gs ← get_goals
     let hs ←
       gs.mmap fun g => do

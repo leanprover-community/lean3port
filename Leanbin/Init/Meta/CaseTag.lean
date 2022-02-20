@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2020 Jannis Limperg. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jannis Limperg
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 
@@ -117,7 +122,7 @@ namespace Interactive
       (particularly those tactics that use `revert`). Therefore, a `hyps` case
       tag is only guaranteed to be valid directly after it was generated.
 -/
-inductive case_tag
+inductive CaseTag
   | pi (names : List Name) (num_arguments : ℕ)
   | hyps (names : List Name) (arguments : List Name)
 
@@ -135,11 +140,11 @@ protected unsafe def case_tag.to_format : CaseTag → format
 
 end
 
-protected def case_tag.repr : CaseTag → Stringₓ
+protected def CaseTag.repr : CaseTag → Stringₓ
   | pi names num_arguments => "(pi " ++ names.repr ++ " " ++ num_arguments.repr ++ ")"
   | hyps names arguments => "(hyps " ++ names.repr ++ " " ++ arguments.repr ++ ")"
 
-protected def case_tag.to_string : CaseTag → Stringₓ
+protected def CaseTag.toString : CaseTag → Stringₓ
   | pi names num_arguments => "(pi " ++ names.toString ++ " " ++ toString num_arguments ++ ")"
   | hyps names arguments => "(hyps " ++ names.toString ++ " " ++ arguments.toString ++ ")"
 
@@ -225,7 +230,7 @@ unsafe def parse : List Name → Option CaseTag
 /-- Indicates the result of matching a list of names against the names of a case
 tag. See `match_tag`.
 -/
-inductive match_result
+inductive MatchResult
   | exact_match
   | fuzzy_match
   | no_match

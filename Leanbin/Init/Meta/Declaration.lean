@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Meta.Name
@@ -40,10 +45,26 @@ inductive ReducibilityHints
   | regular : Nat → Bool → ReducibilityHints
 
 /-- Reflect a C++ declaration object. The VM replaces it with the C++ implementation. -/
-unsafe inductive declaration
-  | defn : Name → List Name → expr → expr → ReducibilityHints → Bool → declaration
-  | thm : Name → List Name → expr → task expr → declaration
-  | cnst : Name → List Name → expr → Bool → declaration
+unsafe inductive declaration-- definition: name, list universe parameters, type, value, is_trusted
+
+  | defn :
+    Name →
+      List Name →
+        expr →
+          expr →
+            ReducibilityHints →
+              Bool →
+                declaration-- theorem: name, list universe parameters, type, value (remark: theorems are always trusted)
+
+  | thm :
+    Name →
+      List Name → expr → task expr → declaration-- constant assumption: name, list universe parameters, type, is_trusted
+
+  | cnst :
+    Name →
+      List Name →
+        expr → Bool → declaration-- axiom : name → list universe parameters, type (remark: axioms are always trusted)
+
   | ax : Name → List Name → expr → declaration
 
 open Declaration

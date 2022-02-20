@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.List.Lemmas
 
@@ -15,18 +20,18 @@ instance : Monadₓ List where
 instance : IsLawfulMonad List where
   bind_pure_comp_eq_map := by
     intro α β f l
-    induction l <;> simp_all [· <$> ·, · >>= ·, pure]
+    induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
   id_map := @List.map_id
   pure_bind := by
     intros
-    simp [pure, · >>= ·]
+    simp [pure, (· >>= ·)]
   bind_assoc := by
     intro α β γ l f g
     induction' l with x l ih
-    · simp [· >>= ·]
+    · simp [(· >>= ·)]
       
-    · simp [· >>= ·] at ih
-      simp [· >>= ·, ih]
+    · simp [(· >>= ·)] at ih
+      simp [(· >>= ·), ih]
       
 
 instance : Alternativeₓ List :=
@@ -36,10 +41,10 @@ namespace List
 
 variable {α β : Type u} (p : α → Prop) [DecidablePred p]
 
-instance bin_tree_to_list : Coe (BinTree α) (List α) :=
+instance binTreeToList : Coe (BinTree α) (List α) :=
   ⟨BinTree.toList⟩
 
-instance decidable_bex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
+instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] =>
     isFalse
       (by
@@ -68,7 +73,7 @@ instance decidable_bex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
               exact ⟨y, h, hp⟩
               )
 
-instance decidable_ball (l : List α) : Decidable (∀, ∀ x ∈ l, ∀, p x) :=
+instance decidableBall (l : List α) : Decidable (∀, ∀ x ∈ l, ∀, p x) :=
   if h : ∃ x ∈ l, ¬p x then
     is_false <|
       let ⟨x, h, np⟩ := h

@@ -1,3 +1,9 @@
+/-
+Copyright (c) E.W.Ayers. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+
+Author: E.W.Ayers
+-/
 prelude
 import Leanbin.Init.Meta.Widget.Basic
 
@@ -5,7 +11,7 @@ namespace Widget
 
 /--
 A component that implicitly depends on tactic_state. For efficiency we always assume that the tactic_state is unchanged between component renderings. -/
-unsafe def Tc (π : Type) (α : Type) :=
+unsafe def tc (π : Type) (α : Type) :=
   component (tactic_state × π) α
 
 namespace Tc
@@ -32,18 +38,18 @@ unsafe def mk_simple [DecidableEq π] (β σ : Type) (init : π → tactic σ) (
     (view : π → σ → tactic (List (html β))) : tc π α :=
   (component.with_should_update fun ⟨_, old_p⟩ ⟨_, new_p⟩ => old_p ≠ new_p) <|
     @component.stateful (tactic_state × π) α β (interaction_monad.result tactic_state σ)
-      (fun ⟨ts, p⟩ last =>
+      (fun last =>
         match last with
         | some x => x
         | none => init p ts)
-      (fun ⟨ts, p⟩ s b =>
+      (fun s b =>
         match s with
         | success s _ =>
           match update p s b ts with
           | success ⟨s, a⟩ _ => Prod.mk (success s ts) a
           | exception m p ts' => Prod.mk (exception m p ts') none
         | x => ⟨x, none⟩)
-      fun ⟨ts, p⟩ s =>
+      fun s =>
       match s with
       | success s _ =>
         match view p s ts with

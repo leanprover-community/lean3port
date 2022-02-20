@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Gabriel Ebner
+-/
 prelude
 import Leanbin.Init.Data.Nat.Default
 import Leanbin.Init.Data.Array.Basic
@@ -35,7 +40,7 @@ private theorem sub_sub_cancel (m n : ℕ) (h : m ≤ n) : n - (n - m) = m :=
     _ = m := Nat.add_sub_cancel_left _ _
     
 
-def take_right (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ m α :=
+def takeRight (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ m α :=
   cast
       (by
         simp [*, sub_sub_cancel]) <|

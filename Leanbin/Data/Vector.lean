@@ -1,3 +1,11 @@
+/-
+Copyright (c) 2015 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+
+Tuples are lists of a fixed size.
+It is implemented as a subtype.
+-/
 prelude
 import Leanbin.Init.Data.List.Default
 import Leanbin.Init.Data.Subtype.Default
@@ -54,7 +62,7 @@ theorem cons_head_tail : ∀ v : Vector α (succ n), cons (head v) (tail v) = v
     contradiction
   | ⟨a :: v, h⟩ => rfl
 
-def to_list (v : Vector α n) : List α :=
+def toList (v : Vector α n) : List α :=
   v.1
 
 def nth : ∀ v : Vector α n, Finₓ n → α
@@ -69,11 +77,12 @@ def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
       simp [*]⟩
 
 @[elab_as_eliminator]
-def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
+def elimₓ {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
   | ⟨l, h⟩ =>
     match n, h with
     | _, rfl => H l
 
+-- map
 def map (f : α → β) : Vector α n → Vector β n
   | ⟨l, h⟩ =>
     ⟨List.map f l, by
@@ -104,12 +113,12 @@ def take (i : ℕ) : Vector α n → Vector α (min i n)
     ⟨List.takeₓ i l, by
       simp [*]⟩
 
-def remove_nth (i : Finₓ n) : Vector α n → Vector α (n - 1)
+def removeNth (i : Finₓ n) : Vector α n → Vector α (n - 1)
   | ⟨l, p⟩ =>
     ⟨List.removeNthₓ l i.1, by
       rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
 
-def of_fn : ∀ {n}, (Finₓ n → α) → Vector α n
+def ofFn : ∀ {n}, (Finₓ n → α) → Vector α n
   | 0, f => nil
   | n + 1, f => cons (f 0) (of_fn fun i => f i.succ)
 
@@ -119,13 +128,13 @@ open Prod
 
 variable {σ : Type}
 
-def map_accumr (f : α → σ → σ × β) : Vector α n → σ → σ × Vector β n
+def mapAccumr (f : α → σ → σ × β) : Vector α n → σ → σ × Vector β n
   | ⟨x, px⟩, c =>
     let res := List.mapAccumr f x c
     ⟨res.1, res.2, by
       simp [*]⟩
 
-def map_accumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vector α n → Vector β n → σ → σ × Vector φ n
+def mapAccumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vector α n → Vector β n → σ → σ × Vector φ n
   | ⟨x, px⟩, ⟨y, py⟩, c =>
     let res := List.mapAccumr₂ f x y c
     ⟨res.1, res.2, by
@@ -133,7 +142,7 @@ def map_accumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vec
 
 end Accum
 
-protected theorem Eq {n : ℕ} : ∀ a1 a2 : Vector α n, toList a1 = toList a2 → a1 = a2
+protected theorem eq {n : ℕ} : ∀ a1 a2 : Vector α n, toList a1 = toList a2 → a1 = a2
   | ⟨x, h1⟩, ⟨_, h2⟩, rfl => rfl
 
 protected theorem eq_nil (v : Vector α 0) : v = nil :=

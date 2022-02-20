@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Logic
 import Leanbin.Init.Data.Ordering.Basic
@@ -93,6 +98,15 @@ class IsDistinct (α : Type u) (a : α) (b : α) : Prop where
 
 /-- `is_irrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never
 holds). -/
+/-
+-- The following type class doesn't seem very useful, a regular simp lemma should work for this.
+class is_inv (α : Type u) (β : Type v) (f : α → β) (g : out β → α) : Prop :=
+(inv : ∀ a, g (f a) = a)
+
+-- The following one can also be handled using a regular simp lemma
+class is_idempotent (α : Type u) (f : α → α) : Prop :=
+(idempotent : ∀ a, f (f a) = f a)
+-/
 @[algebra]
 class IsIrrefl (α : Type u) (r : α → α → Prop) : Prop where
   irrefl : ∀ a, ¬r a a
@@ -262,7 +276,7 @@ parameter {α : Type u}{r : α → α → Prop}
 
 local infixl:50 "≺" => r
 
-def equiv (a b : α) : Prop :=
+def Equiv (a b : α) : Prop :=
   ¬a≺b ∧ ¬b≺a
 
 parameter [IsStrictWeakOrder α r]
@@ -281,14 +295,15 @@ theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
 
 theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
 
-instance IsEquiv : IsEquiv α equiv where
+instance is_equiv : IsEquiv α equiv where
   refl := erefl
   trans := @etrans
   symm := @esymm
 
 end
 
-notation:50 a " ≈[" lt "]" b:50 => @Equiv _ lt a b
+notation:50 a " ≈[" lt "]" b-- Notation for the equivalence relation induced by lt
+:50 => @Equiv _ lt a b
 
 end StrictWeakOrder
 
@@ -320,7 +335,7 @@ theorem lt_of_lt_of_incomp {α : Type u} {lt : α → α → Prop} [IsStrictWeak
     absurd hab this.1
 
 theorem lt_of_incomp_of_lt {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt] [DecidableRel lt] :
-    ∀ {a b c}, ¬lt a b ∧ ¬lt b a → lt b c → lt a c := fun a b c ⟨nab, nba⟩ hbc =>
+    ∀ {a b c}, ¬lt a b ∧ ¬lt b a → lt b c → lt a c := fun hbc =>
   have nca : ¬lt c a := fun hca => absurd (trans_of lt hbc hca) nba
   Decidable.by_contradiction fun nac : ¬lt a c =>
     have : ¬lt b c ∧ ¬lt c b := incomp_trans_of lt ⟨nba, nab⟩ ⟨nac, nca⟩

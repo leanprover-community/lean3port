@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 
 universe u
 
@@ -17,29 +22,29 @@ open Function
 
 variable {α : Type u}
 
--- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
 local notation:999 "♯" => by
   abstract 
     intros
     simp
 
 /-- Convert a list to a dlist -/
-def of_list (l : List α) : Dlist α :=
+def ofList (l : List α) : Dlist α :=
   ⟨append l, ♯⟩
 
 /-- Convert a lazily-evaluated list to a dlist -/
-def lazy_of_list (l : Thunkₓ (List α)) : Dlist α :=
+def lazyOfList (l : Thunkₓ (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
 
 /-- Convert a dlist to a list -/
-def to_list : Dlist α → List α
+def toList : Dlist α → List α
   | ⟨xs, _⟩ => xs []
 
 /-- Create a dlist containing no elements -/
-def Empty : Dlist α :=
+def empty : Dlist α :=
   ⟨id, ♯⟩
 
--- ././Mathport/Syntax/Translate/Basic.lean:343:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
 local notation:999 a "::_" => List.cons a
 
 /-- Create dlist with a single element -/

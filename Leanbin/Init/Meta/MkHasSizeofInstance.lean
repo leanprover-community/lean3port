@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+
+Helper tactic for constructing has_sizeof instance.
+-/
 prelude
 import Leanbin.Init.Meta.RecUtil
 import Leanbin.Init.Meta.ConstructorTactic
@@ -6,6 +13,7 @@ namespace Tactic
 
 open Expr Environment List
 
+-- Retrieve the name of the type we are building a has_sizeof instance for.
 private unsafe def get_has_sizeof_type_name : tactic Name :=
   (do
       let app (const n ls) t ← target >>= whnf
@@ -14,6 +22,7 @@ private unsafe def get_has_sizeof_type_name : tactic Name :=
       return I) <|>
     fail "mk_has_sizeof_instance tactic failed, target type is expected to be of the form (has_sizeof ...)"
 
+-- Try to synthesize constructor argument using type class resolution
 private unsafe def mk_has_sizeof_instance_for (a : expr) (use_default : Bool) : tactic expr := do
   let t ← infer_type a
   (do
@@ -61,7 +70,9 @@ unsafe def mk_has_sizeof_instance_core (use_default : Bool) : tactic Unit := do
   let idx_names :=
     List.map (fun p : Name × Nat => mkNumName p.fst p.snd)
       (List.zipₓ (List.repeat `idx num_indices) (List.iota num_indices))
-  if is_recursive env I_name then
+  -- Use brec_on if type is recursive.
+      -- We store the functional in the variable F.
+      if is_recursive env I_name then
       intro `_v >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p

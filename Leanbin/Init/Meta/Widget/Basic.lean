@@ -1,3 +1,9 @@
+/-
+Copyright (c) E.W.Ayers. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+
+Author: E.W.Ayers
+-/
 prelude
 import Leanbin.Init.Function
 import Leanbin.Init.Data.Option.Basic
@@ -162,7 +168,7 @@ Tachyons was chosen because it is very terse and allows arbitrary styling withou
 
 namespace Widget
 
-inductive mouse_event_kind
+inductive MouseEventKind
   | on_click
   | on_mouse_enter
   | on_mouse_leave

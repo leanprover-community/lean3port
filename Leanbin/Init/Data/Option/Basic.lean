@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Logic
 import Leanbin.Init.Control.Monad
@@ -9,23 +14,23 @@ universe u v
 
 namespace Option
 
-def to_monad {m : Type → Type} [Monadₓ m] [Alternativeₓ m] {A} : Option A → m A
+def toMonadₓ {m : Type → Type} [Monadₓ m] [Alternativeₓ m] {A} : Option A → m A
   | none => failure
   | some a => return a
 
-def get_or_else {α : Type u} : Option α → α → α
+def getOrElse {α : Type u} : Option α → α → α
   | some x, _ => x
   | none, e => e
 
-def is_some {α : Type u} : Option α → Bool
+def isSome {α : Type u} : Option α → Bool
   | some _ => true
   | none => false
 
-def is_none {α : Type u} : Option α → Bool
+def isNone {α : Type u} : Option α → Bool
   | some _ => false
   | none => true
 
-def get {α : Type u} : ∀ {o : Option α}, isSome o → α
+def getₓ {α : Type u} : ∀ {o : Option α}, isSome o → α
   | some x, h => x
   | none, h => False.ndrec _ <| Bool.ff_ne_tt h
 

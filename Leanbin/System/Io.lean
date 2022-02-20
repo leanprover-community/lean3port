@@ -1,7 +1,15 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Luke Nelson, Jared Roesch and Leonardo de Moura
+-/
 import Leanbin.System.IoInterface
 
+-- The following constants have a builtin implementation 
+-- The following constants have a builtin implementation
 axiom IoCore : Type → Type → Type
 
+-- Auxiliary definition used in the builtin implementation of monad_io_random_impl
 def ioRandNat : StdGen → Nat → Nat → Nat × StdGen :=
   randNatₓ
 
@@ -44,12 +52,17 @@ def Io (α : Type) :=
 
 namespace Io
 
+/- Remark: the following definitions can be generalized and defined for any (m : Type -> Type -> Type)
+   that implements the required type classes. However, the generalized versions are very inconvenient to use,
+   (example: `#eval io.put_str "hello world"` does not work because we don't have enough information to infer `m`.).
+-/
 def iterate {e α} (a : α) (f : α → IoCore e (Option α)) : IoCore e α :=
   MonadIo.iterate e α a f
 
 def forever {e} (a : IoCore e Unit) : IoCore e Unit :=
   (iterate ()) fun _ => a >> return (some ())
 
+-- TODO(Leo): delete after we merge #1881
 def catch {e₁ e₂ α} (a : IoCore e₁ α) (b : e₁ → IoCore e₂ α) : IoCore e₂ α :=
   MonadIo.catch e₁ e₂ α a b
 
@@ -63,28 +76,28 @@ def finally {α e} (a : IoCore e α) (cleanup : IoCore e Unit) : IoCore e α := 
 protected def fail {α : Type} (s : Stringₓ) : Io α :=
   MonadIo.fail _ _ (Io.Error.other s)
 
-def put_str : Stringₓ → Io Unit :=
+def putStr : Stringₓ → Io Unit :=
   MonadIoTerminal.putStr
 
-def put_str_ln (s : Stringₓ) : Io Unit :=
+def putStrLn (s : Stringₓ) : Io Unit :=
   putStr s >> putStr "\n"
 
-def get_line : Io Stringₓ :=
+def getLine : Io Stringₓ :=
   MonadIoTerminal.getLine
 
-def cmdline_args : Io (List Stringₓ) :=
+def cmdlineArgs : Io (List Stringₓ) :=
   return (MonadIoTerminal.cmdlineArgs IoCore)
 
 def print {α} [HasToString α] (s : α) : Io Unit :=
   put_str ∘ toString <| s
 
-def print_ln {α} [HasToString α] (s : α) : Io Unit :=
+def printLn {α} [HasToString α] (s : α) : Io Unit :=
   print s >> putStr "\n"
 
-def handle : Type :=
+def Handle : Type :=
   MonadIo.Handle IoCore
 
-def mk_file_handle (s : Stringₓ) (m : Mode) (bin : Bool := false) : Io Handle :=
+def mkFileHandle (s : Stringₓ) (m : Mode) (bin : Bool := false) : Io Handle :=
   MonadIoFileSystem.mkFileHandle s m bin
 
 def stdin : Io Handle :=
@@ -108,18 +121,18 @@ def get (env_var : Stringₓ) : Io (Option Stringₓ) :=
   MonadIoEnvironment.getEnv env_var
 
 /-- get the current working directory -/
-def get_cwd : Io Stringₓ :=
+def getCwd : Io Stringₓ :=
   MonadIoEnvironment.getCwd
 
 /-- set the current working directory -/
-def set_cwd (cwd : Stringₓ) : Io Unit :=
+def setCwd (cwd : Stringₓ) : Io Unit :=
   MonadIoEnvironment.setCwd cwd
 
 end Env
 
 namespace Net
 
-def socket : Type :=
+def Socket : Type :=
   MonadIoNetSystem.Socket IoCore
 
 def listen : Stringₓ → Nat → Io Socket :=
@@ -144,7 +157,7 @@ end Net
 
 namespace Fs
 
-def is_eof : Handle → Io Bool :=
+def isEof : Handle → Io Bool :=
   MonadIoFileSystem.isEof
 
 def flush : Handle → Io Unit :=
@@ -159,23 +172,23 @@ def read : Handle → Nat → Io CharBuffer :=
 def write : Handle → CharBuffer → Io Unit :=
   MonadIoFileSystem.write
 
-def get_char (h : Handle) : Io Charₓ := do
+def getChar (h : Handle) : Io Charₓ := do
   let b ← read h 1
   if h : b = 1 then return <| b ⟨0, h ▸ Nat.zero_lt_oneₓ⟩ else Io.fail "get_char failed"
 
-def get_line : Handle → Io CharBuffer :=
+def getLine : Handle → Io CharBuffer :=
   MonadIoFileSystem.getLine
 
-def put_char (h : Handle) (c : Charₓ) : Io Unit :=
+def putChar (h : Handle) (c : Charₓ) : Io Unit :=
   write h (mkBuffer.pushBack c)
 
-def put_str (h : Handle) (s : Stringₓ) : Io Unit :=
+def putStr (h : Handle) (s : Stringₓ) : Io Unit :=
   write h (mkBuffer.appendString s)
 
-def put_str_ln (h : Handle) (s : Stringₓ) : Io Unit :=
+def putStrLn (h : Handle) (s : Stringₓ) : Io Unit :=
   putStr h s >> putStr h "\n"
 
-def read_to_end (h : Handle) : Io CharBuffer :=
+def readToEnd (h : Handle) : Io CharBuffer :=
   (iterate mkBuffer) fun r => do
     let done ← isEof h
     if done then return none
@@ -183,14 +196,14 @@ def read_to_end (h : Handle) : Io CharBuffer :=
         let c ← read h 1024
         return <| some (r ++ c)
 
-def read_file (s : Stringₓ) (bin := false) : Io CharBuffer := do
+def readFile (s : Stringₓ) (bin := false) : Io CharBuffer := do
   let h ← mkFileHandle s Io.Mode.read bin
   read_to_end h
 
-def file_exists : Stringₓ → Io Bool :=
+def fileExists : Stringₓ → Io Bool :=
   MonadIoFileSystem.fileExists
 
-def dir_exists : Stringₓ → Io Bool :=
+def dirExists : Stringₓ → Io Bool :=
   MonadIoFileSystem.dirExists
 
 def remove : Stringₓ → Io Unit :=
@@ -209,16 +222,16 @@ end Fs
 
 namespace Proc
 
-def child : Type :=
+def Child : Type :=
   MonadIoProcess.Child IoCore
 
-def child.stdin : Child → Handle :=
+def Child.stdin : Child → Handle :=
   MonadIoProcess.stdin
 
-def child.stdout : Child → Handle :=
+def Child.stdout : Child → Handle :=
   MonadIoProcess.stdout
 
-def child.stderr : Child → Handle :=
+def Child.stderr : Child → Handle :=
   MonadIoProcess.stderr
 
 def spawn (p : Io.Process.SpawnArgs) : Io Child :=
@@ -232,7 +245,7 @@ def sleep (n : Nat) : Io Unit :=
 
 end Proc
 
-def set_rand_gen : StdGen → Io Unit :=
+def setRandGen : StdGen → Io Unit :=
   MonadIoRandom.setRandGen
 
 def rand (lo : Nat := stdRange.1) (hi : Nat := stdRange.2) : Io Nat :=

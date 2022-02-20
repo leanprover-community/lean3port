@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Nat.Basic
 
@@ -24,10 +29,10 @@ instance : SizeOf Charₓ :=
 
 namespace Charₓ
 
-protected def lt (a b : Charₓ) : Prop :=
+protected def Lt (a b : Charₓ) : Prop :=
   a.val < b.val
 
-protected def le (a b : Charₓ) : Prop :=
+protected def Le (a b : Charₓ) : Prop :=
   a.val ≤ b.val
 
 instance : LT Charₓ :=
@@ -36,12 +41,17 @@ instance : LT Charₓ :=
 instance : LE Charₓ :=
   ⟨Charₓ.Le⟩
 
-instance decidable_lt (a b : Charₓ) : Decidable (a < b) :=
+instance decidableLt (a b : Charₓ) : Decidable (a < b) :=
   Nat.decidableLt _ _
 
-instance decidable_le (a b : Charₓ) : Decidable (a ≤ b) :=
+instance decidableLe (a b : Charₓ) : Decidable (a ≤ b) :=
   Nat.decidableLe _ _
 
+/-
+We cannot use tactics dec_trivial or comp_val here because the tactic framework has not been defined yet.
+We also do not use `zero_lt_succ _` as a proof term because this proof may not be trivial to check by
+external type checkers. See discussion at: https://github.com/leanprover/tc/issues/8
+-/
 theorem zero_lt_d800 : 0 < 55296 :=
   Nat.zero_lt_bit0 <|
     Nat.bit0_ne_zero <|
@@ -53,10 +63,10 @@ theorem zero_lt_d800 : 0 < 55296 :=
                 Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
 
 @[matchPattern]
-def of_nat (n : Nat) : Charₓ :=
+def ofNat (n : Nat) : Charₓ :=
   if h : IsValidChar n then { val := n, valid := h } else { val := 0, valid := Or.inl zero_lt_d800 }
 
-def to_nat (c : Charₓ) : Nat :=
+def toNat (c : Charₓ) : Nat :=
   c.val
 
 theorem eq_of_veq : ∀ {c d : Charₓ}, c.val = d.val → c = d

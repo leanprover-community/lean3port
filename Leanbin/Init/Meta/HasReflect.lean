@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+-/
 prelude
 import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Util
@@ -41,6 +46,8 @@ unsafe instance unsigned.reflect : has_reflect Unsigned
 
 end
 
+/- Instances that [derive] depends on. All other basic instances are defined at the end of
+   derive.lean. -/
 unsafe instance name.reflect : has_reflect Name
   | Name.anonymous => quote.1 Name.anonymous
   | Name.mk_string s n => (quote.1 fun n => Name.mk_string s n).subst (name.reflect n)

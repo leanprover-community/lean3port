@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Default
 import Leanbin.Init.Data.Sigma.Lex
@@ -5,19 +10,24 @@ import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.List.Instances
 import Leanbin.Init.Data.List.Qsort
 
+-- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer. 
+-- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
   show a + 0 < a + b by
     apply Nat.add_lt_add_leftₓ
     assumption
 
+-- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
   suffices 0 < a + 1 by
     simp [Nat.add_comm]
     assumption
   Nat.zero_lt_succₓ _
 
+-- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_rightₓ (a b c : Nat) : a < b → a < b + c := fun h => lt_of_lt_of_leₓ h (Nat.le_add_rightₓ _ _)
 
+-- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_leₓ h (Nat.le_add_leftₓ _ _)
 
 protected def Psum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : Psum α β → ℕ
@@ -32,7 +42,7 @@ namespace WellFoundedTactics
 
 open Tactic
 
-def id_tag.wf : Unit :=
+def IdTag.wf : Unit :=
   ()
 
 unsafe def mk_alt_sizeof : expr → expr
@@ -63,8 +73,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | quote.1 (Psigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -96,7 +106,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
       | _ => return s
     else return s
 
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -105,6 +115,8 @@ private unsafe def unfold_sizeof_loop : tactic Unit := do
 unsafe def unfold_sizeof : tactic Unit :=
   unfold_sizeof_measure >> unfold_sizeof_loop
 
+/- The following section should be removed as soon as we implement the
+   algebraic normalizer. -/
 section SimpleDecTac
 
 open Tactic Expr
@@ -145,8 +157,8 @@ private unsafe def sort_args (args : List expr) : List expr :=
 private def tagged_proof.wf : Unit :=
   ()
 
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
 unsafe def cancel_nat_add_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   let ty ← infer_type lhs >>= whnf
@@ -171,9 +183,9 @@ unsafe def check_target_is_value_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   guardₓ lhs
 
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>
@@ -189,8 +201,16 @@ unsafe def default_dec_tac : tactic Unit :=
   abstract <| do
     clear_internals
     unfold_wf_rel
-    process_lex (unfold_sizeof >> (done <|> cancel_nat_add_lt >> trivial_nat_lt)) <|>
-        unfold_sizeof >> fail "default_dec_tac failed"
+    -- The next line was adapted from code in mathlib by Scott Morrison.
+          -- Because `unfold_sizeof` could actually discharge the goal, add a test
+          -- using `done` to detect this.
+          process_lex
+          (unfold_sizeof >>
+            (done <|>
+              cancel_nat_add_lt >>
+                trivial_nat_lt)) <|>-- Clean up the goal state but not too much before printing the error
+          unfold_sizeof >>
+          fail "default_dec_tac failed"
 
 end WellFoundedTactics
 

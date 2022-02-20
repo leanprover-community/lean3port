@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Coe
@@ -50,7 +55,8 @@ def Name.updatePrefix : Name → Name → Name
   | mk_string s p, new_p => mk_string s new_p
   | mk_numeral s p, new_p => mk_numeral s new_p
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option eqn_compiler.ite
+-- ././Mathport/Syntax/Translate/Basic.lean:211:40: warning: unsupported option eqn_compiler.ite
+-- Without this option, we get errors when defining the following definitions.
 set_option eqn_compiler.ite false
 
 def Name.toStringWithSep (sep : Stringₓ) : Name → Stringₓ
@@ -80,8 +86,10 @@ instance : HasToString Name :=
 instance : HasRepr Name :=
   ⟨Name.repr⟩
 
+-- TODO(Leo): provide a definition in Lean.
 unsafe axiom name.has_decidable_eq : DecidableEq Name
 
+-- Both cmp and lex_cmp are total orders, but lex_cmp implements a lexicographical order.
 unsafe axiom name.cmp : Name → Name → Ordering
 
 unsafe axiom name.lex_cmp : Name → Name → Ordering

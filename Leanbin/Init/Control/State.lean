@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Sebastian Ullrich
+
+The state monad transformer.
+-/
 prelude
 import Leanbin.Init.Control.Alternative
 import Leanbin.Init.Control.Lift
@@ -57,7 +64,7 @@ protected def get : StateTₓ σ m σ :=
 protected def put : σ → StateTₓ σ m PUnit := fun s' => ⟨fun s => pure (PUnit.unit, s')⟩
 
 @[inline]
-protected def modifyₓ (f : σ → σ) : StateTₓ σ m PUnit :=
+protected def modify (f : σ → σ) : StateTₓ σ m PUnit :=
   ⟨fun s => pure (PUnit.unit, f s)⟩
 
 @[inline]
@@ -70,7 +77,7 @@ instance : HasMonadLift m (StateTₓ σ m) :=
   ⟨@StateTₓ.lift σ m _⟩
 
 @[inline]
-protected def monad_map {σ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : StateTₓ σ m α → StateTₓ σ m' α :=
+protected def monadMap {σ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : StateTₓ σ m α → StateTₓ σ m' α :=
   fun x => ⟨fun st => f (x.run st)⟩
 
 instance σ m m' [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (StateTₓ σ m) (StateTₓ σ m') :=
@@ -112,6 +119,8 @@ section
 
 variable {σ : Type u} {m : Type u → Type v}
 
+-- NOTE: The ordering of the following two instances determines that the top-most `state_t` monad layer
+-- will be picked first
 instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadStateₓ σ m] [HasMonadLift m n] :
     MonadStateₓ σ n :=
   ⟨fun α x => monadLift (MonadStateₓ.lift x : m α)⟩

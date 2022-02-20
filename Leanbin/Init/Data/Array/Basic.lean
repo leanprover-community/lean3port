@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Mario Carneiro
+-/
 prelude
 import Leanbin.Init.Data.Nat.Default
 import Leanbin.Init.Data.Bool.Default
@@ -25,7 +30,7 @@ def read (a : DArray n α) (i : Finₓ n) : α i :=
 def write (a : DArray n α) (i : Finₓ n) (v : α i) : DArray n α where
   data := fun j => if h : i = j then Eq.recOnₓ h v else a.read j
 
-def iterate_aux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
+def iterateAux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
   | 0, h, b => b
   | j + 1, h, b =>
     let i : Finₓ n := ⟨j, h⟩
@@ -49,13 +54,13 @@ def map₂ {α'' : Finₓ n → Type w} (f : ∀ i : Finₓ n, α i → α' i �
 def foldl (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) : β :=
   iterate a b f
 
-def rev_iterate_aux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
+def revIterateAux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
   | 0, h, b => b
   | j + 1, h, b =>
     let i : Finₓ n := ⟨j, h⟩
     rev_iterate_aux j (le_of_ltₓ h) (f i (a.read i) b)
 
-def rev_iterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) : β :=
+def revIterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β → β) : β :=
   revIterateAux a f n (le_reflₓ _) b
 
 @[simp]
@@ -77,7 +82,7 @@ protected theorem ext' {a b : DArray n α} (h : ∀ i : Nat h : i < n, read a �
   cases i
   apply h
 
-protected def beq_aux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : Nat, i ≤ n → Bool
+protected def beqAux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : Nat, i ≤ n → Bool
   | 0, h => true
   | i + 1, h => if a.read ⟨i, h⟩ = b.read ⟨i, h⟩ then beq_aux i (le_of_ltₓ h) else false
 
@@ -192,35 +197,35 @@ def map₂ (f : α → α → α) (a b : Arrayₓ n α) : Arrayₓ n α :=
 def foldl (a : Arrayₓ n α) (b : β) (f : α → β → β) : β :=
   iterate a b fun _ => f
 
-def rev_list (a : Arrayₓ n α) : List α :=
+def revList (a : Arrayₓ n α) : List α :=
   a.foldl [] (· :: ·)
 
-def rev_iterate (a : Arrayₓ n α) (b : β) (f : Finₓ n → α → β → β) : β :=
+def revIterate (a : Arrayₓ n α) (b : β) (f : Finₓ n → α → β → β) : β :=
   DArray.revIterate a b f
 
-def rev_foldl (a : Arrayₓ n α) (b : β) (f : α → β → β) : β :=
+def revFoldl (a : Arrayₓ n α) (b : β) (f : α → β → β) : β :=
   revIterate a b fun _ => f
 
-def to_list (a : Arrayₓ n α) : List α :=
+def toList (a : Arrayₓ n α) : List α :=
   a.revFoldl [] (· :: ·)
 
 theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
   Nat.lt_of_le_and_neₓ (Nat.le_of_lt_succₓ h₁) h₂
 
 /-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
-def push_back (a : Arrayₓ n α) (v : α) : Arrayₓ (n + 1) α where
+def pushBack (a : Arrayₓ n α) (v : α) : Arrayₓ (n + 1) α where
   data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
 
 theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
   Nat.Lt.step h
 
 /-- Discard _last_ element in the array. Has builtin VM implementation. -/
-def pop_back (a : Arrayₓ (n + 1) α) : Arrayₓ n α where
+def popBack (a : Arrayₓ (n + 1) α) : Arrayₓ n α where
   data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
 
 /-- Auxilliary function for monadically mapping a function over an array. -/
 @[inline]
-def mmap_core {β : Type v} {m : Type v → Type w} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) :
+def mmapCore {β : Type v} {m : Type v → Type w} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) :
     ∀, ∀ i ≤ n, ∀, m (Arrayₓ i β)
   | 0, _ => pure DArray.nil
   | i + 1, h => do
@@ -238,7 +243,7 @@ def mmap {β : Type v} {m} [Monadₓ m] (a : Arrayₓ n α) (f : α → m β) : 
 def map {β : Type v} (a : Arrayₓ n α) (f : α → β) : Arrayₓ n β :=
   a.map fun _ => f
 
-protected def mem (v : α) (a : Arrayₓ n α) : Prop :=
+protected def Mem (v : α) (a : Arrayₓ n α) : Prop :=
   ∃ i : Finₓ n, read a i = v
 
 instance : HasMem α (Arrayₓ n α) :=

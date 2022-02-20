@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Sebastian Ullrich
+
+The reader monad transformer for passing immutable state.
+-/
 prelude
 import Leanbin.Init.Control.Lift
 import Leanbin.Init.Control.Id
@@ -55,8 +62,8 @@ instance m [Monadₓ m] : HasMonadLift m (ReaderTₓ ρ m) :=
   ⟨@ReaderTₓ.lift ρ m _⟩
 
 @[inline]
-protected def monad_map {ρ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) :
-    ReaderTₓ ρ m α → ReaderTₓ ρ m' α := fun x => ⟨fun r => f (x.run r)⟩
+protected def monadMap {ρ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : ReaderTₓ ρ m α → ReaderTₓ ρ m' α :=
+  fun x => ⟨fun r => f (x.run r)⟩
 
 instance ρ m m' [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (ReaderTₓ ρ m) (ReaderTₓ ρ m') :=
   ⟨@ReaderTₓ.monadMap ρ m m' _ _⟩

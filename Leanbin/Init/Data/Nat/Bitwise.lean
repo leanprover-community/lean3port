@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Mario Carneiro
+-/
 prelude
 import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Meta.WellFoundedTactics
@@ -6,7 +11,7 @@ universe u
 
 namespace Nat
 
-def bodd_div2 : ℕ → Bool × ℕ
+def boddDiv2 : ℕ → Bool × ℕ
   | 0 => (false, 0)
   | succ n =>
     match bodd_div2 n with
@@ -122,7 +127,7 @@ theorem bit_val b n : bit b n = 2 * n + cond b 1 0 := by
 theorem bit_decomp (n : Nat) : bit (bodd n) (div2 n) = n :=
   (bit_val _ _).trans <| (Nat.add_comm _ _).trans <| bodd_add_div2 _
 
-def bit_cases_on {C : Nat → Sort u} n (h : ∀ b n, C (bit b n)) : C n := by
+def bitCasesOn {C : Nat → Sort u} n (h : ∀ b n, C (bit b n)) : C n := by
   rw [← bit_decomp n] <;> apply h
 
 theorem bit_zero : bit false 0 = 0 :=
@@ -147,10 +152,10 @@ def shiftr : ℕ → ℕ → ℕ
   | m, 0 => m
   | m, n + 1 => div2 (shiftr m n)
 
-def test_bit (m n : ℕ) : Bool :=
+def testBit (m n : ℕ) : Bool :=
   bodd (shiftr m n)
 
-def binary_rec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) : ∀ n, C n
+def binaryRec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) : ∀ n, C n
   | n =>
     if n0 : n = 0 then by
       rw [n0] <;> exact z
@@ -170,14 +175,14 @@ def size : ℕ → ℕ :=
 def bits : ℕ → List Bool :=
   binaryRec [] fun b _ IH => b :: IH
 
-def bitwise (f : Bool → Bool → Bool) : ℕ → ℕ → ℕ :=
+def bitwiseₓ (f : Bool → Bool → Bool) : ℕ → ℕ → ℕ :=
   binaryRec (fun n => cond (f false true) n 0) fun a m Ia =>
     binaryRec (cond (f true false) (bit a m) 0) fun b n _ => bit (f a b) (Ia n)
 
-def lor : ℕ → ℕ → ℕ :=
+def lorₓ : ℕ → ℕ → ℕ :=
   bitwiseₓ bor
 
-def land : ℕ → ℕ → ℕ :=
+def landₓ : ℕ → ℕ → ℕ :=
   bitwiseₓ band
 
 def ldiff : ℕ → ℕ → ℕ :=
@@ -191,6 +196,7 @@ theorem binary_rec_zero {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (
   rw [binary_rec]
   rfl
 
+-- bitwise ops
 theorem bodd_bit b n : bodd (bit b n) = b := by
   rw [bit_val] <;> simp <;> cases b <;> cases bodd n <;> rfl
 

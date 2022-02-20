@@ -1,14 +1,19 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.RelationTactics
 import Leanbin.Init.Meta.Occurrences
 
 namespace Tactic
 
-def id_tag.rw : Unit :=
+def IdTag.rw : Unit :=
   ()
 
 /-- Configuration options for the `rewrite` tactic. -/
-structure rewrite_cfg extends ApplyCfg where
+structure RewriteCfg extends ApplyCfg where
   md := reducible
   symm := false
   occs := Occurrences.all

@@ -1,9 +1,17 @@
+/-
+Copyright (c) 2016 Jeremy Avigad. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jeremy Avigad
+
+The integers, with addition, multiplication, and subtraction.
+-/
 prelude
 import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.Nat.Gcd
 
 open Nat
 
+-- the type, coercions, and notation
 inductive Int : Type
   | of_nat : Nat → Int
   | neg_succ_of_nat : Nat → Int
@@ -47,15 +55,20 @@ theorem of_nat_zero : ofNat (0 : Nat) = (0 : Int) :=
 theorem of_nat_one : ofNat (1 : Nat) = (1 : Int) :=
   rfl
 
-def neg_of_nat : ℕ → ℤ
+-- definitions of basic functions
+def negOfNat : ℕ → ℤ
   | 0 => 0
   | succ m => -[1+ m]
 
-def sub_nat_nat (m n : ℕ) : ℤ :=
+def subNatNat (m n : ℕ) : ℤ :=
   match (n - m : Nat) with
   | 0 => ofNat (m - n)
-  | succ k => -[1+ k]
+  |-- m ≥ n
+      succ
+      k =>
+    -[1+ k]
 
+-- m < n, and n - m = succ k
 theorem sub_nat_nat_of_sub_eq_zero {m n : ℕ} (h : n - m = 0) : subNatNat m n = ofNat (m - n) := by
   unfold sub_nat_nat
   rw [h]
@@ -91,6 +104,7 @@ instance : Add ℤ :=
 instance : Mul ℤ :=
   ⟨Int.mul⟩
 
+-- defeq to algebra.sub which gives subtraction for arbitrary `add_group`s
 protected def sub : ℤ → ℤ → ℤ := fun m n => m + -n
 
 instance : Sub ℤ :=
@@ -147,6 +161,7 @@ protected theorem coe_nat_mul_out (m n : ℕ) : ↑m * ↑n = (↑(m * n) : ℤ)
 protected theorem coe_nat_add_one_out (n : ℕ) : ↑n + (1 : ℤ) = ↑(succ n) :=
   rfl
 
+-- these are only for internal use
 theorem of_nat_add_of_nat (m n : Nat) : ofNat m + ofNat n = ofNat (m + n) :=
   rfl
 
@@ -174,6 +189,7 @@ theorem mul_neg_succ_of_nat_neg_succ_of_nat (m n : Nat) : -[1+ m] * -[1+ n] = of
 attribute [local simp]
   of_nat_add_of_nat of_nat_mul_of_nat neg_of_nat_zero neg_of_nat_of_succ neg_neg_of_nat_succ of_nat_add_neg_succ_of_nat neg_succ_of_nat_add_of_nat neg_succ_of_nat_add_neg_succ_of_nat of_nat_mul_neg_succ_of_nat neg_succ_of_nat_of_nat mul_neg_succ_of_nat_neg_succ_of_nat
 
+-- some basic functions and properties
 protected theorem coe_nat_inj {m n : ℕ} (h : (↑m : ℤ) = ↑n) : m = n :=
   Int.ofNat.injₓ h
 
@@ -190,6 +206,7 @@ theorem neg_succ_of_nat_inj_iff {m n : ℕ} : negSucc m = negSucc n ↔ m = n :=
 theorem neg_succ_of_nat_eq (n : ℕ) : -[1+ n] = -(n + 1) :=
   rfl
 
+-- neg
 protected theorem neg_neg : ∀ a : ℤ, - -a = a
   | of_nat 0 => rfl
   | of_nat (n + 1) => rfl
@@ -201,6 +218,7 @@ protected theorem neg_inj {a b : ℤ} (h : -a = -b) : a = b := by
 protected theorem sub_eq_add_neg {a b : ℤ} : a - b = a + -b :=
   rfl
 
+-- basic properties of sub_nat_nat
 theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ i n, P (n + i) n (ofNat i))
     (hn : ∀ i m, P m (m + i + 1) -[1+ i]) : P m n (subNatNat m n) := by
   have H : ∀ k, n - m = k → P m n (Nat.casesOn k (of_nat (m - n)) fun a => -[1+ a]) := by
@@ -256,8 +274,9 @@ theorem sub_nat_nat_of_lt {m n : ℕ} (h : m < n) : subNatNat m n = -[1+ pred (n
   have : n - m = succ (pred (n - m)) := Eq.symm (succ_pred_eq_of_posₓ (Nat.sub_pos_of_ltₓ h))
   rw [sub_nat_nat_of_sub_eq_succ this]
 
+-- nat_abs
 @[simp]
-def nat_abs : ℤ → ℕ
+def natAbs : ℤ → ℕ
   | of_nat m => m
   | -[1+ m] => succ m
 
@@ -294,6 +313,7 @@ theorem nat_abs_eq : ∀ a : ℤ, a = natAbs a ∨ a = -natAbs a
 theorem eq_coe_or_neg (a : ℤ) : ∃ n : ℕ, a = n ∨ a = -n :=
   ⟨_, nat_abs_eq a⟩
 
+-- sign
 def sign : ℤ → ℤ
   | (n + 1 : ℕ) => 1
   | 0 => 0
@@ -311,18 +331,25 @@ theorem sign_one : sign 1 = 1 :=
 theorem sign_neg_one : sign (-1) = -1 :=
   rfl
 
-protected def div : ℤ → ℤ → ℤ
+-- Quotient and remainder 
+-- There are three main conventions for integer division,
+-- referred here as the E, F, T rounding conventions.
+-- All three pairs satisfy the identity x % y + (x / y) * y = x
+-- unconditionally.
+-- E-rounding: This pair satisfies 0 ≤ mod x y < nat_abs y for y ≠ 0
+protected def divₓ : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => ofNat (m / n)
   | (m : ℕ), -[1+ n] => -ofNat (m / succ n)
   | -[1+ m], 0 => 0
   | -[1+ m], (n + 1 : ℕ) => -[1+ m / succ n]
   | -[1+ m], -[1+ n] => ofNat (succ (m / succ n))
 
-protected def mod : ℤ → ℤ → ℤ
+protected def modₓ : ℤ → ℤ → ℤ
   | (m : ℕ), n => (m % natAbs n : ℕ)
   | -[1+ m], n => subNatNat (natAbs n) (succ (m % natAbs n))
 
-def fdiv : ℤ → ℤ → ℤ
+-- F-rounding: This pair satisfies fdiv x y = floor (x / y)
+def fdivₓ : ℤ → ℤ → ℤ
   | 0, _ => 0
   | (m : ℕ), (n : ℕ) => ofNat (m / n)
   | (m + 1 : ℕ), -[1+ n] => -[1+ m / succ n]
@@ -330,20 +357,21 @@ def fdiv : ℤ → ℤ → ℤ
   | -[1+ m], (n + 1 : ℕ) => -[1+ m / succ n]
   | -[1+ m], -[1+ n] => ofNat (succ m / succ n)
 
-def fmod : ℤ → ℤ → ℤ
+def fmodₓ : ℤ → ℤ → ℤ
   | 0, _ => 0
   | (m : ℕ), (n : ℕ) => ofNat (m % n)
   | (m + 1 : ℕ), -[1+ n] => subNatNat (m % succ n) n
   | -[1+ m], (n : ℕ) => subNatNat n (succ (m % n))
   | -[1+ m], -[1+ n] => -ofNat (succ m % succ n)
 
-def Quot : ℤ → ℤ → ℤ
+-- T-rounding: This pair satisfies quot x y = round_to_zero (x / y)
+def quotₓ : ℤ → ℤ → ℤ
   | of_nat m, of_nat n => ofNat (m / n)
   | of_nat m, -[1+ n] => -ofNat (m / succ n)
   | -[1+ m], of_nat n => -ofNat (succ m / n)
   | -[1+ m], -[1+ n] => ofNat (succ m / succ n)
 
-def rem : ℤ → ℤ → ℤ
+def remₓ : ℤ → ℤ → ℤ
   | of_nat m, of_nat n => ofNat (m % n)
   | of_nat m, -[1+ n] => ofNat (m % succ n)
   | -[1+ m], of_nat n => -ofNat (succ m % n)
@@ -355,9 +383,14 @@ instance : Div ℤ :=
 instance : Mod ℤ :=
   ⟨Int.modₓ⟩
 
-def gcd (m n : ℤ) : ℕ :=
+-- gcd
+def gcdₓ (m n : ℤ) : ℕ :=
   gcdₓ (natAbs m) (natAbs n)
 
+/-
+   int is a ring
+-/
+-- addition
 protected theorem add_comm : ∀ a b : ℤ, a + b = b + a
   | of_nat n, of_nat m => by
     simp [Nat.add_comm]
@@ -436,6 +469,7 @@ protected theorem add_assoc : ∀ a b c : ℤ, a + b + c = a + (b + c)
   | -[1+ m], -[1+ n], -[1+ k] => by
     simp [add_succ, Nat.add_comm, Nat.add_left_comm, neg_of_nat_of_succ]
 
+-- negation
 theorem sub_nat_self : ∀ n, subNatNat n n = 0
   | 0 => rfl
   | succ m => by
@@ -454,6 +488,7 @@ protected theorem add_left_neg : ∀ a : ℤ, -a + a = 0
 protected theorem add_right_neg (a : ℤ) : a + -a = 0 := by
   rw [Int.add_comm, Int.add_left_neg]
 
+-- multiplication
 protected theorem mul_comm : ∀ a b : ℤ, a * b = b * a
   | of_nat m, of_nat n => by
     simp [Nat.mul_comm]
@@ -639,7 +674,7 @@ protected theorem neg_add {a b : ℤ} : -(a + b) = -a + -b :=
 theorem neg_succ_of_nat_coe' (n : ℕ) : -[1+ n] = -↑n - 1 := by
   rw [Int.sub_eq_add_neg, ← Int.neg_add] <;> rfl
 
-protected theorem coe_nat_sub {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑m - ↑n :=
+protected theorem coe_nat_subₓ {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑m - ↑n :=
   of_nat_sub
 
 attribute [local simp] Int.sub_eq_add_neg
@@ -653,7 +688,7 @@ protected theorem sub_nat_nat_eq_coe {m n : ℕ} : subNatNat m n = ↑m - ↑n :
     rw [Int.coe_nat_add, Int.coe_nat_add, Int.coe_nat_one, Int.neg_succ_of_nat_eq, Int.sub_eq_add_neg, Int.neg_add,
       Int.neg_add, Int.neg_add, ← Int.add_assoc, ← Int.add_assoc, Int.add_right_neg, Int.zero_add]
 
-def to_nat : ℤ → ℕ
+def toNat : ℤ → ℕ
   | (n : ℕ) => n
   | -[1+ n] => 0
 
@@ -666,7 +701,8 @@ theorem to_nat_sub (m n : ℕ) : toNat (m - n) = m - n := by
         fun i n => by
         rw [Nat.add_assoc, Nat.sub_eq_zero_of_leₓ (Nat.le_add_rightₓ _ _)] <;> rfl
 
-def nat_mod (m n : ℤ) : ℕ :=
+-- Since mod x y is always nonnegative when y ≠ 0, we can make a nat version of it
+def natModₓ (m n : ℤ) : ℕ :=
   (m % n).toNat
 
 protected theorem one_mul : ∀ a : ℤ, (1 : ℤ) * a = a

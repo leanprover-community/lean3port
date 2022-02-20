@@ -22,7 +22,7 @@ unsafe axiom local_context : Type
 namespace LocalContext
 
 /-- The empty local context. -/
-unsafe axiom Empty : local_context
+unsafe axiom empty : local_context
 
 /-- Add a new local constant to the lc. The new local has an unused unique_name.
 Fails when the type depends on local constants that are not present in the context.-/
@@ -53,7 +53,7 @@ unsafe instance : has_to_format local_context :=
 unsafe instance : LE local_context :=
   ⟨fun a b => local_context.is_subset a b⟩
 
-unsafe instance DecidableRel : DecidableRel (· ≤ · : local_context → local_context → Prop) :=
+unsafe instance decidable_rel : DecidableRel ((· ≤ ·) : local_context → local_context → Prop) :=
   inferInstance
 
 unsafe instance : HasEmptyc local_context :=

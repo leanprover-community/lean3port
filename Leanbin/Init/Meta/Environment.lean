@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Meta.Declaration
 import Leanbin.Init.Meta.Exceptional
@@ -33,7 +38,7 @@ Data for a projection declaration:
 - `ordered_ring.neg` is a projection with ``{cname := `ordered_ring.mk, nparams := 1, idx := 5, is_class := tt}``.
 
 -/
-structure projection_info where
+structure ProjectionInfo where
   cname : Name
   nparams : Nat
   idx : Nat
@@ -48,12 +53,12 @@ structure projection_info where
        | two [] : foo -> foo   -- implicit
        | three : foo -> foo    -- relaxed implicit (default)
 -/
-inductive implicit_infer_kind
+inductive ImplicitInferKind
   | implicit
   | relaxed_implicit
   | none
 
-instance implicit_infer_kind.inhabited : Inhabited ImplicitInferKind :=
+instance ImplicitInferKind.inhabited : Inhabited ImplicitInferKind :=
   ⟨ImplicitInferKind.implicit⟩
 
 /-- One introduction rule in an inductive declaration -/

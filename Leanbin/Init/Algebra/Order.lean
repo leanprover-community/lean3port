@@ -1,17 +1,26 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Logic
 import Leanbin.Init.Classical
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Algebra.Classes
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option default_priority
+-- ././Mathport/Syntax/Translate/Basic.lean:211:40: warning: unsupported option default_priority
+/- Make sure instances defined in this file have lower priority than the ones
+   defined for concrete structures -/
+/- Make sure instances defined in this file have lower priority than the ones
+   defined for concrete structures -/
 set_option default_priority 100
 
 universe u
 
 variable {α : Type u}
 
--- ././Mathport/Syntax/Translate/Basic.lean:169:40: warning: unsupported option auto_param.check_exists
+-- ././Mathport/Syntax/Translate/Basic.lean:211:40: warning: unsupported option auto_param.check_exists
 set_option auto_param.check_exists false
 
 section Preorderₓ
@@ -114,7 +123,7 @@ theorem le_of_lt_or_eqₓ : ∀ {a b : α}, a < b ∨ a = b → a ≤ b
 theorem le_of_eq_or_ltₓ {a b : α} (h : a = b ∨ a < b) : a ≤ b :=
   Or.elim h le_of_eqₓ le_of_ltₓ
 
-instance decidableLtOfDecidableLe [DecidableRel (· ≤ · : α → α → Prop)] : DecidableRel (· < · : α → α → Prop)
+instance decidableLtOfDecidableLe [DecidableRel ((· ≤ ·) : α → α → Prop)] : DecidableRel ((· < ·) : α → α → Prop)
   | a, b =>
     if hab : a ≤ b then
       if hba : b ≤ a then is_false fun hab' => not_le_of_gtₓ hab' hba else is_true <| lt_of_le_not_leₓ hab hba
@@ -143,7 +152,7 @@ theorem le_antisymm_iffₓ {a b : α} : a = b ↔ a ≤ b ∧ b ≤ a :=
 
 theorem lt_of_le_of_neₓ {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_leₓ h₁ <| mt (le_antisymmₓ h₁) h₂
 
-instance decidableEqOfDecidableLe [DecidableRel (· ≤ · : α → α → Prop)] : DecidableEq α
+instance decidableEqOfDecidableLe [DecidableRel ((· ≤ ·) : α → α → Prop)] : DecidableEq α
   | a, b =>
     if hab : a ≤ b then if hba : b ≤ a then isTrue (le_antisymmₓ hab hba) else isFalse fun heq => hba (HEq ▸ le_reflₓ _)
     else isFalse fun heq => hab (HEq ▸ le_reflₓ _)
@@ -155,7 +164,7 @@ variable [@DecidableRel α (· ≤ ·)]
 theorem lt_or_eq_of_leₓ {a b : α} (hab : a ≤ b) : a < b ∨ a = b :=
   if hba : b ≤ a then Or.inr (le_antisymmₓ hab hba) else Or.inl (lt_of_le_not_leₓ hab hba)
 
-theorem eq_or_lt_of_le {a b : α} (hab : a ≤ b) : a = b ∨ a < b :=
+theorem eq_or_lt_of_leₓ {a b : α} (hab : a ≤ b) : a = b ∨ a < b :=
   (lt_or_eq_of_leₓ hab).swap
 
 theorem le_iff_lt_or_eqₓ {a b : α} : a ≤ b ↔ a < b ∨ a = b :=
@@ -181,11 +190,11 @@ section LinearOrderₓ
 
 
 /-- Default definition of `max`. -/
-def maxDefault {α : Type u} [LE α] [DecidableRel (· ≤ · : α → α → Prop)] (a b : α) :=
+def maxDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
   if b ≤ a then a else b
 
 /-- Default definition of `min`. -/
-def minDefault {α : Type u} [LE α] [DecidableRel (· ≤ · : α → α → Prop)] (a b : α) :=
+def minDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
   if a ≤ b then a else b
 
 /-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
@@ -194,7 +203,7 @@ class LinearOrderₓ (α : Type u) extends PartialOrderₓ α where
   le_total : ∀ a b : α, a ≤ b ∨ b ≤ a
   decidableLe : DecidableRel (· ≤ ·)
   DecidableEq : DecidableEq α := @decidableEqOfDecidableLe _ _ decidable_le
-  decidableLt : DecidableRel (· < · : α → α → Prop) := @decidableLtOfDecidableLe _ _ decidable_le
+  decidableLt : DecidableRel ((· < ·) : α → α → Prop) := @decidableLtOfDecidableLe _ _ decidable_le
   max : α → α → α := @maxDefault α _ _
   max_def : max = @maxDefault α _ decidable_le := by
     run_tac
@@ -287,9 +296,11 @@ instance : IsTotalPreorder α (· ≤ ·) where
   trans := @le_transₓ _ _
   Total := le_totalₓ
 
+-- TODO(Leo): decide whether we should keep this instance or not
 instance is_strict_weak_order_of_linear_order : IsStrictWeakOrder α (· < ·) :=
   is_strict_weak_order_of_is_total_preorder lt_iff_not_geₓ
 
+-- TODO(Leo): decide whether we should keep this instance or not
 instance is_strict_total_order_of_linear_order : IsStrictTotalOrder α (· < ·) where
   trichotomous := lt_trichotomyₓ
 

@@ -1,10 +1,17 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.List.Lemmas
 import Leanbin.Init.Wf
 
 namespace List
 
-def qsort.F {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, length y < length x → List α) → List α
+-- Note: we can't use the equation compiler here because
+-- init.meta.well_founded_tactics uses this file
+def Qsort.f {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, length y < length x → List α) → List α
   | [], IH => []
   | h :: t, IH => by
     induction' e : partition (fun x => lt h x = tt) t with large small
@@ -16,6 +23,9 @@ def qsort.F {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, 
       constructor <;> exact Nat.succ_le_succₓ (length_le_of_sublist (filter_sublist _))
     exact IH small this.left ++ h :: IH large this.right
 
+/- This is based on the minimalist Haskell "quicksort".
+
+   Remark: this is *not* really quicksort since it doesn't partition the elements in-place -/
 def qsort {α} (lt : α → α → Bool) : List α → List α :=
   WellFounded.fix (InvImage.wfₓ length Nat.lt_wf) (Qsort.f lt)
 

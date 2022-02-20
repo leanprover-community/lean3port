@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura, Jannis Limperg
+-/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.TypeContext
@@ -17,22 +22,64 @@ open Lean.Parser
 
 open Native
 
--- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1514:35: warning: unsupported: precedence command
 local postfix:9001 "?" => optionalₓ
 
 local postfix:9001 "*" => many
 
 namespace Tactic
 
+-- allows metavars
 unsafe def i_to_expr (q : pexpr) : tactic expr :=
   to_expr q true
 
+-- allow metavars and no subgoals
 unsafe def i_to_expr_no_subgoals (q : pexpr) : tactic expr :=
   to_expr q true false
 
+-- doesn't allows metavars
 unsafe def i_to_expr_strict (q : pexpr) : tactic expr :=
   to_expr q false
 
+/- Auxiliary version of i_to_expr for apply-like tactics.
+   This is a workaround for comment
+      https://github.com/leanprover/lean/issues/1342#issuecomment-307912291
+   at issue #1342.
+
+   In interactive mode, given a tactic
+
+        apply f
+
+   we want the apply tactic to create all metavariables. The following
+   definition will return `@f` for `f`. That is, it will **not** create
+   metavariables for implicit arguments.
+
+   Before we added `i_to_expr_for_apply`, the tactic
+
+       apply le_antisymm
+
+   would first elaborate `le_antisymm`, and create
+
+       @le_antisymm ?m_1 ?m_2 ?m_3 ?m_4
+
+   The type class resolution problem
+        ?m_2 : weak_order ?m_1
+   by the elaborator since ?m_1 is not assigned yet, and the problem is
+   discarded.
+
+   Then, we would invoke `apply_core`, which would create two
+   new metavariables for the explicit arguments, and try to unify the resulting
+   type with the current target. After the unification,
+   the metavariables ?m_1, ?m_3 and ?m_4 are assigned, but we lost
+   the information about the pending type class resolution problem.
+
+   With `i_to_expr_for_apply`, `le_antisymm` is elaborate into `@le_antisymm`,
+   the apply_core tactic creates all metavariables, and solves the ones that
+   can be solved by type class resolution.
+
+   Another possible fix: we modify the elaborator to return pending
+   type class resolution problems, and store them in the tactic_state.
+-/
 unsafe def i_to_expr_for_apply (q : pexpr) : tactic expr :=
   let aux (n : Name) : tactic expr := do
     let p ← resolve_name n
@@ -73,10 +120,15 @@ unsafe def concat_tags (tac : tactic (List (Name × expr))) : tactic Unit :=
     (do
       let in_tag ← get_main_tag
       let r ← tac
-      let r ← r.mfilter fun ⟨n, m⟩ => bnot <$> is_assigned m
+      let r
+        ←-- remove assigned metavars
+              r.mfilter
+            fun ⟨n, m⟩ => bnot <$> is_assigned m
       match r with
         | [(_, m)] => set_tag m in_tag
-        | _ => r fun ⟨n, m⟩ => set_tag m (n :: in_tag))
+        |-- if there is only new subgoal, we just propagate `in_tag`
+          _ =>
+          r fun ⟨n, m⟩ => set_tag m (n :: in_tag))
     (tac >> skip)
 
 /--
@@ -288,8 +340,14 @@ private unsafe def resolve_name' (n : Name) : tactic expr := do
   let p ← resolve_name n
   match p with
     | expr.const n _ => mk_const n
-    | _ => i_to_expr p
+    |-- create metavars for universe levels
+      _ =>
+      i_to_expr p
 
+/- Version of to_expr that tries to bypass the elaborator if `p` is just a constant or local constant.
+   This is not an optimization, by skipping the elaborator we make sure that no unwanted resolution is used.
+   Example: the elaborator will force any unassigned ?A that must have be an instance of (has_one ?A) to nat.
+   Remark: another benefit is that auxiliary temporary metavariables do not appear in error messages. -/
 unsafe def to_expr' (p : pexpr) : tactic expr :=
   match p with
   | const c [] => do
@@ -310,7 +368,8 @@ unsafe structure rw_rule where
 
 unsafe def get_rule_eqn_lemmas (r : rw_rule) : tactic (List Name) :=
   let aux (n : Name) : tactic (List Name) :=
-    (do
+    (-- unpack local refs
+      do
         let p ← resolve_name n
         let e := p.erase_annotations.get_app_fn.erase_annotations
         match e with
@@ -322,7 +381,7 @@ unsafe def get_rule_eqn_lemmas (r : rw_rule) : tactic (List Name) :=
   | local_const n _ _ _ => aux n
   | _ => return []
 
--- ././Mathport/Syntax/Translate/Basic.lean:707:4: warning: unsupported notation `eq_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:826:4: warning: unsupported notation `eq_lemmas
 private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit :=
   rs.mmap' fun r => do
     save_info r
@@ -339,7 +398,7 @@ private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit 
 private unsafe def uses_hyp (e : expr) (h : expr) : Bool :=
   (e.fold false) fun t _ r => r || toBool (t = h)
 
--- ././Mathport/Syntax/Translate/Basic.lean:707:4: warning: unsupported notation `eq_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:826:4: warning: unsupported notation `eq_lemmas
 private unsafe def rw_hyp (cfg : RewriteCfg) : List rw_rule → expr → tactic Unit
   | [], hyp => skip
   | r :: rs, hyp => do
@@ -362,6 +421,7 @@ unsafe structure rw_rules_t where
   end_pos : Option Pos
   deriving has_reflect
 
+-- accepts the same content as `pexpr_list_or_texpr`, but with correct goal info pos annotations
 unsafe def rw_rules : parser rw_rules_t :=
   tk "[" *> rw_rules_t.mk <$> sep_by (skip_info (tk ",")) (set_goal_info_pos <| rw_rule_p (parser.pexpr 0)) <*>
       (some <$> cur_pos <* set_goal_info_pos (tk "]")) <|>
@@ -481,7 +541,8 @@ unsafe def generalize (h : parse (ident)?) (_ : parse <| tk ":") (p : parse gene
     let some h ← pure h | (tactic.generalize e x >> intro1) >> skip
     let tgt ← target
     let tgt' ←
-      (do
+      (-- if generalizing fails, fall back to not replacing anything
+          do
             let ⟨tgt', _⟩ ← solve_aux tgt (tactic.generalize e x >> target)
             to_expr (pquote.1 (∀ x, (%%ₓe) = x → %%ₓtgt' 0 1))) <|>
           to_expr (pquote.1 (∀ x, (%%ₓe) = x → %%ₓtgt))
@@ -510,13 +571,15 @@ unsafe def cases_arg_p : parser (Option Name × pexpr) :=
 private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr)) : tactic Unit := do
   let gs ← get_goals
   match gs with
-    | [g] => set_tag g in_tag
+    |-- if only one goal was produced, we should not make the tag longer
+      [g] =>
+      set_tag g in_tag
     | _ =>
-      let tgs : List (Name × List expr × expr) := rs (fun ⟨n, new_hyps⟩ g => ⟨n, new_hyps, g⟩) gs
+      let tgs : List (Name × List expr × expr) := rs (fun g => ⟨n, new_hyps, g⟩) gs
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
--- ././Mathport/Syntax/Translate/Basic.lean:1392:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1514:35: warning: unsupported: precedence command
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -536,15 +599,21 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident) (id
     (revert : parse <| (tk "generalizing" *> (ident)*)?) : tactic Unit := do
   let in_tag ← get_main_tag
   focus1 <| do
-      let e ←
-        match hp with
+      let e
+        ←-- process `h : t` case
+          match hp with
           | (some h, p) => do
             let x ← get_unused_name
             generalize h () (p, x)
             get_local x
           | (none, p) => i_to_expr p
-      let e ← if e then pure e else tactic.generalize e >> intro1
-      let (e, newvars, locals) ←
+      let e
+        ←-- generalize major premise
+            if e then pure e
+          else tactic.generalize e >> intro1
+      let-- generalize major premise args
+        (e, newvars, locals)
+        ←
         do
           let none ← pure rec_name | pure (e, [], [])
           let t ← infer_type e
@@ -561,24 +630,34 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident) (id
                 tactic.generalize arg
                 let h ← intro1
                 intron n
-                let locals := arg [] fun e _ acc => if e then e :: Acc else Acc
+                let-- now try to clear hypotheses that may have been abstracted away
+                locals := arg [] fun e _ acc => if e then e :: Acc else Acc
                 locals (try ∘ clear)
                 pure h
           intron (n - 1)
           let e ← intro1
           pure (e, newvars, locals)
-      let to_generalize ← (revert []).mmap tactic.get_local
+      let to_generalize ←
+        (-- revert `generalizing` params (and their dependencies, if any)
+                revert
+                []).mmap
+            tactic.get_local
       let num_generalized ← revert_lst to_generalize
-      let rs ← tactic.induction e ids rec_name
-      let gen_hyps ←
-        all_goals <| do
+      let rs
+        ←-- perform the induction
+            tactic.induction
+            e ids rec_name
+      let gen_hyps
+        ←-- re-introduce the generalized hypotheses
+            all_goals <|
+            do
             let new_hyps ← intron' num_generalized
             clear_lst (newvars local_pp_name)
             (e :: locals).mmap' (try ∘ clear)
             pure new_hyps
       set_cases_tags in_tag <|
           @List.map₂ₓ (Name × List expr × List (Name × expr)) _ (Name × List expr)
-            (fun ⟨n, hyps, _⟩ gen_hyps => ⟨n, hyps ++ gen_hyps⟩) rs gen_hyps
+            (fun gen_hyps => ⟨n, hyps ++ gen_hyps⟩) rs gen_hyps
 
 open CaseTag.MatchResult
 
@@ -663,6 +742,15 @@ Multiple cases can be handled by the same tactic block with
 ```
 case [A : N₀ ... Nₙ, B : M₀ ... Mₙ] {...}
 ```
+-/
+/-
+TODO `case` could be generalised to work with zero names as well. The form
+
+  case : x y z { ... }
+
+would select the first goal (or the first goal with a case tag), renaming
+hypotheses to `x, y, z`. The renaming functionality would be available only if
+the goal has a case tag.
 -/
 unsafe def case (args : parse case_parser) (tac : itactic) : tactic Unit := do
   let target_goals ←
@@ -788,7 +876,7 @@ unsafe def cases_type (one : parse <| (tk "!")?) (rec : parse <| (tk "*")?) (typ
 /--
 Tries to solve the current goal using a canonical proof of `true`, or the `reflexivity` tactic, or the `contradiction` tactic.
 -/
-unsafe def trivialₓ : tactic Unit :=
+unsafe def trivial : tactic Unit :=
   tactic.triv <|> tactic.reflexivity <|> tactic.contradiction <|> fail "trivial tactic failed"
 
 /-- Closes the main goal using `sorry`.
@@ -1066,7 +1154,7 @@ private unsafe def resolve_exception_ids (all_hyps : Bool) :
 unsafe def decode_simp_arg_list (hs : List simp_arg_type) : tactic <| List pexpr × List Name × List Name × Bool := do
   let (hs, ex, all) ←
     hs.mfoldl
-        (fun r : List pexpr × List Name × Bool h => do
+        (fun h => do
           let (es, ex, all) := r
           match h with
             | simp_arg_type.all_hyps => pure (es, ex, tt)
@@ -1117,7 +1205,8 @@ private unsafe def simp_lemmas.resolve_and_add (s : simp_lemmas) (u : List Name)
     (symm : Bool) : tactic (simp_lemmas × List Name) := do
   let p ← resolve_name n
   check_no_overload p
-  let e := p.erase_annotations.get_app_fn.erase_annotations
+  let-- unpack local refs
+  e := p.erase_annotations.get_app_fn.erase_annotations
   match e with
     | const n _ =>
       (do
@@ -1174,7 +1263,8 @@ unsafe def mk_simp_set_core (no_dflt : Bool) (attr_names : List Name) (hs : List
   let (hs, gex, hex, all_hyps) ← decode_simp_arg_list_with_symm hs
   when (all_hyps ∧ at_star ∧ Not hex) <| fail "A tactic of the form `simp [*, -h] at *` is currently not supported"
   let s ← join_user_simp_lemmas no_dflt attr_names
-  let to_erase :=
+  let-- Erase `h` from the default simp set for calls of the form `simp [←h]`.
+  to_erase :=
     hs.foldl
       (fun l h =>
         match h with
@@ -1188,9 +1278,14 @@ unsafe def mk_simp_set_core (no_dflt : Bool) (attr_names : List Name) (hs : List
     if Not at_star ∧ all_hyps then do
         let ctx ← collect_ctx_simps
         let ctx := ctx.filter fun h => h.local_uniq_name ∉ hex
-        s ctx
+        -- remove local exceptions
+            s
+            ctx
       else return s
-  let gex ← gex.mmap fun n => List.cons n <$> get_eqn_lemmas_for true n
+  let gex
+    ←-- add equational lemmas, if any
+          gex.mmap
+        fun n => List.cons n <$> get_eqn_lemmas_for true n
   return (all_hyps, simp_lemmas.erase s <| gex, u)
 
 unsafe def mk_simp_set (no_dflt : Bool) (attr_names : List Name) (hs : List simp_arg_type) :
@@ -1207,7 +1302,7 @@ unsafe def simp_core_aux (cfg : SimpConfig) (discharger : tactic Unit) (s : simp
     (hs : List expr) (tgt : Bool) : tactic name_set := do
   let (to_remove, lmss) ←
     @List.mfoldl tactic _ (List expr × name_set) _
-        (fun ⟨hs, lms⟩ h => do
+        (fun h => do
           let h_type ← infer_type h
           (do
                 let (new_h_type, pr, new_lms) ← simplify s u h_type cfg `eq discharger
@@ -1304,7 +1399,11 @@ unsafe def dsimp (no_dflt : parse only_flag) (es : parse simp_arg_list) (attr_na
     (l : parse location) (cfg : DsimpConfig := {  }) : tactic Unit := do
   let (s, u) ← mk_simp_set no_dflt attr_names es
   match l with
-    | loc.wildcard => do
+    | loc.wildcard =>/- Remark: we cannot revert frozen local instances.
+         We disable zeta expansion because to prevent `intron n` from failing.
+         Another option is to put a "marker" at the current target, and
+         implement `intro_upto_marker`. -/
+    do
       let n ← revert_all
       dsimp_target s u { cfg with zeta := ff }
       intron n
@@ -1456,7 +1555,7 @@ unsafe def ids_to_simp_arg_list (tac_name : Name) (cs : List Name) : tactic (Lis
     when (hs ∧ p) (fail s! "{tac_name } tactic failed, {c} does not have equational lemmas nor is a projection")
     return <| simp_arg_type.expr (expr.const c [])
 
-structure unfold_config extends SimpConfig where
+structure UnfoldConfig extends SimpConfig where
   zeta := false
   proj := false
   eta := false
@@ -1631,6 +1730,7 @@ section AddInteractive
 
 open Tactic
 
+-- See add_interactive
 private unsafe def add_interactive_aux (new_namespace : Name) : List Name → Tactic Unit
   | [] => return ()
   | n :: ns => do
@@ -1657,7 +1757,7 @@ unsafe def has_dup : tactic Bool := do
   let ctx ← local_context
   let p : name_set × Bool :=
     ctx.foldl
-      (fun ⟨s, r⟩ h =>
+      (fun h =>
         if r then (s, r) else if s.contains h.local_pp_name then (s, true) else (s.insert h.local_pp_name, false))
       (mk_name_set, false)
   return p.2
@@ -1674,19 +1774,43 @@ end AddInteractive
 
 namespace Tactic
 
+-- Helper tactic for `mk_inj_eq
 protected unsafe def apply_inj_lemma : tactic Unit := do
   let h ← intro `h
   let some (lhs, rhs) ← expr.is_eq <$> infer_type h
   let expr.const C _ ← return lhs.get_app_fn
-  applyc (Name.mk_string "inj" C) { AutoParam := ff, optParam := ff }
+  -- We disable auto_param and opt_param support to address issue #1943
+      applyc
+      (Name.mk_string "inj" C) { AutoParam := ff, optParam := ff }
   assumption
 
--- ././Mathport/Syntax/Translate/Basic.lean:796:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+/- Auxiliary tactic for proving `I.C.inj_eq` lemmas.
+   These lemmas are automatically generated by the equation compiler.
+   Example:
+   ```
+   list.cons.inj_eq : forall h1 h2 t1 t2, (h1::t1 = h2::t2) = (h1 = h2 ∧ t1 = t2) :=
+   by mk_inj_eq
+   ```
+-/
 unsafe def mk_inj_eq : tactic Unit :=
   sorry
 
+/-
+     We use `_root_.*` in the following tactics because
+     names are resolved at tactic execution time in interactive mode.
+     See PR #1913
+
+     TODO(Leo): This is probably not the only instance of this problem.
+     `[ ... ] blocks are convenient to use because they allow us to use the interactive
+     mode to write non interactive tactics.
+     One potential fix for this issue is to resolve names in `[ ... ] at tactic
+     compilation time.
+     After this issue is fixed, we should remove the `_root_.*` workaround.
+  -/
 end Tactic
 
+-- Define inj_eq lemmas for inductive datatypes that were declared before `mk_inj_eq`
 universe u v
 
 theorem Sum.inl.inj_eq {α : Type u} (β : Type v) (a₁ a₂ : α) : (@Sum.inl α β a₁ = Sum.inl a₂) = (a₁ = a₂) := by

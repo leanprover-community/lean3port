@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 
 universe u w
 
@@ -20,13 +25,13 @@ def nil : Buffer α :=
 def size (b : Buffer α) : Nat :=
   b.1
 
-def to_array (b : Buffer α) : Arrayₓ b.size α :=
+def toArray (b : Buffer α) : Arrayₓ b.size α :=
   b.2
 
-def push_back : Buffer α → α → Buffer α
+def pushBack : Buffer α → α → Buffer α
   | ⟨n, a⟩, v => ⟨n + 1, a.pushBack v⟩
 
-def pop_back : Buffer α → Buffer α
+def popBack : Buffer α → Buffer α
   | ⟨0, a⟩ => ⟨0, a⟩
   | ⟨n + 1, a⟩ => ⟨n, a.popBack⟩
 
@@ -48,17 +53,17 @@ theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) 
 theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) : write b ⟨i, h⟩ v = write' b i v := by
   cases b <;> unfold write write' <;> simp [Arrayₓ.write_eq_write']
 
-def to_list (b : Buffer α) : List α :=
+def toList (b : Buffer α) : List α :=
   b.toArray.toList
 
 protected def toString (b : Buffer Charₓ) : Stringₓ :=
   b.toArray.toList.asString
 
-def append_list {α : Type u} : Buffer α → List α → Buffer α
+def appendList {α : Type u} : Buffer α → List α → Buffer α
   | b, [] => b
   | b, v :: vs => append_list (b.pushBack v) vs
 
-def append_string (b : Buffer Charₓ) (s : Stringₓ) : Buffer Charₓ :=
+def appendString (b : Buffer Charₓ) (s : Stringₓ) : Buffer Charₓ :=
   b.appendList s.toList
 
 theorem lt_aux_1 {a b c : Nat} (h : a + c < b) : a < b :=
@@ -75,7 +80,7 @@ theorem lt_aux_3 {n i} (h : i + 1 < n) : n - 2 - i < n :=
         decide)
   lt_of_le_of_ltₓ (Nat.sub_leₓ _ _) this
 
-def append_array {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Arrayₓ n α → ∀ i : Nat, i < n → Buffer α
+def appendArray {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Arrayₓ n α → ∀ i : Nat, i < n → Buffer α
   | ⟨m, b⟩, a, 0, _ =>
     let i : Finₓ n := ⟨n - 1, lt_aux_2 nz⟩
     ⟨m + 1, b.pushBack (a.read i)⟩
@@ -107,13 +112,13 @@ def map : Buffer α → (α → β) → Buffer β
 def foldl : Buffer α → β → (α → β → β) → β
   | ⟨_, a⟩, b, f => a.foldl b f
 
-def rev_iterate : ∀ b : Buffer α, β → (Finₓ b.size → α → β → β) → β
+def revIterate : ∀ b : Buffer α, β → (Finₓ b.size → α → β → β) → β
   | ⟨_, a⟩, b, f => a.revIterate b f
 
 def take (b : Buffer α) (n : Nat) : Buffer α :=
   if h : n ≤ b.size then ⟨n, b.toArray.take n h⟩ else b
 
-def take_right (b : Buffer α) (n : Nat) : Buffer α :=
+def takeRight (b : Buffer α) (n : Nat) : Buffer α :=
   if h : n ≤ b.size then ⟨n, b.toArray.takeRight n h⟩ else b
 
 def drop (b : Buffer α) (n : Nat) : Buffer α :=
@@ -122,7 +127,7 @@ def drop (b : Buffer α) (n : Nat) : Buffer α :=
 def reverse (b : Buffer α) : Buffer α :=
   ⟨b.size, b.toArray.reverse⟩
 
-protected def mem (v : α) (a : Buffer α) : Prop :=
+protected def Mem (v : α) (a : Buffer α) : Prop :=
   ∃ i, read a i = v
 
 instance : HasMem α (Buffer α) :=

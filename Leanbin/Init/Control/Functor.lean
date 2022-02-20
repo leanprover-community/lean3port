@@ -1,3 +1,8 @@
+/-
+Copyright (c) Luke Nelson and Jared Roesch. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Luke Nelson, Jared Roesch, Sebastian Ullrich, Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Core
 import Leanbin.Init.Function

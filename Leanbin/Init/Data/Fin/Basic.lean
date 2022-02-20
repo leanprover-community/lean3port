@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.Nat.Basic
 
@@ -13,10 +18,10 @@ namespace Finₓ
 def mk {n : ℕ} i h : Finₓ n :=
   ⟨i, h⟩
 
-protected def lt {n} (a b : Finₓ n) : Prop :=
+protected def Lt {n} (a b : Finₓ n) : Prop :=
   a.val < b.val
 
-protected def le {n} (a b : Finₓ n) : Prop :=
+protected def Le {n} (a b : Finₓ n) : Prop :=
   a.val ≤ b.val
 
 instance {n} : LT (Finₓ n) :=
@@ -25,10 +30,10 @@ instance {n} : LT (Finₓ n) :=
 instance {n} : LE (Finₓ n) :=
   ⟨Finₓ.Le⟩
 
-instance decidable_lt {n} (a b : Finₓ n) : Decidable (a < b) :=
+instance decidableLt {n} (a b : Finₓ n) : Decidable (a < b) :=
   Nat.decidableLt _ _
 
-instance decidable_le {n} (a b : Finₓ n) : Decidable (a ≤ b) :=
+instance decidableLe {n} (a b : Finₓ n) : Decidable (a ≤ b) :=
   Nat.decidableLe _ _
 
 def elim0.{u} {α : Finₓ 0 → Sort u} : ∀ x : Finₓ 0, α x

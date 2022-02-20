@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Propext
 import Leanbin.Init.Classical
 
+-- Lemmas use by the congruence closure module 
+-- Lemmas use by the congruence closure module
 theorem iff_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a ↔ b) = b :=
   h.symm ▸ propext (true_iffₓ _)
 
@@ -53,6 +60,8 @@ theorem imp_eq_of_eq_false_left {a b : Prop} (h : a = False) : (a → b) = True 
 theorem imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (a → b) = Not a :=
   h.symm ▸ propext (Iff.intro (fun h => h) fun hna ha => hna ha)
 
+/- Remark: the congruence closure module will only use the following lemma is
+   cc_config.em is tt. -/
 theorem not_imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (Not a → b) = a :=
   h.symm ▸ propext (Iff.intro (fun h' => Classical.by_contradiction fun hna => h' hna) fun ha hna => hna ha)
 
@@ -97,6 +106,8 @@ theorem eq_false_of_or_eq_false_right {a b : Prop} (h : (a ∨ b) = False) : b =
 theorem eq_false_of_not_eq_true {a : Prop} (h : Not a = True) : a = False :=
   eq_false_intro fun ha => absurd ha (Eq.mpr h trivialₓ)
 
+/- Remark: the congruence closure module will only use the following lemma is
+   cc_config.em is tt. -/
 theorem eq_true_of_not_eq_false {a : Prop} (h : Not a = False) : a = True :=
   eq_true_intro (Classical.by_contradiction fun hna => Eq.mp h hna)
 

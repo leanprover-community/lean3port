@@ -1,9 +1,22 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Control.Monad
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Util
 
 /-- An exceptional is similar to `Result` in Haskell.-/
+/-
+Remark: we use a function that produces a format object as the exception information.
+Motivation: the formatting object may be big, and we may create it on demand.
+-/
+/-
+Remark: we use a function that produces a format object as the exception information.
+Motivation: the formatting object may be big, and we may create it on demand.
+-/
 unsafe inductive exceptional (α : Type)
   | success : α → exceptional
   | exception : (options → format) → exceptional

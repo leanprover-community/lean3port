@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2020 E.W.Ayers. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+
+Author: E.W.Ayers
+-/
 prelude
 import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Data.List.Basic
@@ -9,7 +15,7 @@ namespace Expr
 /-- An enum representing a recursive argument in an `expr` constructor.
 Types of local and meta variables are not included because they are not consistently set and
 depend on context. -/
-inductive coord : Type
+inductive Coord : Type
   | app_fn
   | app_arg
   | lam_var_type
@@ -34,7 +40,7 @@ def code : Coord → ℕ
   | coord.elet_assignment => 7
   | coord.elet_body => 8
 
-protected def reprₓ : Coord → Stringₓ
+protected def repr : Coord → Stringₓ
   | coord.app_fn => "app_fn"
   | coord.app_arg => "app_arg"
   | coord.lam_var_type => "lam_var_type"
@@ -57,7 +63,7 @@ unsafe instance : has_to_format Coord :=
 unsafe instance has_dec_eq : DecidableEq Coord :=
   unchecked_cast (inferInstance : DecidableEq ℕ)
 
-instance LT : LT Coord :=
+instance hasLt : LT Coord :=
   ⟨fun x y => x.code < y.code⟩
 
 /-- Use this to pick the subexpression of a given expression that cooresponds
@@ -78,7 +84,7 @@ end Coord
 
 /-- An address is a list of coordinates used to reference subterms of an expression.
 The first coordinate in the list corresponds to the root of the expression. -/
-def address : Type :=
+def Address : Type :=
   List Coord
 
 namespace Address
@@ -89,10 +95,10 @@ unsafe instance has_dec_eq : DecidableEq Address :=
 protected def toString : Address → Stringₓ :=
   toString ∘ List.map Coord.repr
 
-instance HasRepr : HasRepr Address :=
+instance hasRepr : HasRepr Address :=
   ⟨Address.toString⟩
 
-instance HasToString : HasToString Address :=
+instance hasToString : HasToString Address :=
   ⟨Address.toString⟩
 
 unsafe instance has_to_format : has_to_format Address :=
@@ -104,8 +110,14 @@ instance : Append Address :=
 /-- `as_below x y` is some z when it finds `∃ z, x = y ++ z` -/
 unsafe def as_below : Address → Address → Option Address
   | a, [] => some a
-  | [], _ => none
-  | h₁ :: t₁, h₂ :: t₂ => if h₁ = h₂ then as_below t₁ t₂ else none
+  |-- [] ++ a = a
+    [],
+    _ => none
+  |-- (h::t) ++ _ ≠ []
+      -- if t₂ ++ z = t₁ then (h₁ :: t₁) ++ z = (h₁ :: t₂)
+      h₁ ::
+      t₁,
+    h₂ :: t₂ => if h₁ = h₂ then as_below t₁ t₂ else none
 
 unsafe def is_below : Address → Address → Bool
   | a₁, a₂ => Option.isSome <| as_below a₁ a₂

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2016 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Author: Leonardo de Moura
+-/
 prelude
 import Leanbin.Init.Data.String.Basic
 import Leanbin.Init.Data.Bool.Basic
@@ -39,7 +44,8 @@ instance : HasRepr Bool :=
   ⟨fun b => cond b "tt" "ff"⟩
 
 instance {p : Prop} : HasRepr (Decidable p) :=
-  ⟨fun b : Decidable p => @ite _ p b "tt" "ff"⟩
+  ⟨-- Remark: type class inference will not consider local instance `b` in the new elaborator
+  fun b : Decidable p => @ite _ p b "tt" "ff"⟩
 
 protected def List.reprAux {α : Type u} [HasRepr α] : Bool → List α → Stringₓ
   | b, [] => ""
@@ -79,7 +85,7 @@ instance {α : Type u} {p : α → Prop} [HasRepr α] : HasRepr (Subtype p) :=
 
 namespace Nat
 
-def digit_char (n : ℕ) : Charₓ :=
+def digitCharₓ (n : ℕ) : Charₓ :=
   if n = 0 then '0'
   else
     if n = 1 then '1'
@@ -107,11 +113,11 @@ def digit_char (n : ℕ) : Charₓ :=
                           if n = 12 then 'c'
                           else if n = 13 then 'd' else if n = 14 then 'e' else if n = 15 then 'f' else '*'
 
-def digit_succ (base : ℕ) : List ℕ → List ℕ
+def digitSucc (base : ℕ) : List ℕ → List ℕ
   | [] => [1]
   | d :: ds => if d + 1 = base then 0 :: digit_succ ds else (d + 1) :: ds
 
-def to_digits (base : ℕ) : ℕ → List ℕ
+def toDigitsₓ (base : ℕ) : ℕ → List ℕ
   | 0 => [0]
   | n + 1 => digitSucc base (to_digits n)
 

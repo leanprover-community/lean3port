@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2017 Microsoft Corporation. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Leonardo de Moura
+
+Converter monad for building simplifiers.
+-/
 prelude
 import Leanbin.Init.Meta.Interactive
 import Leanbin.Init.Meta.Converter.Conv
@@ -74,9 +81,13 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   let (r, lhs, _) ← tactic.target_lhs_rhs
   let pat ← tactic.pexpr_to_pattern p
   let s ← simp_lemmas.mk_default
-  let st ← tactic.read
+  let st
+    ←-- to be able to use congruence lemmas @[congr]
+      -- we have to thread the tactic errors through `ext_simplify_core` manually
+      tactic.read
   let (found_result, new_lhs, pr) ←
-    tactic.ext_simplify_core (success false st)
+    tactic.ext_simplify_core
+        (success false st)-- loop counter
         { zeta := false, beta := false, singlePass := true, eta := false, proj := false, failIfUnchanged := false,
           memoize := false }
         s (fun u => return u)
@@ -86,7 +97,9 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
           let matched ← tactic.match_pattern pat e >> return true <|> return false
           guardₓ matched
           let res ← tactic.capture (c.convert e r)
-          match res with
+          -- If an error occurs in conversion, capture it; `ext_simplify_core` will not
+            -- propagate it.
+            match res with
             | success r s' => return (success tt s', r, some r, ff)
             | exception f p s' => return (exception f p s', e, none, ff))
         (fun a s r p e => tactic.failed) r lhs
@@ -98,9 +111,13 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
   let (r, lhs, _) ← tactic.target_lhs_rhs
   let pat ← tactic.pexpr_to_pattern p
   let s ← simp_lemmas.mk_default
-  let st ← tactic.read
+  let st
+    ←-- to be able to use congruence lemmas @[congr]
+      -- we have to thread the tactic errors through `ext_simplify_core` manually
+      tactic.read
   let (found_result, new_lhs, pr) ←
-    tactic.ext_simplify_core (success 1 st)
+    tactic.ext_simplify_core
+        (success 1 st)-- loop counter, and whether the conversion tactic failed
         { zeta := false, beta := false, singlePass := true, eta := false, proj := false, failIfUnchanged := false,
           memoize := false }
         s (fun u => return u)
@@ -110,7 +127,9 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
           guardₓ matched
           if i ∈ occs then do
               let res ← tactic.capture (c e r)
-              match res with
+              -- If an error occurs in conversion, capture it; `ext_simplify_core` will not
+                -- propagate it.
+                match res with
                 | success r s' => return (success (i + 1) s', r, some r, tt)
                 | exception f p s' => return (exception f p s', e, none, tt)
             else do
@@ -143,7 +162,7 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let (new_lhs, prf, _) ← tactic.rewrite h l cfg
   update_lhs new_lhs prf
 
--- ././Mathport/Syntax/Translate/Basic.lean:707:4: warning: unsupported notation `eq_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:826:4: warning: unsupported notation `eq_lemmas
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
   rs.mmap' fun r => do
     save_info r

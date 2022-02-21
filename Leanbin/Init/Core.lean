@@ -279,7 +279,7 @@ inductive List (T : Type u)
   | nil : List
   | cons (hd : T) (tl : List) : List
 
--- ././Mathport/Syntax/Translate/Basic.lean:1379:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
+-- ././Mathport/Syntax/Translate/Basic.lean:1387:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
 notation3 "["  => l
 
 inductive Nat

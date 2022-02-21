@@ -54,7 +54,7 @@ variable {r : α → α → Prop}
 
 variable {β : Quot r → Sort v}
 
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
 local notation:999 "⟦" a "⟧" => Quot.mk r a
 
 @[reducible]
@@ -105,7 +105,7 @@ namespace Quotientₓ
 protected def mk {α : Sort u} [s : Setoidₓ α] (a : α) : Quotientₓ s :=
   Quot.mk Setoidₓ.R a
 
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax
+-- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
 notation:999 "⟦" a "⟧" => Quotientₓ.mk a
 
 theorem sound {α : Sort u} [s : Setoidₓ α] {a b : α} : a ≈ b → ⟦a⟧ = ⟦b⟧ :=

@@ -46,14 +46,14 @@ open _Root_.Interactive
 
 open Interactive.Types
 
-local postfix:9001 "?" => optionalₓ
+local postfix:1024 "?" => optionalₓ
 
-local postfix:9001 "*" => many
+local postfix:1024 "*" => many
 
 unsafe def itactic : Type :=
   smt_tactic Unit
 
-unsafe def intros : parse (ident)* → smt_tactic Unit
+unsafe def intros : parse ident* → smt_tactic Unit
   | [] => smt_tactic.intros
   | hs => smt_tactic.intro_lst hs
 
@@ -94,7 +94,7 @@ unsafe def from :=
 unsafe def assume :=
   tactic.interactive.assume
 
-unsafe def have (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
+unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
     smt_tactic Unit :=
   let h := h.getOrElse `this
   (match q₁, q₂ with
@@ -112,7 +112,7 @@ unsafe def have (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : p
       smt_tactic.assert h e) >>
     return ()
 
-unsafe def let (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
+unsafe def let (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
     smt_tactic Unit :=
   let h := h.getOrElse `this
   (match q₁, q₂ with
@@ -198,10 +198,10 @@ private unsafe def add_eqn_lemmas_for_core (md : Transparency) : List Name → s
       | expr.const n _ => add_ematch_eqn_lemmas_for_core md n >> add_eqn_lemmas_for_core cs
       | _ => fail f! "'{c}' is not a constant"
 
-unsafe def add_eqn_lemmas_for (ids : parse (ident)*) : smt_tactic Unit :=
+unsafe def add_eqn_lemmas_for (ids : parse ident*) : smt_tactic Unit :=
   add_eqn_lemmas_for_core reducible ids
 
-unsafe def add_eqn_lemmas (ids : parse (ident)*) : smt_tactic Unit :=
+unsafe def add_eqn_lemmas (ids : parse ident*) : smt_tactic Unit :=
   add_eqn_lemmas_for ids
 
 private unsafe def add_hinst_lemma_from_name (md : Transparency) (lhs_lemma : Bool) (n : Name) (hs : hinst_lemmas)
@@ -260,7 +260,7 @@ unsafe def all_goals (t : itactic) : smt_tactic Unit :=
   smt_tactic.all_goals t
 
 unsafe def induction (p : parse tactic.interactive.cases_arg_p) (rec_name : parse using_ident)
-    (ids : parse with_ident_list) (revert : parse <| (tk "generalizing" *> (ident)*)?) : smt_tactic Unit :=
+    (ids : parse with_ident_list) (revert : parse <| (tk "generalizing" *> ident*)?) : smt_tactic Unit :=
   slift (tactic.interactive.induction p rec_name ids revert)
 
 open Tactic

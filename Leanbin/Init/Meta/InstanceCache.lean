@@ -21,9 +21,9 @@ open Lean.Parser
 
 open Interactive Interactive.Types
 
-local postfix:9001 "?" => optionalₓ
+local postfix:1024 "?" => optionalₓ
 
-local postfix:9001 "*" => many
+local postfix:1024 "*" => many
 
 namespace Tactic
 
@@ -56,7 +56,7 @@ unsafe def resetI :=
   reset_instance_cache
 
 /-- Like `revert`, but can also revert instance arguments. -/
-unsafe def revertI (ids : parse (ident)*) : tactic Unit :=
+unsafe def revertI (ids : parse ident*) : tactic Unit :=
   unfreezingI (revert ids)
 
 /-- Like `subst`, but can also substitute in instance arguments. -/
@@ -69,17 +69,17 @@ unsafe def casesI (p : parse cases_arg_p) (q : parse with_ident_list) : tactic U
 
 /-- Like `intro`, but uses the introduced variable
 in typeclass inference. -/
-unsafe def introI (p : parse (ident_)?) : tactic Unit :=
+unsafe def introI (p : parse ident_ ?) : tactic Unit :=
   intro p >> reset_instance_cache
 
 /-- Like `intros`, but uses the introduced variable(s)
 in typeclass inference. -/
-unsafe def introsI (p : parse (ident_)*) : tactic Unit :=
+unsafe def introsI (p : parse ident_*) : tactic Unit :=
   intros p >> reset_instance_cache
 
 /-- Used to add typeclasses to the context so that they can
 be used in typeclass inference. The syntax is the same as `have`. -/
-unsafe def haveI (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse (tk ":=" *> texpr)?) : tactic Unit :=
+unsafe def haveI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse (tk ":=" *> texpr)?) : tactic Unit :=
   do
   let h ←
     match h with
@@ -92,8 +92,8 @@ unsafe def haveI (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : 
 
 /-- Used to add typeclasses to the context so that they can
 be used in typeclass inference. The syntax is the same as `let`. -/
-unsafe def letI (h : parse (ident)?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
-    tactic Unit := do
+unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) : tactic Unit :=
+  do
   let h ←
     match h with
       | none => get_unused_name "_inst"

@@ -202,7 +202,7 @@ open Interactive.Types
 
 open Tactic
 
-local postfix:9001 "?" => optionalₓ
+local postfix:1024 "?" => optionalₓ
 
 private unsafe def conv_at (h_name : Name) (c : conv Unit) : tactic Unit := do
   let h ← get_local h_name

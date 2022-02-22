@@ -1415,6 +1415,7 @@ def iterate {α : Sort u} (op : α → α) : ℕ → α → α
   | 0, a => a
   | succ k, a => iterate k (op a)
 
+-- mathport name: «expr ^[ ]»
 notation f "^[" n "]" => iterate f n
 
 /-! find -/

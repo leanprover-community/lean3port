@@ -60,6 +60,7 @@ parameter {state : Type}
 
 variable {α : Type u} {β : Type v}
 
+-- mathport name: «exprm»
 local notation "m" => interaction_monad state
 
 @[inline]

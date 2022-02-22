@@ -67,7 +67,7 @@ unsafe def injection_with (h : expr) (ns : List Name) (base := `h) (offset := so
     else do
       let tgt ← target
       let inductive_name := constructor_left
-      let pr ← mk_app (inductive_name <.> "no_confusion") [tgt, lhs, rhs, h]
+      let pr ← mk_app (mkStrName inductive_name "no_confusion") [tgt, lhs, rhs, h]
       exact pr
       return ([], ns)
 

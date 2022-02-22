@@ -240,6 +240,7 @@ inductive Sublist : List α → List α → Prop
   | cons l₁ l₂ a : sublist l₁ l₂ → sublist l₁ (a :: l₂)
   | cons2 l₁ l₂ a : sublist l₁ l₂ → sublist (a :: l₁) (a :: l₂)
 
+-- mathport name: «expr <+ »
 infixl:50 " <+ " => Sublist
 
 theorem length_le_of_sublistₓ : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → length l₁ ≤ length l₂

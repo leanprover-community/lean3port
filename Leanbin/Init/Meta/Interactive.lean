@@ -22,9 +22,11 @@ open Lean.Parser
 
 open Native
 
--- ././Mathport/Syntax/Translate/Basic.lean:1522:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1523:35: warning: unsupported: precedence command
+-- mathport name: «expr ?»
 local postfix:1024 "?" => optionalₓ
 
+-- mathport name: «expr *»
 local postfix:1024 "*" => many
 
 namespace Tactic
@@ -579,7 +581,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
--- ././Mathport/Syntax/Translate/Basic.lean:1522:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1523:35: warning: unsupported: precedence command
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -1737,7 +1739,7 @@ private unsafe def add_interactive_aux (new_namespace : Name) : List Name → Ta
     let d_name ← resolve_constant n
     let declaration.defn _ ls ty val hints trusted ← env.get d_name
     let Name.mk_string h _ ← return d_name
-    let new_name := new_namespace <.> h
+    let new_name := mkStrName new_namespace h
     add_decl (declaration.defn new_name ls ty (expr.const d_name (ls level.param)) hints trusted)
     (do
           let doc ← doc_string d_name
@@ -1833,8 +1835,8 @@ theorem Sigma.mk.inj_eq {α : Type u} {β : α → Type v} (a₁ : α) (b₁ : �
   run_tac
     tactic.mk_inj_eq
 
-theorem Psigma.mk.inj_eq {α : Sort u} {β : α → Sort v} (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) :
-    (Psigma.mk a₁ b₁ = Psigma.mk a₂ b₂) = (a₁ = a₂ ∧ HEq b₁ b₂) := by
+theorem PSigma.mk.inj_eq {α : Sort u} {β : α → Sort v} (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) :
+    (PSigma.mk a₁ b₁ = PSigma.mk a₂ b₂) = (a₁ = a₂ ∧ HEq b₁ b₂) := by
   run_tac
     tactic.mk_inj_eq
 

@@ -92,13 +92,11 @@ def coeSort {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 /-! ### Notation -/
 
 
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
-notation:999 "⇑" x:999 => coeFn x
+-- mathport name: «expr⇑ »
+notation:arg "⇑" x:arg => coeFn x
 
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
-notation:999 "↥" x:999 => coeSort x
+-- mathport name: «expr↥ »
+notation:arg "↥" x:arg => coeSort x
 
 universe u₁ u₂ u₃
 

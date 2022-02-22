@@ -41,8 +41,6 @@ def mkSimpleName (s : Stringₓ) : Name :=
 instance stringToName : Coe Stringₓ Name :=
   ⟨mkSimpleName⟩
 
-infixl:65 " <.> " => mkStrName
-
 open Name
 
 def Name.getPrefix : Name → Name

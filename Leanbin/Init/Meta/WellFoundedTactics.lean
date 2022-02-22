@@ -70,7 +70,7 @@ unsafe def unfold_wf_rel : tactic Unit :=
   dunfold_target [`` HasWellFounded.R] { failIfUnchanged := false }
 
 unsafe def is_psigma_mk : expr → tactic (expr × expr)
-  | quote.1 (Psigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
+  | quote.1 (PSigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
 -- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]

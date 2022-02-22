@@ -135,8 +135,10 @@ unsafe def many.{u, v} {f : Type u → Type v} [Monadₓ f] [Alternativeₓ f] {
         return <| y :: ys) <|>
       pure List.nil
 
+-- mathport name: «expr ?»
 local postfix:100 "?" => optionalₓ
 
+-- mathport name: «expr *»
 local postfix:100 "*" => many
 
 unsafe def sep_by : parser Unit → parser α → parser (List α)

@@ -236,7 +236,7 @@ structure Sigma {α : Type u} (β : α → Type v) where mk ::
   fst : α
   snd : β fst
 
-structure Psigma {α : Sort u} (β : α → Sort v) where mk ::
+structure PSigma {α : Sort u} (β : α → Sort v) where mk ::
   fst : α
   snd : β fst
 
@@ -249,7 +249,7 @@ structure Subtype {α : Sort u} (p : α → Prop) where
   val : α
   property : p val
 
-attribute [pp_using_anonymous_constructor] Sigma Psigma Subtype PProd And
+attribute [pp_using_anonymous_constructor] Sigma PSigma Subtype PProd And
 
 class inductive Decidable (p : Prop)
   | is_false (h : ¬p) : Decidable
@@ -279,9 +279,6 @@ inductive List (T : Type u)
   | nil : List
   | cons (hd : T) (tl : List) : List
 
--- ././Mathport/Syntax/Translate/Basic.lean:1387:9: unsupported: advanced notation (l:(foldr `, ` (h t, list.cons h t) list.nil `]`))
-notation3 "["  => l
-
 inductive Nat
   | zero : Nat
   | succ (n : Nat) : Nat
@@ -290,10 +287,6 @@ structure UnificationConstraint where
   {α : Type u}
   lhs : α
   rhs : α
-
-infixl:50 " ≟ " => UnificationConstraint.mk
-
-infixl:50 " =?= " => UnificationConstraint.mk
 
 structure UnificationHint where
   pattern : UnificationConstraint
@@ -324,7 +317,7 @@ class Sub (α : Type u) where
 class Div (α : Type u) where
   div : α → α → α
 
-class HasDvd (α : Type u) where
+class Dvd (α : Type u) where
   Dvd : α → α → Prop
 
 class Mod (α : Type u) where
@@ -387,15 +380,10 @@ export HasAndthen (andthen)
 
 export Pow (pow)
 
-notation:50 a " ∉ " s:50 => ¬HasMem.Mem a s
-
-infixl:50 " ∣ " => HasDvd.Dvd
-
+-- mathport name: «expr ⊂ »
 infixl:50
   " ⊂ " =>-- Note this is different to `|`.
   HasSsubset.Ssubset
-
-infixl:50 " ≈ " => HasEquivₓ.Equiv
 
 export Append (append)
 
@@ -415,8 +403,10 @@ def Superset {α : Type u} [HasSubset α] (a b : α) : Prop :=
 def Ssuperset {α : Type u} [HasSsubset α] (a b : α) : Prop :=
   HasSsubset.Ssubset b a
 
+-- mathport name: «expr ⊇ »
 infixl:50 " ⊇ " => Superset
 
+-- mathport name: «expr ⊃ »
 infixl:50 " ⊃ " => Ssuperset
 
 def bit0 {α : Type u} [s : Add α] (a : α) : α :=
@@ -547,11 +537,11 @@ protected def Sigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a
 instance (α : Type u) (β : α → Type v) [SizeOf α] [∀ a, SizeOf (β a)] : SizeOf (Sigma β) :=
   ⟨Sigma.sizeof⟩
 
-protected def Psigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : Psigma β → Nat
+protected def PSigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : PSigma β → Nat
   | ⟨a, b⟩ => 1 + sizeof a + sizeof b
 
-instance (α : Type u) (β : α → Type v) [SizeOf α] [∀ a, SizeOf (β a)] : SizeOf (Psigma β) :=
-  ⟨Psigma.sizeof⟩
+instance (α : Type u) (β : α → Type v) [SizeOf α] [∀ a, SizeOf (β a)] : SizeOf (PSigma β) :=
+  ⟨PSigma.sizeof⟩
 
 protected def PUnit.sizeof : PUnit → Nat
   | u => 1

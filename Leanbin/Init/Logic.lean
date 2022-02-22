@@ -575,8 +575,6 @@ theorem Exists.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₁ : ∃ x, p 
 def ExistsUnique {α : Sort u} (p : α → Prop) :=
   ∃ x, p x ∧ ∀ y, p y → y = x
 
-notation3 "∃! " (...) ", " r:(scoped P => ExistsUnique P) => r
-
 @[intro]
 theorem ExistsUnique.intro {α : Sort u} {p : α → Prop} (w : α) (h₁ : p w) (h₂ : ∀ y, p y → y = w) : ∃! x, p x :=
   Exists.introₓ w ⟨h₁, h₂⟩
@@ -1042,6 +1040,7 @@ section Relation
 
 variable {α : Sort u} {β : Sort v} (r : β → β → Prop)
 
+-- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
 def Reflexive :=
@@ -1097,12 +1096,15 @@ variable (inv : α → α)
 
 variable (one : α)
 
+-- mathport name: «expr * »
 local notation a "*" b => f a b
 
+-- mathport name: «expr ⁻¹»
 local notation a "⁻¹" => inv a
 
 variable (g : α → α → α)
 
+-- mathport name: «expr + »
 local notation a "+" b => g a b
 
 def Commutative :=

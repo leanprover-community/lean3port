@@ -22,8 +22,8 @@ open Function
 
 variable {α : Type u}
 
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
-local notation:999 "♯" => by
+-- mathport name: «expr♯»
+local notation:arg "♯" => by
   abstract 
     intros
     simp
@@ -44,8 +44,8 @@ def toList : Dlist α → List α
 def empty : Dlist α :=
   ⟨id, ♯⟩
 
--- ././Mathport/Syntax/Translate/Basic.lean:462:9: unsupported: advanced prec syntax max
-local notation:999 a "::_" => List.cons a
+-- mathport name: «expr ::_»
+local notation:arg a "::_" => List.cons a
 
 /-- Create dlist with a single element -/
 def singleton (x : α) : Dlist α :=

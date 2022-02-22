@@ -27,6 +27,7 @@ private unsafe def ppfield {α : Type} [has_to_format α] (fname : Stringₓ) (v
 private unsafe def concat_fields (f₁ f₂ : format) : format :=
   if is_nil f₁ then f₂ else if is_nil f₂ then f₁ else f₁ ++ to_fmt "," ++ line ++ f₂
 
+-- mathport name: «expr +++ »
 local infixl:65 "+++" => concat_fields
 
 unsafe def param_info.to_format : ParamInfo → format

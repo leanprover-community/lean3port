@@ -29,6 +29,7 @@ and type of `f (g x)` depends on `x` and `g x`. -/
 def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} y : β x, φ y) (g : ∀ x, β x) : ∀ x, φ (g x) :=
   fun x => f (g x)
 
+-- mathport name: «expr ∘' »
 infixr:80 " ∘' " => Function.dcomp
 
 @[reducible]
@@ -57,8 +58,10 @@ def swap {φ : α → β → Sort u₃} (f : ∀ x y, φ x y) : ∀ y x, φ x y 
 def app {β : α → Sort u₂} (f : ∀ x, β x) (x : α) : β x :=
   f x
 
+-- mathport name: «expr on »
 infixl:2 " on " => onFun
 
+-- mathport name: «expr -[ ]- »
 notation f " -[" op "]- " g => combine f op g
 
 theorem left_id (f : α → β) : id ∘ f = f :=

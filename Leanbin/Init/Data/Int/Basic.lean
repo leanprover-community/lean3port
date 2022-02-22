@@ -20,8 +20,6 @@ inductive Int : Type
 instance : Coe Nat Int :=
   ⟨Int.ofNat⟩
 
-notation "-[1+ " n "]" => Int.negSucc n
-
 protected def Int.reprₓ : Int → Stringₓ
   | Int.ofNat n => reprₓ n
   | Int.negSucc n => "-" ++ reprₓ (succ n)

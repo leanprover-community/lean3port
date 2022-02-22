@@ -36,6 +36,7 @@ section
 
 parameter {α : Sort u}{r : α → α → Prop}
 
+-- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
 parameter (hwf : WellFounded r)
@@ -129,6 +130,7 @@ section
 
 parameter {α : Sort u}{r : α → α → Prop}
 
+-- mathport name: «exprr⁺»
 local notation "r⁺" => Tc r
 
 theorem accessible {z : α} (ac : Acc r z) : Acc (Tc r) z :=
@@ -195,6 +197,7 @@ parameter {α : Type u}{β : Type v}
 
 parameter {ra : α → α → Prop}{rb : β → β → Prop}
 
+-- mathport name: «expr ≺ »
 local infixl:50 "≺" => Lex ra rb
 
 theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc (Lex ra rb) (a, b) :=

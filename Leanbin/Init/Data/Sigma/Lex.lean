@@ -9,7 +9,7 @@ import Leanbin.Init.Meta.Default
 
 universe u v
 
-namespace Psigma
+namespace PSigma
 
 section
 
@@ -20,7 +20,7 @@ variable (r : α → α → Prop)
 variable (s : ∀ a, β a → β a → Prop)
 
 -- Lexicographical order based on r and s
-inductive Lex : Psigma β → Psigma β → Prop
+inductive Lex : PSigma β → PSigma β → Prop
   | left : ∀ {a₁ : α} b₁ : β a₁ {a₂ : α} b₂ : β a₂, r a₁ a₂ → lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
   | right : ∀ a : α {b₁ b₂ : β a}, s a b₁ b₂ → lex ⟨a, b₁⟩ ⟨a, b₂⟩
 
@@ -34,6 +34,7 @@ parameter {α : Sort u}{β : α → Sort v}
 
 parameter {r : α → α → Prop}{s : ∀ a : α, β a → β a → Prop}
 
+-- mathport name: «expr ≺ »
 local infixl:50 "≺" => Lex r s
 
 theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : ∀ b : β a, Acc (Lex r s) ⟨a, b⟩ :=
@@ -41,7 +42,7 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : �
     Acc.recOnₓ (WellFounded.apply (acb xa) b) fun ihb : ∀ y : β xa, s xa y xb → Acc (Lex r s) ⟨xa, y⟩ =>
       Acc.intro ⟨xa, xb⟩ fun lt : p≺⟨xa, xb⟩ =>
         have aux : xa = xa → HEq xb xb → Acc (Lex r s) p :=
-          @Psigma.Lex.rec_on α β r s (fun p₁ p₂ => p₂.1 = xa → HEq p₂.2 xb → Acc (Lex r s) p₁) p ⟨xa, xb⟩ lt
+          @PSigma.Lex.rec_on α β r s (fun p₁ p₂ => p₂.1 = xa → HEq p₂.2 xb → Acc (Lex r s) p₁) p ⟨xa, xb⟩ lt
             (fun eq₃ : HEq b₂ xb => by
               subst eq₂
               exact iha a₁ h b₁)
@@ -80,7 +81,7 @@ variable (r : α → α → Prop)
 variable (s : β → β → Prop)
 
 -- Reverse lexicographical order based on r and s
-inductive RevLex : (@Psigma α fun a => β) → (@Psigma α fun a => β) → Prop
+inductive RevLex : (@PSigma α fun a => β) → (@PSigma α fun a => β) → Prop
   | left : ∀ {a₁ a₂ : α} b : β, r a₁ a₂ → rev_lex ⟨a₁, b⟩ ⟨a₂, b⟩
   | right : ∀ a₁ : α {b₁ : β} a₂ : α {b₂ : β}, s b₁ b₂ → rev_lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
 
@@ -94,6 +95,7 @@ parameter {α : Sort u}{β : Sort v}
 
 parameter {r : α → α → Prop}{s : β → β → Prop}
 
+-- mathport name: «expr ≺ »
 local infixl:50 "≺" => RevLex r s
 
 theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=
@@ -120,7 +122,7 @@ end
 
 section
 
-def SkipLeft (α : Type u) {β : Type v} (s : β → β → Prop) : (@Psigma α fun a => β) → (@Psigma α fun a => β) → Prop :=
+def SkipLeft (α : Type u) {β : Type v} (s : β → β → Prop) : (@PSigma α fun a => β) → (@PSigma α fun a => β) → Prop :=
   RevLex EmptyRelation s
 
 theorem skip_left_wf (α : Type u) {β : Type v} {s : β → β → Prop} (hb : WellFounded s) : WellFounded (SkipLeft α s) :=
@@ -133,9 +135,9 @@ theorem mk_skip_left {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β
 end
 
 instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : HasWellFounded α] [s₂ : ∀ a, HasWellFounded (β a)] :
-    HasWellFounded (Psigma β) where
+    HasWellFounded (PSigma β) where
   R := Lex s₁.R fun a => (s₂ a).R
   wf := lex_wf s₁.wf fun a => (s₂ a).wf
 
-end Psigma
+end PSigma
 

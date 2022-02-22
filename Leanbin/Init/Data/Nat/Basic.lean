@@ -45,8 +45,8 @@ instance : Mul ℕ :=
   ⟨Nat.mul⟩
 
 -- defeq to the instance provided by comm_semiring
-instance : HasDvd ℕ :=
-  HasDvd.mk fun a b => ∃ c, b = a * c
+instance : Dvd ℕ :=
+  Dvd.mk fun a b => ∃ c, b = a * c
 
 instance : DecidableEq ℕ
   | zero, zero => isTrue rfl

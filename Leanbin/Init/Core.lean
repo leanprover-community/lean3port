@@ -205,9 +205,9 @@ inductive Sum (α : Type u) (β : Type v)
   | inl (val : α) : Sum
   | inr (val : β) : Sum
 
-inductive Psum (α : Sort u) (β : Sort v)
-  | inl (val : α) : Psum
-  | inr (val : β) : Psum
+inductive PSum (α : Sort u) (β : Sort v)
+  | inl (val : α) : PSum
+  | inr (val : β) : PSum
 
 /-- Logical or.
 
@@ -524,12 +524,12 @@ protected def Sum.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : S
 instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (Sum α β) :=
   ⟨Sum.sizeof⟩
 
-protected def Psum.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : Psum α β → Nat
-  | Psum.inl a => 1 + sizeof a
-  | Psum.inr b => 1 + sizeof b
+protected def PSum.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → Nat
+  | PSum.inl a => 1 + sizeof a
+  | PSum.inr b => 1 + sizeof b
 
-instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (Psum α β) :=
-  ⟨Psum.sizeof⟩
+instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=
+  ⟨PSum.sizeof⟩
 
 protected def Sigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : Sigma β → Nat
   | ⟨a, b⟩ => 1 + sizeof a + sizeof b

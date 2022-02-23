@@ -157,7 +157,7 @@ unsafe def by_contradiction : smt_tactic Unit :=
 unsafe def by_contra : smt_tactic Unit :=
   smt_tactic.by_contradiction
 
-open tactic (resolve_name Transparency to_expr)
+open Tactic (resolve_name Transparency to_expr)
 
 private unsafe def report_invalid_em_lemma {α : Type} (n : Name) : smt_tactic α :=
   fail f! "invalid ematch lemma '{n}'"

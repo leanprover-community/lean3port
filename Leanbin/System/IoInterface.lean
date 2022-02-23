@@ -51,7 +51,7 @@ class MonadIoTerminal (m : Type → Type → Type) where
   getLine : m Io.Error Stringₓ
   cmdlineArgs : List Stringₓ
 
-open monad_io (Handle)
+open MonadIo (Handle)
 
 class MonadIoNetSystem (m : Type → Type → Type) [MonadIo m] where
   Socket : Type

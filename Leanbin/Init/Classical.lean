@@ -106,10 +106,10 @@ attribute [local instance] decidable_inhabited
 
 noncomputable def typeDecidableEq (α : Sort u) : DecidableEq α := fun x y => propDecidable (x = y)
 
-noncomputable def typeDecidableₓ (α : Sort u) : Psum α (α → False) :=
+noncomputable def typeDecidable (α : Sort u) : PSum α (α → False) :=
   match propDecidable (Nonempty α) with
-  | is_true hp => Psum.inl (@Inhabited.default _ (inhabitedOfNonempty hp))
-  | is_false hn => Psum.inr fun a => absurd (Nonempty.intro a) hn
+  | is_true hp => PSum.inl (@Inhabited.default _ (inhabitedOfNonempty hp))
+  | is_false hn => PSum.inr fun a => absurd (Nonempty.intro a) hn
 
 noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α → Prop) (h : Nonempty α) :
   { x : α // (∃ y : α, p y) → p x } :=

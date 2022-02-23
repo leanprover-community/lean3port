@@ -972,19 +972,19 @@ theorem of_as_true {c : Prop} [h₁ : Decidable c] (h₂ : AsTrue c) : c :=
   | is_false h_c, h₂ => False.elim h₂
 
 /-- Universe lifting operation -/
-structure Ulift.{r, s} (α : Type s) : Type max s r where up ::
+structure ULift.{r, s} (α : Type s) : Type max s r where up ::
   down : α
 
-namespace Ulift
+namespace ULift
 
 -- Bijection between α and ulift.{v} α
-theorem up_down {α : Type u} : ∀ b : Ulift.{v} α, up (down b) = b
+theorem up_down {α : Type u} : ∀ b : ULift.{v} α, up (down b) = b
   | up a => rfl
 
 theorem down_up {α : Type u} (a : α) : down (up.{v} a) = a :=
   rfl
 
-end Ulift
+end ULift
 
 /-- Universe lifting operation from Sort to Type -/
 structure Plift (α : Sort u) : Type u where up ::

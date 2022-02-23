@@ -30,13 +30,13 @@ theorem Nat.lt_add_rightₓ (a b c : Nat) : a < b → a < b + c := fun h => lt_o
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_leₓ h (Nat.le_add_leftₓ _ _)
 
-protected def Psum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : Psum α β → ℕ
-  | Psum.inl a => sizeof a
-  | Psum.inr b => sizeof b
+protected def PSum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → ℕ
+  | PSum.inl a => sizeof a
+  | PSum.inr b => sizeof b
 
 @[reducible]
-protected def Psum.hasSizeofAlt.{u, v} (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (Psum α β) :=
-  ⟨Psum.Alt.sizeof⟩
+protected def PSum.hasSizeofAlt.{u, v} (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=
+  ⟨PSum.Alt.sizeof⟩
 
 namespace WellFoundedTactics
 
@@ -46,8 +46,8 @@ def IdTag.wf : Unit :=
   ()
 
 unsafe def mk_alt_sizeof : expr → expr
-  | expr.app (expr.app (expr.app (expr.app (expr.const `` Psum.hasSizeof l) α) β) iα) iβ =>
-    (expr.const `` Psum.hasSizeofAlt l : expr) α β iα (mk_alt_sizeof iβ)
+  | expr.app (expr.app (expr.app (expr.app (expr.const `` PSum.hasSizeof l) α) β) iα) iβ =>
+    (expr.const `` PSum.hasSizeofAlt l : expr) α β iα (mk_alt_sizeof iβ)
   | e => e
 
 unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do

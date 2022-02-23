@@ -104,14 +104,14 @@ infixl:2 " >>[tactic] " => interaction_monad_seq
 unsafe instance : Alternativeₓ tactic :=
   { interaction_monad.monad with failure := @interaction_monad.failed _, orelse := @interaction_monad_orelse _ }
 
-unsafe def tactic.up.{u₁, u₂} {α : Type u₂} (t : tactic α) : tactic (Ulift.{u₁} α) := fun s =>
+unsafe def tactic.up.{u₁, u₂} {α : Type u₂} (t : tactic α) : tactic (ULift.{u₁} α) := fun s =>
   match t s with
-  | success a s' => success (Ulift.up a) s'
+  | success a s' => success (ULift.up a) s'
   | exception t ref s => exception t ref s
 
-unsafe def tactic.down.{u₁, u₂} {α : Type u₂} (t : tactic (Ulift.{u₁} α)) : tactic α := fun s =>
+unsafe def tactic.down.{u₁, u₂} {α : Type u₂} (t : tactic (ULift.{u₁} α)) : tactic α := fun s =>
   match t s with
-  | success (Ulift.up a) s' => success a s'
+  | success (ULift.up a) s' => success a s'
   | exception t ref s => exception t ref s
 
 namespace Interactive

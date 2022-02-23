@@ -94,7 +94,7 @@ unsafe instance : MonadFail smt_tactic :=
 
 namespace SmtTactic
 
-open tactic (Transparency)
+open Tactic (Transparency)
 
 unsafe axiom intros : smt_tactic Unit
 

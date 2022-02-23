@@ -150,7 +150,7 @@ protected def CaseTag.toString : CaseTag → Stringₓ
 
 namespace CaseTag
 
-open name (mk_string mk_numeral)
+open Name (mk_string mk_numeral)
 
 unsafe instance : has_to_format CaseTag :=
   ⟨case_tag.to_format⟩

@@ -153,9 +153,9 @@ unsafe def guard_lhs (p : parse texpr) : tactic Unit := do
 
 section Rw
 
-open tactic.interactive (rw_rules rw_rule get_rule_eqn_lemmas to_expr')
+open Tactic.Interactive (rw_rules rw_rule get_rule_eqn_lemmas to_expr')
 
-open tactic (RewriteCfg)
+open Tactic (RewriteCfg)
 
 private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let l ← conv.lhs

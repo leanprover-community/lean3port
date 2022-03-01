@@ -409,7 +409,7 @@ private unsafe def rw_hyp (cfg : RewriteCfg) : List rw_rule → expr → tactic 
     orelse'
         (do
           let e ← to_expr' r
-          when (Not (uses_hyp e hyp)) <| rewrite_hyp e hyp { cfg with symm := r } >>= rw_hyp rs)
+          (if uses_hyp e hyp then pure e else rewrite_hyp e hyp { cfg with symm := r }) >>= rw_hyp rs)
         (eq_lemmas fun n => do
           let e ← mk_const n
           rewrite_hyp e hyp { cfg with symm := r } >>= rw_hyp rs)

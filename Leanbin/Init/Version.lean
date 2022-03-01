@@ -3,10 +3,10 @@ import Leanbin.Init.Data.Nat.Basic
 import Leanbin.Init.Data.String.Basic
 
 def Lean.version : Nat × Nat × Nat :=
-  (3, 39, 2)
+  (3, 40, 0)
 
 def Lean.githashₓ : Stringₓ :=
-  "402f41cdedbd46a368fb7807bebe83550d887631"
+  "82216a493580a309a04b02c2b6eb5f82f0aef192"
 
 def Lean.isRelease : Bool :=
   1 ≠ 0

@@ -51,7 +51,7 @@ private theorem u : Prop :=
 private theorem v : Prop :=
   some exV
 
--- ././Mathport/Syntax/Translate/Basic.lean:211:40: warning: unsupported option type_context.unfold_lemmas
+-- ././Mathport/Syntax/Translate/Basic.lean:210:40: warning: unsupported option type_context.unfold_lemmas
 set_option type_context.unfold_lemmas true
 
 private theorem u_def : U u :=

@@ -87,7 +87,7 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
   | succ n => by
     rw [mul_succ, zero_mul]
 
--- ././Mathport/Syntax/Translate/Basic.lean:916:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
 private unsafe def sort_add :=
   sorry
 

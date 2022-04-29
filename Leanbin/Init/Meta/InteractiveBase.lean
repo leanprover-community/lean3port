@@ -64,6 +64,10 @@ unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Uni
 unsafe def with_desc {α : Type} (desc : format) (p : parser α) : parser α :=
   p
 
+unsafe instance with_desc.reflectable {α : Type} (p : parser α) [h : lean.parser.reflectable p] (f : format) :
+    reflectable (with_desc f p) :=
+  h
+
 namespace Types
 
 variable {α β : Type}
@@ -75,8 +79,8 @@ unsafe def brackets (l r : Stringₓ) (p : parser α) :=
 unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
 
--- ././Mathport/Syntax/Translate/Basic.lean:1537:35: warning: unsupported: precedence command
--- ././Mathport/Syntax/Translate/Basic.lean:1537:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1534:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1534:35: warning: unsupported: precedence command
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -122,7 +126,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
--- ././Mathport/Syntax/Translate/Basic.lean:1537:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1534:35: warning: unsupported: precedence command
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format
@@ -218,12 +222,17 @@ unsafe axiom decl_attributes : Type
 
 unsafe axiom decl_attributes.apply : decl_attributes → Name → parser Unit
 
+unsafe inductive noncomputable_modifier
+  | computable
+  | noncomputable
+  | force_noncomputable
+
 unsafe structure decl_modifiers where
   is_private : Bool
   is_protected : Bool
   is_meta : Bool
   is_mutual : Bool
-  is_noncomputable : Bool
+  is_noncomputable : noncomputable_modifier
 
 unsafe structure decl_meta_info where
   attrs : decl_attributes

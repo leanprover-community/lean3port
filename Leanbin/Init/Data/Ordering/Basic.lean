@@ -53,16 +53,16 @@ instance : DecidableEq Ordering := fun a b =>
   | Ordering.lt =>
     match b with
     | Ordering.lt => isTrue rfl
-    | Ordering.eq => isFalse fun h => Ordering.noConfusion h
-    | Ordering.gt => isFalse fun h => Ordering.noConfusion h
+    | Ordering.eq => isFalse fun h => Ordering.noConfusionₓ h
+    | Ordering.gt => isFalse fun h => Ordering.noConfusionₓ h
   | Ordering.eq =>
     match b with
-    | Ordering.lt => isFalse fun h => Ordering.noConfusion h
+    | Ordering.lt => isFalse fun h => Ordering.noConfusionₓ h
     | Ordering.eq => isTrue rfl
-    | Ordering.gt => isFalse fun h => Ordering.noConfusion h
+    | Ordering.gt => isFalse fun h => Ordering.noConfusionₓ h
   | Ordering.gt =>
     match b with
-    | Ordering.lt => isFalse fun h => Ordering.noConfusion h
-    | Ordering.eq => isFalse fun h => Ordering.noConfusion h
+    | Ordering.lt => isFalse fun h => Ordering.noConfusionₓ h
+    | Ordering.eq => isFalse fun h => Ordering.noConfusionₓ h
     | Ordering.gt => isTrue rfl
 

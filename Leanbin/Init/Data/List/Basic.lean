@@ -43,12 +43,12 @@ protected def append : List α → List α → List α
 instance : Append (List α) :=
   ⟨List.append⟩
 
-protected def Mem : α → List α → Prop
+protected def Memₓ : α → List α → Prop
   | a, [] => False
   | a, b :: l => a = b ∨ mem a l
 
 instance : HasMem α (List α) :=
-  ⟨List.Mem⟩
+  ⟨List.Memₓ⟩
 
 instance decidableMem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a ∈ l)
   | [] => isFalse not_false

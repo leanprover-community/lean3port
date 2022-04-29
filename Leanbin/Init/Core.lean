@@ -192,13 +192,13 @@ theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
 theorem Prod.mk.inj {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
     (x₁, y₁) = (x₂, y₂) → And (x₁ = x₂) (y₁ = y₂) := fun h => Prod.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
 
-theorem Prod.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
+def Prod.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
     (x₁, y₁) = (x₂, y₂) → ∀ ⦃P : Sort w⦄, (x₁ = x₂ → y₁ = y₂ → P) → P := fun h₁ _ h₂ => Prod.noConfusion h₁ h₂
 
 theorem PProd.mk.inj {α : Sort u} {β : Sort v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
     PProd.mk x₁ y₁ = PProd.mk x₂ y₂ → And (x₁ = x₂) (y₁ = y₂) := fun h => PProd.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
 
-theorem PProd.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
+def PProd.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
     (x₁, y₁) = (x₂, y₂) → ∀ ⦃P : Sort w⦄, (x₁ = x₂ → y₁ = y₂ → P) → P := fun h₁ _ h₂ => Prod.noConfusion h₁ h₂
 
 inductive Sum (α : Type u) (β : Type v)

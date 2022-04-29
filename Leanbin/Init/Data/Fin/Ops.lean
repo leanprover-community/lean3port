@@ -113,7 +113,7 @@ theorem val_zero : (0 : Finₓ (succ n)).val = 0 :=
 def pred {n : Nat} : ∀ i : Finₓ (succ n), i ≠ 0 → Finₓ n
   | ⟨a, h₁⟩, h₂ =>
     ⟨a.pred,
-      have this : a ≠ 0 := by
+      have : a ≠ 0 := by
         have aux₁ := vne_of_ne h₂
         dsimp  at aux₁
         rw [val_zero] at aux₁

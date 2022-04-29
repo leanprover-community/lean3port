@@ -1000,8 +1000,8 @@ theorem mul_mod_mul_leftₓ (z x y : ℕ) : z * x % (z * y) = z * (x % y) :=
 theorem mul_mod_mul_rightₓ (z x y : ℕ) : x * z % (y * z) = x % y * z := by
   rw [Nat.mul_comm x z, Nat.mul_comm y z, Nat.mul_comm (x % y) z] <;> apply mul_mod_mul_left
 
--- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:377:22: warning: unsupported simp config option: iota_eqn
--- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:377:22: warning: unsupported simp config option: iota_eqn
+-- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:351:22: warning: unsupported simp config option: iota_eqn
+-- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:351:22: warning: unsupported simp config option: iota_eqn
 theorem cond_to_bool_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] : cond (@toBool (x % 2 = 1) d) 1 0 = x % 2 := by
   by_cases' h : x % 2 = 1
   · simp [*]

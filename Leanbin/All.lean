@@ -108,6 +108,7 @@ import Leanbin.Init.Meta.Environment
 import Leanbin.Init.Meta.Exceptional
 import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Meta.ExprAddress
+import Leanbin.Init.Meta.FeatureSearch
 import Leanbin.Init.Meta.Float
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Meta.FunInfo

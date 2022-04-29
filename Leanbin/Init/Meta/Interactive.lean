@@ -22,7 +22,7 @@ open Lean.Parser
 
 open Native
 
--- ././Mathport/Syntax/Translate/Basic.lean:1537:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1534:35: warning: unsupported: precedence command
 -- mathport name: «expr ?»
 local postfix:1024 "?" => optionalₓ
 
@@ -581,7 +581,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
--- ././Mathport/Syntax/Translate/Basic.lean:1537:35: warning: unsupported: precedence command
+-- ././Mathport/Syntax/Translate/Basic.lean:1534:35: warning: unsupported: precedence command
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -881,14 +881,32 @@ Tries to solve the current goal using a canonical proof of `true`, or the `refle
 unsafe def trivial : tactic Unit :=
   tactic.triv <|> tactic.reflexivity <|> tactic.contradiction <|> fail "trivial tactic failed"
 
-/-- Closes the main goal using `sorry`.
+/-- Closes the main goal using `sorry`. Takes an optional ignored tactic block.
+
+The ignored tactic block is useful for "commenting out" part of a proof during development:
+```lean
+begin
+  split,
+  admit { expensive_tactic },
+
+end
+```
 -/
-unsafe def admit : tactic Unit :=
+unsafe def admit (t : parse (with_desc "{...}" parser.itactic)?) : tactic Unit :=
   tactic.admit
 
-/-- Closes the main goal using `sorry`.
+/-- Closes the main goal using `sorry`. Takes an optional ignored tactic block.
+
+The ignored tactic block is useful for "commenting out" part of a proof during development:
+```lean
+begin
+  split,
+  sorry { expensive_tactic },
+
+end
+```
 -/
-unsafe def sorry : tactic Unit :=
+unsafe def sorry (t : parse (with_desc "{...}" parser.itactic)?) : tactic Unit :=
   tactic.admit
 
 /--

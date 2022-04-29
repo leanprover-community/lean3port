@@ -89,7 +89,7 @@ theorem map_mapₓ (g : β → γ) (f : α → β) (l : List α) : map g (map f 
   induction l <;> simp [*]
 
 @[simp]
-theorem length_map (f : α → β) (l : List α) : length (map f l) = length l := by
+theorem length_mapₓ (f : α → β) (l : List α) : length (map f l) = length l := by
   induction l <;> simp [*]
 
 -- bind
@@ -106,11 +106,11 @@ theorem append_bind xs ys (f : α → List β) : List.bind (xs ++ ys) f = List.b
   induction xs <;> [rfl, simp [*, cons_bind]]
 
 -- mem
-theorem mem_nil_iff (a : α) : a ∈ ([] : List α) ↔ False :=
+theorem mem_nil_iffₓ (a : α) : a ∈ ([] : List α) ↔ False :=
   Iff.rfl
 
 @[simp]
-theorem not_mem_nil (a : α) : a ∉ ([] : List α) :=
+theorem not_mem_nilₓ (a : α) : a ∉ ([] : List α) :=
   not_false
 
 theorem mem_cons_selfₓ (a : α) (l : List α) : a ∈ a :: l :=
@@ -144,7 +144,7 @@ theorem mem_append_rightₓ {a : α} (l₁ : List α) {l₂ : List α} (h : a �
 
 theorem not_bex_nilₓ (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
 
-theorem ball_nil (p : α → Prop) : ∀, ∀ x ∈ @nil α, ∀, p x := fun x => False.elim
+theorem ball_nilₓ (p : α → Prop) : ∀, ∀ x ∈ @nil α, ∀, p x := fun x => False.elim
 
 theorem bex_consₓ (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
   ⟨fun ⟨x, h, px⟩ => by
@@ -169,7 +169,7 @@ instance : HasSubset (List α) :=
   ⟨List.Subset⟩
 
 @[simp]
-theorem nil_subsetₓ (l : List α) : [] ⊆ l := fun b i => False.elim (Iff.mp (mem_nil_iff b) i)
+theorem nil_subsetₓ (l : List α) : [] ⊆ l := fun b i => False.elim (Iff.mp (mem_nil_iffₓ b) i)
 
 @[refl, simp]
 theorem Subset.refl (l : List α) : l ⊆ l := fun b i => i

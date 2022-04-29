@@ -703,7 +703,7 @@ variable {p q : Prop}
 def decidableOfDecidableOfIff (hp : Decidable p) (h : p ↔ q) : Decidable q :=
   if hp : p then isTrue (Iff.mp h hp) else isFalse (Iff.mp (not_iff_not_of_iff h) hp)
 
-def decidableOfDecidableOfEqₓ (hp : Decidable p) (h : p = q) : Decidable q :=
+def decidableOfDecidableOfEq (hp : Decidable p) (h : p = q) : Decidable q :=
   decidableOfDecidableOfIff hp h.to_iff
 
 protected def Or.byCases [Decidable p] [Decidable q] {α : Sort u} (h : p ∨ q) (h₁ : p → α) (h₂ : q → α) : α :=

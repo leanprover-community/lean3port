@@ -6,6 +6,7 @@ Authors: Gabriel Ebner
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Interactive
+import Leanbin.Init.Meta.InstanceCache
 
 namespace Tactic
 
@@ -28,7 +29,7 @@ unsafe def run_async {α : Type} (tac : tactic α) : tactic (task α) := do
 
 unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
   let ctx ← local_context
-  revert_lst ctx
+  unfreezing (revert_lst ctx)
   let tgt ← target
   let tgt ← instantiate_mvars tgt
   let env ← get_env
@@ -40,7 +41,7 @@ unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
     run_async do
         let goal_meta ← mk_meta_var tgt
         set_goals [goal_meta]
-        ctx fun c => intro c
+        ctx fun c => unfreezing (intro c)
         tac
         let proof ← instantiate_mvars goal_meta
         let proof ← return <| env.unfold_untrusted_macros proof

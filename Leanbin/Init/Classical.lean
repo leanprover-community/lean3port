@@ -43,16 +43,11 @@ private theorem exU : ∃ x, U x :=
 private theorem exV : ∃ x, V x :=
   ⟨False, Or.inl rfl⟩
 
-/- TODO(Leo): check why the code generator is not ignoring (some exU)
-   when we mark u as def. -/
-private theorem u : Prop :=
+private def u : Prop :=
   some exU
 
-private theorem v : Prop :=
+private def v : Prop :=
   some exV
-
--- ././Mathport/Syntax/Translate/Basic.lean:210:40: warning: unsupported option type_context.unfold_lemmas
-set_option type_context.unfold_lemmas true
 
 private theorem u_def : U u :=
   some_spec exU

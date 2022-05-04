@@ -234,7 +234,7 @@ theorem test_bit_zero b n : testBit (bit b n) 0 = b :=
 
 theorem test_bit_succ m b n : testBit (bit b n) (succ m) = testBit n m := by
   have : bodd (shiftr (shiftr (bit b n) 1) m) = bodd (shiftr n m) := by
-    dsimp [shiftr] <;> rw [div2_bit]
+    dsimp' [shiftr] <;> rw [div2_bit]
   rw [← shiftr_add, Nat.add_comm] at this <;> exact this
 
 theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)} (h : f false 0 z = z) b n :
@@ -301,7 +301,7 @@ theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = ff) a m b 
     bitwiseₓ f (bit a m) (bit b n) = bit (f a b) (bitwiseₓ f m n) := by
   unfold bitwise
   rw [binary_rec_eq, binary_rec_eq]
-  · induction' ftf : f tt ff with <;> dsimp [cond]
+  · induction' ftf : f tt ff with <;> dsimp' [cond]
     rw
       [show f a ff = ff by
         cases a <;> assumption]
@@ -326,7 +326,7 @@ theorem bitwise_swap {f : Bool → Bool → Bool} (h : f false false = ff) :
     bitwiseₓ (Function.swap f) = Function.swap (bitwiseₓ f) := by
   funext m n
   revert n
-  dsimp [Function.swap]
+  dsimp' [Function.swap]
   apply binary_rec _ (fun a m' IH => _) m <;> intro n
   · rw [bitwise_zero_left, bitwise_zero_right]
     exact h

@@ -88,8 +88,9 @@ Related mathlib tactic: `contrapose`.
 def Not (a : Prop) :=
   a → False
 
+-- ././Mathport/Syntax/Translate/Basic.lean:1232:30: infer kinds are unsupported in Lean 4: refl []
 inductive Eq {α : Sort u} (a : α) : α → Prop
-  | refl {} : Eq a
+  | refl : Eq a
 
 /-
 Initialize the quotient module, which effectively adds the following definitions:
@@ -111,6 +112,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 -/
 init_quot
 
+-- ././Mathport/Syntax/Translate/Basic.lean:1232:30: infer kinds are unsupported in Lean 4: refl []
 /-- Heterogeneous equality.
 
 Its purpose is to write down equalities between terms whose types are not definitionally equal.
@@ -123,7 +125,7 @@ If you really do need to follow this route,
 you may find the lemmas `eq_rec_heq` and `eq_mpr_heq` useful.
 -/
 inductive HEq {α : Sort u} (a : α) : ∀ {β : Sort u}, β → Prop
-  | refl {} : HEq a
+  | refl : HEq a
 
 structure Prod (α : Type u) (β : Type v) where
   fst : α

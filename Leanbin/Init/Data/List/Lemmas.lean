@@ -224,7 +224,7 @@ theorem length_remove_nth : ∀ l : List α i : ℕ, i < length l → length (re
     simp [remove_nth]
   | x :: xs, i + 1, h => by
     have : i < length xs := lt_of_succ_lt_succₓ h
-    dsimp [remove_nth] <;>
+    dsimp' [remove_nth] <;>
       rw [length_remove_nth xs i this, Nat.sub_add_cancelₓ (lt_of_le_of_ltₓ (Nat.zero_leₓ _) this)] <;> rfl
 
 @[simp]

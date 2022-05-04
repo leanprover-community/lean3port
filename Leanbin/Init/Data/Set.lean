@@ -96,7 +96,7 @@ instance : IsLawfulFunctor Set where
         ⟨fun ⟨a, ⟨h₁, h₂⟩⟩ => ⟨g a, ⟨⟨a, ⟨h₁, rfl⟩⟩, h₂⟩⟩, fun ⟨b, ⟨⟨a, ⟨h₁, h₂⟩⟩, h₃⟩⟩ =>
           ⟨a,
             ⟨h₁, by
-              dsimp <;> cc⟩⟩⟩
+              dsimp' <;> cc⟩⟩⟩
 
 end Set
 

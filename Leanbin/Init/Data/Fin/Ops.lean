@@ -115,7 +115,7 @@ def pred {n : Nat} : ∀ i : Finₓ (succ n), i ≠ 0 → Finₓ n
     ⟨a.pred,
       have : a ≠ 0 := by
         have aux₁ := vne_of_ne h₂
-        dsimp  at aux₁
+        dsimp'  at aux₁
         rw [val_zero] at aux₁
         exact aux₁
       Nat.pred_lt_predₓ this h₁⟩

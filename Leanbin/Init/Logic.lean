@@ -56,7 +56,7 @@ def False.elim {C : Sort u} (h : False) : C :=
 
 -- eq 
 -- proof irrelevance is built in
-theorem proof_irrelₓ {a : Prop} (h₁ h₂ : a) : h₁ = h₂ :=
+theorem proof_irrel {a : Prop} (h₁ h₂ : a) : h₁ = h₂ :=
   rfl
 
 @[simp]
@@ -77,10 +77,10 @@ theorem Eq.substr {α : Sort u} {p : α → Prop} {a b : α} (h₁ : b = a) : p 
 theorem congr {α : Sort u} {β : Sort v} {f₁ f₂ : α → β} {a₁ a₂ : α} (h₁ : f₁ = f₂) (h₂ : a₁ = a₂) : f₁ a₁ = f₂ a₂ :=
   Eq.subst h₁ (Eq.subst h₂ rfl)
 
-theorem congr_funₓ {α : Sort u} {β : α → Sort v} {f g : ∀ x, β x} (h : f = g) (a : α) : f a = g a :=
+theorem congr_fun {α : Sort u} {β : α → Sort v} {f g : ∀ x, β x} (h : f = g) (a : α) : f a = g a :=
   Eq.subst h (Eq.refl (f a))
 
-theorem congr_argₓ {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) : a₁ = a₂ → f a₁ = f a₂ :=
+theorem congr_arg {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) : a₁ = a₂ → f a₁ = f a₂ :=
   congr rfl
 
 theorem trans_rel_left {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
@@ -184,7 +184,7 @@ theorem type_eq_of_heqₓ (h : HEq a b) : α = β :=
 
 end
 
-theorem eq_rec_heqₓ {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} h : a = a' p : φ a, HEq (Eq.recOnₓ h p : φ a') p
+theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} h : a = a' p : φ a, HEq (Eq.recOnₓ h p : φ a') p
   | a, _, rfl, p => HEq.refl p
 
 theorem heq_of_eq_rec_leftₓ {α : Sort u} {φ : α → Sort v} :
@@ -248,15 +248,15 @@ structure Iff (a b : Prop) : Prop where intro ::
   mp : a → b
   mpr : b → a
 
-theorem Iff.elimₓ : ((a → b) → (b → a) → c) → (a ↔ b) → c :=
+theorem Iff.elim : ((a → b) → (b → a) → c) → (a ↔ b) → c :=
   Iff.ndrec
 
-attribute [recursor 5] Iff.elimₓ
+attribute [recursor 5] Iff.elim
 
-theorem Iff.elim_leftₓ : (a ↔ b) → a → b :=
+theorem Iff.elim_left : (a ↔ b) → a → b :=
   Iff.mp
 
-theorem Iff.elim_rightₓ : (a ↔ b) → b → a :=
+theorem Iff.elim_right : (a ↔ b) → b → a :=
   Iff.mpr
 
 theorem iff_iff_implies_and_implies (a b : Prop) : (a ↔ b) ↔ (a → b) ∧ (b → a) :=
@@ -275,7 +275,7 @@ theorem Iff.trans (h₁ : a ↔ b) (h₂ : b ↔ c) : a ↔ c :=
 
 @[symm]
 theorem Iff.symm (h : a ↔ b) : b ↔ a :=
-  Iff.intro (Iff.elim_rightₓ h) (Iff.elim_leftₓ h)
+  Iff.intro (Iff.elim_right h) (Iff.elim_left h)
 
 theorem Iff.comm : (a ↔ b) ↔ (b ↔ a) :=
   Iff.intro Iff.symm Iff.symm
@@ -288,7 +288,7 @@ theorem neq_of_not_iff {a b : Prop} : ¬(a ↔ b) → a ≠ b := fun h₁ h₂ =
   absurd this h₁
 
 theorem not_iff_not_of_iff (h₁ : a ↔ b) : ¬a ↔ ¬b :=
-  Iff.intro (fun hb : b => hna (Iff.elim_rightₓ h₁ hb)) fun ha : a => hnb (Iff.elim_leftₓ h₁ ha)
+  Iff.intro (fun hb : b => hna (Iff.elim_right h₁ hb)) fun ha : a => hnb (Iff.elim_left h₁ ha)
 
 theorem of_iff_true (h : a ↔ True) : a :=
   Iff.mp (Iff.symm h) trivialₓ
@@ -320,7 +320,7 @@ theorem imp_congr_ctx (h₁ : a ↔ c) (h₂ : c → (b ↔ d)) : a → b ↔ c 
     Iff.mpr (h₂ hc) hd
 
 theorem imp_congr_right (h : a → (b ↔ c)) : a → b ↔ a → c :=
-  Iff.intro (fun hab ha => Iff.elim_leftₓ (h ha) (hab ha)) fun hab ha => Iff.elim_rightₓ (h ha) (hab ha)
+  Iff.intro (fun hab ha => Iff.elim_left (h ha) (hab ha)) fun hab ha => Iff.elim_right (h ha) (hab ha)
 
 theorem not_not_intro (ha : a) : ¬¬a := fun hna : ¬a => hna ha
 
@@ -387,7 +387,7 @@ theorem and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∧ b ↔ c ∧ d :=
   Iff.intro (And.imp (Iff.mp h₁) (Iff.mp h₂)) (And.imp (Iff.mpr h₁) (Iff.mpr h₂))
 
 theorem and_congr_right (h : a → (b ↔ c)) : a ∧ b ↔ a ∧ c :=
-  Iff.intro (fun ⟨ha, hb⟩ => ⟨ha, Iff.elim_leftₓ (h ha) hb⟩) fun ⟨ha, hc⟩ => ⟨ha, Iff.elim_rightₓ (h ha) hc⟩
+  Iff.intro (fun ⟨ha, hb⟩ => ⟨ha, Iff.elim_left (h ha) hb⟩) fun ⟨ha, hc⟩ => ⟨ha, Iff.elim_right (h ha) hc⟩
 
 theorem And.comm : a ∧ b ↔ b ∧ a :=
   Iff.intro And.swap And.swap
@@ -783,7 +783,7 @@ theorem decidable_eq_inl_refl {α : Sort u} [h : DecidableEq α] (a : α) : h a 
 theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} : ∀ n : a ≠ b, h a b = isFalse n := fun n =>
   match h a b with
   | is_true e => absurd e n
-  | is_false n₁ => proof_irrelₓ n n₁ ▸ Eq.refl (isFalse n)
+  | is_false n₁ => proof_irrel n n₁ ▸ Eq.refl (isFalse n)
 
 -- inhabited
 class Inhabited (α : Sort u) where
@@ -830,19 +830,19 @@ protected theorem Subsingleton.helimₓ {α β : Sort u} [h : Subsingleton α] (
   Eq.recOnₓ h fun a b : α => heq_of_eq (Subsingleton.elimₓ a b)
 
 instance subsingleton_prop (p : Prop) : Subsingleton p :=
-  ⟨fun a b => proof_irrelₓ a b⟩
+  ⟨fun a b => proof_irrel a b⟩
 
 instance (p : Prop) : Subsingleton (Decidable p) :=
   Subsingleton.intro fun d₁ =>
     match d₁ with
     | is_true t₁ => fun d₂ =>
       match d₂ with
-      | is_true t₂ => Eq.recOnₓ (proof_irrelₓ t₁ t₂) rfl
+      | is_true t₂ => Eq.recOnₓ (proof_irrel t₁ t₂) rfl
       | is_false f₂ => absurd t₁ f₂
     | is_false f₁ => fun d₂ =>
       match d₂ with
       | is_true t₂ => absurd t₂ f₁
-      | is_false f₂ => Eq.recOnₓ (proof_irrelₓ f₁ f₂) rfl
+      | is_false f₂ => Eq.recOnₓ (proof_irrel f₁ f₂) rfl
 
 protected theorem rec_subsingleton {p : Prop} [h : Decidable p] {h₁ : p → Sort u} {h₂ : ¬p → Sort u}
     [h₃ : ∀ h : p, Subsingleton (h₁ h)] [h₄ : ∀ h : ¬p, Subsingleton (h₂ h)] : Subsingleton (Decidable.recOn h h₂ h₁) :=

@@ -293,7 +293,7 @@ def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
 
 @[simp]
 theorem length_map_accumr : ∀ f : α → σ → σ × β x : List α s : σ, length (mapAccumr f x s).2 = length x
-  | f, a :: x, s => congr_argₓ succ (length_map_accumr f x s)
+  | f, a :: x, s => congr_arg succ (length_map_accumr f x s)
   | f, [], s => rfl
 
 end MapAccumr
@@ -317,7 +317,7 @@ theorem length_map_accumr₂ : ∀ f : α → β → σ → σ × φ x y c, leng
   | f, a :: x, b :: y, c =>
     calc
       succ (length (mapAccumr₂ f x y c).2) = succ (min (length x) (length y)) :=
-        congr_argₓ succ (length_map_accumr₂ f x y c)
+        congr_arg succ (length_map_accumr₂ f x y c)
       _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succₓ (length x) (length y))
       
   | f, a :: x, [], c => rfl

@@ -192,7 +192,7 @@ protected theorem coe_nat_inj {m n : ℕ} (h : (↑m : ℤ) = ↑n) : m = n :=
   Int.ofNat.injₓ h
 
 theorem of_nat_eq_of_nat_iff (m n : ℕ) : ofNat m = ofNat n ↔ m = n :=
-  Iff.intro Int.ofNat.injₓ (congr_argₓ _)
+  Iff.intro Int.ofNat.injₓ (congr_arg _)
 
 protected theorem coe_nat_eq_coe_nat_iff (m n : ℕ) : (↑m : ℤ) = ↑n ↔ m = n :=
   of_nat_eq_of_nat_iff m n
@@ -282,7 +282,7 @@ theorem nat_abs_of_nat (n : ℕ) : natAbs ↑n = n :=
   rfl
 
 theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, natAbs a = 0 → a = 0
-  | of_nat m, H => congr_argₓ ofNat H
+  | of_nat m, H => congr_arg ofNat H
   | -[1+ m'], H => absurd H (succ_ne_zero _)
 
 theorem nat_abs_pos_of_ne_zero {a : ℤ} (h : a ≠ 0) : 0 < natAbs a :=

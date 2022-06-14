@@ -59,7 +59,7 @@ theorem bodd_mul (m n : ℕ) : bodd (m * n) = (bodd m && bodd n) := by
     
 
 theorem mod_two_of_bodd (n : ℕ) : n % 2 = cond (bodd n) 1 0 := by
-  have := congr_argₓ bodd (mod_add_div n 2)
+  have := congr_arg bodd (mod_add_div n 2)
   simp [bnot] at this
   rw
     [show ∀ b, (ff && b) = ff by
@@ -90,7 +90,7 @@ theorem bodd_add_div2 : ∀ n, cond (bodd n) 1 0 + 2 * div2 n = n
   | 0 => rfl
   | succ n => by
     simp
-    refine' Eq.trans _ (congr_argₓ succ (bodd_add_div2 n))
+    refine' Eq.trans _ (congr_arg succ (bodd_add_div2 n))
     cases bodd n <;> simp [cond, bnot]
     · rw [Nat.add_comm, Nat.zero_add]
       
@@ -117,7 +117,7 @@ theorem bit0_val (n : Nat) : bit0 n = 2 * n :=
     
 
 theorem bit1_val (n : Nat) : bit1 n = 2 * n + 1 :=
-  congr_argₓ succ (bit0_val _)
+  congr_arg succ (bit0_val _)
 
 theorem bit_val b n : bit b n = 2 * n + cond b 1 0 := by
   cases b
@@ -208,14 +208,14 @@ theorem div2_bit b n : div2 (bit b n) = n := by
 
 theorem shiftl'_add b m n : ∀ k, shiftl' b m (n + k) = shiftl' b (shiftl' b m n) k
   | 0 => rfl
-  | k + 1 => congr_argₓ (bit b) (shiftl'_add k)
+  | k + 1 => congr_arg (bit b) (shiftl'_add k)
 
 theorem shiftl_add : ∀ m n k, shiftl m (n + k) = shiftl (shiftl m n) k :=
   shiftl'_add _
 
 theorem shiftr_add m n : ∀ k, shiftr m (n + k) = shiftr (shiftr m n) k
   | 0 => rfl
-  | k + 1 => congr_argₓ div2 (shiftr_add k)
+  | k + 1 => congr_arg div2 (shiftr_add k)
 
 theorem shiftl'_sub b m : ∀ {n k}, k ≤ n → shiftl' b m (n - k) = shiftr (shiftl' b m n) k
   | n, 0, h => rfl
@@ -305,13 +305,13 @@ theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = ff) a m b 
     rw
       [show f a ff = ff by
         cases a <;> assumption]
-    apply @congr_argₓ _ _ _ 0 (bit ff)
+    apply @congr_arg _ _ _ 0 (bit ff)
     run_tac
       tactic.swap
     rw
       [show f a ff = a by
         cases a <;> assumption]
-    apply congr_argₓ (bit a)
+    apply congr_arg (bit a)
     all_goals
       apply bit_cases_on m
       intro a m

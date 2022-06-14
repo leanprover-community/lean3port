@@ -9,7 +9,7 @@ import Leanbin.Init.Classical
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Algebra.Classes
 
--- ././Mathport/Syntax/Translate/Basic.lean:210:40: warning: unsupported option default_priority
+-- ././Mathport/Syntax/Translate/Basic.lean:209:40: warning: unsupported option default_priority
 /- Make sure instances defined in this file have lower priority than the ones
    defined for concrete structures -/
 /- Make sure instances defined in this file have lower priority than the ones
@@ -20,7 +20,7 @@ universe u
 
 variable {α : Type u}
 
--- ././Mathport/Syntax/Translate/Basic.lean:210:40: warning: unsupported option auto_param.check_exists
+-- ././Mathport/Syntax/Translate/Basic.lean:209:40: warning: unsupported option auto_param.check_exists
 set_option auto_param.check_exists false
 
 section Preorderₓ

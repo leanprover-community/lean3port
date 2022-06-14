@@ -33,7 +33,7 @@ def nil : Vector α 0 :=
 
 @[matchPattern]
 def cons : α → Vector α n → Vector α (Nat.succ n)
-  | a, ⟨v, h⟩ => ⟨a :: v, congr_argₓ Nat.succ h⟩
+  | a, ⟨v, h⟩ => ⟨a :: v, congr_arg Nat.succ h⟩
 
 @[reducible]
 def length (v : Vector α n) : ℕ :=
@@ -50,8 +50,8 @@ theorem head_cons (a : α) : ∀ v : Vector α n, head (cons a v) = a
   | ⟨l, h⟩ => rfl
 
 def tail : Vector α n → Vector α (n - 1)
-  | ⟨[], h⟩ => ⟨[], congr_argₓ pred h⟩
-  | ⟨a :: v, h⟩ => ⟨v, congr_argₓ pred h⟩
+  | ⟨[], h⟩ => ⟨[], congr_arg pred h⟩
+  | ⟨a :: v, h⟩ => ⟨v, congr_arg pred h⟩
 
 theorem tail_cons (a : α) : ∀ v : Vector α n, tail (cons a v) = v
   | ⟨l, h⟩ => rfl

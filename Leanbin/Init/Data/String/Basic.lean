@@ -37,7 +37,7 @@ instance hasDecidableLt (s₁ s₂ : Stringₓ) : Decidable (s₁ < s₂) :=
 
 instance hasDecidableEq : DecidableEq Stringₓ := fun ⟨x⟩ ⟨y⟩ =>
   match List.hasDecEqₓ x y with
-  | is_true p => isTrue (congr_argₓ StringImp.mk p)
+  | is_true p => isTrue (congr_arg StringImp.mk p)
   | is_false p => isFalse fun q => p (StringImp.mk.inj q)
 
 def empty : Stringₓ :=

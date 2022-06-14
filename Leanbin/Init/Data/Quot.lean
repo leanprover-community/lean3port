@@ -87,7 +87,7 @@ protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ a b : α p : 
   Quot.recOn q f fun a b p =>
     eq_of_heq
       (calc
-        HEq (Eq.ndrec (f a) (sound p) : β ⟦b⟧) (f a) := eq_rec_heqₓ (sound p) (f a)
+        HEq (Eq.ndrec (f a) (sound p) : β ⟦b⟧) (f a) := eq_rec_heq (sound p) (f a)
         HEq _ (f b) := c a b p
         )
 
@@ -267,7 +267,7 @@ def EqvGen.setoid : Setoidₓ α :=
 
 theorem Quot.exact {a b : α} (H : Quot.mk r a = Quot.mk r b) : EqvGen r a b :=
   @Quotientₓ.exact _ (EqvGen.setoid r) a b
-    (@congr_argₓ _ _ _ _ (Quot.lift (@Quotientₓ.mk _ (EqvGen.setoid r)) fun x y h => Quot.sound (EqvGen.rel x y h)) H)
+    (@congr_arg _ _ _ _ (Quot.lift (@Quotientₓ.mk _ (EqvGen.setoid r)) fun x y h => Quot.sound (EqvGen.rel x y h)) H)
 
 theorem Quot.eqv_gen_sound {r : α → α → Prop} {a b : α} (H : EqvGen r a b) : Quot.mk r a = Quot.mk r b :=
   EqvGen.rec_on H (fun x y h => Quot.sound h) (fun x => rfl) (fun x y _ IH => Eq.symm IH) fun x y z _ _ IH₁ IH₂ =>

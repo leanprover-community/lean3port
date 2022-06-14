@@ -210,7 +210,7 @@ def toList (a : Arrayₓ n α) : List α :=
   a.revFoldl [] (· :: ·)
 
 theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
-  Nat.lt_of_le_and_neₓ (Nat.le_of_lt_succₓ h₁) h₂
+  Nat.lt_of_le_and_ne (Nat.le_of_lt_succₓ h₁) h₂
 
 /-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
 def pushBack (a : Arrayₓ n α) (v : α) : Arrayₓ (n + 1) α where

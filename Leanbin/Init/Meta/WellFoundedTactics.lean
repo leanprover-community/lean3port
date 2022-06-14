@@ -73,8 +73,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | quote.1 (PSigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -106,7 +106,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
       | _ => return s
     else return s
 
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -157,8 +157,8 @@ private unsafe def sort_args (args : List expr) : List expr :=
 private def tagged_proof.wf : Unit :=
   ()
 
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
 unsafe def cancel_nat_add_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   let ty ← infer_type lhs >>= whnf
@@ -174,7 +174,7 @@ unsafe def cancel_nat_add_lt : tactic Unit := do
       let new_rhs ← mk_nat_add_add common (sort_args rhs_rest)
       let lhs_pr ← prove_eq_by_perm lhs new_lhs
       let rhs_pr ← prove_eq_by_perm rhs new_rhs
-      let target_pr ← to_expr (pquote.1 (congr (congr_argₓ (· < ·) (%%ₓlhs_pr)) (%%ₓrhs_pr)))
+      let target_pr ← to_expr (pquote.1 (congr (congr_arg (· < ·) (%%ₓlhs_pr)) (%%ₓrhs_pr)))
       let new_target ← to_expr (pquote.1 ((%%ₓnew_lhs) < %%ₓnew_rhs))
       replace_target new_target target_pr `` id_tag.wf
       sorry <|> sorry
@@ -183,9 +183,9 @@ unsafe def check_target_is_value_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   guardₓ lhs
 
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
--- ././Mathport/Syntax/Translate/Basic.lean:915:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
+-- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>

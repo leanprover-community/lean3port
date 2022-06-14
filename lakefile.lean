@@ -1,7 +1,7 @@
 import Lake
 open Lake DSL System
 
-def tag : String := "pr-bump220613-19111e4"
+def tag : String := "nightly-2022-06-14"
 def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
 

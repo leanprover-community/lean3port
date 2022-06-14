@@ -19,7 +19,7 @@ theorem Option.eq_of_eq_some {α : Type u} : ∀ {x y : Option α}, (∀ z, x = 
   | none, none, h => rfl
   | none, some z, h => Option.noConfusion ((h z).2 rfl)
   | some z, none, h => Option.noConfusion ((h z).1 rfl)
-  | some z, some w, h => Option.noConfusion ((h w).2 rfl) (congr_argₓ some)
+  | some z, some w, h => Option.noConfusion ((h w).2 rfl) (congr_arg some)
 
 theorem Option.eq_some_of_is_some {α : Type u} : ∀ {o : Option α} h : Option.isSome o, o = some (Option.getₓ h)
   | some x, h => rfl

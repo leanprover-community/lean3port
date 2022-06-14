@@ -119,7 +119,7 @@ theorem lt_succ_of_leₓ {a b : ℕ} : a ≤ b → a < succ b :=
 
 @[simp]
 theorem succ_sub_succ_eq_sub (a b : ℕ) : succ a - succ b = a - b :=
-  Nat.recOn b (show succ a - succ zero = a - zero from Eq.refl (succ a - succ zero)) fun b => congr_argₓ pred
+  Nat.recOn b (show succ a - succ zero = a - zero from Eq.refl (succ a - succ zero)) fun b => congr_arg pred
 
 theorem not_succ_le_selfₓ : ∀ n : ℕ, ¬succ n ≤ n := fun n =>
   Nat.rec (not_succ_le_zeroₓ 0) (fun a b c => b (le_of_succ_le_succₓ c)) n
@@ -152,11 +152,11 @@ protected theorem lt_of_lt_of_leₓ {n m k : ℕ} : n < m → m ≤ k → n < k 
 -- Basic nat.add lemmas
 protected theorem zero_add : ∀ n : ℕ, 0 + n = n
   | 0 => rfl
-  | n + 1 => congr_argₓ succ (zero_add n)
+  | n + 1 => congr_arg succ (zero_add n)
 
 theorem succ_add : ∀ n m : ℕ, succ n + m = succ (n + m)
   | n, 0 => rfl
-  | n, m + 1 => congr_argₓ succ (succ_add n m)
+  | n, m + 1 => congr_arg succ (succ_add n m)
 
 theorem add_succ (n m : ℕ) : n + succ m = succ (n + m) :=
   rfl
@@ -172,7 +172,7 @@ theorem succ_eq_add_one (n : ℕ) : succ n = n + 1 :=
 
 -- Basic lemmas for comparing numerals
 protected theorem bit0_succ_eq (n : ℕ) : bit0 (succ n) = succ (succ (bit0 n)) :=
-  show succ (succ n + n) = succ (succ (n + n)) from congr_argₓ succ (succ_add n n)
+  show succ (succ n + n) = succ (succ (n + n)) from congr_arg succ (succ_add n n)
 
 protected theorem zero_lt_bit0 : ∀ {n : Nat}, n ≠ 0 → 0 < bit0 n
   | 0, h => absurd rfl h

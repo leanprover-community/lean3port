@@ -13,7 +13,7 @@ def download (url : String) (to : FilePath) : BuildM PUnit := Lake.proc
 
 def untar (file : FilePath) : BuildM PUnit := Lake.proc
 { cmd := "tar",
-  args := #["-xzvf", file.fileName.getD "."] -- really should throw an error if `file.fileName = none`
+  args := #["-xzf", file.fileName.getD "."] -- really should throw an error if `file.fileName = none`
   cwd := file.parent }
 
 def getReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM PUnit :=

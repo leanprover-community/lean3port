@@ -1,10 +1,9 @@
 import Lake
 open Lake DSL System
 
-def tag : String := "nightly-2022-05-22"
+def tag : String := "pr-bump220613-19111e4"
 def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
-def leanTarName : String := "lean3-synport.tar.gz"
 
 def download (url : String) (to : FilePath) : BuildM PUnit := Lake.proc
 { -- We use `curl -O` to ensure we clobber any existing file.
@@ -24,32 +23,21 @@ def untarReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM P
   getReleaseArtifact repo tag artifact to
   untar (to / artifact)
 
-def fetchOleans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
+def fetchOleans : OpaqueTarget := { info := (), task := fetch } where
   fetch := async (m := BuildM) do
     IO.FS.createDirAll libDir
-    let oldTrace := Hash.ofString (← Git.headRevision dir)
+    let oldTrace := Hash.ofString tag
     buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
       untarReleaseArtifact releaseRepo tag oleanTarName libDir
 
-  libDir : FilePath := dir / "build" / "lib"
+  libDir : FilePath := __dir__ / "build" / "lib"
 
-def fetchLeans (dir : FilePath) : OpaqueTarget := { info := (), task := fetch } where
-  fetch := async (m := BuildM) do
-    IO.FS.createDirAll srcDir
-    let oldTrace := Hash.ofString (← Git.headRevision dir)
-    buildFileUnlessUpToDate (srcDir / leanTarName) oldTrace do
-      untarReleaseArtifact releaseRepo tag leanTarName srcDir
+package lean3port where
+  extraDepTarget := Target.collectOpaqueList [fetchOleans]
 
-  srcDir : FilePath := dir
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"8b7a86a8c1a98511e706f54beb288ee1974f052f"
 
-package lean3port (dir) {
-  libRoots := #[]
-  libGlobs := #[`Leanbin]
-  extraDepTarget := Target.collectOpaqueList [fetchLeans dir, fetchOleans dir]
-  defaultFacet := PackageFacet.oleans
-  dependencies := #[{
-    name := "mathlib",
-    -- This git commit here should be the same commit as in the `lakefile.lean` for `mathport`.
-    src := Source.git "https://github.com/leanprover-community/mathlib4.git" "2ffca8d47239ce3b152ac6ed814dacda963c5677"
-  }]
-}
+@[defaultTarget]
+lean_lib Leanbin where
+  roots := #[]
+  globs := #[`Leanbin]

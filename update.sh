@@ -16,13 +16,14 @@ curl -qsSL {https://raw.githubusercontent.com/leanprover-community/mathport/$tag
 
 mathlib4_rev=$(
   curl -qsSL https://raw.githubusercontent.com/leanprover-community/mathport/$tag/lakefile.lean |
-  sed '/src := .*mathlib4/!d;s/.*"\(.*\)"$/\1/'
+  sed '/^require mathlib /!d;s/.*@.*"\(.*\)"$/\1/'
 )
 
 sed -i '
   /^def tag / s/"\(.*\)"$/"'$tag'"/;
-  /src.*:=.*mathlib4/ s/"\([^"]*\)"$/"'$mathlib4_rev'"/
+  /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean
+lake update
 
 rm -rf Leanbin
 curl -qsSL https://github.com/leanprover-community/mathport/releases/download/$tag/lean3-synport.tar.gz \

@@ -30,8 +30,7 @@ unsafe instance : Monadₓ type_context where
   bind := @type_context.bind
   pure := @type_context.pure
 
-unsafe instance : MonadFail type_context where
-  fail := fun α => type_context.fail ∘ to_fmt
+unsafe instance : MonadFail type_context where fail := fun α => type_context.fail ∘ to_fmt
 
 unsafe axiom get_env : type_context environment
 

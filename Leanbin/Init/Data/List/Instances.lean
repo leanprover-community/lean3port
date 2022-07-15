@@ -20,18 +20,18 @@ instance : Monadₓ List where
 instance : IsLawfulMonad List where
   bind_pure_comp_eq_map := by
     intro α β f l
-    induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
+    induction l <;> simp_all [← (· <$> ·), ← (· >>= ·), ← pure]
   id_map := @List.map_id
   pure_bind := by
     intros
-    simp [pure, (· >>= ·)]
+    simp [← pure, ← (· >>= ·)]
   bind_assoc := by
     intro α β γ l f g
     induction' l with x l ih
-    · simp [(· >>= ·)]
+    · simp [← (· >>= ·)]
       
-    · simp [(· >>= ·)] at ih
-      simp [(· >>= ·), ih]
+    · simp [← (· >>= ·)] at ih
+      simp [← (· >>= ·), ← ih]
       
 
 instance : Alternativeₓ List :=
@@ -48,7 +48,7 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] =>
     isFalse
       (by
-        simp [List.not_bex_nilₓ])
+        simp [← List.not_bex_nilₓ])
   | x :: xs =>
     if h₁ : p x then isTrue ⟨x, mem_cons_selfₓ _ _, h₁⟩
     else

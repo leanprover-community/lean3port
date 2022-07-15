@@ -38,15 +38,15 @@ parameter {r : α → α → Prop}{s : ∀ a : α, β a → β a → Prop}
 local infixl:50 "≺" => Lex r s
 
 theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : ∀ b : β a, Acc (Lex r s) ⟨a, b⟩ :=
-  Acc.recOnₓ aca fun iha : ∀ y, r y xa → ∀ b : β y, Acc (Lex r s) ⟨y, b⟩ => fun b : β xa =>
-    Acc.recOnₓ (WellFounded.apply (acb xa) b) fun ihb : ∀ y : β xa, s xa y xb → Acc (Lex r s) ⟨xa, y⟩ =>
-      Acc.intro ⟨xa, xb⟩ fun lt : p≺⟨xa, xb⟩ =>
+  Acc.recOnₓ aca fun xa aca iha : ∀ y, r y xa → ∀ b : β y, Acc (Lex r s) ⟨y, b⟩ => fun b : β xa =>
+    Acc.recOnₓ (WellFounded.apply (acb xa) b) fun xb acb ihb : ∀ y : β xa, s xa y xb → Acc (Lex r s) ⟨xa, y⟩ =>
+      Acc.intro ⟨xa, xb⟩ fun p lt : p≺⟨xa, xb⟩ =>
         have aux : xa = xa → HEq xb xb → Acc (Lex r s) p :=
           @PSigma.Lex.rec_on α β r s (fun p₁ p₂ => p₂.1 = xa → HEq p₂.2 xb → Acc (Lex r s) p₁) p ⟨xa, xb⟩ lt
-            (fun eq₃ : HEq b₂ xb => by
+            (fun a₁ : α b₁ : β a₁ a₂ : α b₂ : β a₂ h : r a₁ a₂ eq₂ : a₂ = xa eq₃ : HEq b₂ xb => by
               subst eq₂
               exact iha a₁ h b₁)
-            fun eq₃ : HEq b₂ xb => by
+            fun a : α b₁ b₂ : β a h : s a b₁ b₂ eq₂ : a = xa eq₃ : HEq b₂ xb => by
             subst eq₂
             have new_eq₃ := eq_of_heq eq₃
             subst new_eq₃
@@ -99,17 +99,17 @@ parameter {r : α → α → Prop}{s : β → β → Prop}
 local infixl:50 "≺" => RevLex r s
 
 theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=
-  Acc.recOnₓ acb fun ihb : ∀ y, s y xb → ∀ a, Acc (RevLex r s) ⟨a, y⟩ => fun a =>
-    Acc.recOnₓ (aca a) fun iha : ∀ y, r y xa → Acc (RevLex r s) (mk y xb) =>
-      Acc.intro ⟨xa, xb⟩ fun lt : p≺⟨xa, xb⟩ =>
+  Acc.recOnₓ acb fun xb acb ihb : ∀ y, s y xb → ∀ a, Acc (RevLex r s) ⟨a, y⟩ => fun a =>
+    Acc.recOnₓ (aca a) fun xa aca iha : ∀ y, r y xa → Acc (RevLex r s) (mk y xb) =>
+      Acc.intro ⟨xa, xb⟩ fun p lt : p≺⟨xa, xb⟩ =>
         have aux : xa = xa → xb = xb → Acc (RevLex r s) p :=
           @RevLex.rec_on α β r s (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (RevLex r s) p₁) p ⟨xa, xb⟩ lt
-            (fun eq₃ : b = xb =>
+            (fun a₁ a₂ b h : r a₁ a₂ eq₂ : a₂ = xa eq₃ : b = xb =>
               show Acc (RevLex r s) ⟨a₁, b⟩ from
                 have r₁ : r a₁ xa := Eq.recOnₓ eq₂ h
                 have aux : Acc (RevLex r s) ⟨a₁, xb⟩ := iha a₁ r₁
                 Eq.recOnₓ (Eq.symm eq₃) aux)
-            fun eq₃ : b₂ = xb =>
+            fun a₁ b₁ a₂ b₂ h : s b₁ b₂ eq₂ : a₂ = xa eq₃ : b₂ = xb =>
             show Acc (RevLex r s) (mk a₁ b₁) from
               have s₁ : s b₁ xb := Eq.recOnₓ eq₃ h
               ihb b₁ s₁ a₁

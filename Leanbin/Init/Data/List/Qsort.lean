@@ -41,7 +41,7 @@ theorem qsort_cons {α} (lt : α → α → Bool) h t :
   by
   rw [qsort, WellFounded.fix_eq, qsort.F]
   induction' e : partition (fun x => lt h x = tt) t with large small
-  simp [e]
+  simp [← e]
   rw [e]
 
 end List

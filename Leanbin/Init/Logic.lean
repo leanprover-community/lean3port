@@ -139,9 +139,9 @@ section
 
 variable {p : Prop}
 
-theorem ne_false_of_self : p → p ≠ False := fun heq : p = False => HEq ▸ hp
+theorem ne_false_of_self : p → p ≠ False := fun hp : p heq : p = False => HEq ▸ hp
 
-theorem ne_true_of_not : ¬p → p ≠ True := fun heq : p = True => (HEq ▸ hnp) trivialₓ
+theorem ne_true_of_not : ¬p → p ≠ True := fun hnp : ¬p heq : p = True => (HEq ▸ hnp) trivialₓ
 
 theorem true_ne_false : ¬True = False :=
   ne_false_of_self trivialₓ
@@ -288,7 +288,7 @@ theorem neq_of_not_iff {a b : Prop} : ¬(a ↔ b) → a ≠ b := fun h₁ h₂ =
   absurd this h₁
 
 theorem not_iff_not_of_iff (h₁ : a ↔ b) : ¬a ↔ ¬b :=
-  Iff.intro (fun hb : b => hna (Iff.elim_right h₁ hb)) fun ha : a => hnb (Iff.elim_left h₁ ha)
+  Iff.intro (fun hna : ¬a hb : b => hna (Iff.elim_right h₁ hb)) fun hnb : ¬b ha : a => hnb (Iff.elim_left h₁ ha)
 
 theorem of_iff_true (h : a ↔ True) : a :=
   Iff.mp (Iff.symm h) trivialₓ
@@ -303,7 +303,7 @@ theorem iff_false_intro (h : ¬a) : a ↔ False :=
   Iff.intro h (False.ndrec a)
 
 theorem not_non_contradictory_iff_absurd (a : Prop) : ¬¬¬a ↔ ¬a :=
-  Iff.intro (fun ha : a => hl (non_contradictory_intro ha)) absurd
+  Iff.intro (fun hl : ¬¬¬a ha : a => hl (non_contradictory_intro ha)) absurd
 
 theorem imp_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a → b ↔ c → d :=
   Iff.intro (fun hab hc => Iff.mp h₂ (hab (Iff.mpr h₁ hc))) fun hcd ha => Iff.mpr h₂ (hcd (Iff.mp h₁ ha))
@@ -692,7 +692,7 @@ theorem not_or_iff_and_not p q [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p 
         match d₂ with
         | is_true h₂ => False.elim <| h (Or.inr h₂)
         | is_false h₂ => ⟨h₁, h₂⟩)
-    fun h => Or.elim h np nq
+    fun ⟨np, nq⟩ h => Or.elim h np nq
 
 end Decidable
 
@@ -1074,15 +1074,11 @@ def Subrelation (q r : β → β → Prop) :=
 
 def InvImage (f : α → β) : α → α → Prop := fun a₁ a₂ => f a₁≺f a₂
 
-theorem InvImage.trans (f : α → β) (h : Transitive r) : Transitive (InvImage r f) := fun h₂ : InvImage r f a₂ a₃ =>
-  h h₁ h₂
+theorem InvImage.trans (f : α → β) (h : Transitive r) : Transitive (InvImage r f) :=
+  fun a₁ a₂ a₃ : α h₁ : InvImage r f a₁ a₂ h₂ : InvImage r f a₂ a₃ => h h₁ h₂
 
 theorem InvImage.irreflexive (f : α → β) (h : Irreflexive r) : Irreflexive (InvImage r f) :=
-  fun h₁ : InvImage r f a a => h (f a) h₁
-
-inductive Tc {α : Sort u} (r : α → α → Prop) : α → α → Prop
-  | base : ∀ a b, r a b → Tc a b
-  | trans : ∀ a b c, Tc a b → Tc b c → Tc a c
+  fun a : α h₁ : InvImage r f a a => h (f a) h₁
 
 end Relation
 

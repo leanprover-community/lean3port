@@ -172,7 +172,7 @@ include s₁ s₂
 protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂) (q₁ : Quotientₓ s₁)
     (q₂ : Quotientₓ s₂) : φ :=
   Quotientₓ.lift (fun a₁ : α => Quotientₓ.lift (f a₁) (fun a b : β => c a₁ a a₁ b (Setoidₓ.refl a₁)) q₂)
-    (fun h : a ≈ b =>
+    (fun a b : α h : a ≈ b =>
       @Quotientₓ.ind β s₂
         (fun a_1 : Quotientₓ s₂ =>
           Quotientₓ.lift (f a) (fun a_1 b : β => c a a_1 a b (Setoidₓ.refl a)) a_1 =

@@ -107,8 +107,8 @@ class MonadIoRandom (m : Type → Type → Type) where
 instance monadIoIsMonad (m : Type → Type → Type) (e : Type) [MonadIo m] : Monadₓ (m e) :=
   MonadIo.monad e
 
-instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] : MonadFail (m Io.Error) where
-  fail := fun α s => MonadIo.fail _ _ (Io.Error.other s)
+instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] :
+    MonadFail (m Io.Error) where fail := fun α s => MonadIo.fail _ _ (Io.Error.other s)
 
 instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternativeₓ (m Io.Error) where
   orelse := fun α a b => MonadIo.catch _ _ _ a fun _ => b

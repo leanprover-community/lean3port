@@ -266,11 +266,9 @@ mutual
     | html.of_component p c => html.of_component p <| component.map_action f c
 end
 
-unsafe instance attr.is_functor : Functor attr where
-  map := @attr.map_action
+unsafe instance attr.is_functor : Functor attr where map := @attr.map_action
 
-unsafe instance html.is_functor : Functor html where
-  map := fun _ _ => html.map_action
+unsafe instance html.is_functor : Functor html where map := fun _ _ => html.map_action
 
 namespace Html
 

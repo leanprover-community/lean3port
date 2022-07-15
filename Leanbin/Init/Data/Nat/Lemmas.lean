@@ -34,10 +34,10 @@ protected theorem add_left_comm : ∀ n m k : ℕ, n + (m + k) = m + (n + k) :=
 
 protected theorem add_left_cancel : ∀ {n m k : ℕ}, n + m = n + k → m = k
   | 0, m, k => by
-    simp (config := { contextual := true })[Nat.zero_add]
+    simp (config := { contextual := true })[← Nat.zero_add]
   | succ n, m, k => fun h =>
     have : n + m = n + k := by
-      simp [succ_add] at h
+      simp [← succ_add] at h
       assumption
     add_left_cancel this
 
@@ -58,7 +58,7 @@ protected theorem zero_ne_one : 0 ≠ (1 : ℕ) := fun h => Nat.noConfusion h
 
 protected theorem eq_zero_of_add_eq_zero_right : ∀ {n m : ℕ}, n + m = 0 → n = 0
   | 0, m => by
-    simp [Nat.zero_add]
+    simp [← Nat.zero_add]
   | n + 1, m => fun h => by
     exfalso
     rw [add_one, succ_add] at h
@@ -87,29 +87,29 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
   | succ n => by
     rw [mul_succ, zero_mul]
 
--- ././Mathport/Syntax/Translate/Basic.lean:914:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Basic.lean:1052:4: warning: unsupported (TODO): `[tacs]
 private unsafe def sort_add :=
   sorry
 
 theorem succ_mul : ∀ n m : ℕ, succ n * m = n * m + m
   | n, 0 => rfl
   | n, succ m => by
-    simp [mul_succ, add_succ, succ_mul n m]
+    simp [← mul_succ, ← add_succ, ← succ_mul n m]
     run_tac
       sort_add
 
 protected theorem right_distrib : ∀ n m k : ℕ, (n + m) * k = n * k + m * k
   | n, m, 0 => rfl
   | n, m, succ k => by
-    simp [mul_succ, right_distrib n m k]
+    simp [← mul_succ, ← right_distrib n m k]
     run_tac
       sort_add
 
 protected theorem left_distrib : ∀ n m k : ℕ, n * (m + k) = n * m + n * k
   | 0, m, k => by
-    simp [Nat.zero_mul]
+    simp [← Nat.zero_mul]
   | succ n, m, k => by
-    simp [succ_mul, left_distrib n m k]
+    simp [← succ_mul, ← left_distrib n m k]
     run_tac
       sort_add
 
@@ -117,12 +117,12 @@ protected theorem mul_comm : ∀ n m : ℕ, n * m = m * n
   | n, 0 => by
     rw [Nat.zero_mul, Nat.mul_zero]
   | n, succ m => by
-    simp [mul_succ, succ_mul, mul_comm n m]
+    simp [← mul_succ, ← succ_mul, ← mul_comm n m]
 
 protected theorem mul_assoc : ∀ n m k : ℕ, n * m * k = n * (m * k)
   | n, m, 0 => rfl
   | n, m, succ k => by
-    simp [mul_succ, Nat.left_distrib, mul_assoc n m k]
+    simp [← mul_succ, ← Nat.left_distrib, ← mul_assoc n m k]
 
 protected theorem mul_one : ∀ n : ℕ, n * 1 = n :=
   Nat.zero_add
@@ -131,7 +131,7 @@ protected theorem one_mul (n : ℕ) : 1 * n = n := by
   rw [Nat.mul_comm, Nat.mul_one]
 
 theorem succ_add_eq_succ_add (n m : ℕ) : succ n + m = n + succ m := by
-  simp [succ_add, add_succ]
+  simp [← succ_add, ← add_succ]
 
 theorem eq_zero_of_mul_eq_zero : ∀ {n m : ℕ}, n * m = 0 → n = 0 ∨ m = 0
   | 0, m => fun h => Or.inl rfl
@@ -275,7 +275,7 @@ protected theorem le_of_add_le_add_rightₓ {k n m : ℕ} : n + k ≤ m + k → 
   rw [Nat.add_comm _ k, Nat.add_comm _ k]
   apply Nat.le_of_add_le_add_leftₓ
 
-protected theorem add_le_add_iff_le_rightₓ (k n m : ℕ) : n + k ≤ m + k ↔ n ≤ m :=
+protected theorem add_le_add_iff_right {k n m : ℕ} : n + k ≤ m + k ↔ n ≤ m :=
   ⟨Nat.le_of_add_le_add_rightₓ, fun h => Nat.add_le_add_rightₓ h _⟩
 
 protected theorem lt_of_add_lt_add_leftₓ {k n m : ℕ} (h : k + n < k + m) : n < m :=
@@ -375,19 +375,19 @@ theorem one_posₓ : 0 < 1 :=
 
 protected theorem mul_le_mul_of_nonneg_leftₓ {a b c : ℕ} (h₁ : a ≤ b) : c * a ≤ c * b := by
   by_cases' hba : b ≤ a
-  · simp [le_antisymmₓ hba h₁]
+  · simp [← le_antisymmₓ hba h₁]
     
   by_cases' hc0 : c ≤ 0
-  · simp [le_antisymmₓ hc0 c.zero_le, Nat.zero_mul]
+  · simp [← le_antisymmₓ hc0 c.zero_le, ← Nat.zero_mul]
     
   exact (le_not_le_of_ltₓ (Nat.mul_lt_mul_of_pos_leftₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ c.zero_le hc0))).left
 
 protected theorem mul_le_mul_of_nonneg_rightₓ {a b c : ℕ} (h₁ : a ≤ b) : a * c ≤ b * c := by
   by_cases' hba : b ≤ a
-  · simp [le_antisymmₓ hba h₁]
+  · simp [← le_antisymmₓ hba h₁]
     
   by_cases' hc0 : c ≤ 0
-  · simp [le_antisymmₓ hc0 c.zero_le, Nat.mul_zero]
+  · simp [← le_antisymmₓ hc0 c.zero_le, ← Nat.mul_zero]
     
   exact
     (le_not_le_of_ltₓ (Nat.mul_lt_mul_of_pos_rightₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ c.zero_le hc0))).left
@@ -457,7 +457,7 @@ protected theorem bit0_inj : ∀ {n m : ℕ}, bit0 n = bit0 m → n = m
   | n + 1, m + 1, h => by
     have : succ (succ (n + n)) = succ (succ (m + m)) := by
       unfold bit0  at h
-      simp [add_one, add_succ, succ_add] at h
+      simp [← add_one, ← add_succ, ← succ_add] at h
       have aux : n + n = m + m := h
       rw [aux]
     have : n + n = m + m := by
@@ -468,7 +468,7 @@ protected theorem bit0_inj : ∀ {n m : ℕ}, bit0 n = bit0 m → n = m
 
 protected theorem bit1_inj : ∀ {n m : ℕ}, bit1 n = bit1 m → n = m := fun n m h =>
   have : succ (bit0 n) = succ (bit0 m) := by
-    simp [Nat.bit1_eq_succ_bit0] at h
+    simp [← Nat.bit1_eq_succ_bit0] at h
     rw [h]
   have : bit0 n = bit0 m := by
     injection this
@@ -640,22 +640,22 @@ protected theorem le_of_le_of_sub_le_sub_rightₓ {n m k : ℕ} (h₀ : k ≤ m)
     cases' m with m
     · cases not_succ_le_zero _ h₀
       
-    · simp [succ_sub_succ] at h₁
+    · simp [← succ_sub_succ] at h₁
       apply succ_le_succ
       apply n_ih _ h₁
       apply le_of_succ_le_succ h₀
       
     
 
-protected theorem sub_le_sub_right_iffₓ (n m k : ℕ) (h : k ≤ m) : n - k ≤ m - k ↔ n ≤ m :=
+protected theorem sub_le_sub_iff_right {n m k : ℕ} (h : k ≤ m) : n - k ≤ m - k ↔ n ≤ m :=
   ⟨Nat.le_of_le_of_sub_le_sub_rightₓ h, fun h => Nat.sub_le_sub_rightₓ h k⟩
 
 protected theorem sub_self_add (n m : ℕ) : n - (n + m) = 0 :=
   show n + 0 - (n + m) = 0 by
     rw [Nat.add_sub_add_left, Nat.zero_sub]
 
-protected theorem add_le_to_le_subₓ (x : ℕ) {y k : ℕ} (h : k ≤ y) : x + k ≤ y ↔ x ≤ y - k := by
-  rw [← Nat.add_sub_cancel x k, Nat.sub_le_sub_right_iffₓ _ _ _ h, Nat.add_sub_cancel]
+protected theorem le_sub_iff_right {x y k : ℕ} (h : k ≤ y) : x ≤ y - k ↔ x + k ≤ y := by
+  rw [← Nat.add_sub_cancel x k, Nat.sub_le_sub_iff_right h, Nat.add_sub_cancel]
 
 protected theorem sub_lt_of_pos_leₓ (a b : ℕ) (h₀ : 0 < a) (h₁ : a ≤ b) : b - a < b := by
   apply Nat.sub_ltₓ _ h₀
@@ -678,13 +678,13 @@ protected theorem sub_eq_zero_of_leₓ {n m : ℕ} (h : n ≤ m) : n - m = 0 :=
 protected theorem le_of_sub_eq_zeroₓ : ∀ {n m : ℕ}, n - m = 0 → n ≤ m
   | n, 0, H => by
     rw [Nat.sub_zero] at H
-    simp [H]
+    simp [← H]
   | 0, m + 1, H => (m + 1).zero_le
   | n + 1, m + 1, H =>
     Nat.add_le_add_rightₓ
       (le_of_sub_eq_zero
         (by
-          simp [Nat.add_sub_add_right] at H
+          simp [← Nat.add_sub_add_right] at H
           exact H))
       _
 
@@ -709,7 +709,7 @@ protected theorem sub_eq_iff_eq_addₓ {a b c : ℕ} (ab : b ≤ a) : a - b = c 
 
 protected theorem lt_of_sub_eq_succₓ {m n l : ℕ} (H : m - n = Nat.succ l) : n < m :=
   not_leₓ.1 fun H' : n ≥ m => by
-    simp [Nat.sub_eq_zero_of_leₓ H'] at H
+    simp [← Nat.sub_eq_zero_of_leₓ H'] at H
     contradiction
 
 protected theorem sub_le_sub_leftₓ {n m : ℕ} k (h : n ≤ m) : k - m ≤ k - n := by
@@ -748,7 +748,7 @@ theorem sub_one_sub_ltₓ {n i} (h : i < n) : n - 1 - i < n := by
 
 theorem mul_pred_left : ∀ n m : ℕ, pred n * m = n * m - m
   | 0, m => by
-    simp [Nat.zero_sub, pred_zero, Nat.zero_mul]
+    simp [← Nat.zero_sub, ← pred_zero, ← Nat.zero_mul]
   | succ n, m => by
     rw [pred_succ, succ_mul, Nat.add_sub_cancel]
 
@@ -757,7 +757,7 @@ theorem mul_pred_right (n m : ℕ) : n * pred m = n * m - n := by
 
 protected theorem mul_sub_right_distrib : ∀ n m k : ℕ, (n - m) * k = n * k - m * k
   | n, 0, k => by
-    simp [Nat.sub_zero, Nat.zero_mul]
+    simp [← Nat.sub_zero, ← Nat.zero_mul]
   | n, succ m, k => by
     rw [Nat.sub_succ, mul_pred_left, mul_sub_right_distrib, succ_mul, Nat.sub_sub]
 
@@ -770,7 +770,7 @@ protected theorem mul_self_sub_mul_self_eq (a b : Nat) : a * a - b * b = (a + b)
 
 theorem succ_mul_succ_eq (a b : Nat) : succ a * succ b = a * b + a + b + 1 := by
   rw [← add_one, ← add_one]
-  simp [Nat.right_distrib, Nat.left_distrib, Nat.add_left_comm, Nat.mul_one, Nat.one_mul, Nat.add_assoc]
+  simp [← Nat.right_distrib, ← Nat.left_distrib, ← Nat.add_left_comm, ← Nat.mul_one, ← Nat.one_mul, ← Nat.add_assoc]
 
 /-! min -/
 
@@ -867,7 +867,7 @@ private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat
   · cases h2
     
   refine' if_congr Iff.rfl _ rfl
-  simp only [succ_sub_succ]
+  simp only [← succ_sub_succ]
   exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
 
 theorem mod_def (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x := by
@@ -877,20 +877,20 @@ theorem mod_def (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else
   cases y
   · rfl
     
-  refine' if_congr Iff.rfl (mod_core_congr _ _) rfl <;> simp [Nat.sub_leₓ]
+  refine' if_congr Iff.rfl (mod_core_congr _ _) rfl <;> simp [← Nat.sub_leₓ]
 
 @[simp]
 theorem mod_zeroₓ (a : Nat) : a % 0 = a := by
   rw [mod_def]
   have h : ¬(0 < 0 ∧ 0 ≤ a)
-  simp [lt_irreflₓ]
-  simp [if_neg, h]
+  simp [← lt_irreflₓ]
+  simp [← if_neg, ← h]
 
 theorem mod_eq_of_ltₓ {a b : Nat} (h : a < b) : a % b = a := by
   rw [mod_def]
   have h' : ¬(0 < b ∧ b ≤ a)
-  simp [not_le_of_gtₓ h]
-  simp [if_neg, h']
+  simp [← not_le_of_gtₓ h]
+  simp [← if_neg, ← h']
 
 @[simp]
 theorem zero_modₓ (b : Nat) : 0 % b = 0 := by
@@ -899,7 +899,7 @@ theorem zero_modₓ (b : Nat) : 0 % b = 0 := by
     intro hn
     cases' hn with l r
     exact absurd (lt_of_lt_of_leₓ l r) (lt_irreflₓ 0)
-  simp [if_neg, h]
+  simp [← if_neg, ← h]
 
 theorem mod_eq_sub_modₓ {a b : Nat} (h : b ≤ a) : a % b = (a - b) % b :=
   Or.elim b.eq_zero_or_pos
@@ -1000,13 +1000,13 @@ theorem mul_mod_mul_leftₓ (z x y : ℕ) : z * x % (z * y) = z * (x % y) :=
 theorem mul_mod_mul_rightₓ (z x y : ℕ) : x * z % (y * z) = x % y * z := by
   rw [Nat.mul_comm x z, Nat.mul_comm y z, Nat.mul_comm (x % y) z] <;> apply mul_mod_mul_left
 
--- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:351:22: warning: unsupported simp config option: iota_eqn
--- ././Mathport/Syntax/Translate/Tactic/Lean3.lean:351:22: warning: unsupported simp config option: iota_eqn
+-- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:353:22: warning: unsupported simp config option: iota_eqn
+-- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:353:22: warning: unsupported simp config option: iota_eqn
 theorem cond_to_bool_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] : cond (@toBool (x % 2 = 1) d) 1 0 = x % 2 := by
   by_cases' h : x % 2 = 1
   · simp [*]
     
-  · cases mod_two_eq_zero_or_one x <;> simp [*, Nat.zero_ne_one] <;> contradiction
+  · cases mod_two_eq_zero_or_one x <;> simp [*, ← Nat.zero_ne_one] <;> contradiction
     
 
 theorem sub_mul_modₓ (x k n : ℕ) (h₁ : n * k ≤ x) : (x - n * k) % n = x % n := by
@@ -1020,8 +1020,8 @@ theorem sub_mul_modₓ (x k n : ℕ) (h₁ : n * k ≤ x) : (x - n * k) % n = x 
     have h₄ : x - n * k ≥ n := by
       apply @Nat.le_of_add_le_add_rightₓ (n * k)
       rw [Nat.sub_add_cancelₓ h₂]
-      simp [mul_succ, Nat.add_comm] at h₁
-      simp [h₁]
+      simp [← mul_succ, ← Nat.add_comm] at h₁
+      simp [← h₁]
     rw [mul_succ, ← Nat.sub_sub, ← mod_eq_sub_mod h₄, k_ih h₂]
     
 
@@ -1043,7 +1043,7 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat
   · cases h2
     
   refine' if_congr Iff.rfl _ rfl
-  simp only [succ_sub_succ]
+  simp only [← succ_sub_succ]
   refine' congr_arg (· + 1) _
   exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
 
@@ -1055,7 +1055,7 @@ theorem div_def (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 
   · rfl
     
   refine' if_congr Iff.rfl (congr_arg (· + 1) _) rfl
-  refine' div_core_congr _ _ <;> simp [Nat.sub_leₓ]
+  refine' div_core_congr _ _ <;> simp [← Nat.sub_leₓ]
 
 theorem mod_add_divₓ (m k : ℕ) : m % k + k * (m / k) = m := by
   apply Nat.strong_induction_onₓ m
@@ -1067,7 +1067,7 @@ theorem mod_add_divₓ (m k : ℕ) : m % k + k * (m / k) = m := by
       apply Nat.sub_ltₓ _ h.left
       apply lt_of_lt_of_leₓ h.left h.right
     rw [div_def, mod_def, if_pos h, if_pos h]
-    simp [Nat.left_distrib, IH _ h', Nat.add_comm, Nat.add_left_comm]
+    simp [← Nat.left_distrib, ← IH _ h', ← Nat.add_comm, ← Nat.add_left_comm]
     rw [Nat.add_comm, ← Nat.add_sub_assocₓ h.right, Nat.mul_one, Nat.add_sub_cancel_left]
     
   -- ¬ (0 < k ∧ k ≤ m)
@@ -1082,7 +1082,7 @@ protected theorem div_oneₓ (n : ℕ) : n / 1 = n := by
 @[simp]
 protected theorem div_zeroₓ (n : ℕ) : n / 0 = 0 := by
   rw [div_def]
-  simp [lt_irreflₓ]
+  simp [← lt_irreflₓ]
 
 @[simp]
 protected theorem zero_divₓ (b : ℕ) : 0 / b = 0 :=
@@ -1090,7 +1090,7 @@ protected theorem zero_divₓ (b : ℕ) : 0 / b = 0 :=
 
 protected theorem div_le_of_le_mulₓ {m n : ℕ} : ∀ {k}, m ≤ k * n → m / k ≤ n
   | 0, h => by
-    simp [Nat.div_zeroₓ, n.zero_le]
+    simp [← Nat.div_zeroₓ, ← n.zero_le]
   | succ k, h =>
     suffices succ k * (m / succ k) ≤ succ k * n from Nat.le_of_mul_le_mul_leftₓ this (zero_lt_succₓ _)
     calc
@@ -1102,7 +1102,7 @@ protected theorem div_le_of_le_mulₓ {m n : ℕ} : ∀ {k}, m ≤ k * n → m /
 
 protected theorem div_le_selfₓ : ∀ m n : ℕ, m / n ≤ m
   | m, 0 => by
-    simp [Nat.div_zeroₓ, m.zero_le]
+    simp [← Nat.div_zeroₓ, ← m.zero_le]
   | m, succ n =>
     have : m ≤ succ n * m :=
       calc
@@ -1126,7 +1126,7 @@ theorem div_eq_of_ltₓ {a b : ℕ} (h₀ : a < b) : a / b = 0 := by
 -- with
 --   f x = x * k
 --   g y = y / k
-theorem le_div_iff_mul_leₓ (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ x * k ≤ y := by
+theorem le_div_iff_mul_leₓ {x y k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ x * k ≤ y := by
   -- Hk is needed because, despite div being made total, y / 0 := 0
   --     x * 0 ≤ y ↔ x ≤ y / 0
   --   ↔ 0 ≤ y ↔ x ≤ 0
@@ -1140,9 +1140,9 @@ theorem le_div_iff_mul_leₓ (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x ≤ y / k �
   -- base case: y < k
   · rw [div_eq_of_lt h]
     cases' x with x
-    · simp [Nat.zero_mul, y.zero_le]
+    · simp [← Nat.zero_mul, ← y.zero_le]
       
-    · simp [succ_mul, not_succ_le_zero, Nat.add_comm]
+    · simp [← succ_mul, ← not_succ_le_zero, ← Nat.add_comm]
       apply lt_of_lt_of_leₓ h
       apply Nat.le_add_rightₓ
       
@@ -1150,18 +1150,15 @@ theorem le_div_iff_mul_leₓ (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x ≤ y / k �
   -- step: k ≤ y
   · rw [div_eq_sub_div Hk h]
     cases' x with x
-    · simp [Nat.zero_mul, Nat.zero_leₓ]
+    · simp [← Nat.zero_mul, ← Nat.zero_leₓ]
       
-    · have Hlt : y - k < y := by
-        apply Nat.sub_lt_of_pos_leₓ <;> assumption
-      rw [← add_one, Nat.add_le_add_iff_le_rightₓ, IH (y - k) Hlt x, add_one, succ_mul, Nat.add_le_to_le_subₓ _ h]
+    · rw [← add_one, Nat.add_le_add_iff_right, IH (y - k) (Nat.sub_lt_of_pos_leₓ _ _ Hk h), add_one, succ_mul,
+        Nat.le_sub_iff_right h]
       
     
 
-theorem div_lt_iff_lt_mulₓ (x y : ℕ) {k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y * k := by
-  simp [← not_leₓ]
-  apply not_iff_not_of_iff
-  apply le_div_iff_mul_le _ _ Hk
+theorem div_lt_iff_lt_mulₓ {x y k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y * k := by
+  rw [← not_leₓ, not_congr (le_div_iff_mul_le Hk), not_leₓ]
 
 theorem sub_mul_divₓ (x n p : ℕ) (h₁ : n * p ≤ x) : (x - n * p) / n = x / n - p := by
   cases' Nat.eq_zero_or_posₓ n with h₀ h₀
@@ -1184,14 +1181,14 @@ theorem sub_mul_divₓ (x n p : ℕ) (h₁ : n * p ≤ x) : (x - n * p) / n = x 
         apply h₁
       rw [sub_succ, ← p_ih h₂]
       rw [@div_eq_sub_div (x - n * p) _ h₀ h₃]
-      simp [add_one, pred_succ, mul_succ, Nat.sub_sub]
+      simp [← add_one, ← pred_succ, ← mul_succ, ← Nat.sub_sub]
       
     
 
 theorem div_mul_le_selfₓ : ∀ m n : ℕ, m / n * n ≤ m
   | m, 0 => by
-    simp [m.zero_le, Nat.zero_mul]
-  | m, succ n => (le_div_iff_mul_leₓ _ _ (Nat.succ_posₓ _)).1 (le_reflₓ _)
+    simp [← m.zero_le, ← Nat.zero_mul]
+  | m, succ n => (le_div_iff_mul_le <| Nat.succ_posₓ _).1 (le_reflₓ _)
 
 @[simp]
 theorem add_div_rightₓ (x : ℕ) {z : ℕ} (H : 0 < z) : (x + z) / z = succ (x / z) := by
@@ -1203,7 +1200,7 @@ theorem add_div_leftₓ (x : ℕ) {z : ℕ} (H : 0 < z) : (z + x) / z = succ (x 
 
 @[simp]
 theorem mul_div_rightₓ (n : ℕ) {m : ℕ} (H : 0 < m) : m * n / m = n := by
-  induction n <;> simp [*, mul_succ, Nat.mul_zero]
+  induction n <;> simp [*, ← mul_succ, ← Nat.mul_zero]
 
 @[simp]
 theorem mul_div_leftₓ (m : ℕ) {n : ℕ} (H : 0 < n) : m * n / n = m := by
@@ -1241,7 +1238,7 @@ protected theorem div_eq_of_lt_leₓ {m n k : ℕ} (lo : k * n ≤ m) (hi : m < 
   have npos : 0 < n :=
     n.eq_zero_or_pos.resolve_left fun hn => by
       rw [hn, Nat.mul_zero] at hi lo <;> exact absurd lo (not_le_of_gtₓ hi)
-  le_antisymmₓ (le_of_lt_succₓ ((Nat.div_lt_iff_lt_mulₓ _ _ npos).2 hi)) ((Nat.le_div_iff_mul_leₓ _ _ npos).2 lo)
+  le_antisymmₓ (le_of_lt_succ <| (Nat.div_lt_iff_lt_mulₓ npos).2 hi) ((Nat.le_div_iff_mul_leₓ npos).2 lo)
 
 theorem mul_sub_divₓ (x n p : ℕ) (h₁ : x < n * p) : (n * p - succ x) / n = p - succ (x / n) := by
   have npos : 0 < n :=
@@ -1250,7 +1247,7 @@ theorem mul_sub_divₓ (x n p : ℕ) (h₁ : x < n * p) : (n * p - succ x) / n =
   apply Nat.div_eq_of_lt_leₓ
   · rw [Nat.mul_sub_right_distrib, Nat.mul_comm]
     apply Nat.sub_le_sub_leftₓ
-    exact (div_lt_iff_lt_mul _ _ npos).1 (lt_succ_self _)
+    exact (div_lt_iff_lt_mul npos).1 (lt_succ_self _)
     
   · change succ (pred (n * p - x)) ≤ succ (pred (p - x / n)) * n
     rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h₁), succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ _)]
@@ -1258,7 +1255,7 @@ theorem mul_sub_divₓ (x n p : ℕ) (h₁ : x < n * p) : (n * p - succ x) / n =
       apply Nat.sub_le_sub_leftₓ
       apply div_mul_le_self
       
-    · apply (div_lt_iff_lt_mul _ _ npos).2
+    · apply (div_lt_iff_lt_mul npos).2
       rwa [Nat.mul_comm]
       
     
@@ -1271,16 +1268,16 @@ protected theorem div_div_eq_div_mulₓ (m n k : ℕ) : m / n / k = m / (n * k) 
   · rw [n0, Nat.zero_mul, Nat.div_zeroₓ, Nat.zero_divₓ]
     
   apply le_antisymmₓ
-  · apply (le_div_iff_mul_le _ _ (Nat.mul_posₓ npos kpos)).2
+  · apply (le_div_iff_mul_le <| Nat.mul_posₓ npos kpos).2
     rw [Nat.mul_comm n k, ← Nat.mul_assoc]
-    apply (le_div_iff_mul_le _ _ npos).1
-    apply (le_div_iff_mul_le _ _ kpos).1
+    apply (le_div_iff_mul_le npos).1
+    apply (le_div_iff_mul_le kpos).1
     rfl
     
-  · apply (le_div_iff_mul_le _ _ kpos).2
-    apply (le_div_iff_mul_le _ _ npos).2
+  · apply (le_div_iff_mul_le kpos).2
+    apply (le_div_iff_mul_le npos).2
     rw [Nat.mul_assoc, Nat.mul_comm n k]
-    apply (le_div_iff_mul_le _ _ (Nat.mul_posₓ kpos npos)).1
+    apply (le_div_iff_mul_le (Nat.mul_posₓ kpos npos)).1
     rfl
     
 
@@ -1289,13 +1286,15 @@ protected theorem mul_div_mulₓ {m : ℕ} (n k : ℕ) (H : 0 < m) : m * n / (m 
 
 theorem div_lt_selfₓ {n m : Nat} : 0 < n → 1 < m → n / m < n := by
   intro h₁ h₂
-  have m_pos : 0 < m := by
-    apply lt_transₓ _ h₂
-    comp_val
-  suffices 1 * n < m * n by
-    rw [Nat.one_mul, Nat.mul_comm] at this
-    exact Iff.mpr (Nat.div_lt_iff_lt_mulₓ n n m_pos) this
-  exact Nat.mul_lt_mulₓ h₂ (le_reflₓ _) h₁
+  have := Nat.mul_lt_mulₓ h₂ (le_reflₓ _) h₁
+  rw [Nat.one_mul, Nat.mul_comm] at this
+  exact
+    (Nat.div_lt_iff_lt_mulₓ <|
+          lt_transₓ
+            (by
+              comp_val)
+            h₂).2
+      this
 
 /-! dvd -/
 
@@ -1308,7 +1307,7 @@ protected theorem dvd_trans {a b c : ℕ} (h₁ : a ∣ b) (h₂ : b ∣ c) : a 
   | ⟨d, (h₃ : b = a * d)⟩, ⟨e, (h₄ : c = b * e)⟩ =>
     ⟨d * e,
       show c = a * (d * e) by
-        simp [h₃, h₄, Nat.mul_assoc]⟩
+        simp [← h₃, ← h₄, ← Nat.mul_assoc]⟩
 
 protected theorem eq_zero_of_zero_dvd {a : ℕ} (h : 0 ∣ a) : a = 0 :=
   Exists.elim h fun c => fun H' : a = 0 * c => Eq.trans H' (Nat.zero_mul c)
@@ -1317,7 +1316,7 @@ protected theorem dvd_add {a b c : ℕ} (h₁ : a ∣ b) (h₂ : a ∣ c) : a �
   Exists.elim h₁ fun d hd =>
     Exists.elim h₂ fun e he =>
       ⟨d + e, by
-        simp [Nat.left_distrib, hd, he]⟩
+        simp [← Nat.left_distrib, ← hd, ← he]⟩
 
 protected theorem dvd_add_iff_right {k m n : ℕ} (h : k ∣ m) : k ∣ n ↔ k ∣ m + n :=
   ⟨Nat.dvd_add h,
@@ -1376,14 +1375,14 @@ theorem mod_eq_zero_of_dvdₓ {m n : ℕ} (H : m ∣ n) : n % m = 0 :=
   Exists.elim H fun z H1 => by
     rw [H1, mul_mod_right]
 
-theorem dvd_iff_mod_eq_zeroₓ (m n : ℕ) : m ∣ n ↔ n % m = 0 :=
+theorem dvd_iff_mod_eq_zeroₓ {m n : ℕ} : m ∣ n ↔ n % m = 0 :=
   ⟨mod_eq_zero_of_dvdₓ, dvd_of_mod_eq_zeroₓ⟩
 
 instance decidableDvd : @DecidableRel ℕ (· ∣ ·) := fun m n =>
   decidableOfDecidableOfIff
     (by
       infer_instance)
-    (dvd_iff_mod_eq_zeroₓ _ _).symm
+    dvd_iff_mod_eq_zeroₓ.symm
 
 protected theorem mul_div_cancel'ₓ {m n : ℕ} (H : n ∣ m) : n * (m / n) = m := by
   let t := mod_add_divₓ m n

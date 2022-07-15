@@ -19,16 +19,15 @@ namespace DArray
 variable {n : Nat} {α : Finₓ n → Type u} {α' : Finₓ n → Type v} {β : Type w}
 
 /-- The empty array. -/
-def nil {α} : DArray 0 α where
-  data := fun ⟨x, h⟩ => absurd h (Nat.not_lt_zeroₓ x)
+def nil {α} : DArray 0 α where data := fun ⟨x, h⟩ => absurd h (Nat.not_lt_zeroₓ x)
 
 /-- `read a i` reads the `i`th member of `a`. Has builtin VM implementation. -/
 def read (a : DArray n α) (i : Finₓ n) : α i :=
   a.data i
 
 /-- `write a i v` sets the `i`th member of `a` to be `v`. Has builtin VM implementation. -/
-def write (a : DArray n α) (i : Finₓ n) (v : α i) : DArray n α where
-  data := fun j => if h : i = j then Eq.recOnₓ h v else a.read j
+def write (a : DArray n α) (i : Finₓ n) (v : α i) :
+    DArray n α where data := fun j => if h : i = j then Eq.recOnₓ h v else a.read j
 
 def iterateAux (a : DArray n α) (f : ∀ i : Finₓ n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
   | 0, h, b => b
@@ -65,11 +64,11 @@ def revIterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β →
 
 @[simp]
 theorem read_write (a : DArray n α) (i : Finₓ n) (v : α i) : read (write a i v) i = v := by
-  simp [read, write]
+  simp [← read, ← write]
 
 @[simp]
 theorem read_write_of_ne (a : DArray n α) {i j : Finₓ n} (v : α i) : i ≠ j → read (write a i v) j = read a j := by
-  intro h <;> simp [read, write, h]
+  intro h <;> simp [← read, ← write, ← h]
 
 protected theorem ext {a b : DArray n α} (h : ∀ i, read a i = read b i) : a = b := by
   cases a <;> cases b <;> congr <;> exact funext h
@@ -97,7 +96,7 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
   | 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zeroₓ _)
   | i + 1, h₁, h₂, j, h₃ => by
     have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
-      simp [DArray.beqAux] at h₂
+      simp [← DArray.beqAux] at h₂
       assumption
     have h₁' : i ≤ n := le_of_ltₓ h₁
     have ih : ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ :=
@@ -121,11 +120,11 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       DArray.beqAux a b i h = ff →
         ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
   | 0, h₁, h₂ => by
-    simp [DArray.beqAux] at h₂
+    simp [← DArray.beqAux] at h₂
     contradiction
   | i + 1, h₁, h₂ => by
     have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
-      simp [DArray.beqAux] at h₂
+      simp [← DArray.beqAux] at h₂
       assumption
     cases' h₂' with h h
     · exists i
@@ -161,8 +160,7 @@ def Arrayₓ (n : Nat) (α : Type u) : Type u :=
   DArray n fun _ => α
 
 /-- `mk_array n v` creates a new array of length `n` where each element is `v`. Has builtin VM implementation. -/
-def mkArray {α} n (v : α) : Arrayₓ n α where
-  data := fun _ => v
+def mkArray {α} n (v : α) : Arrayₓ n α where data := fun _ => v
 
 namespace Arrayₓ
 
@@ -213,15 +211,14 @@ theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
   Nat.lt_of_le_and_ne (Nat.le_of_lt_succₓ h₁) h₂
 
 /-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
-def pushBack (a : Arrayₓ n α) (v : α) : Arrayₓ (n + 1) α where
-  data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
+def pushBack (a : Arrayₓ n α) (v : α) :
+    Arrayₓ (n + 1) α where data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
 
 theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
   Nat.Lt.step h
 
 /-- Discard _last_ element in the array. Has builtin VM implementation. -/
-def popBack (a : Arrayₓ (n + 1) α) : Arrayₓ n α where
-  data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
+def popBack (a : Arrayₓ (n + 1) α) : Arrayₓ n α where data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
 
 /-- Auxilliary function for monadically mapping a function over an array. -/
 @[inline]
@@ -276,10 +273,10 @@ def write' (a : Arrayₓ n α) (i : Nat) (v : α) : Arrayₓ n α :=
   if h : i < n then a.write ⟨i, h⟩ v else a
 
 theorem read_eq_read' [Inhabited α] (a : Arrayₓ n α) {i : Nat} (h : i < n) : read a ⟨i, h⟩ = read' a i := by
-  simp [read', h]
+  simp [← read', ← h]
 
 theorem write_eq_write' (a : Arrayₓ n α) {i : Nat} (h : i < n) (v : α) : write a ⟨i, h⟩ v = write' a i v := by
-  simp [write', h]
+  simp [← write', ← h]
 
 protected theorem ext {a b : Arrayₓ n α} (h : ∀ i, read a i = read b i) : a = b :=
   DArray.ext h

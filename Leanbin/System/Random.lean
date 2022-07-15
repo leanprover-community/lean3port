@@ -33,8 +33,7 @@ structure StdGen where
 def stdRange :=
   (1, 2147483562)
 
-instance : HasRepr StdGen where
-  repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
+instance : HasRepr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
 
 def stdNextₓ : StdGen → Nat × StdGen
   | ⟨s1, s2⟩ =>

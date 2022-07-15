@@ -25,7 +25,7 @@ private unsafe def get_has_reflect_type_name : tactic Name :=
 private unsafe def mk_has_reflect_instance_for (a : expr) : tactic expr := do
   let t ← infer_type a
   do
-    let m ← mk_app `reflected [a]
+    let m ← mk_mapp `reflected [none, some a]
     let inst ←
       mk_instance m <|> do
           let f ← pp t
@@ -50,13 +50,13 @@ private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List N
   let-- fn should be of the form `F_name ps fs`, where ps are the inductive parameter arguments,
       -- and `fs.length = field_names.length`
       quote.1
-      (reflected (%%ₓfn))
+      (reflected _ (%%ₓfn))
     ← target
-  let-- `reflected (F_name ps)` should be synthesizable directly, using instances from the context
+  let-- `reflected _ (F_name ps)` should be synthesizable directly, using instances from the context
   fn := field_names.foldl (fun fn _ => expr.app_fn fn) fn
-  let quote ← mk_app `reflected [fn] >>= mk_instance
+  let quote ← mk_mapp `reflected [none, some fn] >>= mk_instance
   let quote
-    ←-- now extend to an instance of `reflected (F_name ps fs)`
+    ←-- now extend to an instance of `reflected _ (F_name ps fs)`
           field_quotes.mfoldl
         (fun quote fquote => to_expr (pquote.1 (reflected.subst (%%ₓquote) (%%ₓfquote)))) quote
   exact quote

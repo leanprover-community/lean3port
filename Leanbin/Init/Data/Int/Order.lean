@@ -74,7 +74,7 @@ protected theorem le_totalₓ (a b : ℤ) : a ≤ b ∨ b ≤ a :=
   Or.imp_rightₓ
     (fun H : Nonneg (-(b - a)) =>
       have : -(b - a) = a - b := by
-        simp [Int.add_comm]
+        simp [← Int.add_comm]
       show Nonneg (a - b) from this ▸ H)
     (nonneg_or_nonneg_negₓ (b - a))
 
@@ -110,7 +110,7 @@ theorem eq_succ_of_zero_ltₓ {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
 theorem lt_add_succₓ (a : ℤ) (n : ℕ) : a < a + ↑(Nat.succ n) :=
   Le.intro
     (show a + 1 + n = a + Nat.succ n by
-      simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]
+      simp [← Int.coe_nat_eq, ← Int.add_comm, ← Int.add_left_comm]
       rfl)
 
 theorem Lt.intro {a b : ℤ} {n : ℕ} (h : a + Nat.succ n = b) : a < b :=
@@ -211,7 +211,7 @@ protected theorem mul_nonnegₓ {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 �
       Le.intro
         (show 0 + ↑n * ↑m = a * b by
           rw [← hn, ← hm]
-          simp [Int.zero_add])
+          simp [← Int.zero_add])
 
 protected theorem mul_posₓ {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
   Lt.elim ha fun n => fun hn =>
@@ -219,22 +219,22 @@ protected theorem mul_posₓ {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :
       Lt.intro
         (show 0 + ↑(Nat.succ (Nat.succ n * m + n)) = a * b by
           rw [← hn, ← hm]
-          simp [Int.coe_nat_zero]
+          simp [← Int.coe_nat_zero]
           rw [← Int.coe_nat_mul]
-          simp [Nat.mul_succ, Nat.add_succ, Nat.succ_add])
+          simp [← Nat.mul_succ, ← Nat.add_succ, ← Nat.succ_add])
 
 protected theorem zero_lt_oneₓ : (0 : ℤ) < 1 :=
   trivialₓ
 
 protected theorem lt_iff_le_not_leₓ {a b : ℤ} : a < b ↔ a ≤ b ∧ ¬b ≤ a := by
-  simp [Int.lt_iff_le_and_neₓ]
+  simp [← Int.lt_iff_le_and_neₓ]
   constructor <;> intro h
   · cases' h with hab hn
     constructor
     · assumption
       
     · intro hba
-      simp [Int.le_antisymmₓ hab hba] at *
+      simp [← Int.le_antisymmₓ hab hba] at *
       contradiction
       
     
@@ -356,12 +356,12 @@ section
 
 protected theorem le_of_add_le_add_leftₓ {a b c : ℤ} (h : a + b ≤ a + c) : b ≤ c := by
   have : -a + (a + b) ≤ -a + (a + c) := Int.add_le_add_leftₓ h _
-  simp [Int.neg_add_cancel_left] at this
+  simp [← Int.neg_add_cancel_left] at this
   assumption
 
 protected theorem lt_of_add_lt_add_leftₓ {a b c : ℤ} (h : a + b < a + c) : b < c := by
   have : -a + (a + b) < -a + (a + c) := Int.add_lt_add_leftₓ h _
-  simp [Int.neg_add_cancel_left] at this
+  simp [← Int.neg_add_cancel_left] at this
   assumption
 
 protected theorem add_le_add_rightₓ {a b : ℤ} (h : a ≤ b) (c : ℤ) : a + c ≤ b + c :=
@@ -455,7 +455,7 @@ protected theorem neg_le_negₓ {a b : ℤ} (h : a ≤ b) : -b ≤ -a := by
 
 protected theorem le_of_neg_le_negₓ {a b : ℤ} (h : -b ≤ -a) : a ≤ b :=
   suffices - -a ≤ - -b by
-    simp [Int.neg_neg] at this
+    simp [← Int.neg_neg] at this
     assumption
   Int.neg_le_negₓ h
 
@@ -776,19 +776,19 @@ protected theorem mul_lt_mul_of_pos_rightₓ {a b c : ℤ} (h₁ : a < b) (h₂ 
 
 protected theorem mul_le_mul_of_nonneg_leftₓ {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : c * a ≤ c * b := by
   by_cases' hba : b ≤ a
-  · simp [le_antisymmₓ hba h₁]
+  · simp [← le_antisymmₓ hba h₁]
     
   by_cases' hc0 : c ≤ 0
-  · simp [le_antisymmₓ hc0 h₂, Int.zero_mul]
+  · simp [← le_antisymmₓ hc0 h₂, ← Int.zero_mul]
     
   exact (le_not_le_of_ltₓ (Int.mul_lt_mul_of_pos_leftₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ h₂ hc0))).left
 
 protected theorem mul_le_mul_of_nonneg_rightₓ {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : a * c ≤ b * c := by
   by_cases' hba : b ≤ a
-  · simp [le_antisymmₓ hba h₁]
+  · simp [← le_antisymmₓ hba h₁]
     
   by_cases' hc0 : c ≤ 0
-  · simp [le_antisymmₓ hc0 h₂, Int.mul_zero]
+  · simp [← le_antisymmₓ hc0 h₂, ← Int.mul_zero]
     
   exact (le_not_le_of_ltₓ (Int.mul_lt_mul_of_pos_rightₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ h₂ hc0))).left
 

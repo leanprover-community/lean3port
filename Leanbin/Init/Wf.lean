@@ -9,6 +9,13 @@ import Leanbin.Init.Data.Prod
 
 universe u v
 
+/-- A value `x : α` is accessible from `r` when every value that's lesser under `r` is also
+accessible. Note that any value that's minimal under `r` is vacuously accessible.
+
+Equivalently, `acc r x` when there is no infinite chain of elements starting at `x` that are related
+under `r`.
+
+This is used to state the definition of well-foundedness (see `well_founded`). -/
 inductive Acc {α : Sort u} (r : α → α → Prop) : α → Prop
   | intro (x : α) (h : ∀ y, r y x → Acc y) : Acc x
 
@@ -21,7 +28,9 @@ theorem invₓ {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
 
 end Acc
 
-/-- A relation `r : α → α → Prop` is well-founded when `∀ x, (∀ y, r y x → P y → P x) → P x` for all predicates `P`.
+/-- A relation `r : α → α → Prop` is well-founded when `∀ x, (∀ y, r y x → P y → P x) → P x` for all
+predicates `P`. Equivalently, `acc r x` for all `x`.
+
 Once you know that a relation is well_founded, you can use it to define fixpoint functions on `α`.-/
 structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro ::
   apply : ∀ a, Acc r a
@@ -54,7 +63,7 @@ variable (F : ∀ x, (∀ y, y≺x → C y) → C x)
 def fixF (x : α) (a : Acc r x) : C x :=
   Acc.recOnₓ a fun x₁ ac₁ ih => F x₁ ih
 
-theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun p : y≺x => fix_F F y (Acc.invₓ acx p) :=
+theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun y : α p : y≺x => fix_F F y (Acc.invₓ acx p) :=
   Acc.drec (fun x r ih => rfl) acx
 
 end
@@ -76,7 +85,7 @@ open WellFounded
 
 /-- Empty relation is well-founded -/
 theorem empty_wf {α : Sort u} : WellFounded (@EmptyRelation α) :=
-  WellFounded.intro fun a : α => Acc.intro a fun lt : False => False.ndrec _ lt
+  WellFounded.intro fun a : α => Acc.intro a fun b : α lt : False => False.ndrec _ lt
 
 -- Subrelation of a well-founded relation is well-founded
 namespace Subrelation
@@ -90,7 +99,7 @@ parameter (h₁ : Subrelation Q r)
 parameter (h₂ : WellFounded r)
 
 theorem accessibleₓ {a : α} (ac : Acc r a) : Acc Q a :=
-  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun lt : Q y x => ih y (h₁ lt)
+  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun y : α lt : Q y x => ih y (h₁ lt)
 
 theorem wfₓ : WellFounded Q :=
   ⟨fun a => accessible (apply h₂ a)⟩
@@ -122,29 +131,6 @@ theorem wfₓ : WellFounded (InvImage r f) :=
 end
 
 end InvImage
-
--- The transitive closure of a well-founded relation is well-founded
-namespace Tc
-
-section
-
-parameter {α : Sort u}{r : α → α → Prop}
-
--- mathport name: «exprr⁺»
-local notation "r⁺" => Tc r
-
-theorem accessible {z : α} (ac : Acc r z) : Acc (Tc r) z :=
-  Acc.recOnₓ ac fun x acx ih =>
-    Acc.intro x fun y rel =>
-      Tc.rec_on rel (fun a b rab acx ih => ih a rab) (fun a b c rab rbc ih₁ ih₂ acx ih => Acc.invₓ (ih₂ acx ih) rab) acx
-        ih
-
-theorem wf (h : WellFounded r) : WellFounded r⁺ :=
-  ⟨fun a => accessible (apply h a)⟩
-
-end
-
-end Tc
 
 /-- less-than is well-founded -/
 theorem Nat.lt_wf : WellFounded Nat.Lt :=
@@ -206,8 +192,8 @@ theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc
       Acc.intro (xa, xb) fun p lt =>
         have aux : xa = xa → xb = xb → Acc (Lex ra rb) p :=
           @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p (xa, xb) lt
-            (fun eq₃ : b₂ = xb => iha a₁ (Eq.recOnₓ eq₂ h) b₁) fun eq₃ : b₂ = xb =>
-            Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
+            (fun a₁ b₁ a₂ b₂ h eq₂ : a₂ = xa eq₃ : b₂ = xb => iha a₁ (Eq.recOnₓ eq₂ h) b₁)
+            fun a b₁ b₂ h eq₂ : a = xa eq₃ : b₂ = xb => Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
         aux rfl rfl
 
 -- The lexicographical order of well founded relations is well-founded

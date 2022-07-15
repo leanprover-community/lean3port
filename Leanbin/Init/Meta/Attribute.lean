@@ -81,15 +81,15 @@ unsafe def user_attribute.parse_reflect {α β : Type} (attr : user_attribute α
 
 unsafe axiom user_attribute.get_param_untyped {α β : Type} (attr : user_attribute α β) (decl : Name) : tactic expr
 
-unsafe axiom user_attribute.set_untyped {α β : Type} [reflected β] (attr : user_attribute α β) (decl : Name)
+unsafe axiom user_attribute.set_untyped {α β : Type} [reflected _ β] (attr : user_attribute α β) (decl : Name)
     (val : expr) (persistent : Bool) (prio : Option Nat := none) : tactic Unit
 
 /--
 Get the value of the parameter for the attribute on a given declatation. Will fail if the attribute does not exist.-/
-unsafe def user_attribute.get_param {α β : Type} [reflected β] (attr : user_attribute α β) (n : Name) : tactic β :=
+unsafe def user_attribute.get_param {α β : Type} [reflected _ β] (attr : user_attribute α β) (n : Name) : tactic β :=
   attr.get_param_untyped n >>= tactic.eval_expr β
 
-unsafe def user_attribute.set {α β : Type} [reflected β] (attr : user_attribute α β) (n : Name) (val : β)
+unsafe def user_attribute.set {α β : Type} [reflected _ β] (attr : user_attribute α β) (n : Name) (val : β)
     (persistent : Bool) (prio : Option Nat := none) : tactic Unit :=
   attr.set_untyped n (attr.reflect_param val) persistent prio
 
@@ -99,7 +99,7 @@ open Tactic
 unsafe def register_attribute :=
   attribute.register
 
-unsafe def get_attribute_cache_dyn {α : Type} [reflected α] (attr_decl_name : Name) : tactic α :=
+unsafe def get_attribute_cache_dyn {α : Type} [reflected _ α] (attr_decl_name : Name) : tactic α :=
   let attr : pexpr := expr.const attr_decl_name []
   do
   let e ← to_expr (pquote.1 (user_attribute.get_cache (%%ₓattr)))

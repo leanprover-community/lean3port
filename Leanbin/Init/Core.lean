@@ -88,7 +88,7 @@ Related mathlib tactic: `contrapose`.
 def Not (a : Prop) :=
   a → False
 
--- ././Mathport/Syntax/Translate/Basic.lean:1231:30: infer kinds are unsupported in Lean 4: refl []
+-- ./././Mathport/Syntax/Translate/Basic.lean:1387:30: infer kinds are unsupported in Lean 4: refl []
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
 
@@ -112,7 +112,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 -/
 init_quot
 
--- ././Mathport/Syntax/Translate/Basic.lean:1231:30: infer kinds are unsupported in Lean 4: refl []
+-- ./././Mathport/Syntax/Translate/Basic.lean:1387:30: infer kinds are unsupported in Lean 4: refl []
 /-- Heterogeneous equality.
 
 Its purpose is to write down equalities between terms whose types are not definitionally equal.
@@ -185,8 +185,8 @@ def HEq.rfl {α : Sort u} {a : α} : HEq a a :=
   HEq.refl a
 
 theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
-  have : ∀ α' : Sort u a' : α' h₁ : @HEq α a α' a' h₂ : α = α', (Eq.recOnₓ h₂ a : α') = a' := fun h₁ : @HEq α a α' a' =>
-    HEq.recOnₓ h₁ fun h₂ : α = α => rfl
+  have : ∀ α' : Sort u a' : α' h₁ : @HEq α a α' a' h₂ : α = α', (Eq.recOnₓ h₂ a : α') = a' :=
+    fun α' : Sort u a' : α' h₁ : @HEq α a α' a' => HEq.recOnₓ h₁ fun h₂ : α = α => rfl
   show (Eq.recOnₓ (Eq.refl α) a : α) = a' from this α a' h (Eq.refl α)
 
 /- The following four lemmas could not be automatically generated when the
@@ -355,9 +355,13 @@ class HasSubset (α : Type u) where
 class HasSsubset (α : Type u) where
   Ssubset : α → α → Prop
 
-/- Type classes has_emptyc and has_insert are
+/-! Type classes `has_emptyc` and `has_insert` are
    used to implement polymorphic notation for collections.
-   Example: {a, b, c}. -/
+   Example: `{a, b, c} = insert a (insert b (singleton c))`.    
+   
+   Note that we use `pair` in the name of lemmas about `{x, y} = insert x (singleton y)`. -/
+
+
 class HasEmptyc (α : Type u) where
   emptyc : α
 

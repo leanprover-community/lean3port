@@ -133,7 +133,7 @@ theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → 
 
 theorem skolem {α : Sort u} {b : α → Sort v} {p : ∀ x, b x → Prop} :
     (∀ x, ∃ y, p x y) ↔ ∃ f : ∀ x, b x, ∀ x, p x (f x) :=
-  ⟨axiom_of_choice, fun x => ⟨f x, hw x⟩⟩
+  ⟨axiom_of_choice, fun ⟨f, hw⟩ x => ⟨f x, hw x⟩⟩
 
 theorem prop_complete (a : Prop) : a = True ∨ a = False :=
   Or.elim (em a) (fun t => Or.inl (eq_true_intro t)) fun f => Or.inr (eq_false_intro f)

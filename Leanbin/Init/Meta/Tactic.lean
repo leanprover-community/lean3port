@@ -367,7 +367,7 @@ unsafe def option_to_tactic_format {α : Type u} [has_to_tactic_format α] : Opt
 unsafe instance {α : Type u} [has_to_tactic_format α] : has_to_tactic_format (Option α) :=
   ⟨option_to_tactic_format⟩
 
-unsafe instance {α} (a : α) : has_to_tactic_format (reflected a) :=
+unsafe instance {α} (a : α) : has_to_tactic_format (reflected _ a) :=
   ⟨fun h => pp h.to_expr⟩
 
 unsafe instance (priority := 10) has_to_format_to_has_to_tactic_format (α : Type) [has_to_format α] :
@@ -421,7 +421,7 @@ inductive Transparency
 export Transparency (reducible semireducible)
 
 /-- (eval_expr α e) evaluates 'e' IF 'e' has type 'α'. -/
-unsafe axiom eval_expr (α : Type u) [reflected α] : expr → tactic α
+unsafe axiom eval_expr (α : Type u) [reflected _ α] : expr → tactic α
 
 /-- Return the partial term/proof constructed so far. Note that the resultant expression
    may contain variables that are not declarate in the current main goal. -/
@@ -1651,7 +1651,7 @@ unsafe def cases (e : expr) (ids : List Name := []) (md := semireducible) (dmd :
     focus1 <| do
         let r ← cases_core h ids md
         let hs' ← all_goals (intron' n)
-        return <| cases_postprocess <| r (fun hs' => (n, hs ++ hs', x)) hs'
+        return <| cases_postprocess <| r (fun ⟨n, hs, x⟩ hs' => (n, hs ++ hs', x)) hs'
 
 /-- The same as `exact` except you can add proof holes. -/
 unsafe def refine (e : pexpr) : tactic Unit := do
@@ -1981,7 +1981,7 @@ unsafe def replace_target (new_target : expr) (pr : expr) (tag : Name := `unit.s
   let locked_pr := mk_tagged_proof pr_type pr tag
   mk_eq_mpr locked_pr ht >>= exact
 
-unsafe def eval_pexpr α [reflected α] (e : pexpr) : tactic α :=
+unsafe def eval_pexpr α [reflected _ α] (e : pexpr) : tactic α :=
   to_expr (pquote.1 (%%ₓe : %%ₓreflect α)) false false >>= eval_expr α
 
 unsafe def run_simple {α} : tactic_state → tactic α → Option α

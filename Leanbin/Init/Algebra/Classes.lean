@@ -31,8 +31,7 @@ class IsCommutative (α : Type u) (op : α → α → α) : Prop where
   comm : ∀ a b, op a b = op b a
 
 instance (priority := 100) is_symm_op_of_is_commutative (α : Type u) (op : α → α → α) [IsCommutative α op] :
-    IsSymmOp α α op where
-  symm_op := IsCommutative.comm
+    IsSymmOp α α op where symm_op := IsCommutative.comm
 
 @[algebra]
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
@@ -122,8 +121,8 @@ class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
   symm : ∀ a b, r a b → r b a
 
 /-- The opposite of a symmetric relation is symmetric. -/
-instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] : IsSymmOp α Prop r where
-  symm_op := fun a b => propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
+instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] :
+    IsSymmOp α Prop r where symm_op := fun a b => propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
 
 /-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
 `r a b → ¬ r b a`. -/
@@ -339,7 +338,7 @@ theorem lt_of_lt_of_incomp {α : Type u} {lt : α → α → Prop} [IsStrictWeak
     absurd hab this.1
 
 theorem lt_of_incomp_of_lt {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt] [DecidableRel lt] :
-    ∀ {a b c}, ¬lt a b ∧ ¬lt b a → lt b c → lt a c := fun hbc =>
+    ∀ {a b c}, ¬lt a b ∧ ¬lt b a → lt b c → lt a c := fun a b c ⟨nab, nba⟩ hbc =>
   have nca : ¬lt c a := fun hca => absurd (trans_of lt hbc hca) nba
   Decidable.by_contradiction fun nac : ¬lt a c =>
     have : ¬lt b c ∧ ¬lt c b := incomp_trans_of lt ⟨nba, nab⟩ ⟨nac, nca⟩

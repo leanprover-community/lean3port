@@ -162,7 +162,7 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let (new_lhs, prf, _) ← tactic.rewrite h l cfg
   update_lhs new_lhs prf
 
--- ././Mathport/Syntax/Translate/Basic.lean:824:4: warning: unsupported notation `eq_lemmas
+-- ./././Mathport/Syntax/Translate/Basic.lean:949:4: warning: unsupported notation `eq_lemmas
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
   rs.mmap' fun r => do
     save_info r

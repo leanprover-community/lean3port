@@ -66,7 +66,7 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     let tgt ← modify_target n params tgt
     let tgt ←
       params.enum.mfoldr
-          (fun tgt => do
+          (fun ⟨i, param⟩ tgt => do
             let tgt ←
               (-- add typeclass hypothesis for each inductive parameter
                   -- TODO(sullrich): omit some typeclass parameters based on usage of `param`?
@@ -92,7 +92,7 @@ unsafe def has_reflect_derive_handler :=
     -- add additional `reflected` assumption for each parameter
         params.mfoldr
       (fun param tgt => do
-        let param_cls ← mk_app `reflected [param]
+        let param_cls ← mk_mapp `reflected [none, some param]
         pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt)
       tgt
 

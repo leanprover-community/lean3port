@@ -38,18 +38,18 @@ unsafe def mk_simple [DecidableEq π] (β σ : Type) (init : π → tactic σ) (
     (view : π → σ → tactic (List (html β))) : tc π α :=
   (component.with_should_update fun ⟨_, old_p⟩ ⟨_, new_p⟩ => old_p ≠ new_p) <|
     @component.stateful (tactic_state × π) α β (interaction_monad.result tactic_state σ)
-      (fun last =>
+      (fun ⟨ts, p⟩ last =>
         match last with
         | some x => x
         | none => init p ts)
-      (fun s b =>
+      (fun ⟨ts, p⟩ s b =>
         match s with
         | success s _ =>
           match update p s b ts with
           | success ⟨s, a⟩ _ => Prod.mk (success s ts) a
           | exception m p ts' => Prod.mk (exception m p ts') none
         | x => ⟨x, none⟩)
-      fun s =>
+      fun ⟨ts, p⟩ s =>
       match s with
       | success s _ =>
         match view p s ts with
@@ -64,7 +64,7 @@ unsafe def to_html : tc π α → π → tactic (html α)
   | c, p, ts => success (html.of_component (ts, p) c) ts
 
 unsafe def to_component : tc Unit α → component tactic_state α
-  | c => component.map_props (fun tc => (Tc, ())) c
+  | c => component.map_props (fun tc => (tc, ())) c
 
 unsafe instance : CoeFun (tc π α) fun x => π → tactic (html α) :=
   ⟨to_html⟩

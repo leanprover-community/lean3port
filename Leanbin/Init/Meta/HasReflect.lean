@@ -13,18 +13,19 @@ universe u v
 `has_reflect α` lets you produce an `expr` from an instance of α. That is, it is a function from α to expr such that the expr has type α. -/
 @[reducible]
 unsafe def has_reflect (α : Sort u) :=
-  ∀ a : α, reflected a
+  ∀ a : α, reflected _ a
 
 unsafe structure reflected_value (α : Type u) where
   val : α
-  [reflect : reflected val]
+  [reflect : reflected _ val]
 
 namespace ReflectedValue
 
 unsafe def expr {α : Type u} (v : reflected_value α) : expr :=
   v.reflect
 
-unsafe def subst {α : Type u} {β : Type v} (f : α → β) [rf : reflected f] (a : reflected_value α) : reflected_value β :=
+unsafe def subst {α : Type u} {β : Type v} (f : α → β) [rf : reflected _ f] (a : reflected_value α) :
+    reflected_value β :=
   @mk _ (f a.val) (rf.subst a.reflect)
 
 end ReflectedValue
@@ -53,7 +54,7 @@ unsafe instance name.reflect : has_reflect Name
   | Name.mk_string s n => (quote.1 fun n => Name.mk_string s n).subst (name.reflect n)
   | Name.mk_numeral i n => (quote.1 fun n => Name.mk_numeral i n).subst (name.reflect n)
 
-unsafe instance list.reflect {α : Type} [has_reflect α] [reflected α] : has_reflect (List α)
+unsafe instance list.reflect {α : Type} [has_reflect α] [reflected _ α] : has_reflect (List α)
   | [] => quote.1 []
   | h :: t => (quote.1 fun t => h :: t).subst (list.reflect t)
 

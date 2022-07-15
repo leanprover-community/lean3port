@@ -50,6 +50,6 @@ unsafe instance : has_to_pexpr pexpr :=
 unsafe instance : has_to_pexpr expr :=
   ⟨pexpr.of_expr⟩
 
-unsafe instance (α : Sort u) (a : α) : has_to_pexpr (reflected a) :=
+unsafe instance (α : Sort u) (a : α) : has_to_pexpr (reflected _ a) :=
   ⟨pexpr.of_expr ∘ reflected.to_expr⟩
 

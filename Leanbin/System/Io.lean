@@ -280,20 +280,6 @@ def Io.cmd (args : Io.Process.SpawnArgs) : Io Stringₓ := do
 For this to be safe, the IO computation should be ideally free of side effects and independent of its environment.
 This primitive is used to invoke external tools (e.g., SAT and SMT solvers) from a tactic.
 
-IMPORTANT: this primitive can be used to implement `unsafe_perform_io {α : Type} : io α → option α`
-or `unsafe_perform_io {α : Type} [inhabited α] : io α → α`. This can be accomplished by executing
-the resulting tactic using an empty `tactic_state` (we have `tactic_state.mk_empty`).
-If `unsafe_perform_io` is defined, and used to perform side-effects, users need to take the following
-precautions:
-
-- Use `@[noinline]` attribute in any function to invokes `tactic.unsafe_perform_io`.
-  Reason: if the call is inlined, the IO may be performed more than once.
-
-- Set `set_option compiler.cse false` before any function that invokes `tactic.unsafe_perform_io`.
-  This option disables common subexpression elimination. Common subexpression elimination
-  might combine two side effects that were meant to be separate.
-
-TODO[Leo]: add `[noinline]` attribute and option `compiler.cse`.
 -/
 unsafe axiom tactic.unsafe_run_io {α : Type} : Io α → tactic α
 
@@ -305,4 +291,20 @@ unsafe axiom tactic.unsafe_run_io {α : Type} : Io α → tactic α
    This action is mainly useful for writing tactics that inspect
    the environment. -/
 unsafe axiom io.run_tactic {α : Type} (a : tactic α) : Io α
+
+/-- Similarly to `tactic.unsafe_run_io`, this gives an unsafe backdoor to run io inside a pure function.
+
+If `unsafe_perform_io` is used to perform side-effects, users need to take the following
+precautions:
+
+- Use `@[noinline]` attribute in any function to invokes `tactic.unsafe_perform_io`.
+  Reason: if the call is inlined, the IO may be performed more than once.
+
+- Set `set_option compiler.cse false` before any function that invokes `tactic.unsafe_perform_io`.
+  This option disables common subexpression elimination. Common subexpression elimination
+  might combine two side effects that were meant to be separate.
+
+TODO[Leo]: add `[noinline]` attribute and option `compiler.cse`.
+-/
+unsafe axiom io.unsafe_perform_io {α : Type} (a : Io α) : Except Io.Error α
 

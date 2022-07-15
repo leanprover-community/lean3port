@@ -151,16 +151,15 @@ unsafe instance : Coe (tactic α) (parser α) :=
 
 namespace Reflectable
 
-unsafe instance cast (p : lean.parser (reflected_value α)) : reflectable (val p) where
-  full := p
+unsafe instance cast (p : lean.parser (reflected_value α)) : reflectable (val p) where full := p
 
-unsafe instance has_reflect [r : has_reflect α] (p : lean.parser α) : reflectable p where
-  full := do
+unsafe instance has_reflect [r : has_reflect α] (p : lean.parser α) :
+    reflectable p where full := do
     let rp ← p
     return ⟨rp⟩
 
-unsafe instance optional {α : Type} [reflected α] (p : parser α) [r : reflectable p] : reflectable (optionalₓ p) where
-  full := reflected_value.subst some <$> r.full <|> return ⟨none⟩
+unsafe instance optional {α : Type} [reflected _ α] (p : parser α) [r : reflectable p] :
+    reflectable (optionalₓ p) where full := reflected_value.subst some <$> r.full <|> return ⟨none⟩
 
 end Reflectable
 

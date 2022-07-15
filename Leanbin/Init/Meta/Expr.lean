@@ -302,33 +302,39 @@ unsafe axiom expr.get_delayed_abstraction_locals : expr → Option (List Name)
     by nested inference of `reflected` instances.
 
     The quotation expression `` `(a) `` (outside of patterns) is equivalent to `reflect a`
-    and thus can be used as an explicit way of inferring an instance of `reflected a`. -/
+    and thus can be used as an explicit way of inferring an instance of `reflected a`.
+    
+    Note that the `α` argument is explicit to prevent it being treated as reducible by typeclass
+    inference, as this breaks `reflected` instances on type synonyms. -/
 @[class]
-unsafe def reflected {α : Sort u} : α → Type := fun _ => expr
+unsafe def reflected (α : Sort u) : α → Type := fun _ => expr
 
 @[inline]
-unsafe def reflected.to_expr {α : Sort u} {a : α} : reflected a → expr :=
+unsafe def reflected.to_expr {α : Sort u} {a : α} : reflected _ a → expr :=
   id
 
+/-- This is a more strongly-typed version of `expr.subst` that keeps track of the value being
+reflected. To obtain a term of type `reflected _`, use `` (`(λ x y, foo x y).subst ex).subst ey`` instead of
+using `` `(foo %%ex %%ey) `` (which returns an `expr`). -/
 @[inline]
 unsafe def reflected.subst {α : Sort v} {β : α → Sort u} {f : ∀ a : α, β a} {a : α} :
-    reflected f → reflected a → reflected (f a) :=
+    reflected _ f → reflected _ a → reflected _ (f a) :=
   expr.subst
 
 @[instance]
-protected unsafe axiom expr.reflect (e : expr elab) : reflected e
+protected unsafe axiom expr.reflect (e : expr elab) : reflected _ e
 
 @[instance]
-protected unsafe axiom string.reflect (s : Stringₓ) : reflected s
+protected unsafe axiom string.reflect (s : Stringₓ) : reflected _ s
 
 @[inline]
-unsafe instance {α : Sort u} (a : α) : Coe (reflected a) expr :=
+unsafe instance {α : Sort u} (a : α) : Coe (reflected _ a) expr :=
   ⟨reflected.to_expr⟩
 
-protected unsafe def reflect {α : Sort u} (a : α) [h : reflected a] : reflected a :=
+protected unsafe def reflect {α : Sort u} (a : α) [h : reflected _ a] : reflected _ a :=
   h
 
-unsafe instance {α} (a : α) : has_to_format (reflected a) :=
+unsafe instance {α} (a : α) : has_to_format (reflected _ a) :=
   ⟨fun h => to_fmt h.to_expr⟩
 
 namespace Expr

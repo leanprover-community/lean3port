@@ -26,8 +26,8 @@ def comp (f : β → φ) (g : α → β) : α → φ := fun x => f (g x)
 /-- Composition of dependent functions: `(f ∘' g) x = f (g x)`, where type of `g x` depends on `x`
 and type of `f (g x)` depends on `x` and `g x`. -/
 @[inline, reducible]
-def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} y : β x, φ y) (g : ∀ x, β x) : ∀ x, φ (g x) :=
-  fun x => f (g x)
+def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} (y : β x), φ y) (g : ∀ x, β x) :
+    ∀ x, φ (g x) := fun x => f (g x)
 
 -- mathport name: «expr ∘' »
 infixr:80 " ∘' " => Function.dcomp

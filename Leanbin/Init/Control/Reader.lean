@@ -58,14 +58,14 @@ instance : Monadₓ (ReaderTₓ ρ m) where
 protected def lift (a : m α) : ReaderTₓ ρ m α :=
   ⟨fun r => a⟩
 
-instance m [Monadₓ m] : HasMonadLift m (ReaderTₓ ρ m) :=
+instance (m) [Monadₓ m] : HasMonadLift m (ReaderTₓ ρ m) :=
   ⟨@ReaderTₓ.lift ρ m _⟩
 
 @[inline]
 protected def monadMap {ρ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : ReaderTₓ ρ m α → ReaderTₓ ρ m' α :=
   fun x => ⟨fun r => f (x.run r)⟩
 
-instance ρ m m' [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (ReaderTₓ ρ m) (ReaderTₓ ρ m') :=
+instance (ρ m m') [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (ReaderTₓ ρ m) (ReaderTₓ ρ m') :=
   ⟨@ReaderTₓ.monadMap ρ m m' _ _⟩
 
 @[inline]
@@ -82,7 +82,7 @@ instance [Alternativeₓ m] : Alternativeₓ (ReaderTₓ ρ m) where
   failure := @ReaderTₓ.failure _ _ _ _
   orelse := @ReaderTₓ.orelse _ _ _ _
 
-instance ε [Monadₓ m] [MonadExcept ε m] : MonadExcept ε (ReaderTₓ ρ m) where
+instance (ε) [Monadₓ m] [MonadExcept ε m] : MonadExcept ε (ReaderTₓ ρ m) where
   throw := fun α => ReaderTₓ.lift ∘ throw
   catch := fun α x c => ⟨fun r => catch (x.run r) fun e => (c e).run r⟩
 
@@ -141,6 +141,6 @@ instance [Monadₓ m] : MonadReaderAdapter ρ ρ' (ReaderTₓ ρ m) (ReaderTₓ 
 
 end
 
-instance (ρ : Type u) m out [MonadRun out m] : MonadRun (fun α => ρ → out α) (ReaderTₓ ρ m) :=
+instance (ρ : Type u) (m out) [MonadRun out m] : MonadRun (fun α => ρ → out α) (ReaderTₓ ρ m) :=
   ⟨fun α x => run ∘ x.run⟩
 

@@ -80,7 +80,7 @@ instance : HasMonadLift m (StateTₓ σ m) :=
 protected def monadMap {σ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : StateTₓ σ m α → StateTₓ σ m' α :=
   fun x => ⟨fun st => f (x.run st)⟩
 
-instance σ m m' [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (StateTₓ σ m) (StateTₓ σ m') :=
+instance (σ m m') [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (StateTₓ σ m) (StateTₓ σ m') :=
   ⟨@StateTₓ.monadMap σ m m' _ _⟩
 
 protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monadₓ m] (split : σ → σ' × σ'') (join : σ' → σ'' → σ)
@@ -90,7 +90,7 @@ protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monadₓ 
     let (a, st') ← x.run st
     pure (a, join st' ctx)⟩
 
-instance ε [MonadExcept ε m] : MonadExcept ε (StateTₓ σ m) where
+instance (ε) [MonadExcept ε m] : MonadExcept ε (StateTₓ σ m) where
   throw := fun α => StateTₓ.lift ∘ throw
   catch := fun α x c => ⟨fun s => catch (x.run s) fun e => StateTₓ.run (c e) s⟩
 
@@ -201,6 +201,6 @@ instance [Monadₓ m] : MonadStateAdapter σ σ' (StateTₓ σ m) (StateTₓ σ'
 
 end
 
-instance σ m out [MonadRun out m] : MonadRun (fun α => σ → out (α × σ)) (StateTₓ σ m) :=
+instance (σ m out) [MonadRun out m] : MonadRun (fun α => σ → out (α × σ)) (StateTₓ σ m) :=
   ⟨fun α x => run ∘ fun σ => x.run σ⟩
 

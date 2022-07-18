@@ -1981,7 +1981,7 @@ unsafe def replace_target (new_target : expr) (pr : expr) (tag : Name := `unit.s
   let locked_pr := mk_tagged_proof pr_type pr tag
   mk_eq_mpr locked_pr ht >>= exact
 
-unsafe def eval_pexpr α [reflected _ α] (e : pexpr) : tactic α :=
+unsafe def eval_pexpr (α) [reflected _ α] (e : pexpr) : tactic α :=
   to_expr (pquote.1 (%%ₓe : %%ₓreflect α)) false false >>= eval_expr α
 
 unsafe def run_simple {α} : tactic_state → tactic α → Option α

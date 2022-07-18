@@ -87,7 +87,7 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
   | succ n => by
     rw [mul_succ, zero_mul]
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1052:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Basic.lean:1087:4: warning: unsupported (TODO): `[tacs]
 private unsafe def sort_add :=
   sorry
 
@@ -712,7 +712,7 @@ protected theorem lt_of_sub_eq_succₓ {m n l : ℕ} (H : m - n = Nat.succ l) : 
     simp [← Nat.sub_eq_zero_of_leₓ H'] at H
     contradiction
 
-protected theorem sub_le_sub_leftₓ {n m : ℕ} k (h : n ≤ m) : k - m ≤ k - n := by
+protected theorem sub_le_sub_leftₓ {n m : ℕ} (k) (h : n ≤ m) : k - m ≤ k - n := by
   induction h <;> [rfl, exact le_transₓ (pred_le _) h_ih]
 
 theorem succ_sub_sub_succ (n m k : ℕ) : succ n - m - succ k = n - m - k := by
@@ -809,7 +809,7 @@ protected theorem sub_add_min_cancelₓ (n m : ℕ) : n - m + min n m = n := by
 
 
 def twoStepInduction {P : ℕ → Sort u} (H1 : P 0) (H2 : P 1)
-    (H3 : ∀ n : ℕ IH1 : P n IH2 : P (succ n), P (succ (succ n))) : ∀ a : ℕ, P a
+    (H3 : ∀ (n : ℕ) (IH1 : P n) (IH2 : P (succ n)), P (succ (succ n))) : ∀ a : ℕ, P a
   | 0 => H1
   | 1 => H2
   | succ (succ n) => H3 _ (two_step_induction _) (two_step_induction _)

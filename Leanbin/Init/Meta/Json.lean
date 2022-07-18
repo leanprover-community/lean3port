@@ -66,5 +66,30 @@ unsafe instance : HasToString json :=
 unsafe instance : HasRepr json :=
   ⟨json.unparse⟩
 
+unsafe instance : DecidableEq json := fun j₁ j₂ => by
+  cases j₁ <;>
+    cases j₂ <;>
+      simp <;>
+        try
+          apply Decidable.false
+  -- do this explicitly casewise to be extra sure we don't recurse unintentionally, as meta code
+  -- doesn't protect against this.
+  case json.of_string =>
+    exact Stringₓ.hasDecidableEq _ _
+  case json.of_float =>
+    exact native.float.dec_eq _ _
+  case json.of_int =>
+    exact Int.decidableEq _ _
+  case json.of_bool =>
+    exact Bool.decidableEq _ _
+  case json.null =>
+    exact Decidable.true
+  case json.array =>
+    let this := DecidableEq
+    exact List.decidableEq _ _
+  case json.object =>
+    let this := DecidableEq
+    exact List.decidableEq _ _
+
 end Json
 

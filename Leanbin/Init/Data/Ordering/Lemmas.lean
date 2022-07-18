@@ -9,7 +9,7 @@ import Leanbin.Init.Meta.Default
 import Leanbin.Init.Algebra.Classes
 import Leanbin.Init.IteSimp
 
--- ./././Mathport/Syntax/Translate/Basic.lean:293:40: warning: unsupported option default_priority
+-- ./././Mathport/Syntax/Translate/Basic.lean:304:40: warning: unsupported option default_priority
 set_option default_priority 100
 
 universe u

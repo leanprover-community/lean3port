@@ -139,9 +139,9 @@ section
 
 variable {p : Prop}
 
-theorem ne_false_of_self : p → p ≠ False := fun hp : p heq : p = False => HEq ▸ hp
+theorem ne_false_of_self : p → p ≠ False := fun (hp : p) (heq : p = False) => HEq ▸ hp
 
-theorem ne_true_of_not : ¬p → p ≠ True := fun hnp : ¬p heq : p = True => (HEq ▸ hnp) trivialₓ
+theorem ne_true_of_not : ¬p → p ≠ True := fun (hnp : ¬p) (heq : p = True) => (HEq ▸ hnp) trivialₓ
 
 theorem true_ne_false : ¬True = False :=
   ne_false_of_self trivialₓ
@@ -184,15 +184,15 @@ theorem type_eq_of_heqₓ (h : HEq a b) : α = β :=
 
 end
 
-theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} h : a = a' p : φ a, HEq (Eq.recOnₓ h p : φ a') p
+theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOnₓ h p : φ a') p
   | a, _, rfl, p => HEq.refl p
 
 theorem heq_of_eq_rec_leftₓ {α : Sort u} {φ : α → Sort v} :
-    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} e : a = a' h₂ : (Eq.recOnₓ e p₁ : φ a') = p₂, HEq p₁ p₂
+    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a = a') (h₂ : (Eq.recOnₓ e p₁ : φ a') = p₂), HEq p₁ p₂
   | a, _, p₁, p₂, rfl, h => Eq.recOnₓ h (HEq.refl p₁)
 
 theorem heq_of_eq_rec_rightₓ {α : Sort u} {φ : α → Sort v} :
-    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} e : a' = a h₂ : p₁ = Eq.recOnₓ e p₂, HEq p₁ p₂
+    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a' = a) (h₂ : p₁ = Eq.recOnₓ e p₂), HEq p₁ p₂
   | a, _, p₁, p₂, rfl, h =>
     have : p₁ = p₂ := h
     this ▸ HEq.refl p₁
@@ -201,11 +201,11 @@ theorem of_heq_true {a : Prop} (h : HEq a True) : a :=
   of_eq_true (eq_of_heq h)
 
 theorem eq_rec_compose :
-    ∀ {α β φ : Sort u} p₁ : β = φ p₂ : α = β a : α,
+    ∀ {α β φ : Sort u} (p₁ : β = φ) (p₂ : α = β) (a : α),
       (Eq.recOnₓ p₁ (Eq.recOnₓ p₂ a : β) : φ) = Eq.recOnₓ (Eq.trans p₂ p₁) a
   | α, _, _, rfl, rfl, a => rfl
 
-theorem cast_heq : ∀ {α β : Sort u} h : α = β a : α, HEq (cast h a) a
+theorem cast_heq : ∀ {α β : Sort u} (h : α = β) (a : α), HEq (cast h a) a
   | α, _, rfl, a => HEq.refl a
 
 -- and
@@ -288,7 +288,7 @@ theorem neq_of_not_iff {a b : Prop} : ¬(a ↔ b) → a ≠ b := fun h₁ h₂ =
   absurd this h₁
 
 theorem not_iff_not_of_iff (h₁ : a ↔ b) : ¬a ↔ ¬b :=
-  Iff.intro (fun hna : ¬a hb : b => hna (Iff.elim_right h₁ hb)) fun hnb : ¬b ha : a => hnb (Iff.elim_left h₁ ha)
+  Iff.intro (fun (hna : ¬a) (hb : b) => hna (Iff.elim_right h₁ hb)) fun (hnb : ¬b) (ha : a) => hnb (Iff.elim_left h₁ ha)
 
 theorem of_iff_true (h : a ↔ True) : a :=
   Iff.mp (Iff.symm h) trivialₓ
@@ -303,7 +303,7 @@ theorem iff_false_intro (h : ¬a) : a ↔ False :=
   Iff.intro h (False.ndrec a)
 
 theorem not_non_contradictory_iff_absurd (a : Prop) : ¬¬¬a ↔ ¬a :=
-  Iff.intro (fun hl : ¬¬¬a ha : a => hl (non_contradictory_intro ha)) absurd
+  Iff.intro (fun (hl : ¬¬¬a) (ha : a) => hl (non_contradictory_intro ha)) absurd
 
 theorem imp_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a → b ↔ c → d :=
   Iff.intro (fun hab hc => Iff.mp h₂ (hab (Iff.mpr h₁ hc))) fun hcd ha => Iff.mpr h₂ (hcd (Iff.mp h₁ ha))
@@ -669,7 +669,7 @@ theorem by_contradiction [Decidable p] (h : ¬p → False) : p :=
 
 theorem of_not_not [Decidable p] : ¬¬p → p := fun hnn => by_contradiction fun hn => absurd hn hnn
 
-theorem not_not_iff p [Decidable p] : ¬¬p ↔ p :=
+theorem not_not_iff (p) [Decidable p] : ¬¬p ↔ p :=
   Iff.intro of_not_not not_not_intro
 
 theorem not_and_iff_or_not (p q : Prop) [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p ∧ q) ↔ ¬p ∨ ¬q :=
@@ -683,7 +683,7 @@ theorem not_and_iff_or_not (p q : Prop) [d₁ : Decidable p] [d₂ : Decidable q
       | is_false h₁ => Or.inl h₁)
     fun h ⟨hp, hq⟩ => Or.elim h (fun h => h hp) fun h => h hq
 
-theorem not_or_iff_and_not p q [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
+theorem not_or_iff_and_not (p q) [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
   Iff.intro
     (fun h =>
       match d₁ with
@@ -826,7 +826,7 @@ class inductive Subsingleton (α : Sort u) : Prop
 protected theorem Subsingleton.elimₓ {α : Sort u} [h : Subsingleton α] : ∀ a b : α, a = b :=
   Subsingleton.ndrec (fun p => p) h
 
-protected theorem Subsingleton.helimₓ {α β : Sort u} [h : Subsingleton α] (h : α = β) : ∀ a : α b : β, HEq a b :=
+protected theorem Subsingleton.helimₓ {α β : Sort u} [h : Subsingleton α] (h : α = β) : ∀ (a : α) (b : β), HEq a b :=
   Eq.recOnₓ h fun a b : α => heq_of_eq (Subsingleton.elimₓ a b)
 
 instance subsingleton_prop (p : Prop) : Subsingleton p :=
@@ -1075,10 +1075,10 @@ def Subrelation (q r : β → β → Prop) :=
 def InvImage (f : α → β) : α → α → Prop := fun a₁ a₂ => f a₁≺f a₂
 
 theorem InvImage.trans (f : α → β) (h : Transitive r) : Transitive (InvImage r f) :=
-  fun a₁ a₂ a₃ : α h₁ : InvImage r f a₁ a₂ h₂ : InvImage r f a₂ a₃ => h h₁ h₂
+  fun (a₁ a₂ a₃ : α) (h₁ : InvImage r f a₁ a₂) (h₂ : InvImage r f a₂ a₃) => h h₁ h₂
 
 theorem InvImage.irreflexive (f : α → β) (h : Irreflexive r) : Irreflexive (InvImage r f) :=
-  fun a : α h₁ : InvImage r f a a => h (f a) h₁
+  fun (a : α) (h₁ : InvImage r f a a) => h (f a) h₁
 
 end Relation
 

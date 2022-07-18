@@ -25,8 +25,8 @@ class IsLawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
     run_tac
       control_laws_tac
   -- `functor` is indeed a categorical functor
-  id_map : ∀ {α : Type u} x : f α, id <$> x = x
-  comp_map : ∀ {α β γ : Type u} g : α → β h : β → γ x : f α, (h ∘ g) <$> x = h <$> g <$> x
+  id_map : ∀ {α : Type u} (x : f α), id <$> x = x
+  comp_map : ∀ {α β γ : Type u} (g : α → β) (h : β → γ) (x : f α), (h ∘ g) <$> x = h <$> g <$> x
 
 export IsLawfulFunctor (map_const_eq id_map comp_map)
 
@@ -34,17 +34,18 @@ attribute [simp] id_map
 
 -- `comp_map` does not make a good simp lemma
 class IsLawfulApplicative (f : Type u → Type v) [Applicativeₓ f] extends IsLawfulFunctor f : Prop where
-  seq_left_eq : ∀ {α β : Type u} a : f α b : f β, a <* b = const β <$> a <*> b := by
+  seq_left_eq : ∀ {α β : Type u} (a : f α) (b : f β), a <* b = const β <$> a <*> b := by
     run_tac
       control_laws_tac
-  seq_right_eq : ∀ {α β : Type u} a : f α b : f β, a *> b = const α id <$> a <*> b := by
+  seq_right_eq : ∀ {α β : Type u} (a : f α) (b : f β), a *> b = const α id <$> a <*> b := by
     run_tac
       control_laws_tac
   -- applicative laws
-  pure_seq_eq_map : ∀ {α β : Type u} g : α → β x : f α, pure g <*> x = g <$> x
-  map_pure : ∀ {α β : Type u} g : α → β x : α, g <$> (pure x : f α) = pure (g x)
-  seq_pure : ∀ {α β : Type u} g : f (α → β) x : α, g <*> pure x = (fun g : α → β => g x) <$> g
-  seq_assoc : ∀ {α β γ : Type u} x : f α g : f (α → β) h : f (β → γ), h <*> (g <*> x) = @comp α β γ <$> h <*> g <*> x
+  pure_seq_eq_map : ∀ {α β : Type u} (g : α → β) (x : f α), pure g <*> x = g <$> x
+  map_pure : ∀ {α β : Type u} (g : α → β) (x : α), g <$> (pure x : f α) = pure (g x)
+  seq_pure : ∀ {α β : Type u} (g : f (α → β)) (x : α), g <*> pure x = (fun g : α → β => g x) <$> g
+  seq_assoc :
+    ∀ {α β γ : Type u} (x : f α) (g : f (α → β)) (h : f (β → γ)), h <*> (g <*> x) = @comp α β γ <$> h <*> g <*> x
   -- default functor law
   comp_map := by
     intros <;> simp [← (pure_seq_eq_map _ _).symm, ← seq_assoc, ← map_pure, ← seq_pure]
@@ -60,15 +61,15 @@ theorem pure_id_seqₓ {α : Type u} {f : Type u → Type v} [Applicativeₓ f] 
   simp [← pure_seq_eq_map]
 
 class IsLawfulMonad (m : Type u → Type v) [Monadₓ m] extends IsLawfulApplicative m : Prop where
-  bind_pure_comp_eq_map : ∀ {α β : Type u} f : α → β x : m α, x >>= pure ∘ f = f <$> x := by
+  bind_pure_comp_eq_map : ∀ {α β : Type u} (f : α → β) (x : m α), x >>= pure ∘ f = f <$> x := by
     run_tac
       control_laws_tac
-  bind_map_eq_seq : ∀ {α β : Type u} f : m (α → β) x : m α, f >>= (· <$> x) = f <*> x := by
+  bind_map_eq_seq : ∀ {α β : Type u} (f : m (α → β)) (x : m α), f >>= (· <$> x) = f <*> x := by
     run_tac
       control_laws_tac
   -- monad laws
-  pure_bind : ∀ {α β : Type u} x : α f : α → m β, pure x >>= f = f x
-  bind_assoc : ∀ {α β γ : Type u} x : m α f : α → m β g : β → m γ, x >>= f >>= g = x >>= fun x => f x >>= g
+  pure_bind : ∀ {α β : Type u} (x : α) (f : α → m β), pure x >>= f = f x
+  bind_assoc : ∀ {α β γ : Type u} (x : m α) (f : α → m β) (g : β → m γ), x >>= f >>= g = x >>= fun x => f x >>= g
   pure_seq_eq_map := by
     intros <;> rw [← bind_map_eq_seq] <;> simp [← pure_bind]
   map_pure := by
@@ -136,7 +137,7 @@ theorem ext {x x' : StateTₓ σ m α} (h : ∀ st, x.run st = x'.run st) : x = 
 variable [Monadₓ m]
 
 @[simp]
-theorem run_pure a : (pure a : StateTₓ σ m α).run st = pure (a, st) :=
+theorem run_pure (a) : (pure a : StateTₓ σ m α).run st = pure (a, st) :=
   rfl
 
 @[simp]
@@ -176,7 +177,7 @@ theorem run_get : (StateTₓ.get : StateTₓ σ m σ).run st = pure (st, st) :=
   rfl
 
 @[simp]
-theorem run_put st' : (StateTₓ.put st' : StateTₓ σ m _).run st = pure (PUnit.unit, st') :=
+theorem run_put (st') : (StateTₓ.put st' : StateTₓ σ m _).run st = pure (PUnit.unit, st') :=
   rfl
 
 end
@@ -205,7 +206,7 @@ theorem ext {x x' : ExceptTₓ ε m α} (h : x.run = x'.run) : x = x' := by
 variable [Monadₓ m]
 
 @[simp]
-theorem run_pure a : (pure a : ExceptTₓ ε m α).run = pure (@Except.ok ε α a) :=
+theorem run_pure (a) : (pure a : ExceptTₓ ε m α).run = pure (@Except.ok ε α a) :=
   rfl
 
 @[simp]
@@ -274,7 +275,7 @@ theorem ext {x x' : ReaderTₓ ρ m α} (h : ∀ r, x.run r = x'.run r) : x = x'
 variable [Monadₓ m]
 
 @[simp]
-theorem run_pure a : (pure a : ReaderTₓ ρ m α).run r = pure a :=
+theorem run_pure (a) : (pure a : ReaderTₓ ρ m α).run r = pure a :=
   rfl
 
 @[simp]
@@ -320,7 +321,7 @@ theorem ext {x x' : OptionTₓ m α} (h : x.run = x'.run) : x = x' := by
 variable [Monadₓ m]
 
 @[simp]
-theorem run_pure a : (pure a : OptionTₓ m α).run = pure (some a) :=
+theorem run_pure (a) : (pure a : OptionTₓ m α).run = pure (some a) :=
   rfl
 
 @[simp]

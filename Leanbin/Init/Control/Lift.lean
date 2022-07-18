@@ -36,10 +36,10 @@ export HasMonadLiftT (monadLift)
 def hasMonadLiftToHasCoe {m n} [HasMonadLiftT m n] {α} : Coe (m α) (n α) :=
   ⟨monadLift⟩
 
-instance (priority := 100) hasMonadLiftTTrans m n o [HasMonadLiftT m n] [HasMonadLift n o] : HasMonadLiftT m o :=
+instance (priority := 100) hasMonadLiftTTrans (m n o) [HasMonadLiftT m n] [HasMonadLift n o] : HasMonadLiftT m o :=
   ⟨fun α ma => HasMonadLift.monadLift (monadLift ma : n α)⟩
 
-instance hasMonadLiftTRefl m : HasMonadLiftT m m :=
+instance hasMonadLiftTRefl (m) : HasMonadLiftT m m :=
   ⟨fun α => id⟩
 
 @[simp]
@@ -61,11 +61,11 @@ class MonadFunctorTₓ (m m' : Type u → Type v) (n n' : Type u → Type w) whe
 
 export MonadFunctorTₓ (monadMap)
 
-instance (priority := 100) monadFunctorTTrans m m' n n' o o' [MonadFunctorTₓ m m' n n'] [MonadFunctorₓ n n' o o'] :
+instance (priority := 100) monadFunctorTTrans (m m' n n' o o') [MonadFunctorTₓ m m' n n'] [MonadFunctorₓ n n' o o'] :
     MonadFunctorTₓ m m' o o' :=
   ⟨fun α f => MonadFunctorₓ.monadMap fun α => (monadMap @f : n α → n' α)⟩
 
-instance monadFunctorTRefl m m' : MonadFunctorTₓ m m' m m' :=
+instance monadFunctorTRefl (m m') : MonadFunctorTₓ m m' m m' :=
   ⟨fun α f => f⟩
 
 @[simp]

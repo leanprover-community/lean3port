@@ -170,7 +170,7 @@ unsafe def find {key : Type} {data : Type} (rbl : rb_lmap key data) (k : key) : 
 
 end RbLmap
 
-unsafe def rb_set key :=
+unsafe def rb_set (key) :=
   rb_map key Unit
 
 unsafe def mk_rb_set {key} [LT key] [DecidableRel ((· < ·) : key → key → Prop)] : rb_set key :=

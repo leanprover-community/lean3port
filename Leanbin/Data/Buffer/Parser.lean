@@ -12,7 +12,7 @@ inductive ParseResult (α : Type)
 
 /-- The parser monad. If you are familiar with the Parsec library in Haskell, you will understand this.  -/
 def Parser (α : Type) :=
-  ∀ input : CharBuffer start : ℕ, ParseResult α
+  ∀ (input : CharBuffer) (start : ℕ), ParseResult α
 
 namespace Parser
 
@@ -160,7 +160,7 @@ def foldrCore (f : α → β → β) (p : Parser α) (b : β) : ∀ reps : ℕ, 
 def foldr (f : α → β → β) (p : Parser α) (b : β) : Parser β := fun input pos =>
   foldrCore f p b (input.size - Pos + 1) input Pos
 
-def foldlCore (f : α → β → α) : ∀ a : α p : Parser β reps : ℕ, Parser α
+def foldlCore (f : α → β → α) : ∀ (a : α) (p : Parser β) (reps : ℕ), Parser α
   | a, p, 0 => failure
   | a, p, reps + 1 =>
     (do

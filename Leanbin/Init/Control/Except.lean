@@ -94,7 +94,7 @@ protected def catch {α : Type u} (ma : ExceptTₓ ε m α) (handle : ε → Exc
 protected def monadMap {m'} [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : ExceptTₓ ε m α → ExceptTₓ ε m' α := fun x =>
   ⟨f x.run⟩
 
-instance m' [Monadₓ m'] : MonadFunctorₓ m m' (ExceptTₓ ε m) (ExceptTₓ ε m') :=
+instance (m') [Monadₓ m'] : MonadFunctorₓ m m' (ExceptTₓ ε m) (ExceptTₓ ε m') :=
   ⟨@monad_map m' _⟩
 
 instance : Monadₓ (ExceptTₓ ε m) where
@@ -130,7 +130,7 @@ end MonadExcept
 
 export MonadExcept (throw catch)
 
-instance m ε [Monadₓ m] : MonadExcept ε (ExceptTₓ ε m) where
+instance (m ε) [Monadₓ m] : MonadExcept ε (ExceptTₓ ε m) where
   throw := fun α => ExceptTₓ.mk ∘ pure ∘ Except.error
   catch := @ExceptTₓ.catch ε _ _
 
@@ -160,6 +160,6 @@ instance [Monadₓ m] : MonadExceptAdapter ε ε' (ExceptTₓ ε m) (ExceptTₓ 
 
 end
 
-instance ε m out [MonadRun out m] : MonadRun (fun α => out (Except ε α)) (ExceptTₓ ε m) :=
+instance (ε m out) [MonadRun out m] : MonadRun (fun α => out (Except ε α)) (ExceptTₓ ε m) :=
   ⟨fun α => run ∘ ExceptTₓ.run⟩
 

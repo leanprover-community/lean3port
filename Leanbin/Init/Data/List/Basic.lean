@@ -93,7 +93,7 @@ def nth : List α → Nat → Option α
   | a :: l, n + 1 => nth l n
 
 @[simp]
-def nthLe : ∀ l : List α n, n < l.length → α
+def nthLe : ∀ (l : List α) (n), n < l.length → α
   | [], n, h => absurd h n.not_lt_zero
   | a :: l, 0, h => a
   | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succₓ h)

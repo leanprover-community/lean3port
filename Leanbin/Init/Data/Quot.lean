@@ -61,21 +61,23 @@ local notation:arg "⟦" a "⟧" => Quot.mk r a
 protected def indep (f : ∀ a, β ⟦a⟧) (a : α) : PSigma β :=
   ⟨⟦a⟧, f a⟩
 
-protected theorem indep_coherent (f : ∀ a, β ⟦a⟧) (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) :
+protected theorem indep_coherent (f : ∀ a, β ⟦a⟧)
+    (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) :
     ∀ a b, r a b → Quot.indep f a = Quot.indep f b := fun a b e => PSigma.eq (sound e) (h a b e)
 
-protected theorem lift_indep_pr1 (f : ∀ a, β ⟦a⟧) (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b)
-    (q : Quot r) : (lift (Quot.indep f) (Quot.indep_coherent f h) q).1 = q :=
+protected theorem lift_indep_pr1 (f : ∀ a, β ⟦a⟧)
+    (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) (q : Quot r) :
+    (lift (Quot.indep f) (Quot.indep_coherent f h) q).1 = q :=
   Quot.ind (fun a : α => Eq.refl (Quot.indep f a).1) q
 
 @[reducible, elab_as_eliminator]
-protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) (q : Quot r) :
-    β q :=
+protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b)
+    (q : Quot r) : β q :=
   Eq.recOnₓ (Quot.lift_indep_pr1 f h q) (lift (Quot.indep f) (Quot.indep_coherent f h) q).2
 
 @[reducible, elab_as_eliminator]
-protected def recOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (h : ∀ a b : α p : r a b, (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) :
-    β q :=
+protected def recOn (q : Quot r) (f : ∀ a, β ⟦a⟧)
+    (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) : β q :=
   Quot.rec f h q
 
 @[reducible, elab_as_eliminator]
@@ -83,7 +85,7 @@ protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot
   Quot.rec f (fun a b h => Subsingleton.elimₓ _ (f b)) q
 
 @[reducible, elab_as_eliminator]
-protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ a b : α p : r a b, HEq (f a) (f b)) : β q :=
+protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) : β q :=
   Quot.recOn q f fun a b p =>
     eq_of_heq
       (calc
@@ -139,13 +141,13 @@ variable [s : Setoidₓ α]
 
 variable {β : Quotientₓ s → Sort v}
 
-protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ a b : α p : a ≈ b, (Eq.ndrec (f a) (Quotientₓ.sound p) : β ⟦b⟧) = f b)
+protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ (a b : α) (p : a ≈ b), (Eq.ndrec (f a) (Quotientₓ.sound p) : β ⟦b⟧) = f b)
     (q : Quotientₓ s) : β q :=
   Quot.rec f h q
 
 @[reducible, elab_as_eliminator]
 protected def recOn (q : Quotientₓ s) (f : ∀ a, β ⟦a⟧)
-    (h : ∀ a b : α p : a ≈ b, (Eq.ndrec (f a) (Quotientₓ.sound p) : β ⟦b⟧) = f b) : β q :=
+    (h : ∀ (a b : α) (p : a ≈ b), (Eq.ndrec (f a) (Quotientₓ.sound p) : β ⟦b⟧) = f b) : β q :=
   Quot.recOn q f h
 
 @[reducible, elab_as_eliminator]
@@ -153,7 +155,7 @@ protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot
   @Quot.recOnSubsingleton _ _ _ h q f
 
 @[reducible, elab_as_eliminator]
-protected def hrecOn (q : Quotientₓ s) (f : ∀ a, β ⟦a⟧) (c : ∀ a b : α p : a ≈ b, HEq (f a) (f b)) : β q :=
+protected def hrecOn (q : Quotientₓ s) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : a ≈ b), HEq (f a) (f b)) : β q :=
   Quot.hrecOn q f c
 
 end
@@ -172,7 +174,7 @@ include s₁ s₂
 protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂) (q₁ : Quotientₓ s₁)
     (q₂ : Quotientₓ s₂) : φ :=
   Quotientₓ.lift (fun a₁ : α => Quotientₓ.lift (f a₁) (fun a b : β => c a₁ a a₁ b (Setoidₓ.refl a₁)) q₂)
-    (fun a b : α h : a ≈ b =>
+    (fun (a b : α) (h : a ≈ b) =>
       @Quotientₓ.ind β s₂
         (fun a_1 : Quotientₓ s₂ =>
           Quotientₓ.lift (f a) (fun a_1 b : β => c a a_1 a b (Setoidₓ.refl a)) a_1 =

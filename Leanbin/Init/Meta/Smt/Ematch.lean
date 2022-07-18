@@ -75,7 +75,7 @@ private unsafe def add_lemma (m : Transparency) (as_simp : Bool) (h : Name) (hs 
 unsafe def to_hinst_lemmas_core (m : Transparency) : Bool → List Name → hinst_lemmas → tactic hinst_lemmas
   | as_simp, [], hs => return hs
   | as_simp, n :: ns, hs =>
-    let add n := add_lemma m as_simp n hs >>= to_hinst_lemmas_core as_simp ns
+    let add (n) := add_lemma m as_simp n hs >>= to_hinst_lemmas_core as_simp ns
     do
     let eqns
       ←-- First check if n is the name of a function with equational lemmas associated with it

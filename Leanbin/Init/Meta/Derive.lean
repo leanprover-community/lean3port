@@ -22,7 +22,7 @@ open Tactic
     It should return `tt` if it was able to derive `cls` and `ff` if it does not know
     how to derive `cls`, in which case lower-priority handlers will be tried next. -/
 unsafe def derive_handler :=
-  ∀ cls : pexpr decl : Name, tactic Bool
+  ∀ (cls : pexpr) (decl : Name), tactic Bool
 
 @[user_attribute]
 unsafe def derive_handler_attr : user_attribute where

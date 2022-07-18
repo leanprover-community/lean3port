@@ -354,11 +354,11 @@ theorem eq_of_incomp {α : Type u} {lt : α → α → Prop} [IsTrichotomous α 
 theorem eq_of_eqv_lt {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] {a b} : a ≈[lt]b → a = b :=
   eq_of_incomp
 
-theorem incomp_iff_eq {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] [IsIrrefl α lt] a b :
+theorem incomp_iff_eq {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] [IsIrrefl α lt] (a b) :
     ¬lt a b ∧ ¬lt b a ↔ a = b :=
   Iff.intro eq_of_incomp fun hab => Eq.subst hab (And.intro (irrefl_of lt a) (irrefl_of lt a))
 
-theorem eqv_lt_iff_eq {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] [IsIrrefl α lt] a b : a ≈[lt]b ↔ a = b :=
+theorem eqv_lt_iff_eq {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] [IsIrrefl α lt] (a b) : a ≈[lt]b ↔ a = b :=
   incomp_iff_eq a b
 
 theorem not_lt_of_lt {α : Type u} {lt : α → α → Prop} [IsStrictOrder α lt] {a b} : lt a b → ¬lt b a := fun h₁ h₂ =>

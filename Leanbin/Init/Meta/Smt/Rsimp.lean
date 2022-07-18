@@ -24,7 +24,7 @@ private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) : List Nam
   | n :: ns, hs =>
     if ex.contains n then to_hinst_lemmas ns hs
     else
-      let add n := add_lemma m n hs >>= to_hinst_lemmas ns
+      let add (n) := add_lemma m n hs >>= to_hinst_lemmas ns
       do
       let eqns ← tactic.get_eqn_lemmas_for true n
       match eqns with

@@ -15,7 +15,7 @@ def Finₓ (n : ℕ) :=
 namespace Finₓ
 
 /-- Backwards-compatible constructor for `fin n`. -/
-def mk {n : ℕ} i h : Finₓ n :=
+def mk {n : ℕ} (i) (h) : Finₓ n :=
   ⟨i, h⟩
 
 protected def Lt {n} (a b : Finₓ n) : Prop :=

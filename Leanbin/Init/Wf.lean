@@ -63,7 +63,7 @@ variable (F : ∀ x, (∀ y, y≺x → C y) → C x)
 def fixF (x : α) (a : Acc r x) : C x :=
   Acc.recOnₓ a fun x₁ ac₁ ih => F x₁ ih
 
-theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun y : α p : y≺x => fix_F F y (Acc.invₓ acx p) :=
+theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.invₓ acx p) :=
   Acc.drec (fun x r ih => rfl) acx
 
 end
@@ -85,7 +85,7 @@ open WellFounded
 
 /-- Empty relation is well-founded -/
 theorem empty_wf {α : Sort u} : WellFounded (@EmptyRelation α) :=
-  WellFounded.intro fun a : α => Acc.intro a fun b : α lt : False => False.ndrec _ lt
+  WellFounded.intro fun a : α => Acc.intro a fun (b : α) (lt : False) => False.ndrec _ lt
 
 -- Subrelation of a well-founded relation is well-founded
 namespace Subrelation
@@ -99,7 +99,7 @@ parameter (h₁ : Subrelation Q r)
 parameter (h₂ : WellFounded r)
 
 theorem accessibleₓ {a : α} (ac : Acc r a) : Acc Q a :=
-  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun y : α lt : Q y x => ih y (h₁ lt)
+  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun (y : α) (lt : Q y x) => ih y (h₁ lt)
 
 theorem wfₓ : WellFounded Q :=
   ⟨fun a => accessible (apply h₂ a)⟩
@@ -168,8 +168,8 @@ variable (rb : β → β → Prop)
 
 -- Lexicographical order based on ra and rb
 inductive Lex : α × β → α × β → Prop
-  | left {a₁} b₁ {a₂} b₂ (h : ra a₁ a₂) : lex (a₁, b₁) (a₂, b₂)
-  | right a {b₁ b₂} (h : rb b₁ b₂) : lex (a, b₁) (a, b₂)
+  | left {a₁} (b₁) {a₂} (b₂) (h : ra a₁ a₂) : lex (a₁, b₁) (a₂, b₂)
+  | right (a) {b₁ b₂} (h : rb b₁ b₂) : lex (a, b₁) (a, b₂)
 
 -- relational product based on ra and rb
 inductive Rprod : α × β → α × β → Prop
@@ -192,8 +192,8 @@ theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc
       Acc.intro (xa, xb) fun p lt =>
         have aux : xa = xa → xb = xb → Acc (Lex ra rb) p :=
           @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p (xa, xb) lt
-            (fun a₁ b₁ a₂ b₂ h eq₂ : a₂ = xa eq₃ : b₂ = xb => iha a₁ (Eq.recOnₓ eq₂ h) b₁)
-            fun a b₁ b₂ h eq₂ : a = xa eq₃ : b₂ = xb => Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
+            (fun a₁ b₁ a₂ b₂ h (eq₂ : a₂ = xa) (eq₃ : b₂ = xb) => iha a₁ (Eq.recOnₓ eq₂ h) b₁)
+            fun a b₁ b₂ h (eq₂ : a = xa) (eq₃ : b₂ = xb) => Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
         aux rfl rfl
 
 -- The lexicographical order of well founded relations is well-founded

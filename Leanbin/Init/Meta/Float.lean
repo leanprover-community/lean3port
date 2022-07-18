@@ -174,16 +174,20 @@ unsafe axiom atanh : float → float
 
 unsafe axiom abs : float → float
 
-/-- Nearest integer not less than the given value. -/
+/-- Nearest integer not less than the given value.
+Returns 0 if the input is not finite. -/
 unsafe axiom ceil : float → Int
 
-/-- Nearest integer not greater than the given value. -/
+/-- Nearest integer not greater than the given value.
+Returns 0 if the input is not finite. -/
 unsafe axiom floor : float → Int
 
-/-- Nearest integer not greater in magnitude than the given value. -/
+/-- Nearest integer not greater in magnitude than the given value.
+Returns 0 if the input is not finite. -/
 unsafe axiom trunc : float → Int
 
-/-- Round to the nearest integer, rounding away from zero in halfway cases. -/
+/-- Round to the nearest integer, rounding away from zero in halfway cases.
+Returns 0 if the input is not finite. -/
 unsafe axiom round : float → Int
 
 unsafe axiom lt : float → float → Bool

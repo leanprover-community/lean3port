@@ -58,8 +58,8 @@ and stored and can be retrieved with `user_attribute.get_param`.
 unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Unit) where
   Name : Name
   descr : Stringₓ
-  after_set : Option (∀ decl : Name prio : Nat persistent : Bool, Tactic Unit) := none
-  before_unset : Option (∀ decl : Name persistent : Bool, Tactic Unit) := none
+  after_set : Option (∀ (decl : Name) (prio : Nat) (persistent : Bool), Tactic Unit) := none
+  before_unset : Option (∀ (decl : Name) (persistent : Bool), Tactic Unit) := none
   cache_cfg : user_attribute_cache_cfg cache_ty := by
     run_tac
       user_attribute.dflt_cache_cfg

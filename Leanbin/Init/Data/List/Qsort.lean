@@ -34,7 +34,7 @@ theorem qsort_nil {α} (lt : α → α → Bool) : qsort lt [] = [] := by
   rw [qsort, WellFounded.fix_eq, qsort.F]
 
 @[simp]
-theorem qsort_cons {α} (lt : α → α → Bool) h t :
+theorem qsort_cons {α} (lt : α → α → Bool) (h t) :
     qsort lt (h :: t) =
       let (large, small) := partitionₓ (fun x => lt h x = tt) t
       qsort lt small ++ h :: qsort lt large :=

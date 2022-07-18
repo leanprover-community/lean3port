@@ -219,18 +219,18 @@ def Stringₓ.toNat (s : Stringₓ) : Nat :=
 
 namespace Stringₓ
 
-private theorem nil_ne_append_singleton : ∀ c : Charₓ l : List Charₓ, [] ≠ l ++ [c]
+private theorem nil_ne_append_singleton : ∀ (c : Charₓ) (l : List Charₓ), [] ≠ l ++ [c]
   | c, [] => fun h => List.noConfusion h
   | c, d :: l => fun h => List.noConfusion h
 
-theorem empty_ne_str : ∀ c : Charₓ s : Stringₓ, Empty ≠ str s c
+theorem empty_ne_str : ∀ (c : Charₓ) (s : Stringₓ), Empty ≠ str s c
   | c, ⟨l⟩ => fun h : StringImp.mk [] = StringImp.mk (l ++ [c]) =>
     (StringImp.noConfusion h) fun h => nil_ne_append_singleton _ _ h
 
 theorem str_ne_empty (c : Charₓ) (s : Stringₓ) : str s c ≠ Empty :=
   (empty_ne_str c s).symm
 
-private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Charₓ} l₁ l₂ : List Charₓ, c₁ ≠ c₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
+private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Charₓ} (l₁ l₂ : List Charₓ), c₁ ≠ c₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
   | c₁, c₂, [], [], h₁, h₂ => List.noConfusion h₂ fun h _ => absurd h h₁
   | c₁, c₂, d₁ :: l₁, [], h₁, h₂ =>
     have : d₁ :: (l₁ ++ [c₁]) = [c₂] := h₂
@@ -245,12 +245,12 @@ private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Charₓ} l₁ l₂ : List
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := List.noConfusion this fun _ h => h
     absurd this (str_ne_str_left_aux l₁ l₂ h₁)
 
-theorem str_ne_str_left : ∀ {c₁ c₂ : Charₓ} s₁ s₂ : Stringₓ, c₁ ≠ c₂ → str s₁ c₁ ≠ str s₂ c₂
+theorem str_ne_str_left : ∀ {c₁ c₂ : Charₓ} (s₁ s₂ : Stringₓ), c₁ ≠ c₂ → str s₁ c₁ ≠ str s₂ c₂
   | c₁, c₂, StringImp.mk l₁, StringImp.mk l₂, h₁, h₂ =>
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := StringImp.noConfusion h₂ id
     absurd this (str_ne_str_left_aux l₁ l₂ h₁)
 
-private theorem str_ne_str_right_aux : ∀ c₁ c₂ : Charₓ {l₁ l₂ : List Charₓ}, l₁ ≠ l₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
+private theorem str_ne_str_right_aux : ∀ (c₁ c₂ : Charₓ) {l₁ l₂ : List Charₓ}, l₁ ≠ l₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
   | c₁, c₂, [], [], h₁, h₂ => absurd rfl h₁
   | c₁, c₂, d₁ :: l₁, [], h₁, h₂ =>
     have : d₁ :: (l₁ ++ [c₁]) = [c₂] := h₂
@@ -269,7 +269,7 @@ private theorem str_ne_str_right_aux : ∀ c₁ c₂ : Charₓ {l₁ l₂ : List
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := List.noConfusion aux₁ fun _ h => h
     absurd this (str_ne_str_right_aux c₁ c₂ aux₂)
 
-theorem str_ne_str_right : ∀ c₁ c₂ : Charₓ {s₁ s₂ : Stringₓ}, s₁ ≠ s₂ → str s₁ c₁ ≠ str s₂ c₂
+theorem str_ne_str_right : ∀ (c₁ c₂ : Charₓ) {s₁ s₂ : Stringₓ}, s₁ ≠ s₂ → str s₁ c₁ ≠ str s₂ c₂
   | c₁, c₂, StringImp.mk l₁, StringImp.mk l₂, h₁, h₂ =>
     have aux : l₁ ≠ l₂ := fun h =>
       have : StringImp.mk l₁ = StringImp.mk l₂ := Eq.subst h rfl

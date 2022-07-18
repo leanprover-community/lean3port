@@ -73,7 +73,7 @@ theorem read_write_of_ne (a : DArray n α) {i j : Finₓ n} (v : α i) : i ≠ j
 protected theorem ext {a b : DArray n α} (h : ∀ i, read a i = read b i) : a = b := by
   cases a <;> cases b <;> congr <;> exact funext h
 
-protected theorem ext' {a b : DArray n α} (h : ∀ i : Nat h : i < n, read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b := by
+protected theorem ext' {a b : DArray n α} (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b := by
   cases a
   cases b
   congr
@@ -90,16 +90,16 @@ protected def beq [∀ i, DecidableEq (α i)] (a b : DArray n α) : Bool :=
   DArray.beqAux a b n (le_reflₓ _)
 
 theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
-    ∀ i : Nat h : i ≤ n,
+    ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = tt →
-        ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
+        ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
   | 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zeroₓ _)
   | i + 1, h₁, h₂, j, h₃ => by
     have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
       simp [← DArray.beqAux] at h₂
       assumption
     have h₁' : i ≤ n := le_of_ltₓ h₁
-    have ih : ∀ j : Nat h' : j < i, a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ :=
+    have ih : ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ :=
       of_beq_aux_eq_tt i h₁' h₂'.2
     by_cases' hji : j = i
     · subst hji
@@ -112,11 +112,11 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
 theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b := by
   unfold DArray.beq
   intro h
-  have : ∀ j : Nat h : j < n, a.read ⟨j, h⟩ = b.read ⟨j, h⟩ := of_beq_aux_eq_tt n (le_reflₓ _) h
+  have : ∀ (j : Nat) (h : j < n), a.read ⟨j, h⟩ = b.read ⟨j, h⟩ := of_beq_aux_eq_tt n (le_reflₓ _) h
   apply DArray.ext' this
 
 theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
-    ∀ i : Nat h : i ≤ n,
+    ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = ff →
         ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_leₓ h' h⟩
   | 0, h₁, h₂ => by
@@ -160,7 +160,7 @@ def Arrayₓ (n : Nat) (α : Type u) : Type u :=
   DArray n fun _ => α
 
 /-- `mk_array n v` creates a new array of length `n` where each element is `v`. Has builtin VM implementation. -/
-def mkArray {α} n (v : α) : Arrayₓ n α where data := fun _ => v
+def mkArray {α} (n) (v : α) : Arrayₓ n α where data := fun _ => v
 
 namespace Arrayₓ
 
@@ -246,7 +246,7 @@ protected def Mem (v : α) (a : Arrayₓ n α) : Prop :=
 instance : HasMem α (Arrayₓ n α) :=
   ⟨Arrayₓ.Mem⟩
 
-theorem read_mem (a : Arrayₓ n α) i : read a i ∈ a :=
+theorem read_mem (a : Arrayₓ n α) (i) : read a i ∈ a :=
   Exists.introₓ i rfl
 
 instance [HasRepr α] : HasRepr (Arrayₓ n α) :=
@@ -281,7 +281,7 @@ theorem write_eq_write' (a : Arrayₓ n α) {i : Nat} (h : i < n) (v : α) : wri
 protected theorem ext {a b : Arrayₓ n α} (h : ∀ i, read a i = read b i) : a = b :=
   DArray.ext h
 
-protected theorem ext' {a b : Arrayₓ n α} (h : ∀ i : Nat h : i < n, read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b :=
+protected theorem ext' {a b : Arrayₓ n α} (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b :=
   DArray.ext' h
 
 instance [DecidableEq α] : DecidableEq (Arrayₓ n α) := by

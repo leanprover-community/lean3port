@@ -70,7 +70,7 @@ def Eq.mp {α β : Sort u} : α = β → α → β :=
 @[inline]
 def Eq.mpr {α β : Sort u} : α = β → β → α := fun h₁ h₂ => Eq.recOnₓ (Eq.symm h₁) h₂
 
-@[elab_as_eliminator]
+@[elabAsElim]
 theorem Eq.substr {α : Sort u} {p : α → Prop} {a b : α} (h₁ : b = a) : p a → p b :=
   Eq.subst (Eq.symm h₁)
 

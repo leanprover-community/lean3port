@@ -1,7 +1,7 @@
 import Lake
 open Lake DSL System
 
-def tag : String := "nightly-2022-07-18"
+def tag : String := "nightly-2022-08-15"
 def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
 
@@ -23,19 +23,19 @@ def untarReleaseArtifact (repo tag artifact : String) (to : FilePath) : BuildM P
   getReleaseArtifact repo tag artifact to
   untar (to / artifact)
 
-def fetchOleans : OpaqueTarget := { info := (), task := fetch } where
-  fetch := async (m := BuildM) do
-    IO.FS.createDirAll libDir
-    let oldTrace := Hash.ofString tag
-    buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
-      untarReleaseArtifact releaseRepo tag oleanTarName libDir
-
-  libDir : FilePath := __dir__ / "build" / "lib"
-
 package lean3port where
-  extraDepTarget := Target.collectOpaqueList [fetchOleans]
+  extraDepTargets := #[`fetchOleans]
 
-require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"aa176e5da516f57b502ebdfb633f39b392dda333"
+target fetchOleans (_pkg : Package) : Unit := do
+  let libDir : FilePath := __dir__ / "build" / "lib"
+  IO.FS.createDirAll libDir
+  let oldTrace := Hash.ofString tag
+  let _ ← buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
+    logInfo "Fetching oleans for Leanbin"
+    untarReleaseArtifact releaseRepo tag oleanTarName libDir
+  return .nil
+
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"cf2e683c25eba2d798b2460d5703a63db72272c0"
 
 @[defaultTarget]
 lean_lib Leanbin where

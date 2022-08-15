@@ -23,7 +23,7 @@ namespace Quot
 
 axiom sound : ∀ {α : Sort u} {r : α → α → Prop} {a b : α}, r a b → Quot.mk r a = Quot.mk r b
 
-attribute [elab_as_eliminator] lift ind
+attribute [elabAsElim] lift ind
 
 protected theorem lift_beta {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β) (c : ∀ a b, r a b → f a = f b)
     (a : α) : lift f c (Quot.mk r a) = f a :=
@@ -33,12 +33,12 @@ protected theorem ind_beta {α : Sort u} {r : α → α → Prop} {β : Quot r �
     (ind p (Quot.mk r a) : β (Quot.mk r a)) = p a :=
   rfl
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def liftOn {α : Sort u} {β : Sort v} {r : α → α → Prop} (q : Quot r) (f : α → β)
     (c : ∀ a b, r a b → f a = f b) : β :=
   lift f c q
 
-@[elab_as_eliminator]
+@[elabAsElim]
 protected theorem induction_on {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop} (q : Quot r)
     (h : ∀ a, β (Quot.mk r a)) : β q :=
   ind h q
@@ -70,21 +70,21 @@ protected theorem lift_indep_pr1 (f : ∀ a, β ⟦a⟧)
     (lift (Quot.indep f) (Quot.indep_coherent f h) q).1 = q :=
   Quot.ind (fun a : α => Eq.refl (Quot.indep f a).1) q
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b)
     (q : Quot r) : β q :=
   Eq.recOnₓ (Quot.lift_indep_pr1 f h q) (lift (Quot.indep f) (Quot.indep_coherent f h) q).2
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def recOn (q : Quot r) (f : ∀ a, β ⟦a⟧)
     (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) : β q :=
   Quot.rec f h q
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot r) (f : ∀ a, β ⟦a⟧) : β q :=
   Quot.rec f (fun a b h => Subsingleton.elimₓ _ (f b)) q
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) : β q :=
   Quot.recOn q f fun a b p =>
     eq_of_heq
@@ -111,21 +111,21 @@ notation:arg "⟦" a "⟧" => Quotientₓ.mk a
 theorem sound {α : Sort u} [s : Setoidₓ α] {a b : α} : a ≈ b → ⟦a⟧ = ⟦b⟧ :=
   Quot.sound
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def lift {α : Sort u} {β : Sort v} [s : Setoidₓ α] (f : α → β) :
     (∀ a b, a ≈ b → f a = f b) → Quotientₓ s → β :=
   Quot.lift f
 
-@[elab_as_eliminator]
+@[elabAsElim]
 protected theorem ind {α : Sort u} [s : Setoidₓ α] {β : Quotientₓ s → Prop} : (∀ a, β ⟦a⟧) → ∀ q, β q :=
   Quot.ind
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def liftOn {α : Sort u} {β : Sort v} [s : Setoidₓ α] (q : Quotientₓ s) (f : α → β)
     (c : ∀ a b, a ≈ b → f a = f b) : β :=
   Quot.liftOn q f c
 
-@[elab_as_eliminator]
+@[elabAsElim]
 protected theorem induction_on {α : Sort u} [s : Setoidₓ α] {β : Quotientₓ s → Prop} (q : Quotientₓ s)
     (h : ∀ a, β ⟦a⟧) : β q :=
   Quot.induction_on q h
@@ -145,16 +145,16 @@ protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ (a b : α) (p : a ≈ b), (Eq
     (q : Quotientₓ s) : β q :=
   Quot.rec f h q
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def recOn (q : Quotientₓ s) (f : ∀ a, β ⟦a⟧)
     (h : ∀ (a b : α) (p : a ≈ b), (Eq.ndrec (f a) (Quotientₓ.sound p) : β ⟦b⟧) = f b) : β q :=
   Quot.recOn q f h
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quotientₓ s) (f : ∀ a, β ⟦a⟧) : β q :=
   @Quot.recOnSubsingleton _ _ _ h q f
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def hrecOn (q : Quotientₓ s) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : a ≈ b), HEq (f a) (f b)) : β q :=
   Quot.hrecOn q f c
 
@@ -170,7 +170,7 @@ variable [s₁ : Setoidₓ α] [s₂ : Setoidₓ β]
 
 include s₁ s₂
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂) (q₁ : Quotientₓ s₁)
     (q₂ : Quotientₓ s₂) : φ :=
   Quotientₓ.lift (fun a₁ : α => Quotientₓ.lift (f a₁) (fun a b : β => c a₁ a a₁ b (Setoidₓ.refl a₁)) q₂)
@@ -182,22 +182,22 @@ protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ 
         (fun a' : β => c a a' b a' h (Setoidₓ.refl a')) q₂)
     q₁
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def liftOn₂ (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (f : α → β → φ)
     (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂) : φ :=
   Quotientₓ.lift₂ f c q₁ q₂
 
-@[elab_as_eliminator]
+@[elabAsElim]
 protected theorem ind₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Prop} (h : ∀ a b, φ ⟦a⟧ ⟦b⟧) (q₁ : Quotientₓ s₁)
     (q₂ : Quotientₓ s₂) : φ q₁ q₂ :=
   Quotientₓ.ind (fun a₁ => Quotientₓ.ind (fun a₂ => h a₁ a₂) q₂) q₁
 
-@[elab_as_eliminator]
+@[elabAsElim]
 protected theorem induction_on₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Prop} (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂)
     (h : ∀ a b, φ ⟦a⟧ ⟦b⟧) : φ q₁ q₂ :=
   Quotientₓ.ind (fun a₁ => Quotientₓ.ind (fun a₂ => h a₁ a₂) q₂) q₁
 
-@[elab_as_eliminator]
+@[elabAsElim]
 protected theorem induction_on₃ [s₃ : Setoidₓ φ] {δ : Quotientₓ s₁ → Quotientₓ s₂ → Quotientₓ s₃ → Prop}
     (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (q₃ : Quotientₓ s₃) (h : ∀ a b c, δ ⟦a⟧ ⟦b⟧ ⟦c⟧) : δ q₁ q₂ q₃ :=
   Quotientₓ.ind (fun a₁ => Quotientₓ.ind (fun a₂ => Quotientₓ.ind (fun a₃ => h a₁ a₂ a₃) q₃) q₂) q₁
@@ -239,7 +239,7 @@ variable [s₁ : Setoidₓ α] [s₂ : Setoidₓ β]
 
 include s₁ s₂
 
-@[reducible, elab_as_eliminator]
+@[reducible, elabAsElim]
 protected def recOnSubsingleton₂ {φ : Quotientₓ s₁ → Quotientₓ s₂ → Sort u_c} [h : ∀ a b, Subsingleton (φ ⟦a⟧ ⟦b⟧)]
     (q₁ : Quotientₓ s₁) (q₂ : Quotientₓ s₂) (f : ∀ a b, φ ⟦a⟧ ⟦b⟧) : φ q₁ q₂ :=
   @Quotientₓ.recOnSubsingleton _ s₁ (fun q => φ q q₂) (fun a => Quotientₓ.ind (fun b => h a b) q₂) q₁ fun a =>

@@ -85,10 +85,10 @@ unsafe instance : DecidableEq json := fun j₁ j₂ => by
   case json.null =>
     exact Decidable.true
   case json.array =>
-    let this := DecidableEq
+    letI := DecidableEq
     exact List.decidableEq _ _
   case json.object =>
-    let this := DecidableEq
+    letI := DecidableEq
     exact List.decidableEq _ _
 
 end Json

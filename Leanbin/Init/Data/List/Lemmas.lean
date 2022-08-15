@@ -117,7 +117,7 @@ theorem mem_cons_selfₓ (a : α) (l : List α) : a ∈ a :: l :=
   Or.inl rfl
 
 @[simp]
-theorem mem_cons_iff (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :=
+theorem mem_cons_iffₓ (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :=
   Iff.rfl
 
 @[rsimp]

@@ -79,8 +79,8 @@ unsafe def brackets (l r : Stringₓ) (p : parser α) :=
 unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1720:35: warning: unsupported: precedence command
--- ./././Mathport/Syntax/Translate/Basic.lean:1720:35: warning: unsupported: precedence command
+-- ./././Mathport/Syntax/Translate/Basic.lean:1734:29: warning: unsupported: precedence command
+-- ./././Mathport/Syntax/Translate/Basic.lean:1734:29: warning: unsupported: precedence command
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -126,7 +126,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1720:35: warning: unsupported: precedence command
+-- ./././Mathport/Syntax/Translate/Basic.lean:1734:29: warning: unsupported: precedence command
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format

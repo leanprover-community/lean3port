@@ -46,7 +46,7 @@ theorem gcd_zero_rightₓ (n : ℕ) : gcdₓ n 0 = n := by
 theorem gcd_recₓ (m n : ℕ) : gcdₓ m n = gcdₓ (n % m) m := by
   cases m <;> simp [← gcd]
 
-@[elab_as_eliminator]
+@[elabAsElim]
 theorem gcdₓ.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n) (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) :
     P m n :=
   @induction _ _ lt_wf (fun m => ∀ n, P m n) m

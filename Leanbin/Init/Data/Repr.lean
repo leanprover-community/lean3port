@@ -52,12 +52,12 @@ protected def List.reprAux {α : Type u} [HasRepr α] : Bool → List α → Str
   | tt, x :: xs => reprₓ x ++ List.reprAux false xs
   | ff, x :: xs => ", " ++ reprₓ x ++ List.reprAux false xs
 
-protected def List.repr {α : Type u} [HasRepr α] : List α → Stringₓ
+protected def List.reprₓ {α : Type u} [HasRepr α] : List α → Stringₓ
   | [] => "[]"
   | x :: xs => "[" ++ List.reprAux true (x :: xs) ++ "]"
 
 instance {α : Type u} [HasRepr α] : HasRepr (List α) :=
-  ⟨List.repr⟩
+  ⟨List.reprₓ⟩
 
 instance : HasRepr Unit :=
   ⟨fun u => "star"⟩
@@ -132,7 +132,7 @@ instance : HasRepr Nat :=
 def hexDigitReprₓ (n : Nat) : Stringₓ :=
   Stringₓ.singleton <| Nat.digitCharₓ n
 
-def charToHexₓ (c : Charₓ) : Stringₓ :=
+def charToHex (c : Charₓ) : Stringₓ :=
   let n := Charₓ.toNat c
   let d2 := n / 16
   let d1 := n % 16
@@ -144,7 +144,7 @@ def Charₓ.quoteCore (c : Charₓ) : Stringₓ :=
     if c = '\t' then "\\t"
     else
       if c = '\\' then "\\\\"
-      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHexₓ c else Stringₓ.singleton c
+      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else Stringₓ.singleton c
 
 instance : HasRepr Charₓ :=
   ⟨fun c => "'" ++ Charₓ.quoteCore c ++ "'"⟩

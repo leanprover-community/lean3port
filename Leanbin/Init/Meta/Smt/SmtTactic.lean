@@ -404,7 +404,7 @@ unsafe def add_ematch_lhs_lemma_from_decl : Name → smt_tactic Unit :=
 unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
   add_ematch_eqn_lemmas_for_core reducible
 
--- ./././Mathport/Syntax/Translate/Basic.lean:971:4: warning: unsupported notation `f
+-- ./././Mathport/Syntax/Translate/Basic.lean:973:4: warning: unsupported notation `f
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do

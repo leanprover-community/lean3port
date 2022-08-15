@@ -76,7 +76,7 @@ def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
     ⟨l₁ ++ l₂, by
       simp [*]⟩
 
-@[elab_as_eliminator]
+@[elabAsElim]
 def elimₓ {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
   | ⟨l, h⟩ =>
     match n, h with

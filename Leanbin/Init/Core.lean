@@ -88,7 +88,7 @@ Related mathlib tactic: `contrapose`.
 def Not (a : Prop) :=
   a → False
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1422:30: infer kinds are unsupported in Lean 4: refl []
+-- ./././Mathport/Syntax/Translate/Basic.lean:1436:30: infer kinds are unsupported in Lean 4: refl []
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
 
@@ -112,7 +112,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 -/
 init_quot
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1422:30: infer kinds are unsupported in Lean 4: refl []
+-- ./././Mathport/Syntax/Translate/Basic.lean:1436:30: infer kinds are unsupported in Lean 4: refl []
 /-- Heterogeneous equality.
 
 Its purpose is to write down equalities between terms whose types are not definitionally equal.
@@ -167,7 +167,7 @@ attribute [refl] Eq.refl
 def rfl {α : Sort u} {a : α} : a = a :=
   Eq.refl a
 
-@[elab_as_eliminator, subst]
+@[elabAsElim, subst]
 theorem Eq.subst {α : Sort u} {P : α → Prop} {a b : α} (h₁ : a = b) (h₂ : P a) : P b :=
   Eq.ndrec h₂ h₁
 

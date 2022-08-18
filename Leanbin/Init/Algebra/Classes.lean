@@ -95,8 +95,6 @@ class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α
 class IsDistinct (α : Type u) (a : α) (b : α) : Prop where
   distinct : a ≠ b
 
-/-- `is_irrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never
-holds). -/
 /-
 -- The following type class doesn't seem very useful, a regular simp lemma should work for this.
 class is_inv (α : Type u) (β : Type v) (f : α → β) (g : out β → α) : Prop :=
@@ -106,6 +104,8 @@ class is_inv (α : Type u) (β : Type v) (f : α → β) (g : out β → α) : P
 class is_idempotent (α : Type u) (f : α → α) : Prop :=
 (idempotent : ∀ a, f (f a) = f a)
 -/
+/-- `is_irrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never
+holds). -/
 @[algebra]
 class IsIrrefl (α : Type u) (r : α → α → Prop) : Prop where
   irrefl : ∀ a, ¬r a a
@@ -160,35 +160,54 @@ instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s
   trans := s.trans
   refl := fun a => Or.elim (@IsTotal.total _ r _ a a) id id
 
+/-- `is_partial_order X r` means that the binary relation `r` on `X` is a partial order, that is,
+`is_preorder X r` and `is_antisymm X r`. -/
 @[algebra]
 class IsPartialOrder (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsAntisymm α r : Prop
 
+/-- `is_linear_order X r` means that the binary relation `r` on `X` is a linear order, that is,
+`is_partial_order X r` and `is_total X r`. -/
 @[algebra]
 class IsLinearOrder (α : Type u) (r : α → α → Prop) extends IsPartialOrder α r, IsTotal α r : Prop
 
+/-- `is_equiv X r` means that the binary relation `r` on `X` is an equivalence relation, that
+is, `is_preorder X r` and `is_symm X r`. -/
 @[algebra]
 class IsEquiv (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsSymm α r : Prop
 
+/-- `is_per X r` means that the binary relation `r` on `X` is a partial equivalence relation, that
+is, `is_symm X r` and `is_trans X r`. -/
 @[algebra]
 class IsPer (α : Type u) (r : α → α → Prop) extends IsSymm α r, IsTrans α r : Prop
 
+/-- `is_strict_order X r` means that the binary relation `r` on `X` is a strict order, that is, 
+`is_irrefl X r` and `is_trans X r`. -/
 @[algebra]
 class IsStrictOrder (α : Type u) (r : α → α → Prop) extends IsIrrefl α r, IsTrans α r : Prop
 
+/-- `is_incomp_trans X lt` means that for `lt` a binary relation on `X`, the incomparable relation
+`λ a b, ¬ lt a b ∧ ¬ lt b a` is transitive. -/
 @[algebra]
 class IsIncompTrans (α : Type u) (lt : α → α → Prop) : Prop where
   incomp_trans : ∀ a b c, ¬lt a b ∧ ¬lt b a → ¬lt b c ∧ ¬lt c b → ¬lt a c ∧ ¬lt c a
 
+/-- `is_strict_weak_order X lt` means that the binary relation `lt` on `X` is a strict weak order,
+that is, `is_strict_order X lt` and `is_incomp_trans X lt`. -/
 @[algebra]
 class IsStrictWeakOrder (α : Type u) (lt : α → α → Prop) extends IsStrictOrder α lt, IsIncompTrans α lt : Prop
 
+/-- `is_trichotomous X lt` means that the binary relation `lt` on `X` is trichotomous, that is, 
+either `lt a b` or `a = b` or `lt b a` for any `a` and `b`. -/
 @[algebra]
 class IsTrichotomous (α : Type u) (lt : α → α → Prop) : Prop where
   trichotomous : ∀ a b, lt a b ∨ a = b ∨ lt b a
 
+/-- `is_strict_total_order X lt` means that the binary relation `lt` on `X` is a strict total order,
+that is, `is_trichotomous X lt` and `is_strict_order X lt`. -/
 @[algebra]
-class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrichotomous α lt, IsStrictWeakOrder α lt : Prop
+class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrichotomous α lt, IsStrictOrder α lt : Prop
 
+/-- Equality is an equivalence relation. -/
 instance eq_is_equiv (α : Type u) : IsEquiv α (· = ·) where
   symm := @Eq.symm _
   trans := @Eq.trans _
@@ -305,8 +324,8 @@ instance is_equiv : IsEquiv α equiv where
 end
 
 -- mathport name: «expr ≈[ ] »
-notation:50 a " ≈[" lt "]" b-- Notation for the equivalence relation induced by lt
-:50 => @Equiv _ lt a b
+notation:50 -- Notation for the equivalence relation induced by lt
+a " ≈[" lt "]" b:50 => @Equiv _ lt a b
 
 end StrictWeakOrder
 

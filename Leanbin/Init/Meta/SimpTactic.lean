@@ -120,8 +120,8 @@ unsafe instance : has_to_tactic_format simp_lemmas :=
 
 namespace Tactic
 
-/-- Revert a local constant, change its type using `transform`.  -/
 -- Remark: `transform` should not change the target.
+/-- Revert a local constant, change its type using `transform`.  -/
 unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : tactic Unit := do
   let num_reverted : ℕ ← revert h
   let t ← target
@@ -224,13 +224,13 @@ unsafe def dsimp_hyp (h : expr) (s : Option simp_lemmas := none) (u : List Name 
   let s ← get_simp_lemmas_or_default s
   revert_and_transform (fun e => s u e cfg) h
 
-/-- Tries to unfold `e` if it is a constant or a constant application.
-    Remark: this is not a recursive procedure. -/
 /- Remark: we use transparency.instances by default to make sure that we
    can unfold projections of type classes. Example:
 
           (@has_add.add nat nat.has_add a b)
 -/
+/-- Tries to unfold `e` if it is a constant or a constant application.
+    Remark: this is not a recursive procedure. -/
 unsafe axiom dunfold_head (e : expr) (md := Transparency.instances) : tactic expr
 
 structure DunfoldConfig extends DsimpConfig where

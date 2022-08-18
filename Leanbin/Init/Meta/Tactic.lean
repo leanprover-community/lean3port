@@ -1955,8 +1955,8 @@ unsafe def any_of {α β} : List α → (α → tactic β) → tactic β
 
 end List
 
-/-- Try to prove with `iff.refl`.-/
 -- Install monad laws tactic and use it to prove some instances.
+/-- Try to prove with `iff.refl`.-/
 unsafe def order_laws_tac :=
   (whnf_target >> intros) >> to_expr (pquote.1 (Iff.refl _)) >>= exact
 

@@ -241,9 +241,9 @@ theorem Or.symm : a ∨ b → b ∨ a :=
 def Xorₓ (a b : Prop) :=
   a ∧ ¬b ∨ b ∧ ¬a
 
+-- iff
 /-- `iff P Q`, with notation `P ↔ Q`, is the proposition asserting that `P` and `Q` are equivalent,
 that is, have the same truth value. -/
--- iff
 structure Iff (a b : Prop) : Prop where intro ::
   mp : a → b
   mpr : b → a

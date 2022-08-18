@@ -8,15 +8,15 @@ import Leanbin.Init.Control.Monad
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Util
 
+/-
+Remark: we use a function that produces a format object as the exception information.
+Motivation: the formatting object may be big, and we may create it on demand.
+-/
+/-
+Remark: we use a function that produces a format object as the exception information.
+Motivation: the formatting object may be big, and we may create it on demand.
+-/
 /-- An exceptional is similar to `Result` in Haskell.-/
-/-
-Remark: we use a function that produces a format object as the exception information.
-Motivation: the formatting object may be big, and we may create it on demand.
--/
-/-
-Remark: we use a function that produces a format object as the exception information.
-Motivation: the formatting object may be big, and we may create it on demand.
--/
 unsafe inductive exceptional (α : Type)
   | success : α → exceptional
   | exception : (options → format) → exceptional

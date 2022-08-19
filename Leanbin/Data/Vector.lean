@@ -65,7 +65,7 @@ theorem cons_head_tail : ∀ v : Vector α (succ n), cons (head v) (tail v) = v
 def toList (v : Vector α n) : List α :=
   v.1
 
-def nth : ∀ v : Vector α n, Finₓ n → α
+def nth : ∀ v : Vector α n, Fin n → α
   | ⟨l, h⟩, i =>
     l.nthLe i.1
       (by
@@ -77,7 +77,7 @@ def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
       simp [*]⟩
 
 @[elabAsElim]
-def elimₓ {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
+def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
   | ⟨l, h⟩ =>
     match n, h with
     | _, rfl => H l
@@ -97,30 +97,30 @@ theorem map_cons (f : α → β) (a : α) : ∀ v : Vector α n, map f (cons a v
 
 def map₂ (f : α → β → φ) : Vector α n → Vector β n → Vector φ n
   | ⟨x, _⟩, ⟨y, _⟩ =>
-    ⟨List.map₂ₓ f x y, by
+    ⟨List.map₂ f x y, by
       simp [*]⟩
 
-def repeat (a : α) (n : ℕ) : Vector α n :=
+def «repeat» (a : α) (n : ℕ) : Vector α n :=
   ⟨List.repeat a n, List.length_repeat a n⟩
 
 def drop (i : ℕ) : Vector α n → Vector α (n - i)
   | ⟨l, p⟩ =>
-    ⟨List.dropₓ i l, by
+    ⟨List.drop i l, by
       simp [*]⟩
 
 def take (i : ℕ) : Vector α n → Vector α (min i n)
   | ⟨l, p⟩ =>
-    ⟨List.takeₓ i l, by
+    ⟨List.take i l, by
       simp [*]⟩
 
-def removeNth (i : Finₓ n) : Vector α n → Vector α (n - 1)
+def removeNth (i : Fin n) : Vector α n → Vector α (n - 1)
   | ⟨l, p⟩ =>
-    ⟨List.removeNthₓ l i.1, by
+    ⟨List.removeNth l i.1, by
       rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
 
-def ofFn : ∀ {n}, (Finₓ n → α) → Vector α n
+def ofFn : ∀ {n}, (Fin n → α) → Vector α n
   | 0, f => nil
-  | n + 1, f => cons (f 0) (of_fn fun i => f i.succ)
+  | n + 1, f => cons (f 0) (ofFn fun i => f i.succ)
 
 section Accum
 
@@ -146,7 +146,7 @@ protected theorem eq {n : ℕ} : ∀ a1 a2 : Vector α n, toList a1 = toList a2 
   | ⟨x, h1⟩, ⟨_, h2⟩, rfl => rfl
 
 protected theorem eq_nil (v : Vector α 0) : v = nil :=
-  v.Eq nil (List.eq_nil_of_length_eq_zero v.2)
+  v.eq nil (List.eq_nil_of_length_eq_zero v.2)
 
 @[simp]
 theorem to_list_mk (v : List α) (P : List.length v = n) : toList (Subtype.mk v P) = v :=
@@ -172,12 +172,12 @@ theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) : toList 
   rfl
 
 @[simp]
-theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.dropₓ n (toList v) := by
+theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.drop n (toList v) := by
   cases v
   rfl
 
 @[simp]
-theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.takeₓ n (toList v) := by
+theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.take n (toList v) := by
   cases v
   rfl
 

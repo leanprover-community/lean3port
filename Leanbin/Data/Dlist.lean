@@ -3,6 +3,7 @@ Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
+import Mathlib.Init.Data.List.Basic
 
 universe u
 
@@ -24,17 +25,16 @@ variable {α : Type u}
 
 -- mathport name: «expr♯»
 local notation:arg "♯" => by
-  abstract 
-    intros
-    simp
+  intros
+  simp
 
 /-- Convert a list to a dlist -/
 def ofList (l : List α) : Dlist α :=
-  ⟨append l, ♯⟩
+  ⟨(l ++ ·), ♯⟩
 
 /-- Convert a lazily-evaluated list to a dlist -/
-def lazyOfList (l : Thunkₓ (List α)) : Dlist α :=
-  ⟨fun xs => l () ++ xs, ♯⟩
+def lazyOfList (l : Thunk (List α)) : Dlist α :=
+  ⟨fun xs => l.get ++ xs, ♯⟩
 
 /-- Convert a dlist to a list -/
 def toList : Dlist α → List α
@@ -55,47 +55,29 @@ attribute [local simp] Function.comp
 
 /-- `O(1)` Prepend a single element to a dlist -/
 def cons (x : α) : Dlist α → Dlist α
-  | ⟨xs, h⟩ =>
-    ⟨x::_ ∘ xs, by
-      abstract 
-        intros
-        simp
-        rw [← h]⟩
+  | ⟨xs, h⟩ => ⟨x::_ ∘ xs, by simp [← h]⟩
 
 /-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α
-  | ⟨xs, h⟩ =>
-    ⟨xs ∘ x::_, by
-      abstract 
-        intros
-        simp
-        rw [h, h [x]]
-        simp ⟩
+  | ⟨xs, h⟩ => ⟨xs ∘ x::_, by intros; simp [h (_ :: _)]; rw [List.append_cons]⟩
 
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
   | ⟨xs, h₁⟩, ⟨ys, h₂⟩ =>
-    ⟨xs ∘ ys, by
-      intros
-      simp
-      rw [h₂, h₁, h₁ (ys List.nil)]
-      simp ⟩
+    ⟨xs ∘ ys, fun l => by
+      simp only [comp]
+      rw [h₂, h₁, h₁ (ys List.nil), List.append_assoc]⟩
 
 instance : Append (Dlist α) :=
   ⟨Dlist.append⟩
 
-attribute [local simp] of_list to_list Empty singleton cons concat Dlist.append
+attribute [local simp] ofList toList empty singleton cons concat Dlist.append
 
 theorem to_list_of_list (l : List α) : toList (ofList l) = l := by
   cases l <;> simp
 
 theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
-  cases' l with xs
-  have h : append (xs []) = xs := by
-    intros
-    funext x
-    simp [← l_invariant x]
-  simp [← h]
+  simp [← invariant l]
 
 theorem to_list_empty : toList (@empty α) = [] := by
   simp
@@ -103,15 +85,14 @@ theorem to_list_empty : toList (@empty α) = [] := by
 theorem to_list_singleton (x : α) : toList (singleton x) = [x] := by
   simp
 
-theorem to_list_append (l₁ l₂ : Dlist α) : toList (l₁ ++ l₂) = toList l₁ ++ toList l₂ :=
-  show toList (Dlist.append l₁ l₂) = toList l₁ ++ toList l₂ by
-    cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
+theorem to_list_append (l₁ l₂ : Dlist α) : toList (l₁ ++ l₂) = toList l₁ ++ toList l₂ := by
+  simp [← invariant l₁]
 
 theorem to_list_cons (x : α) (l : Dlist α) : toList (cons x l) = x :: toList l := by
-  cases l <;> simp
+  simp
 
 theorem to_list_concat (x : α) (l : Dlist α) : toList (concat x l) = toList l ++ [x] := by
-  cases l <;> simp <;> rw [l_invariant]
+  simp [← invariant l]
 
 end Dlist
 

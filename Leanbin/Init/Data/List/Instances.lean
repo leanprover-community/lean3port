@@ -10,75 +10,42 @@ open List
 
 universe u v
 
-attribute [local simp] join List.ret
-
-instance : Monadₓ List where
+instance : Monad List where
   pure := @List.ret
   map := @List.map
   bind := @List.bind
 
-instance : IsLawfulMonad List where
-  bind_pure_comp_eq_map := by
-    intro α β f l
-    induction l <;> simp_all [← (· <$> ·), ← (· >>= ·), ← pure]
-  id_map := @List.map_id
-  pure_bind := by
-    intros
-    simp [← pure, ← (· >>= ·)]
-  bind_assoc := by
-    intro α β γ l f g
-    induction' l with x l ih
-    · simp [← (· >>= ·)]
-      
-    · simp [← (· >>= ·)] at ih
-      simp [← (· >>= ·), ← ih]
-      
+@[simp] protected theorem List.ret_def : (.ret a : List α) = [a] := rfl
+@[simp] protected theorem List.pure_def : (pure a : List α) = [a] := rfl
+@[simp] protected theorem List.map_def {f : α → β} : (f <$> a : List β) = map f a := rfl
+@[simp] protected theorem List.bind_def {f : α → List β} : (a >>= f : List β) = List.bind a f := rfl
 
-instance : Alternativeₓ List :=
-  { List.monad with failure := @List.nil, orelse := @List.append }
+@[simp] theorem List.bind_singleton (xs : List α) (f : α → β) : xs.bind ([f ·]) = xs.map f := by
+  induction xs <;> simp_all
 
-namespace List
+theorem List.bind_bind (xs : List α) (f : α → List β) (g : β → List γ) :
+    (xs.bind f).bind g = xs.bind fun x => (f x).bind g := by
+  induction xs <;> simp_all
 
-variable {α β : Type u} (p : α → Prop) [DecidablePred p]
+theorem List.map_bind (xs : List α) (f : α → β) (g : β → List γ) :
+    (xs.map f).bind g = xs.bind fun x => g (f x) := by
+  induction xs <;> simp_all
 
-instance binTreeToList : Coe (BinTree α) (List α) :=
-  ⟨BinTree.toList⟩
+instance : LawfulMonad List where
+  id_map := by simp
+  pure_bind := by simp
+  bind_assoc := by simp [List.bind_bind]
+  map_const := by simp [Functor.mapConst, Functor.map]
+  comp_map := by simp
+  seqLeft_eq := by simp [SeqLeft.seqLeft, Seq.seq, List.map_bind, Function.const]
+  seqRight_eq := by simp [SeqRight.seqRight, Seq.seq, List.map_bind]
+  pure_seq := by simp [Seq.seq]
+  map_pure := by simp
+  seq_pure := by simp [Seq.seq]
+  seq_assoc := by simp [Seq.seq, List.map_bind, List.bind_bind, List.bind_map]
+  bind_pure_comp := by simp
+  bind_map := by simp [Seq.seq]
 
-instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
-  | [] =>
-    isFalse
-      (by
-        simp [← List.not_bex_nilₓ])
-  | x :: xs =>
-    if h₁ : p x then isTrue ⟨x, mem_cons_selfₓ _ _, h₁⟩
-    else
-      match decidable_bex xs with
-      | is_true h₂ =>
-        isTrue
-          (by
-            cases' h₂ with y h
-            cases' h with hm hp
-            exact ⟨y, mem_cons_of_mem _ hm, hp⟩)
-      | is_false h₂ =>
-        isFalse
-          (by
-            intro h
-            cases' h with y h
-            cases' h with hm hp
-            cases eq_or_mem_of_mem_cons hm
-            · rw [h] at hp
-              contradiction
-              
-            · refine' absurd _ h₂
-              exact ⟨y, h, hp⟩
-              )
-
-instance decidableBall (l : List α) : Decidable (∀, ∀ x ∈ l, ∀, p x) :=
-  if h : ∃ x ∈ l, ¬p x then
-    is_false <|
-      let ⟨x, h, np⟩ := h
-      fun al => np (al x h)
-  else is_true fun x hx => if h' : p x then h' else False.elim <| h ⟨x, hx, h'⟩
-
-end List
-
+instance : Alternative List where
+  failure := []
+  orElse a b := a ++ b ()

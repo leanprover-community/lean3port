@@ -10,52 +10,52 @@ import Leanbin.Init.Classical
 -- Lemmas use by the congruence closure module 
 -- Lemmas use by the congruence closure module
 theorem iff_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a ↔ b) = b :=
-  h.symm ▸ propext (true_iffₓ _)
+  h.symm ▸ (true_iff _)
 
 theorem iff_eq_of_eq_true_right {a b : Prop} (h : b = True) : (a ↔ b) = a :=
-  h.symm ▸ propext (iff_trueₓ _)
+  h.symm ▸ (iff_true _)
 
 theorem iff_eq_true_of_eq {a b : Prop} (h : a = b) : (a ↔ b) = True :=
-  h ▸ propext (iff_selfₓ _)
+  h ▸ (iff_self _)
 
 theorem and_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a ∧ b) = b :=
-  h.symm ▸ propext (true_andₓ _)
+  h.symm ▸ (true_and _)
 
 theorem and_eq_of_eq_true_right {a b : Prop} (h : b = True) : (a ∧ b) = a :=
-  h.symm ▸ propext (and_trueₓ _)
+  h.symm ▸ (and_true _)
 
 theorem and_eq_of_eq_false_left {a b : Prop} (h : a = False) : (a ∧ b) = False :=
-  h.symm ▸ propext (false_andₓ _)
+  h.symm ▸ (false_and _)
 
 theorem and_eq_of_eq_false_right {a b : Prop} (h : b = False) : (a ∧ b) = False :=
-  h.symm ▸ propext (and_falseₓ _)
+  h.symm ▸ (and_false _)
 
 theorem and_eq_of_eq {a b : Prop} (h : a = b) : (a ∧ b) = a :=
-  h ▸ propext (and_selfₓ _)
+  h ▸ (and_self _)
 
 theorem or_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a ∨ b) = True :=
-  h.symm ▸ propext (true_orₓ _)
+  h.symm ▸ (true_or _)
 
 theorem or_eq_of_eq_true_right {a b : Prop} (h : b = True) : (a ∨ b) = True :=
-  h.symm ▸ propext (or_trueₓ _)
+  h.symm ▸ (or_true _)
 
 theorem or_eq_of_eq_false_left {a b : Prop} (h : a = False) : (a ∨ b) = b :=
-  h.symm ▸ propext (false_orₓ _)
+  h.symm ▸ (false_or _)
 
 theorem or_eq_of_eq_false_right {a b : Prop} (h : b = False) : (a ∨ b) = a :=
-  h.symm ▸ propext (or_falseₓ _)
+  h.symm ▸ (or_false _)
 
 theorem or_eq_of_eq {a b : Prop} (h : a = b) : (a ∨ b) = a :=
-  h ▸ propext (or_selfₓ _)
+  h ▸ (or_self _)
 
 theorem imp_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a → b) = b :=
-  h.symm ▸ propext (Iff.intro (fun h => h trivialₓ) fun h₁ h₂ => h₁)
+  h.symm ▸ propext (Iff.intro (fun h => h trivial) fun h₁ h₂ => h₁)
 
 theorem imp_eq_of_eq_true_right {a b : Prop} (h : b = True) : (a → b) = True :=
-  h.symm ▸ propext (Iff.intro (fun h => trivialₓ) fun h₁ h₂ => h₁)
+  h.symm ▸ propext (Iff.intro (fun h => trivial) fun h₁ h₂ => h₁)
 
 theorem imp_eq_of_eq_false_left {a b : Prop} (h : a = False) : (a → b) = True :=
-  h.symm ▸ propext (Iff.intro (fun h => trivialₓ) fun h₁ h₂ => False.elim h₂)
+  h.symm ▸ propext (Iff.intro (fun h => trivial) fun h₁ h₂ => False.elim h₂)
 
 theorem imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (a → b) = Not a :=
   h.symm ▸ propext (Iff.intro (fun h => h) fun hna ha => hna ha)
@@ -66,7 +66,7 @@ theorem not_imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (Not a → b
   h.symm ▸ propext (Iff.intro (fun h' => Classical.by_contradiction fun hna => h' hna) fun ha hna => hna ha)
 
 theorem imp_eq_true_of_eq {a b : Prop} (h : a = b) : (a → b) = True :=
-  h ▸ propext (Iff.intro (fun h => trivialₓ) fun h ha => ha)
+  h ▸ propext (Iff.intro (fun h => trivial) fun h ha => ha)
 
 theorem not_eq_of_eq_true {a : Prop} (h : a = True) : Not a = False :=
   h.symm ▸ propext not_true
@@ -88,8 +88,8 @@ theorem if_eq_of_eq_false {c : Prop} [d : Decidable c] {α : Sort u} (t e : α) 
 
 theorem if_eq_of_eq (c : Prop) [d : Decidable c] {α : Sort u} {t e : α} (h : t = e) : @ite α c d t e = t :=
   match d with
-  | is_true hc => rfl
-  | is_false hnc => Eq.symm h
+  | isTrue hc => rfl
+  | isFalse hnc => Eq.symm h
 
 theorem eq_true_of_and_eq_true_left {a b : Prop} (h : (a ∧ b) = True) : a = True :=
   eq_true_intro (And.left (of_eq_true h))
@@ -104,7 +104,7 @@ theorem eq_false_of_or_eq_false_right {a b : Prop} (h : (a ∨ b) = False) : b =
   eq_false_intro fun hb => False.elim (Eq.mp h (Or.inr hb))
 
 theorem eq_false_of_not_eq_true {a : Prop} (h : Not a = True) : a = False :=
-  eq_false_intro fun ha => absurd ha (Eq.mpr h trivialₓ)
+  eq_false_intro fun ha => absurd ha (Eq.mpr h trivial)
 
 /- Remark: the congruence closure module will only use the following lemma is
    cc_config.em is tt. -/

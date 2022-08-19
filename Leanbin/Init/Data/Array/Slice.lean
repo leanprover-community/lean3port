@@ -19,8 +19,8 @@ def slice (a : Arrayₓ n α) (k l : Nat) (h₁ : k ≤ l) (h₂ : l ≤ n) : Ar
     a.read
       ⟨i + k,
         calc
-          i + k < l - k + k := Nat.add_lt_add_rightₓ hi _
-          _ = l := Nat.sub_add_cancelₓ h₁
+          i + k < l - k + k := Nat.add_lt_add_right hi _
+          _ = l := Nat.sub_add_cancel h₁
           _ ≤ n := h₂
           ⟩⟩
 
@@ -28,30 +28,30 @@ def take (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ m α :=
   cast
       (by
         simp ) <|
-    a.slice 0 m (Nat.zero_leₓ _) h
+    a.slice 0 m (Nat.zero_le _) h
 
 def drop (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ (n - m) α :=
-  a.slice m n h (le_reflₓ _)
+  a.slice m n h (le_refl _)
 
 private theorem sub_sub_cancel (m n : ℕ) (h : m ≤ n) : n - (n - m) = m :=
   calc
     n - (n - m) = n - m + m - (n - m) := by
-      rw [Nat.sub_add_cancelₓ] <;> assumption
+      rw [Nat.sub_add_cancel] <;> assumption
     _ = m := Nat.add_sub_cancel_left _ _
     
 
 def takeRight (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ m α :=
   cast
       (by
-        simp [*, ← sub_sub_cancel]) <|
-    a.drop (n - m) (Nat.sub_leₓ _ _)
+        simp [*, sub_sub_cancel]) <|
+    a.drop (n - m) (Nat.sub_le _ _)
 
 def reverse (a : Arrayₓ n α) : Arrayₓ n α :=
   ⟨fun ⟨i, hi⟩ =>
     a.read
       ⟨n - (i + 1), by
-        apply Nat.sub_lt_of_pos_leₓ
-        apply Nat.zero_lt_succₓ
+        apply Nat.sub_lt_of_pos_le
+        apply Nat.zero_lt_succ
         assumption⟩⟩
 
 end Arrayₓ

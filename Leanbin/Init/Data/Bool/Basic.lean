@@ -11,34 +11,19 @@ import Leanbin.Init.Core
 -/
 
 
-/-- `cond b x y` is `x` if `b = tt` and `y` otherwise. -/
-@[inline]
-def cond.{u} {a : Type u} : Bool → a → a → a
-  | tt, x, y => x
-  | ff, x, y => y
-
 /-- Boolean OR -/
-@[inline]
-def bor : Bool → Bool → Bool
-  | tt, b => true
-  | ff, b => b
+@[simp] abbrev bor := or
 
 /-- Boolean AND -/
-@[inline]
-def band : Bool → Bool → Bool
-  | tt, b => b
-  | ff, b => false
+@[simp] abbrev band := and
 
 /-- Boolean NOT -/
-@[inline]
-def bnot : Bool → Bool
-  | tt => false
-  | ff => true
+@[simp] abbrev bnot := not
 
 /-- Boolean XOR -/
 @[inline]
 def bxor : Bool → Bool → Bool
-  | tt, ff => true
-  | ff, tt => true
+  | true, false => true
+  | false, true => true
   | _, _ => false
 

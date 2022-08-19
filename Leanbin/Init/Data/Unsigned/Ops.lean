@@ -10,34 +10,34 @@ import Leanbin.Init.Data.Fin.Ops
 namespace Unsigned
 
 def ofNat (n : Nat) : Unsigned :=
-  Finₓ.ofNat n
+  Fin.ofNat n
 
 instance : Zero Unsigned :=
-  ⟨Finₓ.ofNat 0⟩
+  ⟨Fin.ofNat 0⟩
 
 instance : One Unsigned :=
-  ⟨Finₓ.ofNat 1⟩
+  ⟨Fin.ofNat 1⟩
 
 instance : Add Unsigned :=
-  ⟨Finₓ.add⟩
+  ⟨Fin.add⟩
 
 instance : Sub Unsigned :=
-  ⟨Finₓ.sub⟩
+  ⟨Fin.sub⟩
 
 instance : Mul Unsigned :=
-  ⟨Finₓ.mul⟩
+  ⟨Fin.mul⟩
 
 instance : Mod Unsigned :=
-  ⟨Finₓ.mod⟩
+  ⟨Fin.mod⟩
 
 instance : Div Unsigned :=
-  ⟨Finₓ.div⟩
+  ⟨Fin.div⟩
 
 instance : LT Unsigned :=
-  ⟨Finₓ.Lt⟩
+  inferInstanceAs (LT (Fin _))
 
 instance : LE Unsigned :=
-  ⟨Finₓ.Le⟩
+  inferInstanceAs (LE (Fin _))
 
 end Unsigned
 

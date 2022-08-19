@@ -169,7 +169,4 @@ import Leanbin.Smt.Prove
 import Leanbin.System.Io
 import Leanbin.System.IoInterface
 import Leanbin.System.Random
-import Leanbin.Tools.Debugger.Cli
-import Leanbin.Tools.Debugger.Default
-import Leanbin.Tools.Debugger.Util
 

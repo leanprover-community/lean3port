@@ -12,11 +12,11 @@ universe u
 namespace Int
 
 def div2 : ℤ → ℤ
-  | of_nat n => n.div2
+  | ofNat n => n.div2
   | -[1+ n] => -[1+ n.div2]
 
 def bodd : ℤ → Bool
-  | of_nat n => n.bodd
+  | ofNat n => n.bodd
   | -[1+ n] => bnot n.bodd
 
 def bit (b : Bool) : ℤ → ℤ :=
@@ -27,7 +27,7 @@ def testBit : ℤ → ℕ → Bool
   | -[1+ m], n => bnot (Nat.testBit m n)
 
 def natBitwise (f : Bool → Bool → Bool) (m n : ℕ) : ℤ :=
-  cond (f false false) -[1+ Nat.bitwiseₓ (fun x y => bnot (f x y)) m n] (Nat.bitwiseₓ f m n)
+  cond (f false false) -[1+ Nat.bitwise (fun x y => bnot (f x y)) m n] (Nat.bitwise f m n)
 
 def bitwise (f : Bool → Bool → Bool) : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => natBitwise f m n
@@ -40,21 +40,21 @@ def lnot : ℤ → ℤ
   | -[1+ m] => m
 
 def lor : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.lorₓ m n
+  | (m : ℕ), (n : ℕ) => Nat.lor m n
   | (m : ℕ), -[1+ n] => -[1+ Nat.ldiff n m]
   | -[1+ m], (n : ℕ) => -[1+ Nat.ldiff m n]
-  | -[1+ m], -[1+ n] => -[1+ Nat.landₓ m n]
+  | -[1+ m], -[1+ n] => -[1+ Nat.land m n]
 
 def land : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.landₓ m n
+  | (m : ℕ), (n : ℕ) => Nat.land m n
   | (m : ℕ), -[1+ n] => Nat.ldiff m n
   | -[1+ m], (n : ℕ) => Nat.ldiff n m
-  | -[1+ m], -[1+ n] => -[1+ Nat.lorₓ m n]
+  | -[1+ m], -[1+ n] => -[1+ Nat.lor m n]
 
 def ldiff : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.ldiff m n
-  | (m : ℕ), -[1+ n] => Nat.landₓ m n
-  | -[1+ m], (n : ℕ) => -[1+ Nat.lorₓ m n]
+  | (m : ℕ), -[1+ n] => Nat.land m n
+  | -[1+ m], (n : ℕ) => -[1+ Nat.lor m n]
   | -[1+ m], -[1+ n] => Nat.ldiff n m
 
 def lxor : ℤ → ℤ → ℤ

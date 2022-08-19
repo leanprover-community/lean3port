@@ -1,0 +1,3 @@
+- `Xorₓ` → `xor`
+- `Arrayₓ` → `Arrayₓ`
+- `Nonneg` → `NonNeg`

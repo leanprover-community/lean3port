@@ -44,7 +44,7 @@ theorem bodd_add (m n : ℕ) : bodd (m + n) = bxor (bodd m) (bodd n) := by
   · simp
     cases bodd m <;> rfl
     
-  · simp [← add_succ, ← IH]
+  · simp [add_succ, IH]
     cases bodd m <;> cases bodd n <;> rfl
     
 
@@ -54,13 +54,13 @@ theorem bodd_mul (m n : ℕ) : bodd (m * n) = (bodd m && bodd n) := by
   · simp
     cases bodd m <;> rfl
     
-  · simp [← mul_succ, ← IH]
+  · simp [mul_succ, IH]
     cases bodd m <;> cases bodd n <;> rfl
     
 
 theorem mod_two_of_bodd (n : ℕ) : n % 2 = cond (bodd n) 1 0 := by
   have := congr_arg bodd (mod_add_div n 2)
-  simp [← bnot] at this
+  simp [bnot] at this
   rw
     [show ∀ b, (ff && b) = ff by
       intros <;> cases b <;> rfl,
@@ -91,7 +91,7 @@ theorem bodd_add_div2 : ∀ n, cond (bodd n) 1 0 + 2 * div2 n = n
   | succ n => by
     simp
     refine' Eq.trans _ (congr_arg succ (bodd_add_div2 n))
-    cases bodd n <;> simp [← cond, ← bnot]
+    cases bodd n <;> simp [cond, bnot]
     · rw [Nat.add_comm, Nat.zero_add]
       
     · rw [succ_mul, Nat.add_comm 1, Nat.zero_add]
@@ -220,9 +220,9 @@ theorem shiftr_add (m n) : ∀ k, shiftr m (n + k) = shiftr (shiftr m n) k
 theorem shiftl'_sub (b m) : ∀ {n k}, k ≤ n → shiftl' b m (n - k) = shiftr (shiftl' b m n) k
   | n, 0, h => rfl
   | n + 1, k + 1, h => by
-    simp [← shiftl']
+    simp [shiftl']
     rw [Nat.add_comm, shiftr_add]
-    simp [← shiftr, ← div2_bit]
+    simp [shiftr, div2_bit]
     apply shiftl'_sub (Nat.le_of_succ_le_succₓ h)
 
 theorem shiftl_sub : ∀ (m) {n k}, k ≤ n → shiftl m (n - k) = shiftr (shiftl m n) k :=
@@ -234,7 +234,7 @@ theorem test_bit_zero (b n) : testBit (bit b n) 0 = b :=
 
 theorem test_bit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m := by
   have : bodd (shiftr (shiftr (bit b n) 1) m) = bodd (shiftr n m) := by
-    dsimp' [← shiftr] <;> rw [div2_bit]
+    dsimp' [shiftr] <;> rw [div2_bit]
   rw [← shiftr_add, Nat.add_comm] at this <;> exact this
 
 theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)} (h : f false 0 z = z) (b n) :
@@ -243,7 +243,7 @@ theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bi
   with_cases
     by_cases' bit b n = 0
   case pos h' =>
-    simp [← dif_pos h']
+    simp [dif_pos h']
     generalize binary_rec._main._pack._proof_1 (bit b n) h' = e
     revert e
     have bf := bodd_bit b n
@@ -254,7 +254,7 @@ theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bi
     intros
     exact h.symm
   case neg h' =>
-    simp [← dif_neg h']
+    simp [dif_neg h']
     generalize binary_rec._main._pack._proof_2 (bit b n) = e
     revert e
     rw [bodd_bit, div2_bit]
@@ -273,7 +273,7 @@ theorem bitwise_bit_aux {f : Bool → Bool → Bool} (h : f false false = ff) :
   · cases b <;>
       try
           rw [h] <;>
-        induction' fft : f ff tt with <;> simp [← cond] <;> rfl
+        induction' fft : f ff tt with <;> simp [cond] <;> rfl
     
   · rw [h,
         show cond (f ff tt) 0 0 = 0 by
@@ -301,7 +301,7 @@ theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = ff) (a m b
     bitwiseₓ f (bit a m) (bit b n) = bit (f a b) (bitwiseₓ f m n) := by
   unfold bitwise
   rw [binary_rec_eq, binary_rec_eq]
-  · induction' ftf : f tt ff with <;> dsimp' [← cond]
+  · induction' ftf : f tt ff with <;> dsimp' [cond]
     rw
       [show f a ff = ff by
         cases a <;> assumption]
@@ -326,7 +326,7 @@ theorem bitwise_swap {f : Bool → Bool → Bool} (h : f false false = ff) :
     bitwiseₓ (Function.swap f) = Function.swap (bitwiseₓ f) := by
   funext m n
   revert n
-  dsimp' [← Function.swap]
+  dsimp' [Function.swap]
   apply binary_rec _ (fun a m' IH => _) m <;> intro n
   · rw [bitwise_zero_left, bitwise_zero_right]
     exact h
@@ -356,9 +356,9 @@ theorem test_bit_bitwise {f : Bool → Bool → Bool} (h : f false false = ff) (
   revert m n <;>
     induction' k with k IH <;>
       intro m n <;> apply bit_cases_on m <;> intro a m' <;> apply bit_cases_on n <;> intro b n' <;> rw [bitwise_bit h]
-  · simp [← test_bit_zero]
+  · simp [test_bit_zero]
     
-  · simp [← test_bit_succ, ← IH]
+  · simp [test_bit_succ, IH]
     
 
 @[simp]

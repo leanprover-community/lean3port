@@ -18,13 +18,12 @@ theorem next_to_string_mk_iterator (s : Stringₓ) : s.mkIterator.nextToString =
 
 @[simp]
 theorem length_next_to_string_next (it : Iterator) : it.next.nextToString.length = it.nextToString.length - 1 := by
-  cases it <;>
-    cases it_snd <;> simp [← iterator.next, ← iterator.next_to_string, ← Stringₓ.length, ← Nat.add_sub_cancel_left]
+  cases it <;> cases it_snd <;> simp [iterator.next, iterator.next_to_string, Stringₓ.length, Nat.add_sub_cancel_left]
 
 theorem zero_lt_length_next_to_string_of_has_next {it : Iterator} : it.hasNext → 0 < it.nextToString.length := by
   cases it <;>
     cases it_snd <;>
-      simp [← iterator.has_next, ← iterator.next_to_string, ← Stringₓ.length, ← Nat.zero_lt_one_add, ← Nat.add_comm, ←
+      simp [iterator.has_next, iterator.next_to_string, Stringₓ.length, Nat.zero_lt_one_add, Nat.add_comm,
         false_implies_iff]
 
 end Iterator

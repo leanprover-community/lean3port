@@ -88,7 +88,7 @@ Related mathlib tactic: `contrapose`.
 def Not (a : Prop) :=
   a → False
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1436:30: infer kinds are unsupported in Lean 4: refl []
+-- ./././Mathport/Syntax/Translate/Command.lean:306:30: infer kinds are unsupported in Lean 4: refl []
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
 
@@ -112,7 +112,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 -/
 init_quot
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1436:30: infer kinds are unsupported in Lean 4: refl []
+-- ./././Mathport/Syntax/Translate/Command.lean:306:30: infer kinds are unsupported in Lean 4: refl []
 /-- Heterogeneous equality.
 
 Its purpose is to write down equalities between terms whose types are not definitionally equal.
@@ -337,22 +337,22 @@ class Append (α : Type u) where
 class HasAndthen (α : Type u) (β : Type v) (σ : outParam <| Type w) where
   andthen : α → β → σ
 
-class HasUnion (α : Type u) where
+class Union (α : Type u) where
   union : α → α → α
 
-class HasInter (α : Type u) where
+class Inter (α : Type u) where
   inter : α → α → α
 
-class HasSdiff (α : Type u) where
+class Sdiff (α : Type u) where
   sdiff : α → α → α
 
 class HasEquivₓ (α : Sort u) where
   Equiv : α → α → Prop
 
-class HasSubset (α : Type u) where
+class Subset (α : Type u) where
   Subset : α → α → Prop
 
-class HasSsubset (α : Type u) where
+class SSubset (α : Type u) where
   Ssubset : α → α → Prop
 
 /-! Type classes `has_emptyc` and `has_insert` are
@@ -362,21 +362,21 @@ class HasSsubset (α : Type u) where
    Note that we use `pair` in the name of lemmas about `{x, y} = insert x (singleton y)`. -/
 
 
-class HasEmptyc (α : Type u) where
+class EmptyCollection (α : Type u) where
   emptyc : α
 
-class HasInsert (α : outParam <| Type u) (γ : Type v) where
+class Insert (α : outParam <| Type u) (γ : Type v) where
   insert : α → γ → γ
 
-class HasSingleton (α : outParam <| Type u) (β : Type v) where
+class Singleton (α : outParam <| Type u) (β : Type v) where
   singleton : α → β
 
 -- Type class used to implement the notation { a ∈ c | p a }
-class HasSep (α : outParam <| Type u) (γ : Type v) where
+class Sep (α : outParam <| Type u) (γ : Type v) where
   sep : (α → Prop) → γ → γ
 
 -- Type class for set-like membership
-class HasMem (α : outParam <| Type u) (γ : Type v) where
+class Membership (α : outParam <| Type u) (γ : Type v) where
   Mem : α → γ → Prop
 
 class Pow (α : Type u) (β : Type v) where
@@ -389,7 +389,7 @@ export Pow (pow)
 -- mathport name: «expr ⊂ »
 infixl:50
   " ⊂ " =>-- Note this is different to `|`.
-  HasSsubset.Ssubset
+  SSubset.Ssubset
 
 export Append (append)
 
@@ -402,12 +402,12 @@ def Gt {α : Type u} [LT α] (a b : α) : Prop :=
   LT.lt b a
 
 @[reducible]
-def Superset {α : Type u} [HasSubset α] (a b : α) : Prop :=
-  HasSubset.Subset b a
+def Superset {α : Type u} [Subset α] (a b : α) : Prop :=
+  Subset.Subset b a
 
 @[reducible]
-def Ssuperset {α : Type u} [HasSsubset α] (a b : α) : Prop :=
-  HasSsubset.Ssubset b a
+def Ssuperset {α : Type u} [SSubset α] (a b : α) : Prop :=
+  SSubset.Ssubset b a
 
 -- mathport name: «expr ⊇ »
 infixl:50 " ⊇ " => Superset
@@ -423,12 +423,12 @@ def bit1 {α : Type u} [s₁ : One α] [s₂ : Add α] (a : α) : α :=
 
 attribute [matchPattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 
-export HasInsert (insert)
+export Insert (insert)
 
-class IsLawfulSingleton (α : Type u) (β : Type v) [HasEmptyc β] [HasInsert α β] [HasSingleton α β] : Prop where
+class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] : Prop where
   insert_emptyc_eq : ∀ x : α, (insert x ∅ : β) = {x}
 
-export HasSingleton (singleton)
+export Singleton (singleton)
 
 export IsLawfulSingleton (insert_emptyc_eq)
 

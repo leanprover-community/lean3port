@@ -21,27 +21,27 @@ namespace Set
 
 variable {α : Type u}
 
-instance hasMem : HasMem α (Set α) :=
+instance hasMem : Membership α (Set α) :=
   ⟨fun x s => s x⟩
 
 @[simp]
 theorem mem_set_of_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
   rfl
 
-instance : HasEmptyc (Set α) :=
+instance : EmptyCollection (Set α) :=
   ⟨{ x | False }⟩
 
 /-- The set that contains all elements of a type. -/
 def Univ : Set α :=
   { x | True }
 
-instance : HasInsert α (Set α) :=
+instance : Insert α (Set α) :=
   ⟨fun a s => { b | b = a ∨ b ∈ s }⟩
 
-instance : HasSingleton α (Set α) :=
+instance : Singleton α (Set α) :=
   ⟨fun a => { b | b = a }⟩
 
-instance : HasSep α (Set α) :=
+instance : Sep α (Set α) :=
   ⟨fun p s => { x | x ∈ s ∧ p x }⟩
 
 instance : IsLawfulSingleton α (Set α) :=

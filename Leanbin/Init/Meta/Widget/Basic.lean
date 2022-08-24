@@ -276,7 +276,7 @@ namespace Html
 unsafe instance to_string_coe [HasToString β] : CoeTₓ β (html α) :=
   ⟨html.of_string ∘ toString⟩
 
-unsafe instance : HasEmptyc (html α) :=
+unsafe instance : EmptyCollection (html α) :=
   ⟨of_string ""⟩
 
 unsafe instance list_coe : Coe (html α) (List (html α)) :=

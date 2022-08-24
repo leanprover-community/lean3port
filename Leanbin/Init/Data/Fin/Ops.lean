@@ -39,7 +39,7 @@ protected def sub : Finₓ n → Finₓ n → Finₓ n
 
 private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n := by
   cases' b with b
-  · simp [← mod_zero]
+  · simp [mod_zero]
     assumption
     
   · have h : a % succ b < succ b
@@ -82,30 +82,30 @@ theorem of_nat_zero : @ofNat n 0 = 0 :=
 
 theorem add_def (a b : Finₓ n) : (a + b).val = (a.val + b.val) % n :=
   show (Finₓ.add a b).val = (a.val + b.val) % n by
-    cases a <;> cases b <;> simp [← Finₓ.add]
+    cases a <;> cases b <;> simp [Finₓ.add]
 
 theorem mul_def (a b : Finₓ n) : (a * b).val = a.val * b.val % n :=
   show (Finₓ.mul a b).val = a.val * b.val % n by
-    cases a <;> cases b <;> simp [← Finₓ.mul]
+    cases a <;> cases b <;> simp [Finₓ.mul]
 
 theorem sub_def (a b : Finₓ n) : (a - b).val = (a.val + (n - b.val)) % n := by
   cases a <;> cases b <;> rfl
 
 theorem mod_def (a b : Finₓ n) : (a % b).val = a.val % b.val :=
   show (Finₓ.mod a b).val = a.val % b.val by
-    cases a <;> cases b <;> simp [← Finₓ.mod]
+    cases a <;> cases b <;> simp [Finₓ.mod]
 
 theorem div_def (a b : Finₓ n) : (a / b).val = a.val / b.val :=
   show (Finₓ.div a b).val = a.val / b.val by
-    cases a <;> cases b <;> simp [← Finₓ.div]
+    cases a <;> cases b <;> simp [Finₓ.div]
 
 theorem lt_def (a b : Finₓ n) : (a < b) = (a.val < b.val) :=
   show Finₓ.Lt a b = (a.val < b.val) by
-    cases a <;> cases b <;> simp [← Finₓ.Lt]
+    cases a <;> cases b <;> simp [Finₓ.Lt]
 
 theorem le_def (a b : Finₓ n) : (a ≤ b) = (a.val ≤ b.val) :=
   show Finₓ.Le a b = (a.val ≤ b.val) by
-    cases a <;> cases b <;> simp [← Finₓ.Le]
+    cases a <;> cases b <;> simp [Finₓ.Le]
 
 theorem val_zero : (0 : Finₓ (succ n)).val = 0 :=
   rfl

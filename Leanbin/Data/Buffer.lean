@@ -48,10 +48,10 @@ def write' : Buffer α → Nat → α → Buffer α
   | ⟨n, a⟩, i, v => ⟨n, a.write' i v⟩
 
 theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) : read b ⟨i, h⟩ = read' b i := by
-  cases b <;> unfold read read' <;> simp [← Arrayₓ.read_eq_read']
+  cases b <;> unfold read read' <;> simp [Arrayₓ.read_eq_read']
 
 theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) : write b ⟨i, h⟩ v = write' b i v := by
-  cases b <;> unfold write write' <;> simp [← Arrayₓ.write_eq_write']
+  cases b <;> unfold write write' <;> simp [Arrayₓ.write_eq_write']
 
 def toList (b : Buffer α) : List α :=
   b.toArray.toList
@@ -130,7 +130,7 @@ def reverse (b : Buffer α) : Buffer α :=
 protected def Mem (v : α) (a : Buffer α) : Prop :=
   ∃ i, read a i = v
 
-instance : HasMem α (Buffer α) :=
+instance : Membership α (Buffer α) :=
   ⟨Buffer.Mem⟩
 
 instance : Append (Buffer α) :=

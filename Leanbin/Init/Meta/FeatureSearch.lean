@@ -59,12 +59,12 @@ unsafe axiom of_exprs (env : environment) (es : List expr) (cfg : FeatureCfg := 
 
 protected unsafe axiom union (a b : feature_vec) : feature_vec
 
-unsafe instance : HasUnion feature_vec :=
+unsafe instance : Union feature_vec :=
   ⟨feature_vec.union⟩
 
 protected unsafe axiom isect (a b : feature_vec) : feature_vec
 
-unsafe instance : HasInter feature_vec :=
+unsafe instance : Inter feature_vec :=
   ⟨feature_vec.isect⟩
 
 unsafe def of_proof (prf : expr) (cfg : FeatureCfg := {  }) : tactic feature_vec := do

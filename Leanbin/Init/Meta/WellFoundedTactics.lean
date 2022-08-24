@@ -20,7 +20,7 @@ theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
   suffices 0 < a + 1 by
-    simp [← Nat.add_comm]
+    simp [Nat.add_comm]
     assumption
   Nat.zero_lt_succₓ _
 
@@ -73,8 +73,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | quote.1 (PSigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -106,7 +106,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
       | _ => return s
     else return s
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -157,8 +157,8 @@ private unsafe def sort_args (args : List expr) : List expr :=
 private def tagged_proof.wf : Unit :=
   ()
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
 unsafe def cancel_nat_add_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   let ty ← infer_type lhs >>= whnf
@@ -183,10 +183,10 @@ unsafe def check_target_is_value_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   guardₓ lhs
 
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Basic.lean:1093:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+-- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>

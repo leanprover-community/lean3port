@@ -47,7 +47,7 @@ protected def Memₓ : α → List α → Prop
   | a, [] => False
   | a, b :: l => a = b ∨ mem a l
 
-instance : HasMem α (List α) :=
+instance : Membership α (List α) :=
   ⟨List.Memₓ⟩
 
 instance decidableMem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a ∈ l)
@@ -59,7 +59,7 @@ instance decidableMem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a 
       | is_true h₂ => isTrue (Or.inr h₂)
       | is_false h₂ => isFalse (not_orₓ h₁ h₂)
 
-instance : HasEmptyc (List α) :=
+instance : EmptyCollection (List α) :=
   ⟨List.nil⟩
 
 protected def eraseₓ {α} [DecidableEq α] : List α → α → List α
@@ -249,10 +249,10 @@ def unzip : List (α × β) → List α × List β
 protected def insertₓ [DecidableEq α] (a : α) (l : List α) : List α :=
   if a ∈ l then l else a :: l
 
-instance [DecidableEq α] : HasInsert α (List α) :=
+instance [DecidableEq α] : Insert α (List α) :=
   ⟨List.insertₓ⟩
 
-instance : HasSingleton α (List α) :=
+instance : Singleton α (List α) :=
   ⟨fun x => [x]⟩
 
 instance [DecidableEq α] : IsLawfulSingleton α (List α) :=
@@ -261,13 +261,13 @@ instance [DecidableEq α] : IsLawfulSingleton α (List α) :=
 protected def unionₓ [DecidableEq α] (l₁ l₂ : List α) : List α :=
   foldr insert l₂ l₁
 
-instance [DecidableEq α] : HasUnion (List α) :=
+instance [DecidableEq α] : Union (List α) :=
   ⟨List.unionₓ⟩
 
 protected def interₓ [DecidableEq α] (l₁ l₂ : List α) : List α :=
   filterₓ (· ∈ l₂) l₁
 
-instance [DecidableEq α] : HasInter (List α) :=
+instance [DecidableEq α] : Inter (List α) :=
   ⟨List.interₓ⟩
 
 @[simp]

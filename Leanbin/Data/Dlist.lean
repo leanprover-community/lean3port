@@ -94,8 +94,8 @@ theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
   have h : append (xs []) = xs := by
     intros
     funext x
-    simp [← l_invariant x]
-  simp [← h]
+    simp [l_invariant x]
+  simp [h]
 
 theorem to_list_empty : toList (@empty α) = [] := by
   simp

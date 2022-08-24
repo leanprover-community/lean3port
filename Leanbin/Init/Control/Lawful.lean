@@ -48,7 +48,7 @@ class IsLawfulApplicative (f : Type u → Type v) [Applicativeₓ f] extends IsL
     ∀ {α β γ : Type u} (x : f α) (g : f (α → β)) (h : f (β → γ)), h <*> (g <*> x) = @comp α β γ <$> h <*> g <*> x
   -- default functor law
   comp_map := by
-    intros <;> simp [← (pure_seq_eq_map _ _).symm, ← seq_assoc, ← map_pure, ← seq_pure]
+    intros <;> simp [(pure_seq_eq_map _ _).symm, seq_assoc, map_pure, seq_pure]
 
 export IsLawfulApplicative (seq_left_eq seq_right_eq pure_seq_eq_map map_pure seq_pure seq_assoc)
 
@@ -58,7 +58,7 @@ attribute [simp] map_pure seq_pure
 @[simp]
 theorem pure_id_seqₓ {α : Type u} {f : Type u → Type v} [Applicativeₓ f] [IsLawfulApplicative f] (x : f α) :
     pure id <*> x = x := by
-  simp [← pure_seq_eq_map]
+  simp [pure_seq_eq_map]
 
 class IsLawfulMonad (m : Type u → Type v) [Monadₓ m] extends IsLawfulApplicative m : Prop where
   bind_pure_comp_eq_map : ∀ {α β : Type u} (f : α → β) (x : m α), x >>= pure ∘ f = f <$> x := by
@@ -71,13 +71,13 @@ class IsLawfulMonad (m : Type u → Type v) [Monadₓ m] extends IsLawfulApplica
   pure_bind : ∀ {α β : Type u} (x : α) (f : α → m β), pure x >>= f = f x
   bind_assoc : ∀ {α β γ : Type u} (x : m α) (f : α → m β) (g : β → m γ), x >>= f >>= g = x >>= fun x => f x >>= g
   pure_seq_eq_map := by
-    intros <;> rw [← bind_map_eq_seq] <;> simp [← pure_bind]
+    intros <;> rw [← bind_map_eq_seq] <;> simp [pure_bind]
   map_pure := by
-    intros <;> rw [← bind_pure_comp_eq_map] <;> simp [← pure_bind]
+    intros <;> rw [← bind_pure_comp_eq_map] <;> simp [pure_bind]
   seq_pure := by
-    intros <;> rw [← bind_map_eq_seq] <;> simp [← map_pure, ← bind_pure_comp_eq_map]
+    intros <;> rw [← bind_map_eq_seq] <;> simp [map_pure, bind_pure_comp_eq_map]
   seq_assoc := by
-    intros <;> simp [← (bind_pure_comp_eq_map _ _).symm, ← (bind_map_eq_seq _ _).symm, ← bind_assoc, ← pure_bind]
+    intros <;> simp [(bind_pure_comp_eq_map _ _).symm, (bind_map_eq_seq _ _).symm, bind_assoc, pure_bind]
 
 export IsLawfulMonad (bind_pure_comp_eq_map bind_map_eq_seq pure_bind bind_assoc)
 
@@ -87,15 +87,15 @@ attribute [simp] pure_bind
 @[simp]
 theorem bind_pureₓ {α : Type u} {m : Type u → Type v} [Monadₓ m] [IsLawfulMonad m] (x : m α) : x >>= pure = x :=
   show x >>= pure ∘ id = x by
-    rw [bind_pure_comp_eq_map] <;> simp [← id_map]
+    rw [bind_pure_comp_eq_map] <;> simp [id_map]
 
 theorem bind_ext_congr {α β} {m : Type u → Type v} [Bind m] {x : m α} {f g : α → m β} :
     (∀ a, f a = g a) → x >>= f = x >>= g := fun h => by
-  simp [← show f = g from funext h]
+  simp [show f = g from funext h]
 
 theorem map_ext_congr {α β} {m : Type u → Type v} [Functor m] {x : m α} {f g : α → β} :
     (∀ a, f a = g a) → (f <$> x : m β) = g <$> x := fun h => by
-  simp [← show f = g from funext h]
+  simp [show f = g from funext h]
 
 -- instances of previously defined monads
 namespace id
@@ -132,7 +132,7 @@ variable {α β : Type u}
 variable (x : StateTₓ σ m α) (st : σ)
 
 theorem ext {x x' : StateTₓ σ m α} (h : ∀ st, x.run st = x'.run st) : x = x' := by
-  cases x <;> cases x' <;> simp [← show x = x' from funext h]
+  cases x <;> cases x' <;> simp [show x = x' from funext h]
 
 variable [Monadₓ m]
 
@@ -142,7 +142,7 @@ theorem run_pure (a) : (pure a : StateTₓ σ m α).run st = pure (a, st) :=
 
 @[simp]
 theorem run_bind (f : α → StateTₓ σ m β) : (x >>= f).run st = x.run st >>= fun p => (f p.1).run p.2 := by
-  apply bind_ext_congr <;> intro a <;> cases a <;> simp [← StateTₓ.bind, ← StateTₓ.run]
+  apply bind_ext_congr <;> intro a <;> cases a <;> simp [StateTₓ.bind, StateTₓ.run]
 
 @[simp]
 theorem run_map (f : α → β) [IsLawfulMonad m] :
@@ -194,7 +194,7 @@ instance (m : Type u → Type v) [Monadₓ m] [IsLawfulMonad m] (σ : Type u) : 
   bind_assoc := by
     intros
     apply StateTₓ.ext
-    simp [← bind_assoc]
+    simp [bind_assoc]
 
 namespace ExceptTₓ
 
@@ -218,7 +218,7 @@ theorem run_map (f : α → β) [IsLawfulMonad m] : (f <$> x).run = Except.map�
   rw [← bind_pure_comp_eq_map _ x.run]
   change x.run >>= ExceptTₓ.bindCont (pure ∘ f) = _
   apply bind_ext_congr
-  intro a <;> cases a <;> simp [← ExceptTₓ.bindCont, ← Except.mapₓ]
+  intro a <;> cases a <;> simp [ExceptTₓ.bindCont, Except.mapₓ]
 
 @[simp]
 theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) :
@@ -236,26 +236,26 @@ instance (m : Type u → Type v) [Monadₓ m] [IsLawfulMonad m] (ε : Type u) : 
   id_map := by
     intros
     apply ExceptTₓ.ext
-    simp only [← ExceptTₓ.run_map]
+    simp only [ExceptTₓ.run_map]
     rw [map_ext_congr, id_map]
     intro a
     cases a <;> rfl
   bind_pure_comp_eq_map := by
     intros
     apply ExceptTₓ.ext
-    simp only [← ExceptTₓ.run_map, ← ExceptTₓ.run_bind]
+    simp only [ExceptTₓ.run_map, ExceptTₓ.run_bind]
     rw [bind_ext_congr, bind_pure_comp_eq_map]
     intro a
     cases a <;> rfl
   bind_assoc := by
     intros
     apply ExceptTₓ.ext
-    simp only [← ExceptTₓ.run_bind, ← bind_assoc]
+    simp only [ExceptTₓ.run_bind, bind_assoc]
     rw [bind_ext_congr]
     intro a
-    cases a <;> simp [← ExceptTₓ.bindCont]
+    cases a <;> simp [ExceptTₓ.bindCont]
   pure_bind := by
-    intros <;> apply ExceptTₓ.ext <;> simp [← ExceptTₓ.bindCont]
+    intros <;> apply ExceptTₓ.ext <;> simp [ExceptTₓ.bindCont]
 
 namespace ReaderTₓ
 
@@ -270,7 +270,7 @@ variable {α β : Type u}
 variable (x : ReaderTₓ ρ m α) (r : ρ)
 
 theorem ext {x x' : ReaderTₓ ρ m α} (h : ∀ r, x.run r = x'.run r) : x = x' := by
-  cases x <;> cases x' <;> simp [← show x = x' from funext h]
+  cases x <;> cases x' <;> simp [show x = x' from funext h]
 
 variable [Monadₓ m]
 
@@ -309,7 +309,7 @@ instance (ρ : Type u) (m : Type u → Type v) [Monadₓ m] [IsLawfulMonad m] : 
   pure_bind := by
     intros <;> apply ReaderTₓ.ext <;> intro <;> simp
   bind_assoc := by
-    intros <;> apply ReaderTₓ.ext <;> intro <;> simp [← bind_assoc]
+    intros <;> apply ReaderTₓ.ext <;> intro <;> simp [bind_assoc]
 
 namespace OptionTₓ
 
@@ -333,7 +333,7 @@ theorem run_map (f : α → β) [IsLawfulMonad m] : (f <$> x).run = Option.map f
   rw [← bind_pure_comp_eq_map _ x.run]
   change x.run >>= OptionTₓ.bindCont (pure ∘ f) = _
   apply bind_ext_congr
-  intro a <;> cases a <;> simp [← OptionTₓ.bindCont, ← Option.map, ← Option.bind]
+  intro a <;> cases a <;> simp [OptionTₓ.bindCont, Option.map, Option.bind]
 
 @[simp]
 theorem run_monad_lift {n} [HasMonadLiftT n m] (x : n α) :
@@ -351,17 +351,17 @@ instance (m : Type u → Type v) [Monadₓ m] [IsLawfulMonad m] : IsLawfulMonad 
   id_map := by
     intros
     apply OptionTₓ.ext
-    simp only [← OptionTₓ.run_map]
+    simp only [OptionTₓ.run_map]
     rw [map_ext_congr, id_map]
     intro a
     cases a <;> rfl
   bind_assoc := by
     intros
     apply OptionTₓ.ext
-    simp only [← OptionTₓ.run_bind, ← bind_assoc]
+    simp only [OptionTₓ.run_bind, bind_assoc]
     rw [bind_ext_congr]
     intro a
-    cases a <;> simp [← OptionTₓ.bindCont]
+    cases a <;> simp [OptionTₓ.bindCont]
   pure_bind := by
-    intros <;> apply OptionTₓ.ext <;> simp [← OptionTₓ.bindCont]
+    intros <;> apply OptionTₓ.ext <;> simp [OptionTₓ.bindCont]
 

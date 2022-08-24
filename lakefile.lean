@@ -3,7 +3,7 @@ open Lake DSL
 
 package lean3port
 
-require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"f16c2788554b9960de815ae1e3f25de8c722bde4"
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"107f2a66860a71eb30410f12f9a962eeb34d36a8"
 
 @[defaultTarget]
 lean_lib Leanbin

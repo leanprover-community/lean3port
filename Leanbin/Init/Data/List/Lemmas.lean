@@ -58,7 +58,7 @@ theorem filter_append {p : α → Bool} :
     ∀ l₁ l₂ : List α, filter p (l₁ ++ l₂) = filter p l₁ ++ filter p l₂
   | [], l₂ => rfl
   | a :: l₁, l₂ => by
-    by_cases pa : p a <;> simp [pa, ← filter_append]
+    by_cases pa : p a <;> simp [pa, filter_append]
 
 @[simp]
 theorem filter_sublist {p : α → Bool} : ∀ l : List α, filter p l <+ l

@@ -33,4 +33,3 @@ theorem if_false_right_eq_and (p : Prop) [h : Decidable p] (q : Prop) : (if p th
 @[simp]
 theorem if_false_left_eq_and (p : Prop) [h : Decidable p] (q : Prop) : (if p then False else q) = (¬p ∧ q) := by
   by_cases p <;> simp [h]
-

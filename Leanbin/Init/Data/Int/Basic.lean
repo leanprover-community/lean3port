@@ -119,7 +119,7 @@ protected theorem coe_nat_eq_coe_nat_iff (m n : ℕ) : (↑m : ℤ) = ↑n ↔ m
 
 theorem neg_succ_of_nat_inj_iff {m n : ℕ} : negSucc m = negSucc n ↔ m = n :=
   ⟨negSucc.inj, fun H => by
-    simp [← H]⟩
+    simp [H]⟩
 
 theorem neg_succ_of_nat_eq (n : ℕ) : -[1+ n] = -(n + 1 : ℤ) :=
   rfl

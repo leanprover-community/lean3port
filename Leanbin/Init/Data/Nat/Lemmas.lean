@@ -14,10 +14,6 @@ universe u
 
 namespace Nat
 
-/-! addition -/
-
-
-
 /-! properties of inequality -/
 
 
@@ -163,7 +159,6 @@ theorem one_succ_zero : 1 = succ 0 :=
 
 Many lemmas are proven more generally in mathlib `algebra/order/sub` -/
 
-
 protected theorem sub_le_sub_iff_right {n m k : ℕ} (h : k ≤ m) : n - k ≤ m - k ↔ n ≤ m :=
   ⟨Nat.le_of_le_of_sub_le_sub_right h, fun h => Nat.sub_le_sub_right h k⟩
 
@@ -194,8 +189,8 @@ protected def strongRecOn {p : Nat → Sort u} (n : Nat) (h : ∀ n, (∀ m, m <
 theorem mod_def (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x := by
   rw [Nat.mod_eq]
 
--- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:353:22: warning: unsupported simp config option: iota_eqn
--- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:353:22: warning: unsupported simp config option: iota_eqn
+-- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:385:22: warning: unsupported simp config option: iota_eqn
+-- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:385:22: warning: unsupported simp config option: iota_eqn
 theorem cond_to_bool_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] : cond (@toBool (x % 2 = 1) d) 1 0 = x % 2 := by
   by_cases h : x % 2 = 1
   · simp [*]

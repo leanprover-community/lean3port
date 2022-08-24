@@ -56,8 +56,8 @@ protected theorem nonneg_of_pos {a : ℤ} : 0 < a → 0 ≤ a :=
 theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
   @Lt.intro _ _ n
     (by
-      simp [neg_succ_of_nat_coe, Int.coe_nat_succ, Int.coe_nat_add, Int.coe_nat_one, Int.add_comm,
-        Int.add_left_comm, Int.neg_add, Int.add_right_neg, Int.zero_add])
+      simp [neg_succ_of_nat_coe, Int.coe_nat_succ, Int.coe_nat_add, Int.coe_nat_one, Int.add_comm, Int.add_left_comm,
+        Int.neg_add, Int.add_right_neg, Int.zero_add])
 
 theorem zero_le_of_nat (n : ℕ) : 0 ≤ ofNat n :=
   @Le.intro _ _ n
@@ -99,7 +99,7 @@ protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → 
 protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
   | negSucc n, negSucc m, h₁, h₂ => by
     have : -[1+ n] + -[1+ m] = -[1+ Nat.succ (n + m)] := rfl
-    simp only [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
+    simp [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
 
 protected theorem nat_abs_bit0 : ∀ a : Int, natAbs (bit0 a) = bit0 (natAbs a)
   | ofNat n => Int.nat_abs_add_nonneg (zero_le_of_nat n) (zero_le_of_nat n)

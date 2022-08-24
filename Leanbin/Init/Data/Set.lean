@@ -18,4 +18,3 @@ theorem mem_set_of_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
 
 /-- The set that contains all elements of a type. -/
 abbrev Univ : Set α := Set.univ
-

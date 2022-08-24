@@ -230,7 +230,6 @@ theorem test_bit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m := by
     dsimp [shiftr] <;> rw [div2_bit]
   rw [← shiftr_add, Nat.add_comm] at this <;> exact this
 
-set_option pp.proofs true
 theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)} (h : f false 0 z = z) (b n) :
     binaryRec z f (bit b n) = f b n (binaryRec z f n) := by
   rw [binaryRec]

@@ -56,10 +56,10 @@ def updateNth : List α → ℕ → α → List α
   | x :: xs, i + 1, a => x :: updateNth xs i a
   | [], _, _ => []
 
-instance [DecidableEq α] : HasInsert α (List α) :=
+instance [DecidableEq α] : Insert α (List α) :=
   ⟨List.insert⟩
 
-instance : HasSingleton α (List α) :=
+instance : Singleton α (List α) :=
   ⟨fun x => [x]⟩
 
 -- TODO

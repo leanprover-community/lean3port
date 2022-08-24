@@ -55,25 +55,7 @@ def PProd.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ 
 class HasAndthen (α : Type u) (β : Type v) (σ : outParam <| Type w) where
   andthen : α → β → σ
 
-class HasSsubset (α : Type u) where
-  Ssubset : α → α → Prop
-
-class HasInsert (α : outParam <| Type u) (γ : Type v) where
-  insert : α → γ → γ
-
-class HasSingleton (α : outParam <| Type u) (β : Type v) where
-  singleton : α → β
-
--- Type class used to implement the notation { a ∈ c | p a }
-class HasSep (α : outParam <| Type u) (γ : Type v) where
-  sep : (α → Prop) → γ → γ
-
 export HasAndthen (andthen)
-
--- mathport name: «expr ⊂ »
-infixl:50
-  " ⊂ " =>-- Note this is different to `|`.
-  HasSsubset.Ssubset
 
 export Append (append)
 
@@ -85,37 +67,11 @@ def Ge {α : Type u} [LE α] (a b : α) : Prop :=
 def Gt {α : Type u} [LT α] (a b : α) : Prop :=
   LT.lt b a
 
-@[reducible]
-def Superset {α : Type u} [Subset α] (a b : α) : Prop :=
-  Subset.subset b a
-
-@[reducible]
-def Ssuperset {α : Type u} [HasSsubset α] (a b : α) : Prop :=
-  HasSsubset.Ssubset b a
-
--- mathport name: «expr ⊇ »
-infixl:50 " ⊇ " => Superset
-
--- mathport name: «expr ⊃ »
-infixl:50 " ⊃ " => Ssuperset
-
 def bit0 {α : Type u} [s : Add α] (a : α) : α :=
   a + a
 
 def bit1 {α : Type u} [s₁ : One α] [s₂ : Add α] (a : α) : α :=
   bit0 a + 1
-
-export HasInsert (insert)
-
--- TODO
--- class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [HasInsert α β] [HasSingleton α β] : Prop where
---   insert_emptyc_eq : ∀ x : α, (insert x ∅ : β) = {x}
-
-export HasSingleton (singleton)
-
--- export IsLawfulSingleton (insert_emptyc_eq) -- TODO
-
--- attribute [simp] insert_emptyc_eq -- TODO
 
 -- Combinator calculus
 namespace Combinator

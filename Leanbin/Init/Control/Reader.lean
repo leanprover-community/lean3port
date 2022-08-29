@@ -19,7 +19,7 @@ structure ReaderTₓ (ρ : Type u) (m : Type u → Type v) (α : Type u) : Type 
   run : ρ → m α
 
 @[reducible]
-def Readerₓ (ρ : Type u) :=
+def Reader (ρ : Type u) :=
   ReaderTₓ ρ id
 
 attribute [pp_using_anonymous_constructor] ReaderTₓ

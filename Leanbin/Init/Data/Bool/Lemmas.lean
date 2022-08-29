@@ -8,48 +8,38 @@ import Leanbin.Init.Data.Bool.Basic
 import Leanbin.Init.Meta.Default
 
 @[simp]
-theorem cond_a_a.{u} {α : Type u} (b : Bool) (a : α) : cond b a a = a := by
+theorem cond_a_a {α : Type u} (b : Bool) (a : α) : cond b a a = a := by
   cases b <;> simp
 
-@[simp]
 theorem band_self (b : Bool) : (b && b) = b := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem band_tt (b : Bool) : (b && true) = b := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem band_ff (b : Bool) : (b && false) = false := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem tt_band (b : Bool) : (true && b) = b := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem ff_band (b : Bool) : (false && b) = false := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem bor_self (b : Bool) : (b || b) = b := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem bor_tt (b : Bool) : (b || true) = true := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem bor_ff (b : Bool) : (b || false) = b := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem tt_bor (b : Bool) : (true || b) = true := by
-  cases b <;> simp
+  simp
 
-@[simp]
 theorem ff_bor (b : Bool) : (false || b) = b := by
-  cases b <;> simp
+  simp
 
 @[simp]
 theorem bxor_self (b : Bool) : bxor b b = false := by
@@ -71,9 +61,8 @@ theorem tt_bxor (b : Bool) : bxor true b = bnot b := by
 theorem ff_bxor (b : Bool) : bxor false b = b := by
   cases b <;> simp
 
-@[simp]
 theorem bnot_bnot (b : Bool) : bnot (bnot b) = b := by
-  cases b <;> simp
+  simp
 
 macro_rules | `(tactic| contradiction) => `(tactic| intro; contradiction)
 
@@ -83,13 +72,12 @@ theorem tt_eq_ff_eq_false : ¬true = false := by
 theorem ff_eq_tt_eq_false : ¬false = true := by
   contradiction
 
-@[simp]
 theorem eq_ff_eq_not_eq_tt (b : Bool) : (¬b = true) = (b = false) := by
-  cases b <;> simp
+  simp
 
 @[simp]
 theorem eq_tt_eq_not_eq_ff (b : Bool) : (¬b = false) = (b = true) := by
-  cases b <;> simp
+  simp
 
 theorem eq_ff_of_not_eq_tt {b : Bool} : ¬b = true → b = false :=
   Eq.mp (eq_ff_eq_not_eq_tt b)
@@ -97,49 +85,35 @@ theorem eq_ff_of_not_eq_tt {b : Bool} : ¬b = true → b = false :=
 theorem eq_tt_of_not_eq_ff {b : Bool} : ¬b = false → b = true :=
   Eq.mp (eq_tt_eq_not_eq_ff b)
 
-@[simp]
 theorem band_eq_true_eq_eq_tt_and_eq_tt (a b : Bool) : ((a && b) = true) = (a = true ∧ b = true) := by
-  cases a <;> cases b <;> simp
+  simp
 
-@[simp]
 theorem bor_eq_true_eq_eq_tt_or_eq_tt (a b : Bool) : ((a || b) = true) = (a = true ∨ b = true) := by
-  cases a <;> cases b <;> simp
+  simp
 
-@[simp]
 theorem bnot_eq_true_eq_eq_ff (a : Bool) : (bnot a = true) = (a = false) := by
   cases a <;> simp
 
-@[simp]
 theorem band_eq_false_eq_eq_ff_or_eq_ff (a b : Bool) : ((a && b) = false) = (a = false ∨ b = false) := by
-  cases a <;> cases b <;> simp
+  cases a <;> simp
 
-@[simp]
 theorem bor_eq_false_eq_eq_ff_and_eq_ff (a b : Bool) : ((a || b) = false) = (a = false ∧ b = false) := by
-  cases a <;> cases b <;> simp
+  cases a <;> simp
 
-@[simp]
 theorem bnot_eq_ff_eq_eq_tt (a : Bool) : (bnot a = false) = (a = true) := by
   cases a <;> simp
 
-@[simp]
 theorem coe_ff : ↑false = False :=
-  show (false = true) = False by
-    simp
+  by simp
 
-@[simp]
 theorem coe_tt : ↑true = True :=
-  show (true = true) = True by
-    simp
+  by simp
 
-@[simp]
 theorem coe_sort_ff : false = False :=
-  show (false = true) = False by
-    simp
+  by simp
 
-@[simp]
 theorem coe_sort_tt : true = True :=
-  show (true = true) = True by
-    simp
+  by simp
 
 @[simp]
 theorem to_bool_iff (p : Prop) [d : Decidable p] : toBool p = true ↔ p :=

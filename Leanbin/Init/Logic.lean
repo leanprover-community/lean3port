@@ -38,18 +38,20 @@ theorem And.swap : a ∧ b → b ∧ a := fun ⟨ha, hb⟩ => ⟨hb, ha⟩
 @[simp] abbrev Xorₓ (a b : Prop) := xor a b
 
 -- decidable
-def Decidable.toBool (p : Prop) [h : Decidable p] : Bool :=
-  Decidable.casesOn h (fun h₁ => Bool.false) fun h₂ => Bool.true
+abbrev Decidable.toBool (p : Prop) [Decidable p] : Bool :=
+  decide p
 
 export Decidable (isTrue isFalse toBool)
 
-@[simp]
 theorem to_bool_true_eq_tt (h : Decidable True) : @toBool True h = true :=
-  Decidable.casesOn h (fun h => False.elim (Iff.mp not_true h)) fun _ => rfl
+  by simp
 
 @[simp]
-theorem to_bool_false_eq_ff (h : Decidable False) : @toBool False h = false :=
-  Decidable.casesOn h (fun h => rfl) fun h => False.elim h
+theorem decide_eq_false_eq [Decidable p] : (decide p = false) = (¬ p) := by
+  cases ‹Decidable p› <;> simp_all [decide]
+
+theorem to_bool_false_eq_ff (h : Decidable False) : @toBool False h = false := by
+  simp [not_false_iff]
 
 section
 
@@ -63,27 +65,6 @@ def decidableOfDecidableOfEq (hp : Decidable p) (h : p = q) : Decidable q :=
 
 protected def Or.byCases [Decidable p] [Decidable q] {α : Sort u} (h : p ∨ q) (h₁ : p → α) (h₂ : q → α) : α :=
   if hp : p then h₁ hp else if hq : q then h₂ hq else False.rec (Or.elim h hp hq)
-
-end
-
-section
-
-variable {p q : Prop}
-
-instance [Decidable p] [Decidable q] : Decidable (xor p q) :=
-  if hp : p then
-    if hq : q then isFalse (Or.rec (fun ⟨_, h⟩ => h hq : ¬(p ∧ ¬q)) (fun ⟨_, h⟩ => h hp : ¬(q ∧ ¬p)))
-    else isTrue <| Or.inl ⟨hp, hq⟩
-  else
-    if hq : q then isTrue <| Or.inr ⟨hq, hp⟩
-    else isFalse (Or.rec (fun ⟨h, _⟩ => hp h : ¬(p ∧ ¬q)) (fun ⟨h, _⟩ => hq h : ¬(q ∧ ¬p)))
-
-instance existsPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] : Decidable (∃ h, P h) :=
-  if h : p then decidableOfDecidableOfIff (DP h) ⟨fun h2 => ⟨h, h2⟩, fun ⟨h', h2⟩ => h2⟩
-  else isFalse (mt (fun ⟨h, _⟩ => h) h)
-
-instance forallPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] : Decidable (∀ h, P h) :=
-  if h : p then decidableOfDecidableOfIff (DP h) ⟨fun h2 _ => h2, fun al => al h⟩ else isTrue fun h2 => absurd h2 h
 
 end
 
@@ -104,46 +85,13 @@ def decidableEqOfBoolPred {α : Sort u} {p : α → α → Bool} (h₁ : IsDecEq
 irreducible_def arbitrary (α : Sort u) [Inhabited α] : α :=
   default
 
-instance Prop.inhabited : Inhabited Prop :=
-  ⟨True⟩
-
-instance Pi.inhabited (α : Sort u) {β : α → Sort v} [∀ x, Inhabited (β x)] : Inhabited (∀ x, β x) :=
-  ⟨fun a => default⟩
-
-instance : Inhabited Bool :=
-  ⟨false⟩
-
-instance : Inhabited True :=
-  ⟨trivial⟩
-
-instance (priority := 100) nonempty_of_inhabited {α : Sort u} [Inhabited α] : Nonempty α :=
-  ⟨default⟩
-
-instance subsingleton_prop (p : Prop) : Subsingleton p :=
-  ⟨fun a b => proof_irrel a b⟩
-
 theorem rec_subsingleton {p : Prop} [h : Decidable p] {h₁ : p → Sort u} {h₂ : ¬p → Sort u}
     [h₃ : ∀ h : p, Subsingleton (h₁ h)] [h₄ : ∀ h : ¬p, Subsingleton (h₂ h)] : Subsingleton (Decidable.recOn h h₂ h₁) :=
   match h with
   | isTrue h => h₃ h
   | isFalse h => h₄ h
 
-@[simp]
-theorem if_t_t (c : Prop) [h : Decidable c] {α : Sort u} (t : α) : ite c t t = t :=
-  match h with
-  | isTrue hc => rfl
-  | isFalse hnc => rfl
-
-instance {c t e : Prop} [d_c : Decidable c] [d_t : Decidable t] [d_e : Decidable e] : Decidable (if c then t else e) :=
-  match d_c with
-  | isTrue hc => d_t
-  | isFalse hc => d_e
-
-instance {c : Prop} {t : c → Prop} {e : ¬c → Prop} [d_c : Decidable c] [d_t : ∀ h, Decidable (t h)]
-    [d_e : ∀ h, Decidable (e h)] : Decidable (if h : c then t h else e h) :=
-  match d_c with
-  | isTrue hc => d_t hc
-  | isFalse hc => d_e hc
+theorem if_t_t (c : Prop) [h : Decidable c] {α : Sort u} (t : α) : ite c t t = t := by simp
 
 def AsTrue (c : Prop) [Decidable c] : Prop :=
   if c then True else False

@@ -179,7 +179,7 @@ theorem heq_of_heq_of_eq (h₁ : HEq a b) (h₂ : b = b') : HEq a b' :=
 theorem heq_of_eq_of_heq (h₁ : a = a') (h₂ : HEq a' b) : HEq a b :=
   HEq.trans (heq_of_eq h₁) h₂
 
-theorem type_eq_of_heqₓ (h : HEq a b) : α = β :=
+theorem type_eq_of_heq (h : HEq a b) : α = β :=
   HEq.recOnₓ h (Eq.refl α)
 
 end
@@ -706,8 +706,9 @@ def decidableOfDecidableOfIff (hp : Decidable p) (h : p ↔ q) : Decidable q :=
 def decidableOfDecidableOfEq (hp : Decidable p) (h : p = q) : Decidable q :=
   decidableOfDecidableOfIff hp h.to_iff
 
-protected def Or.byCases [Decidable p] [Decidable q] {α : Sort u} (h : p ∨ q) (h₁ : p → α) (h₂ : q → α) : α :=
-  if hp : p then h₁ hp else if hq : q then h₂ hq else False.ndrec _ (Or.elim h hp hq)
+/-- A version of `or.elim` in `Type`. If both `p` and `q` are true, `h₁` is used. -/
+protected def Or.byCases [Decidable p] {α : Sort u} (h : p ∨ q) (h₁ : p → α) (h₂ : q → α) : α :=
+  if hp : p then h₁ hp else h₂ (h.resolve_left hp)
 
 end
 
@@ -823,11 +824,11 @@ theorem nonempty_of_exists {α : Sort u} {p : α → Prop} : (∃ x, p x) → No
 class inductive Subsingleton (α : Sort u) : Prop
   | intro (h : ∀ a b : α, a = b) : Subsingleton
 
-protected theorem Subsingleton.elimₓ {α : Sort u} [h : Subsingleton α] : ∀ a b : α, a = b :=
+protected theorem Subsingleton.elim {α : Sort u} [h : Subsingleton α] : ∀ a b : α, a = b :=
   Subsingleton.ndrec (fun p => p) h
 
-protected theorem Subsingleton.helimₓ {α β : Sort u} [h : Subsingleton α] (h : α = β) : ∀ (a : α) (b : β), HEq a b :=
-  Eq.recOnₓ h fun a b : α => heq_of_eq (Subsingleton.elimₓ a b)
+protected theorem Subsingleton.helim {α β : Sort u} [h : Subsingleton α] (h : α = β) : ∀ (a : α) (b : β), HEq a b :=
+  Eq.recOnₓ h fun a b : α => heq_of_eq (Subsingleton.elim a b)
 
 instance subsingleton_prop (p : Prop) : Subsingleton p :=
   ⟨fun a b => proof_irrel a b⟩
@@ -1092,15 +1093,15 @@ variable (inv : α → α)
 
 variable (one : α)
 
--- mathport name: «expr * »
+-- mathport name: f
 local notation a "*" b => f a b
 
--- mathport name: «expr ⁻¹»
+-- mathport name: inv
 local notation a "⁻¹" => inv a
 
 variable (g : α → α → α)
 
--- mathport name: «expr + »
+-- mathport name: g
 local notation a "+" b => g a b
 
 def Commutative :=

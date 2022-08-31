@@ -19,10 +19,10 @@ noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Pr
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
 
-noncomputable def some {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
+noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
   (indefiniteDescription p h).val
 
-theorem some_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (some h) :=
+theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose h) :=
   (indefiniteDescription p h).property
 
 /- Diaconescu's theorem: using function extensionality and propositional extensionality,
@@ -44,16 +44,16 @@ private theorem exV : ∃ x, V x :=
   ⟨False, Or.inl rfl⟩
 
 private def u : Prop :=
-  some exU
+  choose exU
 
 private def v : Prop :=
-  some exV
+  choose exV
 
 private theorem u_def : U u :=
-  some_spec exU
+  choose_spec exU
 
 private theorem v_def : V v :=
-  some_spec exV
+  choose_spec exV
 
 private theorem not_uv_or_p : u ≠ v ∨ p :=
   Or.elim u_def
@@ -71,7 +71,7 @@ private theorem p_implies_uv (hp : p) : u = v :=
       have hl : x = True ∨ p → x = False ∨ p := fun a => Or.inr hp
       have hr : x = False ∨ p → x = True ∨ p := fun a => Or.inr hp
       show (x = True ∨ p) = (x = False ∨ p) from propext (Iff.intro hl hr)
-  have h₀ : ∀ exU exV, @some _ U exU = @some _ V exV := hpred ▸ fun exU exV => rfl
+  have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := hpred ▸ fun exU exV => rfl
   show u = v from h₀ _ _
 
 theorem em : p ∨ ¬p :=
@@ -129,7 +129,7 @@ theorem epsilon_singleton {α : Sort u} (x : α) : (@epsilon α ⟨x⟩ fun y =>
 -- the axiom of choice
 theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → Prop} (h : ∀ x, ∃ y, r x y) :
     ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
-  ⟨_, fun x => some_spec (h x)⟩
+  ⟨_, fun x => choose_spec (h x)⟩
 
 theorem skolem {α : Sort u} {b : α → Sort v} {p : ∀ x, b x → Prop} :
     (∀ x, ∃ y, p x y) ↔ ∃ f : ∀ x, b x, ∀ x, p x (f x) :=

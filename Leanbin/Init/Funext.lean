@@ -66,5 +66,5 @@ attribute [intro!] funext
 local infixl:50 " ~ " => Function.Equiv
 
 instance Pi.subsingleton [∀ a, Subsingleton (β a)] : Subsingleton (∀ a, β a) :=
-  ⟨fun f₁ f₂ => funext fun a => Subsingleton.elimₓ (f₁ a) (f₂ a)⟩
+  ⟨fun f₁ f₂ => funext fun a => Subsingleton.elim (f₁ a) (f₂ a)⟩
 

@@ -82,7 +82,7 @@ protected def recOn (q : Quot r) (f : ∀ a, β ⟦a⟧)
 
 @[reducible, elabAsElim]
 protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot r) (f : ∀ a, β ⟦a⟧) : β q :=
-  Quot.rec f (fun a b h => Subsingleton.elimₓ _ (f b)) q
+  Quot.rec f (fun a b h => Subsingleton.elim _ (f b)) q
 
 @[reducible, elabAsElim]
 protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) : β q :=

@@ -180,7 +180,7 @@ is, `is_symm X r` and `is_trans X r`. -/
 @[algebra]
 class IsPer (α : Type u) (r : α → α → Prop) extends IsSymm α r, IsTrans α r : Prop
 
-/-- `is_strict_order X r` means that the binary relation `r` on `X` is a strict order, that is, 
+/-- `is_strict_order X r` means that the binary relation `r` on `X` is a strict order, that is,
 `is_irrefl X r` and `is_trans X r`. -/
 @[algebra]
 class IsStrictOrder (α : Type u) (r : α → α → Prop) extends IsIrrefl α r, IsTrans α r : Prop
@@ -196,7 +196,7 @@ that is, `is_strict_order X lt` and `is_incomp_trans X lt`. -/
 @[algebra]
 class IsStrictWeakOrder (α : Type u) (lt : α → α → Prop) extends IsStrictOrder α lt, IsIncompTrans α lt : Prop
 
-/-- `is_trichotomous X lt` means that the binary relation `lt` on `X` is trichotomous, that is, 
+/-- `is_trichotomous X lt` means that the binary relation `lt` on `X` is trichotomous, that is,
 either `lt a b` or `a = b` or `lt b a` for any `a` and `b`. -/
 @[algebra]
 class IsTrichotomous (α : Type u) (lt : α → α → Prop) : Prop where
@@ -301,7 +301,7 @@ def Equiv (a b : α) : Prop :=
 
 parameter [IsStrictWeakOrder α r]
 
--- mathport name: «expr ≈ »
+-- mathport name: equiv
 local infixl:50 " ≈ " => equiv
 
 theorem erefl (a : α) : a ≈ a :=

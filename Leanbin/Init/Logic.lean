@@ -18,12 +18,6 @@ theorem Implies.trans {p q r : Prop} (h₁ : Implies p q) (h₂ : Implies q r) :
 def NonContradictory (a : Prop) : Prop :=
   ¬¬a
 
-section
-
-variable {α β φ : Sort u} {a a' : α} {b b' : β} {c : φ}
-
-end
-
 theorem eq_rec_compose :
     ∀ {α β φ : Sort u} (p₁ : β = φ) (p₂ : α = β) (a : α),
       (Eq.recOn p₁ (Eq.recOn p₂ a : β) : φ) = Eq.recOn (Eq.trans p₂ p₁) a
@@ -31,8 +25,6 @@ theorem eq_rec_compose :
 
 -- and
 variable {a b c d : Prop}
-
-theorem And.swap : a ∧ b → b ∧ a := fun ⟨ha, hb⟩ => ⟨hb, ha⟩
 
 -- xor
 @[simp] abbrev Xorₓ (a b : Prop) := xor a b
@@ -63,8 +55,9 @@ def decidableOfDecidableOfIff (hp : Decidable p) (h : p ↔ q) : Decidable q :=
 def decidableOfDecidableOfEq (hp : Decidable p) (h : p = q) : Decidable q :=
   decidableOfDecidableOfIff hp h.to_iff
 
-protected def Or.byCases [Decidable p] [Decidable q] {α : Sort u} (h : p ∨ q) (h₁ : p → α) (h₂ : q → α) : α :=
-  if hp : p then h₁ hp else if hq : q then h₂ hq else False.rec (Or.elim h hp hq)
+/-- A version of `or.elim` in `Type`. If both `p` and `q` are true, `h₁` is used. -/
+protected def Or.byCases [Decidable p] {α : Sort u} (h : p ∨ q) (h₁ : p → α) (h₂ : q → α) : α :=
+  if hp : p then h₁ hp else h₂ (h.resolve_left hp)
 
 end
 
@@ -133,9 +126,6 @@ def Transitive :=
 def Total :=
   ∀ x y, x≺y ∨ y≺x
 
-theorem mk_equivalence (rfl : Reflexive r) (symm : Symmetric r) (trans : Transitive r) : Equivalence r :=
-  ⟨rfl, @symm, @trans⟩
-
 def Irreflexive :=
   ∀ x, ¬x≺x
 
@@ -162,15 +152,15 @@ variable (inv : α → α)
 
 variable (one : α)
 
--- mathport name: «expr * »
+-- mathport name: f
 local notation (priority := high) a "*" b => f a b
 
--- mathport name: «expr ⁻¹»
+-- mathport name: inv
 local notation (priority := high) a "⁻¹" => inv a
 
 variable (g : α → α → α)
 
--- mathport name: «expr + »
+-- mathport name: g
 local notation (priority := high) a "+" b => g a b
 
 def Commutative :=

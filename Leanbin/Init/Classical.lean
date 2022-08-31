@@ -5,17 +5,11 @@ Authors: Leonardo de Moura, Jeremy Avigad, Mario Carneiro
 -/
 prelude
 import Leanbin.Init.Data.Subtype.Basic
-import Leanbin.Init.Funext
+import Leanbin.Init.Propext
 
 namespace Classical
 
 universe u v
-
-noncomputable def some {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
-  (indefiniteDescription p h).val
-
-theorem some_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (some h) :=
-  (indefiniteDescription p h).property
 
 noncomputable def inhabitedOfNonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
   ⟨choice h⟩
@@ -26,7 +20,7 @@ noncomputable def inhabitedOfExists {α : Sort u} {p : α → Prop} (h : ∃ x, 
 -- the axiom of choice
 theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → Prop} (h : ∀ x, ∃ y, r x y) :
     ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
-  ⟨_, fun x => some_spec (h x)⟩
+  ⟨_, fun x => choose_spec (h x)⟩
 
 theorem prop_complete (a : Prop) : a = True ∨ a = False :=
   Or.elim (em a) (fun t => Or.inl (eq_true_intro t)) fun f => Or.inr (eq_false_intro f)

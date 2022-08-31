@@ -5,30 +5,6 @@ Authors: Leonardo de Moura
 -/
 import Leanbin.Init.Data.Array.Basic
 
-def Array.ofFn (n : Nat) (f : Fin n → α) : Array α :=
-  (mkArray n ()).mapIdx fun ⟨i, h⟩ () => f ⟨i, by simpa using h⟩
-
-@[simp]
-theorem Array.size_swap! (a : Array α) (i j) (hi : i < a.size) (hj : j < a.size) : (a.swap! i j).size = a.size := by
-  simp [swap!, hi, hj]
-
-theorem Array.size_reverse_rev (mid i) (a : Array α) (h : mid ≤ a.size) : (Array.reverse.rev a.size mid a i).size = a.size :=
-  if hi : i < mid then by
-    unfold Array.reverse.rev
-    have : i < a.size := lt_of_lt_of_le hi h
-    have : a.size - i - 1 < a.size := Nat.sub_lt_self i.zero_lt_succ this
-    have := Array.size_reverse_rev mid (i+1) (a.swap! i (a.size - i - 1))
-    simp_all
-  else by
-    unfold Array.reverse.rev
-    simp [dif_neg hi]
-termination_by _ => mid - i
-
-@[simp]
-theorem Array.size_reverse (a : Array α) : a.reverse.size = a.size := by
-  have := size_reverse_rev (a.size / 2) 0 a (Nat.div_le_self ..)
-  simp only [reverse, this]
-
 universe u w
 
 @[deprecated]

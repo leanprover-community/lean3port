@@ -107,7 +107,7 @@ inductive EqvGen : α → α → Prop
   | symm : ∀ x y, EqvGen x y → EqvGen y x
   | trans : ∀ x y z, EqvGen x y → EqvGen y z → EqvGen x z
 
-theorem EqvGen.is_equivalence : Equivalence (@EqvGen α r) :=
+theorem EqvGen.is_equivalence : equivalence (@EqvGen α r) :=
   mk_equivalence _ EqvGen.refl EqvGen.symm EqvGen.trans
 
 theorem EqvGen.isEquivalence : Equivalence (@EqvGen α r) :=

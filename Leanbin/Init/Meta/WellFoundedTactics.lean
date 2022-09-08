@@ -174,7 +174,7 @@ unsafe def cancel_nat_add_lt : tactic Unit := do
       let new_rhs ← mk_nat_add_add common (sort_args rhs_rest)
       let lhs_pr ← prove_eq_by_perm lhs new_lhs
       let rhs_pr ← prove_eq_by_perm rhs new_rhs
-      let target_pr ← to_expr (pquote.1 (congr (congr_arg (· < ·) (%%ₓlhs_pr)) (%%ₓrhs_pr)))
+      let target_pr ← to_expr (pquote.1 (congr (congr_argₓ (· < ·) (%%ₓlhs_pr)) (%%ₓrhs_pr)))
       let new_target ← to_expr (pquote.1 ((%%ₓnew_lhs) < %%ₓnew_rhs))
       replace_target new_target target_pr `` id_tag.wf
       sorry <|> sorry

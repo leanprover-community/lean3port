@@ -13,7 +13,7 @@ section
 variable {α : Type u} {β : Type v}
 
 @[simp]
-theorem Prod.mk.eta : ∀ {p : α × β}, (p.1, p.2) = p
+theorem Prod.mk.etaₓ : ∀ {p : α × β}, (p.1, p.2) = p
   | (a, b) => rfl
 
 instance [Inhabited α] [Inhabited β] : Inhabited (Prod α β) :=

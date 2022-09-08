@@ -70,14 +70,14 @@ theorem length_dropₓ : ∀ (i : ℕ) (l : List α), length (dropₓ i l) = len
       
 
 -- map
-theorem map_cons (f : α → β) (a l) : map f (a :: l) = f a :: map f l :=
+theorem map_consₓ (f : α → β) (a l) : map f (a :: l) = f a :: map f l :=
   rfl
 
 @[simp]
-theorem map_append (f : α → β) : ∀ l₁ l₂, map f (l₁ ++ l₂) = map f l₁ ++ map f l₂ := by
+theorem map_appendₓ (f : α → β) : ∀ l₁ l₂, map f (l₁ ++ l₂) = map f l₁ ++ map f l₂ := by
   intro l₁ <;> induction l₁ <;> intros <;> simp [*]
 
-theorem map_singleton (f : α → β) (a : α) : map f [a] = [f a] :=
+theorem map_singletonₓ (f : α → β) (a : α) : map f [a] = [f a] :=
   rfl
 
 @[simp]
@@ -94,15 +94,15 @@ theorem length_mapₓ (f : α → β) (l : List α) : length (map f l) = length 
 
 -- bind
 @[simp]
-theorem nil_bind (f : α → List β) : List.bind [] f = [] := by
+theorem nil_bindₓ (f : α → List β) : List.bind [] f = [] := by
   simp [join, List.bind]
 
 @[simp]
-theorem cons_bind (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by
+theorem cons_bindₓ (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by
   simp [join, List.bind]
 
 @[simp]
-theorem append_bind (xs ys) (f : α → List β) : List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
+theorem append_bindₓ (xs ys) (f : α → List β) : List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
   induction xs <;> [rfl, simp [*, cons_bind]]
 
 -- mem
@@ -294,7 +294,7 @@ def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
 
 @[simp]
 theorem length_map_accumr : ∀ (f : α → σ → σ × β) (x : List α) (s : σ), length (mapAccumr f x s).2 = length x
-  | f, a :: x, s => congr_arg succ (length_map_accumr f x s)
+  | f, a :: x, s => congr_argₓ succ (length_map_accumr f x s)
   | f, [], s => rfl
 
 end MapAccumr
@@ -319,7 +319,7 @@ theorem length_map_accumr₂ :
   | f, a :: x, b :: y, c =>
     calc
       succ (length (mapAccumr₂ f x y c).2) = succ (min (length x) (length y)) :=
-        congr_arg succ (length_map_accumr₂ f x y c)
+        congr_argₓ succ (length_map_accumr₂ f x y c)
       _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succₓ (length x) (length y))
       
   | f, a :: x, [], c => rfl

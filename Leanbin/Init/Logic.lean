@@ -77,10 +77,10 @@ theorem Eq.substr {α : Sort u} {p : α → Prop} {a b : α} (h₁ : b = a) : p 
 theorem congr {α : Sort u} {β : Sort v} {f₁ f₂ : α → β} {a₁ a₂ : α} (h₁ : f₁ = f₂) (h₂ : a₁ = a₂) : f₁ a₁ = f₂ a₂ :=
   Eq.subst h₁ (Eq.subst h₂ rfl)
 
-theorem congr_fun {α : Sort u} {β : α → Sort v} {f g : ∀ x, β x} (h : f = g) (a : α) : f a = g a :=
+theorem congr_funₓ {α : Sort u} {β : α → Sort v} {f g : ∀ x, β x} (h : f = g) (a : α) : f a = g a :=
   Eq.subst h (Eq.refl (f a))
 
-theorem congr_arg {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) : a₁ = a₂ → f a₁ = f a₂ :=
+theorem congr_argₓ {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) : a₁ = a₂ → f a₁ = f a₂ :=
   congr rfl
 
 theorem trans_rel_left {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
@@ -184,14 +184,14 @@ theorem type_eq_of_heq (h : HEq a b) : α = β :=
 
 end
 
-theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOnₓ h p : φ a') p
+theorem eq_rec_heqₓ {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOnₓ h p : φ a') p
   | a, _, rfl, p => HEq.refl p
 
-theorem heq_of_eq_rec_leftₓ {α : Sort u} {φ : α → Sort v} :
+theorem heq_of_eq_rec_left {α : Sort u} {φ : α → Sort v} :
     ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a = a') (h₂ : (Eq.recOnₓ e p₁ : φ a') = p₂), HEq p₁ p₂
   | a, _, p₁, p₂, rfl, h => Eq.recOnₓ h (HEq.refl p₁)
 
-theorem heq_of_eq_rec_rightₓ {α : Sort u} {φ : α → Sort v} :
+theorem heq_of_eq_rec_right {α : Sort u} {φ : α → Sort v} :
     ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a' = a) (h₂ : p₁ = Eq.recOnₓ e p₂), HEq p₁ p₂
   | a, _, p₁, p₂, rfl, h =>
     have : p₁ = p₂ := h
@@ -439,18 +439,18 @@ theorem and_selfₓ (a : Prop) : a ∧ a ↔ a :=
   Iff.intro And.left fun h => ⟨h, h⟩
 
 -- or simp rules
-theorem Or.imp (h₂ : a → c) (h₃ : b → d) : a ∨ b → c ∨ d :=
+theorem Or.impₓ (h₂ : a → c) (h₃ : b → d) : a ∨ b → c ∨ d :=
   Or.ndrec (fun h => Or.inl (h₂ h)) fun h => Or.inr (h₃ h)
 
 theorem Or.imp_left (h : a → b) : a ∨ c → b ∨ c :=
-  Or.imp h id
+  Or.impₓ h id
 
-theorem Or.imp_rightₓ (h : a → b) : c ∨ a → c ∨ b :=
-  Or.imp id h
+theorem Or.imp_right (h : a → b) : c ∨ a → c ∨ b :=
+  Or.impₓ id h
 
 @[congr]
 theorem or_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∨ b ↔ c ∨ d :=
-  Iff.intro (Or.imp (Iff.mp h₁) (Iff.mp h₂)) (Or.imp (Iff.mpr h₁) (Iff.mpr h₂))
+  Iff.intro (Or.impₓ (Iff.mp h₁) (Iff.mp h₂)) (Or.impₓ (Iff.mpr h₁) (Iff.mpr h₂))
 
 theorem Or.comm : a ∨ b ↔ b ∨ a :=
   Iff.intro Or.swap Or.swap
@@ -459,7 +459,7 @@ theorem or_comm (a b : Prop) : a ∨ b ↔ b ∨ a :=
   Or.comm
 
 theorem Or.assoc : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
-  Iff.intro (Or.ndrec (Or.imp_rightₓ Or.inl) fun h => Or.inr (Or.inr h))
+  Iff.intro (Or.ndrec (Or.imp_right Or.inl) fun h => Or.inr (Or.inr h))
     (Or.ndrec (fun h => Or.inl (Or.inl h)) (Or.imp_left Or.inr))
 
 theorem or_assoc (a b : Prop) : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=

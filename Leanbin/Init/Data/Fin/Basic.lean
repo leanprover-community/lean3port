@@ -9,14 +9,13 @@ import Leanbin.Init.Data.Nat.Basic
 open Nat
 
 /-- `fin n` is the subtype of `ℕ` consisting of natural numbers strictly smaller than `n`. -/
-def Finₓ (n : ℕ) :=
-  { i : ℕ // i < n }
+structure Finₓ (n : ℕ) where
+  val : Nat
+  property : val < n
+
+attribute [pp_using_anonymous_constructor] Finₓ
 
 namespace Finₓ
-
-/-- Backwards-compatible constructor for `fin n`. -/
-def mk {n : ℕ} (i) (h) : Finₓ n :=
-  ⟨i, h⟩
 
 protected def Lt {n} (a b : Finₓ n) : Prop :=
   a.val < b.val

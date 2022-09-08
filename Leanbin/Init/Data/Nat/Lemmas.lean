@@ -22,7 +22,7 @@ protected theorem add_comm : ∀ n m : ℕ, n + m = m + n
   | n, 0 => Eq.symm (Nat.zero_add n)
   | n, m + 1 =>
     suffices succ (n + m) = succ (m + n) from Eq.symm (succ_add m n) ▸ this
-    congr_arg succ (add_comm n m)
+    congr_argₓ succ (add_comm n m)
 
 protected theorem add_assoc : ∀ n m k : ℕ, n + m + k = n + (m + k)
   | n, m, 0 => rfl
@@ -418,7 +418,7 @@ protected theorem bit1_eq_succ_bit0 (n : ℕ) : bit1 n = succ (bit0 n) :=
   rfl
 
 protected theorem bit1_succ_eq (n : ℕ) : bit1 (succ n) = succ (succ (bit1 n)) :=
-  Eq.trans (Nat.bit1_eq_succ_bit0 (succ n)) (congr_arg succ (Nat.bit0_succ_eq n))
+  Eq.trans (Nat.bit1_eq_succ_bit0 (succ n)) (congr_argₓ succ (Nat.bit0_succ_eq n))
 
 protected theorem bit1_ne_one : ∀ {n : ℕ}, n ≠ 0 → bit1 n ≠ 1
   | 0, h, h1 => absurd rfl h
@@ -574,7 +574,7 @@ Many lemmas are proven more generally in mathlib `algebra/order/sub` -/
 @[simp]
 protected theorem zero_sub : ∀ a : ℕ, 0 - a = 0
   | 0 => rfl
-  | a + 1 => congr_arg pred (zero_sub a)
+  | a + 1 => congr_argₓ pred (zero_sub a)
 
 theorem sub_lt_succₓ (a b : ℕ) : a - b < succ a :=
   lt_succ_of_leₓ (a.sub_le b)
@@ -786,12 +786,12 @@ theorem min_succ_succₓ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
   have f : x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
     calc
       min (succ x) (succ y) = succ x := if_pos (succ_le_succₓ p)
-      _ = succ (min x y) := congr_arg succ (Eq.symm (if_pos p))
+      _ = succ (min x y) := congr_argₓ succ (Eq.symm (if_pos p))
       
   have g : ¬x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
     calc
       min (succ x) (succ y) = succ y := if_neg fun eq => p (pred_le_predₓ Eq)
-      _ = succ (min x y) := congr_arg succ (Eq.symm (if_neg p))
+      _ = succ (min x y) := congr_argₓ succ (Eq.symm (if_neg p))
       
   Decidable.byCases f g
 
@@ -1044,7 +1044,7 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) : Nat
     
   refine' if_congr Iff.rfl _ rfl
   simp only [succ_sub_succ]
-  refine' congr_arg (· + 1) _
+  refine' congr_argₓ (· + 1) _
   exact ih (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h1)) (le_transₓ (Nat.sub_leₓ _ _) (le_of_succ_le_succ h2))
 
 theorem div_def (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 else 0 := by
@@ -1054,7 +1054,7 @@ theorem div_def (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 
   cases y
   · rfl
     
-  refine' if_congr Iff.rfl (congr_arg (· + 1) _) rfl
+  refine' if_congr Iff.rfl (congr_argₓ (· + 1) _) rfl
   refine' div_core_congr _ _ <;> simp [Nat.sub_leₓ]
 
 theorem mod_add_divₓ (m k : ℕ) : m % k + k * (m / k) = m := by

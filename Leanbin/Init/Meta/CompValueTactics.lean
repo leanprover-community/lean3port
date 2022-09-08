@@ -73,10 +73,17 @@ unsafe def comp_val : tactic Unit := do
                 let (quote.1 (Subtype.mk (%%ₓa) (%%ₓha)), quote.1 (Subtype.mk (%%ₓb) (%%ₓhb))) ← is_ne t
                 let pr ← mk_nat_val_ne_proof a b
                 exact pr) <|>
-              do
-              let (a, b) ← is_eq t
-              unify a b
-              to_expr (pquote.1 (Eq.refl (%%ₓa))) >>= exact
+              (do
+                  let type ← whnf type
+                  guardₓ (type = quote.1 @Finₓ)
+                  applyc `` Finₓ.ne_of_vne
+                  let (quote.1 (Finₓ.mk (%%ₓa) (%%ₓha)), quote.1 (Finₓ.mk (%%ₓb) (%%ₓhb))) ← is_ne t
+                  let pr ← mk_nat_val_ne_proof a b
+                  exact pr) <|>
+                do
+                let (a, b) ← is_eq t
+                unify a b
+                to_expr (pquote.1 (Eq.refl (%%ₓa))) >>= exact
 
 end Tactic
 

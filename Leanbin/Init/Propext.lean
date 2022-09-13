@@ -15,10 +15,10 @@ theorem forall_congr_eq {a : Sort u} {p q : a → Prop} (h : ∀ x, p x = q x) :
   propext (forall_congrₓ fun a => (h a).to_iff)
 
 theorem imp_congr_eq {a b c d : Prop} (h₁ : a = c) (h₂ : b = d) : (a → b) = (c → d) :=
-  propext (imp_congr h₁.to_iff h₂.to_iff)
+  propext (imp_congrₓ h₁.to_iff h₂.to_iff)
 
 theorem imp_congr_ctx_eq {a b c d : Prop} (h₁ : a = c) (h₂ : c → b = d) : (a → b) = (c → d) :=
-  propext (imp_congr_ctx h₁.to_iff fun hc => (h₂ hc).to_iff)
+  propext (imp_congr_ctxₓ h₁.to_iff fun hc => (h₂ hc).to_iff)
 
 theorem eq_true_intro {a : Prop} (h : a) : a = True :=
   propext (iff_true_intro h)

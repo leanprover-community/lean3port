@@ -269,12 +269,12 @@ theorem le_nat_abs {a : ℤ} : a ≤ natAbs a :=
       rw [eq_nat_abs_of_zero_le h] <;> rfl)
     fun h => le_transₓ h (coe_zero_le _)
 
-theorem neg_succ_lt_zeroₓ (n : ℕ) : -[1 + n] < 0 :=
+theorem neg_succ_lt_zero (n : ℕ) : -[1 + n] < 0 :=
   lt_of_not_geₓ fun h => by
     let ⟨m, h⟩ := eq_coe_of_zero_le h
     contradiction
 
-theorem eq_neg_succ_of_lt_zeroₓ : ∀ {a : ℤ}, a < 0 → ∃ n : ℕ, a = -[1 + n]
+theorem eq_neg_succ_of_lt_zero : ∀ {a : ℤ}, a < 0 → ∃ n : ℕ, a = -[1 + n]
   | (n : ℕ), h => absurd h (not_lt_of_geₓ (coe_zero_le _))
   | -[1 + n], h => ⟨n, rfl⟩
 
@@ -913,7 +913,7 @@ theorem sign_eq_one_of_posₓ {a : ℤ} (h : 0 < a) : sign a = 1 :=
   | _, ⟨n, rfl⟩ => rfl
 
 theorem sign_eq_neg_one_of_negₓ {a : ℤ} (h : a < 0) : sign a = -1 :=
-  match a, eq_neg_succ_of_lt_zeroₓ h with
+  match a, eq_neg_succ_of_lt_zero h with
   | _, ⟨n, rfl⟩ => rfl
 
 theorem eq_zero_of_sign_eq_zero : ∀ {a : ℤ}, sign a = 0 → a = 0
@@ -925,7 +925,7 @@ theorem pos_of_sign_eq_oneₓ : ∀ {a : ℤ}, sign a = 1 → 0 < a
 theorem neg_of_sign_eq_neg_oneₓ : ∀ {a : ℤ}, sign a = -1 → a < 0
   | (n + 1 : ℕ), h => nomatch h
   | 0, h => nomatch h
-  | -[1 + n], _ => neg_succ_lt_zeroₓ _
+  | -[1 + n], _ => neg_succ_lt_zero _
 
 theorem sign_eq_one_iff_posₓ (a : ℤ) : sign a = 1 ↔ 0 < a :=
   ⟨pos_of_sign_eq_oneₓ, sign_eq_one_of_posₓ⟩

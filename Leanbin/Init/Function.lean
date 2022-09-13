@@ -104,7 +104,7 @@ def Surjective (f : α → β) : Prop :=
 theorem Surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) : Surjective (g ∘ f) :=
   fun c : φ =>
   Exists.elim (hg c) fun b hb =>
-    Exists.elim (hf b) fun a ha => Exists.introₓ a (show g (f a) = c from Eq.trans (congr_argₓ g ha) hb)
+    Exists.elim (hf b) fun a ha => Exists.introₓ a (show g (f a) = c from Eq.trans (congr_arg g ha) hb)
 
 /-- A function is called bijective if it is both injective and surjective. -/
 def Bijective (f : α → β) :=
@@ -132,7 +132,7 @@ def HasRightInverse (f : α → β) : Prop :=
 theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f := fun h a b faeqfb =>
   calc
     a = g (f a) := (h a).symm
-    _ = g (f b) := congr_argₓ g faeqfb
+    _ = g (f b) := congr_arg g faeqfb
     _ = b := h b
     
 

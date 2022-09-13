@@ -117,11 +117,11 @@ theorem mem_cons_selfₓ (a : α) (l : List α) : a ∈ a :: l :=
   Or.inl rfl
 
 @[simp]
-theorem mem_cons_iffₓ (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :=
+theorem mem_cons_iff (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :=
   Iff.rfl
 
 @[rsimp]
-theorem mem_cons_eqₓ (a y : α) (l : List α) : (a ∈ y :: l) = (a = y ∨ a ∈ l) :=
+theorem mem_cons_eq (a y : α) (l : List α) : (a ∈ y :: l) = (a = y ∨ a ∈ l) :=
   rfl
 
 theorem mem_cons_of_memₓ (y : α) {a : α} {l : List α} : a ∈ l → a ∈ y :: l := fun H => Or.inr H
@@ -130,7 +130,7 @@ theorem eq_or_mem_of_mem_consₓ {a y : α} {l : List α} : a ∈ y :: l → a =
 
 @[simp]
 theorem mem_appendₓ {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by
-  induction s <;> simp [*, or_assoc]
+  induction s <;> simp [*, or_assocₓ]
 
 @[rsimp]
 theorem mem_append_eqₓ (a : α) (s t : List α) : (a ∈ s ++ t) = (a ∈ s ∨ a ∈ t) :=
@@ -142,11 +142,11 @@ theorem mem_append_leftₓ {a : α} {l₁ : List α} (l₂ : List α) (h : a ∈
 theorem mem_append_rightₓ {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l₂) : a ∈ l₁ ++ l₂ :=
   mem_appendₓ.2 (Or.inr h)
 
-theorem not_bex_nilₓ (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
+theorem not_bex_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
 
-theorem ball_nilₓ (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.elim
+theorem ball_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.elim
 
-theorem bex_consₓ (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
+theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
   ⟨fun ⟨x, h, px⟩ => by
     simp at h
     cases' h with h h
@@ -157,25 +157,25 @@ theorem bex_consₓ (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l
       ,
     fun o => o.elim (fun pa => ⟨a, mem_cons_selfₓ _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_memₓ _ h, px⟩⟩
 
-theorem ball_consₓ (p : α → Prop) (a : α) (l : List α) : (∀ x ∈ a :: l, p x) ↔ p a ∧ ∀ x ∈ l, p x :=
+theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀ x ∈ a :: l, p x) ↔ p a ∧ ∀ x ∈ l, p x :=
   ⟨fun al => ⟨al a (mem_cons_selfₓ _ _), fun x h => al x (mem_cons_of_memₓ _ h)⟩, fun ⟨pa, al⟩ x o =>
     o.elim (fun e => e.symm ▸ pa) (al x)⟩
 
 -- list subset
-protected def Subset (l₁ l₂ : List α) :=
+protected def Subsetₓ (l₁ l₂ : List α) :=
   ∀ ⦃a : α⦄, a ∈ l₁ → a ∈ l₂
 
 instance : Subset (List α) :=
-  ⟨List.Subset⟩
+  ⟨List.Subsetₓ⟩
 
 @[simp]
 theorem nil_subsetₓ (l : List α) : [] ⊆ l := fun b i => False.elim (Iff.mp (mem_nil_iffₓ b) i)
 
 @[refl, simp]
-theorem Subset.refl (l : List α) : l ⊆ l := fun b i => i
+theorem Subsetₓ.refl (l : List α) : l ⊆ l := fun b i => i
 
 @[trans]
-theorem Subset.trans {l₁ l₂ l₃ : List α} (h₁ : l₁ ⊆ l₂) (h₂ : l₂ ⊆ l₃) : l₁ ⊆ l₃ := fun b i => h₂ (h₁ i)
+theorem Subsetₓ.trans {l₁ l₂ l₃ : List α} (h₁ : l₁ ⊆ l₂) (h₂ : l₂ ⊆ l₃) : l₁ ⊆ l₃ := fun b i => h₂ (h₁ i)
 
 @[simp]
 theorem subset_consₓ (a : α) (l : List α) : l ⊆ a :: l := fun b i => Or.inr i
@@ -229,7 +229,7 @@ theorem length_remove_nth : ∀ (l : List α) (i : ℕ), i < length l → length
       rw [length_remove_nth xs i this, Nat.sub_add_cancelₓ (lt_of_le_of_ltₓ (Nat.zero_leₓ _) this)] <;> rfl
 
 @[simp]
-theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
+theorem partition_eq_filter_filterₓ (p : α → Prop) [DecidablePred p] :
     ∀ l : List α, partitionₓ p l = (filterₓ p l, filterₓ (Not ∘ p) l)
   | [] => rfl
   | a :: l => by
@@ -244,7 +244,7 @@ inductive Sublist : List α → List α → Prop
 -- mathport name: «expr <+ »
 infixl:50 " <+ " => Sublist
 
-theorem length_le_of_sublistₓ : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → length l₁ ≤ length l₂
+theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → length l₁ ≤ length l₂
   | _, _, sublist.slnil => le_reflₓ 0
   | _, _, sublist.cons l₁ l₂ a s => le_succ_of_leₓ (length_le_of_sublist s)
   | _, _, sublist.cons2 l₁ l₂ a s => succ_le_succₓ (length_le_of_sublist s)
@@ -294,7 +294,7 @@ def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
 
 @[simp]
 theorem length_map_accumr : ∀ (f : α → σ → σ × β) (x : List α) (s : σ), length (mapAccumr f x s).2 = length x
-  | f, a :: x, s => congr_argₓ succ (length_map_accumr f x s)
+  | f, a :: x, s => congr_arg succ (length_map_accumr f x s)
   | f, [], s => rfl
 
 end MapAccumr
@@ -319,7 +319,7 @@ theorem length_map_accumr₂ :
   | f, a :: x, b :: y, c =>
     calc
       succ (length (mapAccumr₂ f x y c).2) = succ (min (length x) (length y)) :=
-        congr_argₓ succ (length_map_accumr₂ f x y c)
+        congr_arg succ (length_map_accumr₂ f x y c)
       _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succₓ (length x) (length y))
       
   | f, a :: x, [], c => rfl

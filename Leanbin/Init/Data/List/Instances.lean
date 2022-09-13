@@ -48,7 +48,7 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] =>
     isFalse
       (by
-        simp [List.not_bex_nilₓ])
+        simp [List.not_bex_nil])
   | x :: xs =>
     if h₁ : p x then isTrue ⟨x, mem_cons_selfₓ _ _, h₁⟩
     else

@@ -18,10 +18,10 @@ open Decidable Tactic
 variable {α : Type u} [LinearOrderₓ α]
 
 theorem min_def (a b : α) : min a b = if a ≤ b then a else b := by
-  rw [congr_funₓ LinearOrderₓ.min_def a, minDefault]
+  rw [congr_fun LinearOrderₓ.min_def a, minDefault]
 
 theorem max_def (a b : α) : max a b = if b ≤ a then a else b := by
-  rw [congr_funₓ LinearOrderₓ.max_def a, maxDefault]
+  rw [congr_fun LinearOrderₓ.max_def a, maxDefault]
 
 -- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
 -- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]

@@ -167,7 +167,7 @@ def dropWhileₓ (p : α → Prop) [DecidablePred p] : List α → List α
   drop_while (not ∘ eq 1) [0, 1, 2, 3] = [1, 2, 3]
   ```
 -/
-def after (p : α → Prop) [DecidablePred p] : List α → List α
+def afterₓ (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | x :: xs => if p x then xs else after xs
 

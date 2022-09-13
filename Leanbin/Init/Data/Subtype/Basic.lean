@@ -24,7 +24,7 @@ protected theorem eq : ∀ {a1 a2 : { x // p x }}, val a1 = val a2 → a1 = a2
   | ⟨x, h1⟩, ⟨x, h2⟩, rfl => rfl
 
 theorem ne_of_val_ne {a1 a2 : { x // p x }} : val a1 ≠ val a2 → a1 ≠ a2 :=
-  mt <| congr_argₓ _
+  mt <| congr_arg _
 
 theorem eta (a : { x // p x }) (h : p (val a)) : mk (val a) h = a :=
   Subtype.eq rfl

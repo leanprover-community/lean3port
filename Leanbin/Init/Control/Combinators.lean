@@ -12,16 +12,16 @@ import Leanbin.Init.Data.List.Basic
 
 universe u v w
 
-def List.mmapₓ {m : Type u → Type v} [Monadₓ m] {α : Type w} {β : Type u} (f : α → m β) : List α → m (List β)
+def List.mmap {m : Type u → Type v} [Monadₓ m] {α : Type w} {β : Type u} (f : α → m β) : List α → m (List β)
   | [] => return []
   | h :: t => do
     let h' ← f h
-    let t' ← List.mmapₓ t
+    let t' ← List.mmap t
     return (h' :: t')
 
-def List.mmap'ₓ {m : Type → Type v} [Monadₓ m] {α : Type u} {β : Type} (f : α → m β) : List α → m Unit
+def List.mmap' {m : Type → Type v} [Monadₓ m] {α : Type u} {β : Type} (f : α → m β) : List α → m Unit
   | [] => return ()
-  | h :: t => f h >> List.mmap'ₓ t
+  | h :: t => f h >> List.mmap' t
 
 def mjoin {m : Type u → Type u} [Monadₓ m] {α : Type u} (a : m (m α)) : m α :=
   bind a id
@@ -65,10 +65,10 @@ export List (mmap mmap' mfilter mfoldl)
 namespace Monadₓ
 
 def mapm :=
-  @mmapₓ
+  @mmap
 
 def mapm' :=
-  @mmap'ₓ
+  @mmap'
 
 def join :=
   @mjoin

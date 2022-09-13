@@ -58,7 +58,7 @@ attribute [local instance] fun_setoid
 
 /-- Function extensionality, proven using quotients. -/
 theorem funext {f₁ f₂ : ∀ x : α, β x} (h : ∀ x, f₁ x = f₂ x) : f₁ = f₂ :=
-  show extfunApp ⟦f₁⟧ = extfunApp ⟦f₂⟧ from congr_argₓ extfunApp (sound h)
+  show extfunApp ⟦f₁⟧ = extfunApp ⟦f₂⟧ from congr_arg extfunApp (sound h)
 
 attribute [intro!] funext
 

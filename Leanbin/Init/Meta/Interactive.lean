@@ -334,7 +334,7 @@ unsafe def from :=
 -/
 unsafe def revert (ids : parse ident*) : tactic Unit :=
   propagate_tags do
-    let hs ← mmapₓ tactic.get_local ids
+    let hs ← mmap tactic.get_local ids
     revert_lst hs
     skip
 

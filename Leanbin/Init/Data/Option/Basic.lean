@@ -81,6 +81,6 @@ instance {α : Type u} [d : DecidableEq α] : DecidableEq (Option α)
   | some v₁, none => isFalse fun h => Option.noConfusion h
   | some v₁, some v₂ =>
     match d v₁ v₂ with
-    | is_true e => isTrue (congr_argₓ (@some α) e)
+    | is_true e => isTrue (congr_arg (@some α) e)
     | is_false n => isFalse fun h => Option.noConfusion h fun e => absurd e n
 

@@ -77,10 +77,10 @@ theorem Eq.substr {α : Sort u} {p : α → Prop} {a b : α} (h₁ : b = a) : p 
 theorem congr {α : Sort u} {β : Sort v} {f₁ f₂ : α → β} {a₁ a₂ : α} (h₁ : f₁ = f₂) (h₂ : a₁ = a₂) : f₁ a₁ = f₂ a₂ :=
   Eq.subst h₁ (Eq.subst h₂ rfl)
 
-theorem congr_funₓ {α : Sort u} {β : α → Sort v} {f g : ∀ x, β x} (h : f = g) (a : α) : f a = g a :=
+theorem congr_fun {α : Sort u} {β : α → Sort v} {f g : ∀ x, β x} (h : f = g) (a : α) : f a = g a :=
   Eq.subst h (Eq.refl (f a))
 
-theorem congr_argₓ {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) : a₁ = a₂ → f a₁ = f a₂ :=
+theorem congr_arg {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) : a₁ = a₂ → f a₁ = f a₂ :=
   congr rfl
 
 theorem trans_rel_left {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
@@ -184,7 +184,7 @@ theorem type_eq_of_heq (h : HEq a b) : α = β :=
 
 end
 
-theorem eq_rec_heqₓ {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOnₓ h p : φ a') p
+theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOnₓ h p : φ a') p
   | a, _, rfl, p => HEq.refl p
 
 theorem heq_of_eq_rec_left {α : Sort u} {φ : α → Sort v} :
@@ -248,10 +248,10 @@ structure Iff (a b : Prop) : Prop where intro ::
   mp : a → b
   mpr : b → a
 
-theorem Iff.elim : ((a → b) → (b → a) → c) → (a ↔ b) → c :=
+theorem Iff.elimₓ : ((a → b) → (b → a) → c) → (a ↔ b) → c :=
   Iff.ndrec
 
-attribute [recursor 5] Iff.elim
+attribute [recursor 5] Iff.elimₓ
 
 theorem Iff.elim_left : (a ↔ b) → a → b :=
   Iff.mp
@@ -305,10 +305,10 @@ theorem iff_false_intro (h : ¬a) : a ↔ False :=
 theorem not_non_contradictory_iff_absurd (a : Prop) : ¬¬¬a ↔ ¬a :=
   Iff.intro (fun (hl : ¬¬¬a) (ha : a) => hl (non_contradictory_intro ha)) absurd
 
-theorem imp_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a → b ↔ c → d :=
+theorem imp_congrₓ (h₁ : a ↔ c) (h₂ : b ↔ d) : a → b ↔ c → d :=
   Iff.intro (fun hab hc => Iff.mp h₂ (hab (Iff.mpr h₁ hc))) fun hcd ha => Iff.mpr h₂ (hcd (Iff.mp h₁ ha))
 
-theorem imp_congr_ctx (h₁ : a ↔ c) (h₂ : c → (b ↔ d)) : a → b ↔ c → d :=
+theorem imp_congr_ctxₓ (h₁ : a ↔ c) (h₂ : c → (b ↔ d)) : a → b ↔ c → d :=
   Iff.intro
     (fun hab hc =>
       have ha : a := Iff.mpr h₁ hc
@@ -319,7 +319,7 @@ theorem imp_congr_ctx (h₁ : a ↔ c) (h₂ : c → (b ↔ d)) : a → b ↔ c 
     have hd : d := hcd hc
     Iff.mpr (h₂ hc) hd
 
-theorem imp_congr_right (h : a → (b ↔ c)) : a → b ↔ a → c :=
+theorem imp_congr_rightₓ (h : a → (b ↔ c)) : a → b ↔ a → c :=
   Iff.intro (fun hab ha => Iff.elim_left (h ha) (hab ha)) fun hab ha => Iff.elim_right (h ha) (hab ha)
 
 theorem not_not_intro (ha : a) : ¬¬a := fun hna : ¬a => hna ha
@@ -377,14 +377,14 @@ theorem eq_comm {α : Sort u} {a b : α} : a = b ↔ b = a :=
   ⟨Eq.symm, Eq.symm⟩
 
 -- and simp rules
-theorem And.imp (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
+theorem And.impₓ (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
 
 theorem and_implies (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d :=
-  And.imp hac hbd
+  And.impₓ hac hbd
 
 @[congr]
-theorem and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∧ b ↔ c ∧ d :=
-  Iff.intro (And.imp (Iff.mp h₁) (Iff.mp h₂)) (And.imp (Iff.mpr h₁) (Iff.mpr h₂))
+theorem and_congrₓ (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∧ b ↔ c ∧ d :=
+  Iff.intro (And.impₓ (Iff.mp h₁) (Iff.mp h₂)) (And.impₓ (Iff.mpr h₁) (Iff.mpr h₂))
 
 theorem and_congr_right (h : a → (b ↔ c)) : a ∧ b ↔ a ∧ c :=
   Iff.intro (fun ⟨ha, hb⟩ => ⟨ha, Iff.elim_left (h ha) hb⟩) fun ⟨ha, hc⟩ => ⟨ha, Iff.elim_right (h ha) hc⟩
@@ -398,13 +398,13 @@ theorem and_comm (a b : Prop) : a ∧ b ↔ b ∧ a :=
 theorem And.assoc : (a ∧ b) ∧ c ↔ a ∧ b ∧ c :=
   Iff.intro (fun ⟨⟨ha, hb⟩, hc⟩ => ⟨ha, ⟨hb, hc⟩⟩) fun ⟨ha, ⟨hb, hc⟩⟩ => ⟨⟨ha, hb⟩, hc⟩
 
-theorem and_assoc (a b : Prop) : (a ∧ b) ∧ c ↔ a ∧ b ∧ c :=
+theorem and_assocₓ (a b : Prop) : (a ∧ b) ∧ c ↔ a ∧ b ∧ c :=
   And.assoc
 
 theorem And.left_comm : a ∧ b ∧ c ↔ b ∧ a ∧ c :=
-  Iff.trans (Iff.symm And.assoc) (Iff.trans (and_congr And.comm (Iff.refl c)) And.assoc)
+  Iff.trans (Iff.symm And.assoc) (Iff.trans (and_congrₓ And.comm (Iff.refl c)) And.assoc)
 
-theorem and_iff_left {a b : Prop} (hb : b) : a ∧ b ↔ a :=
+theorem and_iff_leftₓ {a b : Prop} (hb : b) : a ∧ b ↔ a :=
   Iff.intro And.left fun ha => ⟨ha, hb⟩
 
 theorem and_iff_right {a b : Prop} (ha : a) : a ∧ b ↔ b :=
@@ -412,7 +412,7 @@ theorem and_iff_right {a b : Prop} (ha : a) : a ∧ b ↔ b :=
 
 @[simp]
 theorem and_trueₓ (a : Prop) : a ∧ True ↔ a :=
-  and_iff_left trivialₓ
+  and_iff_leftₓ trivialₓ
 
 @[simp]
 theorem true_andₓ (a : Prop) : True ∧ a ↔ a :=
@@ -449,7 +449,7 @@ theorem Or.imp_right (h : a → b) : c ∨ a → c ∨ b :=
   Or.impₓ id h
 
 @[congr]
-theorem or_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∨ b ↔ c ∨ d :=
+theorem or_congrₓ (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∨ b ↔ c ∨ d :=
   Iff.intro (Or.impₓ (Iff.mp h₁) (Iff.mp h₂)) (Or.impₓ (Iff.mpr h₁) (Iff.mpr h₂))
 
 theorem Or.comm : a ∨ b ↔ b ∨ a :=
@@ -462,16 +462,16 @@ theorem Or.assoc : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
   Iff.intro (Or.ndrec (Or.imp_right Or.inl) fun h => Or.inr (Or.inr h))
     (Or.ndrec (fun h => Or.inl (Or.inl h)) (Or.imp_left Or.inr))
 
-theorem or_assoc (a b : Prop) : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
+theorem or_assocₓ (a b : Prop) : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
   Or.assoc
 
 theorem Or.left_comm : a ∨ b ∨ c ↔ b ∨ a ∨ c :=
-  Iff.trans (Iff.symm Or.assoc) (Iff.trans (or_congr Or.comm (Iff.refl c)) Or.assoc)
+  Iff.trans (Iff.symm Or.assoc) (Iff.trans (or_congrₓ Or.comm (Iff.refl c)) Or.assoc)
 
 theorem or_iff_right_of_imp (ha : a → b) : a ∨ b ↔ b :=
   Iff.intro (Or.ndrec ha id) Or.inr
 
-theorem or_iff_left_of_imp (hb : b → a) : a ∨ b ↔ a :=
+theorem or_iff_left_of_impₓ (hb : b → a) : a ∨ b ↔ a :=
   Iff.intro (Or.ndrec id hb) Or.inl
 
 @[simp]
@@ -533,9 +533,9 @@ theorem iff_selfₓ (a : Prop) : (a ↔ a) ↔ True :=
   iff_true_intro Iff.rfl
 
 @[congr]
-theorem iff_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ↔ b) ↔ (c ↔ d) :=
+theorem iff_congrₓ (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ↔ b) ↔ (c ↔ d) :=
   (iff_iff_implies_and_implies a b).trans
-    ((and_congr (imp_congr h₁ h₂) (imp_congr h₂ h₁)).trans (iff_iff_implies_and_implies c d).symm)
+    ((and_congrₓ (imp_congrₓ h₁ h₂) (imp_congrₓ h₂ h₁)).trans (iff_iff_implies_and_implies c d).symm)
 
 -- implies simp rule
 @[simp]
@@ -612,7 +612,7 @@ theorem exists_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) 
 theorem exists_unique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) : ExistsUnique p₁ ↔ ∃! x, p₂ x :=
   --
     exists_congr
-    fun x => and_congr (h x) (forall_congrₓ fun y => imp_congr (h y) Iff.rfl)
+    fun x => and_congrₓ (h x) (forall_congrₓ fun y => imp_congrₓ (h y) Iff.rfl)
 
 theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x) → ∀ x, ¬p x := fun hne x hp => hne ⟨x, hp⟩
 

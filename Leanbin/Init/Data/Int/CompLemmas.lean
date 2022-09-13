@@ -12,12 +12,12 @@ namespace Int
 
 -- Auxiliary lemmas for proving that to int numerals are different 
 -- 1. Lemmas for reducing the problem to the case where the numerals are positive
-protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_inj h₂) h₁
+protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_injₓ h₂) h₁
 
 protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ => by
   have : -a = -0 := by
     rwa [Int.neg_zero]
-  have : a = 0 := Int.neg_inj this
+  have : a = 0 := Int.neg_injₓ this
   contradiction
 
 protected theorem zero_ne_neg_of_ne {a : ℤ} (h : 0 ≠ a) : 0 ≠ -a :=

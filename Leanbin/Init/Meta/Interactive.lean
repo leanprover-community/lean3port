@@ -22,7 +22,7 @@ open Lean.Parser
 
 open Native
 
--- ./././Mathport/Syntax/Translate/Command.lean:619:29: warning: unsupported: precedence command
+-- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
 -- mathport name: «expr ?»
 local postfix:1024 "?" => optionalₓ
 
@@ -581,7 +581,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
--- ./././Mathport/Syntax/Translate/Command.lean:619:29: warning: unsupported: precedence command
+-- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -658,7 +658,7 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident) (id
             (e :: locals).mmap' (try ∘ clear)
             pure new_hyps
       set_cases_tags in_tag <|
-          @List.map₂ₓ (Name × List expr × List (Name × expr)) _ (Name × List expr)
+          @List.map₂ (Name × List expr × List (Name × expr)) _ (Name × List expr)
             (fun ⟨n, hyps, _⟩ gen_hyps => ⟨n, hyps ++ gen_hyps⟩) rs gen_hyps
 
 open CaseTag.MatchResult

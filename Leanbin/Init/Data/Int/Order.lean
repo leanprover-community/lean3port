@@ -45,16 +45,13 @@ theorem nonneg_or_nonneg_negₓ (a : ℤ) : Nonneg a ∨ Nonneg (-a) :=
   Int.casesOn a (fun n => Or.inl trivialₓ) fun n => Or.inr trivialₓ
 
 theorem Le.intro_sub {a b : ℤ} {n : ℕ} (h : b - a = n) : a ≤ b :=
-  show Nonneg (b - a) by
-    rw [h] <;> trivial
+  show Nonneg (b - a) by rw [h] <;> trivial
 
 attribute [local simp]
   Int.sub_eq_add_neg Int.add_assoc Int.add_right_neg Int.add_left_neg Int.zero_add Int.add_zero Int.neg_add Int.neg_neg Int.neg_zero
 
 theorem Le.intro {a b : ℤ} {n : ℕ} (h : a + n = b) : a ≤ b :=
-  Le.intro_sub
-    (by
-      rw [← h, Int.add_comm] <;> simp )
+  Le.intro_sub (by rw [← h, Int.add_comm] <;> simp)
 
 theorem Le.dest_sub {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, b - a = n :=
   Nonneg.elim h
@@ -65,7 +62,7 @@ theorem Le.dest {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, a + n = b :=
     Exists.introₓ n
       (by
         rw [← h₁, Int.add_comm]
-        simp )
+        simp)
 
 theorem Le.elim {a b : ℤ} (h : a ≤ b) {P : Prop} (h' : ∀ n : ℕ, a + ↑n = b → P) : P :=
   Exists.elim (Le.dest h) h'
@@ -73,8 +70,7 @@ theorem Le.elim {a b : ℤ} (h : a ≤ b) {P : Prop} (h' : ∀ n : ℕ, a + ↑n
 protected theorem le_totalₓ (a b : ℤ) : a ≤ b ∨ b ≤ a :=
   Or.imp_right
     (fun H : Nonneg (-(b - a)) =>
-      have : -(b - a) = a - b := by
-        simp [Int.add_comm]
+      have : -(b - a) = a - b := by simp [Int.add_comm]
       show Nonneg (a - b) from this ▸ H)
     (nonneg_or_nonneg_negₓ (b - a))
 
@@ -104,8 +100,7 @@ theorem eq_coe_of_zero_le {a : ℤ} (h : 0 ≤ a) : ∃ n : ℕ, a = n := by
 
 theorem eq_succ_of_zero_ltₓ {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
   let ⟨n, (h : ↑(1 + n) = a)⟩ := Le.dest h
-  ⟨n, by
-    rw [Nat.add_comm] at h <;> exact h.symm⟩
+  ⟨n, by rw [Nat.add_comm] at h <;> exact h.symm⟩
 
 theorem lt_add_succₓ (a : ℤ) (n : ℕ) : a < a + ↑(Nat.succ n) :=
   Le.intro
@@ -150,18 +145,15 @@ protected theorem le_transₓ {a b c : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ c) : 
 protected theorem le_antisymmₓ {a b : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ a) : a = b :=
   Le.elim h₁ fun n => fun hn : a + n = b =>
     Le.elim h₂ fun m => fun hm : b + m = a =>
-      have : a + ↑(n + m) = a + 0 := by
-        rw [Int.coe_nat_add, ← Int.add_assoc, hn, hm, Int.add_zero a]
+      have : a + ↑(n + m) = a + 0 := by rw [Int.coe_nat_add, ← Int.add_assoc, hn, hm, Int.add_zero a]
       have : (↑(n + m) : ℤ) = 0 := Int.add_left_cancel this
       have : n + m = 0 := Int.coe_nat_inj this
       have : n = 0 := Nat.eq_zero_of_add_eq_zero_right this
-      show a = b by
-        rw [← hn, this, Int.coe_nat_zero, Int.add_zero a]
+      show a = b by rw [← hn, this, Int.coe_nat_zero, Int.add_zero a]
 
 protected theorem lt_irreflₓ (a : ℤ) : ¬a < a := fun this : a < a =>
   Lt.elim this fun n => fun hn : a + Nat.succ n = a =>
-    have : a + Nat.succ n = a + 0 := by
-      rw [hn, Int.add_zero]
+    have : a + Nat.succ n = a + 0 := by rw [hn, Int.add_zero]
     have : Nat.succ n = 0 := Int.coe_nat_inj (Int.add_left_cancel this)
     show False from Nat.succ_ne_zero _ this
 
@@ -178,10 +170,7 @@ theorem le_of_ltₓ {a b : ℤ} (h : a < b) : a ≤ b :=
 protected theorem lt_iff_le_and_neₓ (a b : ℤ) : a < b ↔ a ≤ b ∧ a ≠ b :=
   Iff.intro (fun h => ⟨le_of_ltₓ h, Int.ne_of_ltₓ h⟩) fun ⟨aleb, aneb⟩ =>
     Le.elim aleb fun n => fun hn : a + n = b =>
-      have : n ≠ 0 := fun this : n = 0 =>
-        aneb
-          (by
-            rw [← hn, this, Int.coe_nat_zero, Int.add_zero])
+      have : n ≠ 0 := fun this : n = 0 => aneb (by rw [← hn, this, Int.coe_nat_zero, Int.add_zero])
       have : n = Nat.succ (Nat.pred n) := Eq.symm (Nat.succ_pred_eq_of_posₓ (Nat.pos_of_ne_zeroₓ this))
       Lt.intro
         (by
@@ -192,10 +181,7 @@ theorem lt_succₓ (a : ℤ) : a < a + 1 :=
   Int.le_reflₓ (a + 1)
 
 protected theorem add_le_add_leftₓ {a b : ℤ} (h : a ≤ b) (c : ℤ) : c + a ≤ c + b :=
-  Le.elim h fun n => fun hn : a + n = b =>
-    Le.intro
-      (show c + a + n = c + b by
-        rw [Int.add_assoc, hn])
+  Le.elim h fun n => fun hn : a + n = b => Le.intro (show c + a + n = c + b by rw [Int.add_assoc, hn])
 
 protected theorem add_lt_add_leftₓ {a b : ℤ} (h : a < b) (c : ℤ) : c + a < c + b :=
   Iff.mpr (Int.lt_iff_le_and_neₓ _ _)
@@ -264,10 +250,7 @@ theorem eq_nat_abs_of_zero_le {a : ℤ} (h : 0 ≤ a) : a = natAbs a := by
   rw [e] <;> rfl
 
 theorem le_nat_abs {a : ℤ} : a ≤ natAbs a :=
-  Or.elim (le_totalₓ 0 a)
-    (fun h => by
-      rw [eq_nat_abs_of_zero_le h] <;> rfl)
-    fun h => le_transₓ h (coe_zero_le _)
+  Or.elim (le_totalₓ 0 a) (fun h => by rw [eq_nat_abs_of_zero_le h] <;> rfl) fun h => le_transₓ h (coe_zero_le _)
 
 theorem neg_succ_lt_zero (n : ℕ) : -[1 + n] < 0 :=
   lt_of_not_geₓ fun h => by
@@ -279,8 +262,7 @@ theorem eq_neg_succ_of_lt_zero : ∀ {a : ℤ}, a < 0 → ∃ n : ℕ, a = -[1 +
   | -[1 + n], h => ⟨n, rfl⟩
 
 -- int is an ordered add comm group
-protected theorem eq_neg_of_eq_neg {a b : ℤ} (h : a = -b) : b = -a := by
-  rw [h, Int.neg_neg]
+protected theorem eq_neg_of_eq_neg {a b : ℤ} (h : a = -b) : b = -a := by rw [h, Int.neg_neg]
 
 protected theorem neg_add_cancel_left (a b : ℤ) : -a + (a + b) = b := by
   rw [← Int.add_assoc, Int.add_left_neg, Int.zero_add]
@@ -294,17 +276,13 @@ protected theorem add_neg_cancel_right (a b : ℤ) : a + b + -b = a := by
 protected theorem neg_add_cancel_right (a b : ℤ) : a + -b + b = a := by
   rw [Int.add_assoc, Int.add_left_neg, Int.add_zero]
 
-protected theorem sub_self (a : ℤ) : a - a = 0 := by
-  rw [Int.sub_eq_add_neg, Int.add_right_neg]
+protected theorem sub_self (a : ℤ) : a - a = 0 := by rw [Int.sub_eq_add_neg, Int.add_right_neg]
 
-protected theorem sub_eq_zero_of_eq {a b : ℤ} (h : a = b) : a - b = 0 := by
-  rw [h, Int.sub_self]
+protected theorem sub_eq_zero_of_eq {a b : ℤ} (h : a = b) : a - b = 0 := by rw [h, Int.sub_self]
 
 protected theorem eq_of_sub_eq_zero {a b : ℤ} (h : a - b = 0) : a = b := by
-  have : 0 + b = b := by
-    rw [Int.zero_add]
-  have : a - b + b = b := by
-    rwa [h]
+  have : 0 + b = b := by rw [Int.zero_add]
+  have : a - b + b = b := by rwa [h]
   rwa [Int.sub_eq_add_neg, Int.neg_add_cancel_right] at this
 
 protected theorem sub_eq_zero_iff_eq {a b : ℤ} : a - b = 0 ↔ a = b :=
@@ -315,14 +293,10 @@ protected theorem neg_eq_of_add_eq_zero {a b : ℤ} (h : a + b = 0) : -a = b := 
   rw [← Int.add_zero (-a), ← h, ← Int.add_assoc, Int.add_left_neg, Int.zero_add]
 
 protected theorem neg_mul_eq_neg_mul (a b : ℤ) : -(a * b) = -a * b :=
-  Int.neg_eq_of_add_eq_zero
-    (by
-      rw [← Int.distrib_right, Int.add_right_neg, Int.zero_mul])
+  Int.neg_eq_of_add_eq_zero (by rw [← Int.distrib_right, Int.add_right_neg, Int.zero_mul])
 
 protected theorem neg_mul_eq_mul_neg (a b : ℤ) : -(a * b) = a * -b :=
-  Int.neg_eq_of_add_eq_zero
-    (by
-      rw [← Int.distrib_left, Int.add_right_neg, Int.mul_zero])
+  Int.neg_eq_of_add_eq_zero (by rw [← Int.distrib_left, Int.add_right_neg, Int.mul_zero])
 
 theorem neg_mul_eq_neg_mul_symm (a b : ℤ) : -a * b = -(a * b) :=
   Eq.symm (Int.neg_mul_eq_neg_mul a b)
@@ -332,24 +306,20 @@ theorem mul_neg_eq_neg_mul_symm (a b : ℤ) : a * -b = -(a * b) :=
 
 attribute [local simp] neg_mul_eq_neg_mul_symm mul_neg_eq_neg_mul_symm
 
-protected theorem neg_mul_neg (a b : ℤ) : -a * -b = a * b := by
-  simp
+protected theorem neg_mul_neg (a b : ℤ) : -a * -b = a * b := by simp
 
-protected theorem neg_mul_comm (a b : ℤ) : -a * b = a * -b := by
-  simp
+protected theorem neg_mul_comm (a b : ℤ) : -a * b = a * -b := by simp
 
 protected theorem mul_sub (a b c : ℤ) : a * (b - c) = a * b - a * c :=
   calc
     a * (b - c) = a * b + a * -c := Int.distrib_left a b (-c)
-    _ = a * b - a * c := by
-      simp
+    _ = a * b - a * c := by simp
     
 
 protected theorem sub_mul (a b c : ℤ) : (a - b) * c = a * c - b * c :=
   calc
     (a - b) * c = a * c + -b * c := Int.distrib_right a (-b) c
-    _ = a * c - b * c := by
-      simp
+    _ = a * c - b * c := by simp
     
 
 section
@@ -460,8 +430,7 @@ protected theorem le_of_neg_le_negₓ {a b : ℤ} (h : -b ≤ -a) : a ≤ b :=
   Int.neg_le_negₓ h
 
 protected theorem nonneg_of_neg_nonposₓ {a : ℤ} (h : -a ≤ 0) : 0 ≤ a :=
-  have : -a ≤ -0 := by
-    rwa [Int.neg_zero]
+  have : -a ≤ -0 := by rwa [Int.neg_zero]
   Int.le_of_neg_le_negₓ this
 
 protected theorem neg_nonpos_of_nonnegₓ {a : ℤ} (h : 0 ≤ a) : -a ≤ 0 := by
@@ -469,8 +438,7 @@ protected theorem neg_nonpos_of_nonnegₓ {a : ℤ} (h : 0 ≤ a) : -a ≤ 0 := 
   rwa [Int.neg_zero] at this
 
 protected theorem nonpos_of_neg_nonnegₓ {a : ℤ} (h : 0 ≤ -a) : a ≤ 0 :=
-  have : -0 ≤ -a := by
-    rwa [Int.neg_zero]
+  have : -0 ≤ -a := by rwa [Int.neg_zero]
   Int.le_of_neg_le_negₓ this
 
 protected theorem neg_nonneg_of_nonposₓ {a : ℤ} (h : a ≤ 0) : 0 ≤ -a := by
@@ -486,8 +454,7 @@ protected theorem lt_of_neg_lt_negₓ {a b : ℤ} (h : -b < -a) : a < b :=
   Int.neg_neg a ▸ Int.neg_neg b ▸ Int.neg_lt_negₓ h
 
 protected theorem pos_of_neg_negₓ {a : ℤ} (h : -a < 0) : 0 < a :=
-  have : -a < -0 := by
-    rwa [Int.neg_zero]
+  have : -a < -0 := by rwa [Int.neg_zero]
   Int.lt_of_neg_lt_negₓ this
 
 protected theorem neg_neg_of_posₓ {a : ℤ} (h : 0 < a) : -a < 0 := by
@@ -495,8 +462,7 @@ protected theorem neg_neg_of_posₓ {a : ℤ} (h : 0 < a) : -a < 0 := by
   rwa [Int.neg_zero] at this
 
 protected theorem neg_of_neg_posₓ {a : ℤ} (h : 0 < -a) : a < 0 :=
-  have : -0 < -a := by
-    rwa [Int.neg_zero]
+  have : -0 < -a := by rwa [Int.neg_zero]
   Int.lt_of_neg_lt_negₓ this
 
 protected theorem neg_pos_of_negₓ {a : ℤ} (h : a < 0) : 0 < -a := by
@@ -739,16 +705,14 @@ protected theorem sub_le_selfₓ (a : ℤ) {b : ℤ} (h : 0 ≤ b) : a - b ≤ a
   calc
     a - b = a + -b := rfl
     _ ≤ a + 0 := Int.add_le_add_leftₓ (Int.neg_nonpos_of_nonnegₓ h) _
-    _ = a := by
-      rw [Int.add_zero]
+    _ = a := by rw [Int.add_zero]
     
 
 protected theorem sub_lt_selfₓ (a : ℤ) {b : ℤ} (h : 0 < b) : a - b < a :=
   calc
     a - b = a + -b := rfl
     _ < a + 0 := Int.add_lt_add_leftₓ (Int.neg_neg_of_posₓ h) _
-    _ = a := by
-      rw [Int.add_zero]
+    _ = a := by rw [Int.add_zero]
     
 
 protected theorem add_le_add_threeₓ {a b c d e f : ℤ} (h₁ : a ≤ d) (h₂ : b ≤ e) (h₃ : c ≤ f) : a + b + c ≤ d + e + f :=
@@ -775,19 +739,19 @@ protected theorem mul_lt_mul_of_pos_rightₓ {a b c : ℤ} (h₁ : a < b) (h₂ 
   exact Int.lt_of_sub_posₓ this
 
 protected theorem mul_le_mul_of_nonneg_leftₓ {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : c * a ≤ c * b := by
-  by_cases' hba : b ≤ a
+  by_cases hba:b ≤ a
   · simp [le_antisymmₓ hba h₁]
     
-  by_cases' hc0 : c ≤ 0
+  by_cases hc0:c ≤ 0
   · simp [le_antisymmₓ hc0 h₂, Int.zero_mul]
     
   exact (le_not_le_of_ltₓ (Int.mul_lt_mul_of_pos_leftₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ h₂ hc0))).left
 
 protected theorem mul_le_mul_of_nonneg_rightₓ {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : a * c ≤ b * c := by
-  by_cases' hba : b ≤ a
+  by_cases hba:b ≤ a
   · simp [le_antisymmₓ hba h₁]
     
-  by_cases' hc0 : c ≤ 0
+  by_cases hc0:c ≤ 0
   · simp [le_antisymmₓ hc0 h₂, Int.mul_zero]
     
   exact (le_not_le_of_ltₓ (Int.mul_lt_mul_of_pos_rightₓ (lt_of_le_not_leₓ h₁ hba) (lt_of_le_not_leₓ h₂ hc0))).left
@@ -831,8 +795,7 @@ protected theorem mul_neg_of_neg_of_posₓ {a b : ℤ} (ha : a < 0) (hb : 0 < b)
 protected theorem mul_le_mul_of_nonpos_rightₓ {a b c : ℤ} (h : b ≤ a) (hc : c ≤ 0) : a * c ≤ b * c :=
   have : -c ≥ 0 := Int.neg_nonneg_of_nonposₓ hc
   have : b * -c ≤ a * -c := Int.mul_le_mul_of_nonneg_rightₓ h this
-  have : -(b * c) ≤ -(a * c) := by
-    rwa [← Int.neg_mul_eq_mul_neg, ← Int.neg_mul_eq_mul_neg] at this
+  have : -(b * c) ≤ -(a * c) := by rwa [← Int.neg_mul_eq_mul_neg, ← Int.neg_mul_eq_mul_neg] at this
   Int.le_of_neg_le_negₓ this
 
 protected theorem mul_nonneg_of_nonpos_of_nonposₓ {a b : ℤ} (ha : a ≤ 0) (hb : b ≤ 0) : 0 ≤ a * b := by
@@ -842,15 +805,13 @@ protected theorem mul_nonneg_of_nonpos_of_nonposₓ {a b : ℤ} (ha : a ≤ 0) (
 protected theorem mul_lt_mul_of_neg_leftₓ {a b c : ℤ} (h : b < a) (hc : c < 0) : c * a < c * b :=
   have : -c > 0 := Int.neg_pos_of_negₓ hc
   have : -c * b < -c * a := Int.mul_lt_mul_of_pos_leftₓ h this
-  have : -(c * b) < -(c * a) := by
-    rwa [← Int.neg_mul_eq_neg_mul, ← Int.neg_mul_eq_neg_mul] at this
+  have : -(c * b) < -(c * a) := by rwa [← Int.neg_mul_eq_neg_mul, ← Int.neg_mul_eq_neg_mul] at this
   Int.lt_of_neg_lt_negₓ this
 
 protected theorem mul_lt_mul_of_neg_rightₓ {a b c : ℤ} (h : b < a) (hc : c < 0) : a * c < b * c :=
   have : -c > 0 := Int.neg_pos_of_negₓ hc
   have : b * -c < a * -c := Int.mul_lt_mul_of_pos_rightₓ h this
-  have : -(b * c) < -(a * c) := by
-    rwa [← Int.neg_mul_eq_mul_neg, ← Int.neg_mul_eq_mul_neg] at this
+  have : -(b * c) < -(a * c) := by rwa [← Int.neg_mul_eq_mul_neg, ← Int.neg_mul_eq_mul_neg] at this
   Int.lt_of_neg_lt_negₓ this
 
 protected theorem mul_pos_of_neg_of_negₓ {a b : ℤ} (ha : a < 0) (hb : b < 0) : 0 < a * b := by
@@ -934,8 +895,7 @@ theorem sign_eq_neg_one_iff_negₓ (a : ℤ) : sign a = -1 ↔ a < 0 :=
   ⟨neg_of_sign_eq_neg_oneₓ, sign_eq_neg_one_of_negₓ⟩
 
 theorem sign_eq_zero_iff_zero (a : ℤ) : sign a = 0 ↔ a = 0 :=
-  ⟨eq_zero_of_sign_eq_zero, fun h => by
-    rw [h, sign_zero]⟩
+  ⟨eq_zero_of_sign_eq_zero, fun h => by rw [h, sign_zero]⟩
 
 protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) : a = 0 ∨ b = 0 :=
   match lt_trichotomyₓ 0 a with
@@ -965,27 +925,21 @@ protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) 
 
 protected theorem eq_of_mul_eq_mul_right {a b c : ℤ} (ha : a ≠ 0) (h : b * a = c * a) : b = c :=
   have : b * a - c * a = 0 := Int.sub_eq_zero_of_eq h
-  have : (b - c) * a = 0 := by
-    rw [Int.sub_mul, this]
+  have : (b - c) * a = 0 := by rw [Int.sub_mul, this]
   have : b - c = 0 := (Int.eq_zero_or_eq_zero_of_mul_eq_zero this).resolve_right ha
   Int.eq_of_sub_eq_zero this
 
 protected theorem eq_of_mul_eq_mul_left {a b c : ℤ} (ha : a ≠ 0) (h : a * b = a * c) : b = c :=
   have : a * b - a * c = 0 := Int.sub_eq_zero_of_eq h
-  have : a * (b - c) = 0 := by
-    rw [Int.mul_sub, this]
+  have : a * (b - c) = 0 := by rw [Int.mul_sub, this]
   have : b - c = 0 := (Int.eq_zero_or_eq_zero_of_mul_eq_zero this).resolve_left ha
   Int.eq_of_sub_eq_zero this
 
 theorem eq_one_of_mul_eq_self_left {a b : ℤ} (Hpos : a ≠ 0) (H : b * a = a) : b = 1 :=
-  Int.eq_of_mul_eq_mul_right Hpos
-    (by
-      rw [Int.one_mul, H])
+  Int.eq_of_mul_eq_mul_right Hpos (by rw [Int.one_mul, H])
 
 theorem eq_one_of_mul_eq_self_right {a b : ℤ} (Hpos : b ≠ 0) (H : b * a = b) : a = 1 :=
-  Int.eq_of_mul_eq_mul_left Hpos
-    (by
-      rw [Int.mul_one, H])
+  Int.eq_of_mul_eq_mul_left Hpos (by rw [Int.mul_one, H])
 
 end Int
 

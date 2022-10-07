@@ -120,7 +120,7 @@ def map (f : α → β) : List α → List β
   | a :: l => f a :: map l
 
 @[simp]
-def map₂ₓ (f : α → β → γ) : List α → List β → List γ
+def map₂ (f : α → β → γ) : List α → List β → List γ
   | [], _ => []
   | _, [] => []
   | x :: xs, y :: ys => f x y :: map₂ xs ys
@@ -212,7 +212,7 @@ def takeₓ : ℕ → List α → List α
   | succ n, x :: r => x :: take n r
 
 @[simp]
-def foldlₓ (f : α → β → α) : α → List β → α
+def foldl (f : α → β → α) : α → List β → α
   | a, [] => a
   | a, b :: l => foldl (f a b) l
 

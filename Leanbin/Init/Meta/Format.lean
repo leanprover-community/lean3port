@@ -116,7 +116,7 @@ unsafe def format.when {α : Type u} [has_to_format α] : Bool → α → format
   | ff, a => nil
 
 unsafe def format.join (xs : List format) : format :=
-  foldlₓ compose (of_string "") xs
+  foldl compose (of_string "") xs
 
 unsafe instance : has_to_format options :=
   ⟨fun o => format.of_options o⟩

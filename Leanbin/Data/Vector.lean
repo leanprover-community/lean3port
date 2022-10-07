@@ -42,8 +42,7 @@ def length (v : Vector α n) : ℕ :=
 open Nat
 
 def head : Vector α (Nat.succ n) → α
-  | ⟨[], h⟩ => by
-    contradiction
+  | ⟨[], h⟩ => by contradiction
   | ⟨a :: v, h⟩ => a
 
 theorem head_cons (a : α) : ∀ v : Vector α n, head (cons a v) = a
@@ -58,23 +57,17 @@ theorem tail_cons (a : α) : ∀ v : Vector α n, tail (cons a v) = v
 
 @[simp]
 theorem cons_head_tail : ∀ v : Vector α (succ n), cons (head v) (tail v) = v
-  | ⟨[], h⟩ => by
-    contradiction
+  | ⟨[], h⟩ => by contradiction
   | ⟨a :: v, h⟩ => rfl
 
 def toList (v : Vector α n) : List α :=
   v.1
 
 def nth : ∀ v : Vector α n, Finₓ n → α
-  | ⟨l, h⟩, i =>
-    l.nthLe i.1
-      (by
-        rw [h] <;> exact i.2)
+  | ⟨l, h⟩, i => l.nthLe i.1 (by rw [h] <;> exact i.2)
 
 def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
-  | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ =>
-    ⟨l₁ ++ l₂, by
-      simp [*]⟩
+  | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ => ⟨l₁ ++ l₂, by simp [*]⟩
 
 @[elabAsElim]
 def elimₓ {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
@@ -84,9 +77,7 @@ def elimₓ {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C �
 
 -- map
 def map (f : α → β) : Vector α n → Vector β n
-  | ⟨l, h⟩ =>
-    ⟨List.map f l, by
-      simp [*]⟩
+  | ⟨l, h⟩ => ⟨List.map f l, by simp [*]⟩
 
 @[simp]
 theorem map_nil (f : α → β) : map f nil = nil :=
@@ -96,27 +87,19 @@ theorem map_cons (f : α → β) (a : α) : ∀ v : Vector α n, map f (cons a v
   | ⟨l, h⟩ => rfl
 
 def map₂ (f : α → β → φ) : Vector α n → Vector β n → Vector φ n
-  | ⟨x, _⟩, ⟨y, _⟩ =>
-    ⟨List.map₂ₓ f x y, by
-      simp [*]⟩
+  | ⟨x, _⟩, ⟨y, _⟩ => ⟨List.map₂ f x y, by simp [*]⟩
 
 def repeat (a : α) (n : ℕ) : Vector α n :=
   ⟨List.repeat a n, List.length_repeat a n⟩
 
 def drop (i : ℕ) : Vector α n → Vector α (n - i)
-  | ⟨l, p⟩ =>
-    ⟨List.dropₓ i l, by
-      simp [*]⟩
+  | ⟨l, p⟩ => ⟨List.dropₓ i l, by simp [*]⟩
 
 def take (i : ℕ) : Vector α n → Vector α (min i n)
-  | ⟨l, p⟩ =>
-    ⟨List.takeₓ i l, by
-      simp [*]⟩
+  | ⟨l, p⟩ => ⟨List.takeₓ i l, by simp [*]⟩
 
 def removeNth (i : Finₓ n) : Vector α n → Vector α (n - 1)
-  | ⟨l, p⟩ =>
-    ⟨List.removeNthₓ l i.1, by
-      rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
+  | ⟨l, p⟩ => ⟨List.removeNthₓ l i.1, by rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
 
 def ofFn : ∀ {n}, (Finₓ n → α) → Vector α n
   | 0, f => nil
@@ -131,14 +114,12 @@ variable {σ : Type}
 def mapAccumr (f : α → σ → σ × β) : Vector α n → σ → σ × Vector β n
   | ⟨x, px⟩, c =>
     let res := List.mapAccumr f x c
-    ⟨res.1, res.2, by
-      simp [*]⟩
+    ⟨res.1, res.2, by simp [*]⟩
 
 def mapAccumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vector α n → Vector β n → σ → σ × Vector φ n
   | ⟨x, px⟩, ⟨y, py⟩, c =>
     let res := List.mapAccumr₂ f x y c
-    ⟨res.1, res.2, by
-      simp [*]⟩
+    ⟨res.1, res.2, by simp [*]⟩
 
 end Accum
 

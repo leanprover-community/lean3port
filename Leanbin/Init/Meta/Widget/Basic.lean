@@ -198,15 +198,19 @@ unsafe def effects :=
 mutual
   unsafe inductive component : Type → Type → Type
     | pure {Props Action : Type} (view : Props → List (html Action)) : component Props Action
-    | filter_map_action {Props InnerAction OuterAction} (action_map : Props → InnerAction → Option OuterAction) :
+    |
+    filter_map_action {Props InnerAction OuterAction} (action_map : Props → InnerAction → Option OuterAction) :
       component Props InnerAction → component Props OuterAction
     | map_props {Props1 Props2 Action} (map : Props2 → Props1) : component Props1 Action → component Props2 Action
-    | with_should_update {Props Action : Type} (should_update : ∀ old new : Props, Bool) :
+    |
+    with_should_update {Props Action : Type} (should_update : ∀ old new : Props, Bool) :
       component Props Action → component Props Action
-    | with_state {Props Action : Type} (InnerAction State : Type) (init : Props → State)
+    |
+    with_state {Props Action : Type} (InnerAction State : Type) (init : Props → State)
       (props_changed : Props → Props → State → State) (update : Props → State → InnerAction → State × Option Action) :
       component (State × Props) InnerAction → component Props Action
-    | with_effects {Props Action : Type} (emit : Props → Action → effects) :
+    |
+    with_effects {Props Action : Type} (emit : Props → Action → effects) :
       component Props Action → component Props Action
   unsafe inductive html : Type → Type
     | element {α : Type} (tag : Stringₓ) (attrs : List (attr α)) (children : List (html α)) : html α

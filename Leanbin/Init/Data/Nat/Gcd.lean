@@ -21,30 +21,23 @@ def gcdₓ : Nat → Nat → Nat
     gcd (y % succ x) (succ x)
 
 @[simp]
-theorem gcd_zero_leftₓ (x : Nat) : gcdₓ 0 x = x := by
-  simp [gcd]
+theorem gcd_zero_leftₓ (x : Nat) : gcdₓ 0 x = x := by simp [gcd]
 
 @[simp]
-theorem gcd_succₓ (x y : Nat) : gcdₓ (succ x) y = gcdₓ (y % succ x) (succ x) := by
-  simp [gcd]
+theorem gcd_succₓ (x y : Nat) : gcdₓ (succ x) y = gcdₓ (y % succ x) (succ x) := by simp [gcd]
 
 @[simp]
-theorem gcd_one_leftₓ (n : ℕ) : gcdₓ 1 n = 1 := by
-  simp [gcd]
+theorem gcd_one_leftₓ (n : ℕ) : gcdₓ 1 n = 1 := by simp [gcd]
 
-theorem gcd_def (x y : ℕ) : gcdₓ x y = if x = 0 then y else gcdₓ (y % x) x := by
-  cases x <;> simp [gcd, succ_ne_zero]
+theorem gcd_def (x y : ℕ) : gcdₓ x y = if x = 0 then y else gcdₓ (y % x) x := by cases x <;> simp [gcd, succ_ne_zero]
 
 @[simp]
-theorem gcd_selfₓ (n : ℕ) : gcdₓ n n = n := by
-  cases n <;> simp [gcd, mod_self]
+theorem gcd_selfₓ (n : ℕ) : gcdₓ n n = n := by cases n <;> simp [gcd, mod_self]
 
 @[simp]
-theorem gcd_zero_rightₓ (n : ℕ) : gcdₓ n 0 = n := by
-  cases n <;> simp [gcd]
+theorem gcd_zero_rightₓ (n : ℕ) : gcdₓ n 0 = n := by cases n <;> simp [gcd]
 
-theorem gcd_recₓ (m n : ℕ) : gcdₓ m n = gcdₓ (n % m) m := by
-  cases m <;> simp [gcd]
+theorem gcd_recₓ (m n : ℕ) : gcdₓ m n = gcdₓ (n % m) m := by cases m <;> simp [gcd]
 
 @[elabAsElim]
 theorem gcdₓ.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n) (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) :

@@ -81,7 +81,7 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
     let (x, g') := RandomGen.next g
     let v' := v * gen_mag + (x - gen_lo)
     have : r' / gen_mag - 1 < r' := by
-      by_cases' h : (r + 1) / gen_mag = 0
+      by_cases h:(r + 1) / gen_mag = 0
       · rw [h]
         simp
         apply Nat.zero_lt_succₓ
@@ -92,8 +92,7 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
           assumption
           run_tac
             tactic.comp_val
-        have h₂ : (r + 1) / gen_mag ≤ r + 1 := by
-          apply Nat.div_le_selfₓ
+        have h₂ : (r + 1) / gen_mag ≤ r + 1 := by apply Nat.div_le_selfₓ
         exact lt_of_lt_of_leₓ h₁ h₂
         
     rand_nat_aux (r' / gen_mag - 1) v' g'

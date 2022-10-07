@@ -47,7 +47,8 @@ inductive ReducibilityHints
 /-- Reflect a C++ declaration object. The VM replaces it with the C++ implementation. -/
 unsafe inductive declaration-- definition: name, list universe parameters, type, value, is_trusted
 
-  | defn :
+  |
+  defn :
     Name →
       List Name →
         expr →
@@ -56,11 +57,13 @@ unsafe inductive declaration-- definition: name, list universe parameters, type,
               Bool →
                 declaration-- theorem: name, list universe parameters, type, value (remark: theorems are always trusted)
 
-  | thm :
+  |
+  thm :
     Name →
       List Name → expr → task expr → declaration-- constant assumption: name, list universe parameters, type, is_trusted
 
-  | cnst :
+  |
+  cnst :
     Name →
       List Name →
         expr → Bool → declaration-- axiom : name → list universe parameters, type (remark: axioms are always trusted)

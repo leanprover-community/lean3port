@@ -195,16 +195,14 @@ unsafe axiom lt : float → float → Bool
 unsafe instance : LT float :=
   ⟨fun x y => lt x y⟩
 
-unsafe instance decidable_lt : DecidableRel float.has_lt.lt := by
-  infer_instance
+unsafe instance decidable_lt : DecidableRel float.has_lt.lt := by infer_instance
 
 unsafe axiom le : float → float → Bool
 
 unsafe instance : LE float :=
   ⟨fun x y => le x y⟩
 
-unsafe instance decidable_le : DecidableRel float.has_le.le := by
-  infer_instance
+unsafe instance decidable_le : DecidableRel float.has_le.le := by infer_instance
 
 unsafe axiom dec_eq : DecidableEq float
 

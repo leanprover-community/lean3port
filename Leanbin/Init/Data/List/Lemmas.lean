@@ -29,12 +29,10 @@ theorem cons_append (x : α) (s t : List α) : x :: s ++ t = x :: (s ++ t) :=
   rfl
 
 @[simp]
-theorem append_nil (t : List α) : t ++ [] = t := by
-  induction t <;> simp [*]
+theorem append_nil (t : List α) : t ++ [] = t := by induction t <;> simp [*]
 
 @[simp]
-theorem append_assoc (s t u : List α) : s ++ t ++ u = s ++ (t ++ u) := by
-  induction s <;> simp [*]
+theorem append_assoc (s t u : List α) : s ++ t ++ u = s ++ (t ++ u) := by induction s <;> simp [*]
 
 -- length
 theorem length_cons (a : α) (l : List α) : length (a :: l) = length l + 1 :=
@@ -51,12 +49,10 @@ theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
     
 
 @[simp]
-theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by
-  induction n <;> simp [*] <;> rfl
+theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by induction n <;> simp [*] <;> rfl
 
 @[simp]
-theorem length_tail (l : List α) : length (tail l) = length l - 1 := by
-  cases l <;> rfl
+theorem length_tail (l : List α) : length (tail l) = length l - 1 := by cases l <;> rfl
 
 -- TODO(Leo): cleanup proof after arith dec proc
 @[simp]
@@ -81,25 +77,20 @@ theorem map_singletonₓ (f : α → β) (a : α) : map f [a] = [f a] :=
   rfl
 
 @[simp]
-theorem map_id (l : List α) : map id l = l := by
-  induction l <;> simp [*]
+theorem map_id (l : List α) : map id l = l := by induction l <;> simp [*]
 
 @[simp]
-theorem map_mapₓ (g : β → γ) (f : α → β) (l : List α) : map g (map f l) = map (g ∘ f) l := by
-  induction l <;> simp [*]
+theorem map_mapₓ (g : β → γ) (f : α → β) (l : List α) : map g (map f l) = map (g ∘ f) l := by induction l <;> simp [*]
 
 @[simp]
-theorem length_mapₓ (f : α → β) (l : List α) : length (map f l) = length l := by
-  induction l <;> simp [*]
+theorem length_mapₓ (f : α → β) (l : List α) : length (map f l) = length l := by induction l <;> simp [*]
 
 -- bind
 @[simp]
-theorem nil_bindₓ (f : α → List β) : List.bind [] f = [] := by
-  simp [join, List.bind]
+theorem nil_bindₓ (f : α → List β) : List.bind [] f = [] := by simp [join, List.bind]
 
 @[simp]
-theorem cons_bindₓ (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by
-  simp [join, List.bind]
+theorem cons_bindₓ (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by simp [join, List.bind]
 
 @[simp]
 theorem append_bindₓ (xs ys) (f : α → List β) : List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
@@ -129,8 +120,7 @@ theorem mem_cons_of_memₓ (y : α) {a : α} {l : List α} : a ∈ l → a ∈ y
 theorem eq_or_mem_of_mem_consₓ {a y : α} {l : List α} : a ∈ y :: l → a = y ∨ a ∈ l := fun h => h
 
 @[simp]
-theorem mem_appendₓ {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by
-  induction s <;> simp [*, or_assocₓ]
+theorem mem_appendₓ {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by induction s <;> simp [*, or_assocₓ]
 
 @[rsimp]
 theorem mem_append_eqₓ (a : α) (s t : List α) : (a ∈ s ++ t) = (a ∈ s ∨ a ∈ t) :=
@@ -204,36 +194,30 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
   induction l <;> intros <;> contradiction
 
 @[simp]
-theorem length_map₂ₓ (f : α → β → γ) (l₁) : ∀ l₂, length (map₂ₓ f l₁ l₂) = min (length l₁) (length l₂) := by
+theorem length_map₂ (f : α → β → γ) (l₁) : ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
   induction l₁ <;> intro l₂ <;> cases l₂ <;> simp [*, add_one, min_succ_succ, Nat.zero_minₓ, Nat.min_zeroₓ]
 
 @[simp]
 theorem length_takeₓ : ∀ (i : ℕ) (l : List α), length (takeₓ i l) = min i (length l)
-  | 0, l => by
-    simp [Nat.zero_minₓ]
-  | succ n, [] => by
-    simp [Nat.min_zeroₓ]
-  | succ n, a :: l => by
-    simp [*, Nat.min_succ_succₓ, add_one]
+  | 0, l => by simp [Nat.zero_minₓ]
+  | succ n, [] => by simp [Nat.min_zeroₓ]
+  | succ n, a :: l => by simp [*, Nat.min_succ_succₓ, add_one]
 
-theorem length_take_leₓ (n) (l : List α) : length (takeₓ n l) ≤ n := by
-  simp [min_le_leftₓ]
+theorem length_take_leₓ (n) (l : List α) : length (takeₓ n l) ≤ n := by simp [min_le_leftₓ]
 
 theorem length_remove_nth : ∀ (l : List α) (i : ℕ), i < length l → length (removeNthₓ l i) = length l - 1
   | [], _, h => rfl
-  | x :: xs, 0, h => by
-    simp [remove_nth]
+  | x :: xs, 0, h => by simp [remove_nth]
   | x :: xs, i + 1, h => by
     have : i < length xs := lt_of_succ_lt_succₓ h
-    dsimp' [remove_nth] <;>
+    dsimp [remove_nth] <;>
       rw [length_remove_nth xs i this, Nat.sub_add_cancelₓ (lt_of_le_of_ltₓ (Nat.zero_leₓ _) this)] <;> rfl
 
 @[simp]
 theorem partition_eq_filter_filterₓ (p : α → Prop) [DecidablePred p] :
     ∀ l : List α, partitionₓ p l = (filterₓ p l, filterₓ (Not ∘ p) l)
   | [] => rfl
-  | a :: l => by
-    by_cases' pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
+  | a :: l => by by_cases pa:p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
 
 -- sublists
 inductive Sublist : List α → List α → Prop
@@ -266,17 +250,14 @@ theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
     ∀ l₁ l₂ : List α, filterₓ p (l₁ ++ l₂) = filterₓ p l₁ ++ filterₓ p l₂
   | [], l₂ => rfl
-  | a :: l₁, l₂ => by
-    by_cases' pa : p a <;> simp [pa, filter_append]
+  | a :: l₁, l₂ => by by_cases pa:p a <;> simp [pa, filter_append]
 
 @[simp]
 theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filterₓ p l <+ l
   | [] => Sublist.slnil
   | a :: l =>
-    if pa : p a then by
-      simp [pa] <;> apply sublist.cons2 <;> apply filter_sublist l
-    else by
-      simp [pa] <;> apply sublist.cons <;> apply filter_sublist l
+    if pa : p a then by simp [pa] <;> apply sublist.cons2 <;> apply filter_sublist l
+    else by simp [pa] <;> apply sublist.cons <;> apply filter_sublist l
 
 -- map_accumr
 section MapAccumr

@@ -23,10 +23,9 @@ open Function
 variable {α : Type u}
 
 -- mathport name: «expr♯»
-local notation:arg "♯" => by
-  abstract 
-    intros
-    simp
+local notation:arg "♯" => by abstract 
+  intros
+  simp
 
 /-- Convert a list to a dlist -/
 def ofList (l : List α) : Dlist α :=
@@ -56,21 +55,19 @@ attribute [local simp] Function.comp
 /-- `O(1)` Prepend a single element to a dlist -/
 def cons (x : α) : Dlist α → Dlist α
   | ⟨xs, h⟩ =>
-    ⟨x::_ ∘ xs, by
-      abstract 
-        intros
-        simp
-        rw [← h]⟩
+    ⟨x::_ ∘ xs, by abstract 
+      intros
+      simp
+      rw [← h]⟩
 
 /-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α
   | ⟨xs, h⟩ =>
-    ⟨xs ∘ x::_, by
-      abstract 
-        intros
-        simp
-        rw [h, h [x]]
-        simp ⟩
+    ⟨xs ∘ x::_, by abstract 
+      intros
+      simp
+      rw [h, h [x]]
+      simp⟩
 
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
@@ -79,15 +76,14 @@ protected def append : Dlist α → Dlist α → Dlist α
       intros
       simp
       rw [h₂, h₁, h₁ (ys List.nil)]
-      simp ⟩
+      simp⟩
 
 instance : Append (Dlist α) :=
   ⟨Dlist.append⟩
 
 attribute [local simp] of_list to_list Empty singleton cons concat Dlist.append
 
-theorem to_list_of_list (l : List α) : toList (ofList l) = l := by
-  cases l <;> simp
+theorem to_list_of_list (l : List α) : toList (ofList l) = l := by cases l <;> simp
 
 theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
   cases' l with xs
@@ -97,18 +93,14 @@ theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
     simp [l_invariant x]
   simp [h]
 
-theorem to_list_empty : toList (@empty α) = [] := by
-  simp
+theorem to_list_empty : toList (@empty α) = [] := by simp
 
-theorem to_list_singleton (x : α) : toList (singleton x) = [x] := by
-  simp
+theorem to_list_singleton (x : α) : toList (singleton x) = [x] := by simp
 
 theorem to_list_append (l₁ l₂ : Dlist α) : toList (l₁ ++ l₂) = toList l₁ ++ toList l₂ :=
-  show toList (Dlist.append l₁ l₂) = toList l₁ ++ toList l₂ by
-    cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
+  show toList (Dlist.append l₁ l₂) = toList l₁ ++ toList l₂ by cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
 
-theorem to_list_cons (x : α) (l : Dlist α) : toList (cons x l) = x :: toList l := by
-  cases l <;> simp
+theorem to_list_cons (x : α) (l : Dlist α) : toList (cons x l) = x :: toList l := by cases l <;> simp
 
 theorem to_list_concat (x : α) (l : Dlist α) : toList (concat x l) = toList l ++ [x] := by
   cases l <;> simp <;> rw [l_invariant]

@@ -30,7 +30,7 @@ private theorem parser.id_map (p : Parser α) : Parser.bind p Parser.pure = p :=
   intro input
   apply funext
   intro pos
-  dunfold Parser.bind
+  dsimp only [Parser.bind]
   cases p input Pos <;> exact rfl
 
 private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β → Parser γ) :
@@ -39,15 +39,10 @@ private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β
   intro input
   apply funext
   intro pos
-  dunfold Parser.bind
-  cases p input Pos <;>
-    try
-      dunfold bind
-  cases q result input pos_1 <;>
-    try
-      dunfold bind
-  all_goals
-    rfl
+  dsimp only [Parser.bind]
+  cases p input Pos <;> try dsimp only [bind]
+  cases q result input pos_1 <;> try dsimp only [bind]
+  all_goals rfl
 
 protected def fail (msg : Stringₓ) : Parser α := fun _ pos => ParseResult.fail Pos (Dlist.singleton msg)
 

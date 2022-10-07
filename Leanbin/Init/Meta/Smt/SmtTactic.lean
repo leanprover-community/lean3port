@@ -68,14 +68,11 @@ section
 
 attribute [local reducible] smt_tactic
 
-unsafe instance : Monadₓ smt_tactic := by
-  infer_instance
+unsafe instance : Monadₓ smt_tactic := by infer_instance
 
-unsafe instance : Alternativeₓ smt_tactic := by
-  infer_instance
+unsafe instance : Alternativeₓ smt_tactic := by infer_instance
 
-unsafe instance : MonadStateₓ smt_state smt_tactic := by
-  infer_instance
+unsafe instance : MonadStateₓ smt_state smt_tactic := by infer_instance
 
 end
 

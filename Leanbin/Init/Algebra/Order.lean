@@ -9,7 +9,7 @@ import Leanbin.Init.Classical
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Algebra.Classes
 
--- ./././Mathport/Syntax/Translate/Basic.lean:335:40: warning: unsupported option default_priority
+-- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option default_priority
 /- Make sure instances defined in this file have lower priority than the ones
    defined for concrete structures -/
 /- Make sure instances defined in this file have lower priority than the ones
@@ -20,7 +20,7 @@ universe u
 
 variable {α : Type u}
 
--- ./././Mathport/Syntax/Translate/Basic.lean:335:40: warning: unsupported option auto_param.check_exists
+-- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option auto_param.check_exists
 set_option auto_param.check_exists false
 
 section Preorderₓ
@@ -30,6 +30,7 @@ section Preorderₓ
 -/
 
 
+-- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic order_laws_tac
 /-- A preorder is a reflexive, transitive relation `≤` with `a < b` defined in the obvious way. -/
 class Preorderₓ (α : Type u) extends LE α, LT α where
   le_refl : ∀ a : α, a ≤ a
@@ -199,6 +200,8 @@ def maxDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → 
 def minDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
   if a ≤ b then a else b
 
+-- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.interactive.reflexivity
+-- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.interactive.reflexivity
 /-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
 We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`. -/
 class LinearOrderₓ (α : Type u) extends PartialOrderₓ α where

@@ -63,8 +63,7 @@ def revIterate (a : DArray n α) (b : β) (f : ∀ i : Finₓ n, α i → β →
   revIterateAux a f n (le_reflₓ _) b
 
 @[simp]
-theorem read_write (a : DArray n α) (i : Finₓ n) (v : α i) : read (write a i v) i = v := by
-  simp [read, write]
+theorem read_write (a : DArray n α) (i : Finₓ n) (v : α i) : read (write a i v) i = v := by simp [read, write]
 
 @[simp]
 theorem read_write_of_ne (a : DArray n α) {i j : Finₓ n} (v : α i) : i ≠ j → read (write a i v) j = read a j := by
@@ -101,7 +100,7 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     have h₁' : i ≤ n := le_of_ltₓ h₁
     have ih : ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_leₓ h' h₁'⟩ :=
       of_beq_aux_eq_tt i h₁' h₂'.2
-    by_cases' hji : j = i
+    by_cases hji:j = i
     · subst hji
       exact h₂'.1
       

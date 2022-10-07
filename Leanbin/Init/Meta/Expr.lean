@@ -100,19 +100,22 @@ in the environment as well as hard-coded definitions. -/
 they are sometimes dummy values. Use `tactic.infer_type` instead. -/
 -- An `mvar` is a 'hole' yet to be filled in by the elaborator or tactic state.
 
-  | mvar (unique : Name) (pretty : Name) (type : expr) :
+  |
+  mvar (unique : Name) (pretty : Name) (type : expr) :
     expr-- A local constant. For example, if our tactic state was `h : P ⊢ Q`, `h` would be a local constant.
 
   | local_const (unique : Name) (pretty : Name) (bi : BinderInfo) (type : expr) : expr-- Function application.
 
   | app : expr → expr → expr-- Lambda abstraction. eg ```(λ a : α, x)``
 
-  | lam (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) :
+  |
+  lam (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) :
     expr-- Pi type constructor. eg ```(Π a : α, x)`` and ```(α → β)``
 
   | pi (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) : expr-- An explicit let binding.
 
-  | elet (var_name : Name) (type : expr) (assignment : expr) (body : expr) :
+  |
+  elet (var_name : Name) (type : expr) (assignment : expr) (body : expr) :
     expr/- A macro, see the docstring for `macro_def`.
   The list of expressions are local constants and metavariables that the macro depends on.
   -/

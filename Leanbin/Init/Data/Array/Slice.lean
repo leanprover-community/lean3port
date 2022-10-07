@@ -25,26 +25,19 @@ def slice (a : Arrayₓ n α) (k l : Nat) (h₁ : k ≤ l) (h₂ : l ≤ n) : Ar
           ⟩⟩
 
 def take (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ m α :=
-  cast
-      (by
-        simp ) <|
-    a.slice 0 m (Nat.zero_leₓ _) h
+  cast (by simp) <| a.slice 0 m (Nat.zero_leₓ _) h
 
 def drop (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ (n - m) α :=
   a.slice m n h (le_reflₓ _)
 
 private theorem sub_sub_cancel (m n : ℕ) (h : m ≤ n) : n - (n - m) = m :=
   calc
-    n - (n - m) = n - m + m - (n - m) := by
-      rw [Nat.sub_add_cancelₓ] <;> assumption
+    n - (n - m) = n - m + m - (n - m) := by rw [Nat.sub_add_cancelₓ] <;> assumption
     _ = m := Nat.add_sub_cancel_left _ _
     
 
 def takeRight (a : Arrayₓ n α) (m : Nat) (h : m ≤ n) : Arrayₓ m α :=
-  cast
-      (by
-        simp [*, sub_sub_cancel]) <|
-    a.drop (n - m) (Nat.sub_leₓ _ _)
+  cast (by simp [*, sub_sub_cancel]) <| a.drop (n - m) (Nat.sub_leₓ _ _)
 
 def reverse (a : Arrayₓ n α) : Arrayₓ n α :=
   ⟨fun ⟨i, hi⟩ =>

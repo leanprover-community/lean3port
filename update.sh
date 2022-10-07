@@ -19,7 +19,7 @@ mathlib4_rev=$(
   jq -r '.packages[] | select(.name=="mathlib") | .rev'
 )
 
-sed -i '
+sed -i '' '
   /^def tag / s/"\(.*\)"$/"'$tag'"/;
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean

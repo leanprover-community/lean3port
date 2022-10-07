@@ -15,8 +15,7 @@ namespace Int
 protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_injₓ h₂) h₁
 
 protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ => by
-  have : -a = -0 := by
-    rwa [Int.neg_zero]
+  have : -a = -0 := by rwa [Int.neg_zero]
   have : a = 0 := Int.neg_injₓ this
   contradiction
 
@@ -61,9 +60,7 @@ theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
         Int.neg_add, Int.add_right_neg, Int.zero_add])
 
 theorem zero_le_of_nat (n : ℕ) : 0 ≤ ofNat n :=
-  @Le.intro _ _ n
-    (by
-      rw [Int.zero_add, Int.coe_nat_eq])
+  @Le.intro _ _ n (by rw [Int.zero_add, Int.coe_nat_eq])
 
 theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → ofNat (natAbs a) = a
   | of_nat n, h => rfl
@@ -71,15 +68,13 @@ theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → ofNat (natAbs a
 
 theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : natAbs a ≠ natAbs b) : a ≠ b :=
   fun h => by
-  have : ofNat (natAbs a) = ofNat (natAbs b) := by
-    rwa [of_nat_nat_abs_eq_of_nonneg ha, of_nat_nat_abs_eq_of_nonneg hb]
+  have : ofNat (natAbs a) = ofNat (natAbs b) := by rwa [of_nat_nat_abs_eq_of_nonneg ha, of_nat_nat_abs_eq_of_nonneg hb]
   injection this
   contradiction
 
 protected theorem ne_of_nat_ne_nonneg_case {a b : ℤ} {n m : Nat} (ha : 0 ≤ a) (hb : 0 ≤ b) (e1 : natAbs a = n)
     (e2 : natAbs b = m) (h : n ≠ m) : a ≠ b :=
-  have : natAbs a ≠ natAbs b := by
-    rwa [e1, e2]
+  have : natAbs a ≠ natAbs b := by rwa [e1, e2]
   ne_of_nat_abs_ne_nat_abs_of_nonneg ha hb this
 
 /- 4. Aux lemmas for pushing nat_abs inside numerals

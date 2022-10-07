@@ -81,44 +81,37 @@ theorem of_nat_zero : @ofNat n 0 = 0 :=
   rfl
 
 theorem add_def (a b : Finₓ n) : (a + b).val = (a.val + b.val) % n :=
-  show (Finₓ.add a b).val = (a.val + b.val) % n by
-    cases a <;> cases b <;> simp [Finₓ.add]
+  show (Finₓ.add a b).val = (a.val + b.val) % n by cases a <;> cases b <;> simp [Finₓ.add]
 
 theorem mul_def (a b : Finₓ n) : (a * b).val = a.val * b.val % n :=
-  show (Finₓ.mul a b).val = a.val * b.val % n by
-    cases a <;> cases b <;> simp [Finₓ.mul]
+  show (Finₓ.mul a b).val = a.val * b.val % n by cases a <;> cases b <;> simp [Finₓ.mul]
 
-theorem sub_def (a b : Finₓ n) : (a - b).val = (a.val + (n - b.val)) % n := by
-  cases a <;> cases b <;> rfl
+theorem sub_def (a b : Finₓ n) : (a - b).val = (a.val + (n - b.val)) % n := by cases a <;> cases b <;> rfl
 
 theorem mod_def (a b : Finₓ n) : (a % b).val = a.val % b.val :=
-  show (Finₓ.mod a b).val = a.val % b.val by
-    cases a <;> cases b <;> simp [Finₓ.mod]
+  show (Finₓ.mod a b).val = a.val % b.val by cases a <;> cases b <;> simp [Finₓ.mod]
 
 theorem div_def (a b : Finₓ n) : (a / b).val = a.val / b.val :=
-  show (Finₓ.div a b).val = a.val / b.val by
-    cases a <;> cases b <;> simp [Finₓ.div]
+  show (Finₓ.div a b).val = a.val / b.val by cases a <;> cases b <;> simp [Finₓ.div]
 
 theorem lt_def (a b : Finₓ n) : (a < b) = (a.val < b.val) :=
-  show Finₓ.Lt a b = (a.val < b.val) by
-    cases a <;> cases b <;> simp [Finₓ.Lt]
+  show Finₓ.Lt a b = (a.val < b.val) by cases a <;> cases b <;> simp [Finₓ.Lt]
 
 theorem le_def (a b : Finₓ n) : (a ≤ b) = (a.val ≤ b.val) :=
-  show Finₓ.Le a b = (a.val ≤ b.val) by
-    cases a <;> cases b <;> simp [Finₓ.Le]
+  show Finₓ.Le a b = (a.val ≤ b.val) by cases a <;> cases b <;> simp [Finₓ.Le]
 
 theorem val_zero : (0 : Finₓ (succ n)).val = 0 :=
   rfl
 
 def pred {n : Nat} : ∀ i : Finₓ (succ n), i ≠ 0 → Finₓ n
   | ⟨a, h₁⟩, h₂ =>
-    ⟨a.pred, by
-      have : a ≠ 0 := by
+    ⟨a.pred,
+      haveI : a ≠ 0 := by
         have aux₁ := vne_of_ne h₂
-        dsimp'  at aux₁
+        dsimp at aux₁
         rw [val_zero] at aux₁
         exact aux₁
-      exact Nat.pred_lt_predₓ this h₁⟩
+      Nat.pred_lt_predₓ this h₁⟩
 
 end Finₓ
 

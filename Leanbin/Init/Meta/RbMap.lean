@@ -262,7 +262,7 @@ unsafe instance : has_to_format name_set :=
       to_fmt "{" ++ nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++ to_fmt "}"⟩
 
 unsafe def of_list (l : List Name) : name_set :=
-  List.foldlₓ name_set.insert mk_name_set l
+  List.foldl name_set.insert mk_name_set l
 
 unsafe def mfold {α : Type} {m : Type → Type} [Monadₓ m] (ns : name_set) (a : α) (fn : Name → α → m α) : m α :=
   ns.fold (return a) fun k act => act >>= fn k

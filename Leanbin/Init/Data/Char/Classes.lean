@@ -38,37 +38,37 @@ def toLower (c : Charₓ) : Charₓ :=
 
 instance decidableIsWhitespace : DecidablePred IsWhitespace := by
   intro c
-  delta' is_whitespace
+  delta is_whitespace
   infer_instance
 
 instance decidableIsUpper : DecidablePred IsUpper := by
   intro c
-  delta' is_upper
+  delta is_upper
   infer_instance
 
 instance decidableIsLower : DecidablePred IsLower := by
   intro c
-  delta' is_lower
+  delta is_lower
   infer_instance
 
 instance decidableIsAlpha : DecidablePred IsAlpha := by
   intro c
-  delta' is_alpha
+  delta is_alpha
   infer_instance
 
 instance decidableIsDigit : DecidablePred IsDigit := by
   intro c
-  delta' is_digit
+  delta is_digit
   infer_instance
 
 instance decidableIsAlphanum : DecidablePred IsAlphanum := by
   intro c
-  delta' is_alphanum
+  delta is_alphanum
   infer_instance
 
 instance decidableIsPunctuation : DecidablePred IsPunctuation := by
   intro c
-  delta' is_punctuation
+  delta is_punctuation
   infer_instance
 
 end Charₓ

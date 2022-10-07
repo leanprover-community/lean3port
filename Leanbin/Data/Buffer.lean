@@ -74,10 +74,7 @@ theorem lt_aux_2 {n : Nat} (h : 0 < n) : n - 1 < n :=
 
 theorem lt_aux_3 {n i} (h : i + 1 < n) : n - 2 - i < n :=
   have : n > 0 := lt_transₓ (Nat.zero_lt_succₓ i) h
-  have : n - 2 < n :=
-    Nat.sub_ltₓ this
-      (by
-        decide)
+  have : n - 2 < n := Nat.sub_ltₓ this (by decide)
   lt_of_le_of_ltₓ (Nat.sub_leₓ _ _) this
 
 def appendArray {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Arrayₓ n α → ∀ i : Nat, i < n → Buffer α

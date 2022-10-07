@@ -27,14 +27,11 @@ So for example, if one had the lemma `p : x = y`, then the conversion for `p` wo
 unsafe def conv (α : Type u) :=
   tactic α
 
-unsafe instance : Monadₓ conv := by
-  dunfold conv <;> infer_instance
+unsafe instance : Monadₓ conv := by dsimp only [conv] <;> infer_instance
 
-unsafe instance : MonadFail conv := by
-  dunfold conv <;> infer_instance
+unsafe instance : MonadFail conv := by dsimp only [conv] <;> infer_instance
 
-unsafe instance : Alternativeₓ conv := by
-  dunfold conv <;> infer_instance
+unsafe instance : Alternativeₓ conv := by dsimp only [conv] <;> infer_instance
 
 namespace Conv
 

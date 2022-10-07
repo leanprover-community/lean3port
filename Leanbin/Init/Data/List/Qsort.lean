@@ -30,8 +30,7 @@ def qsort {α} (lt : α → α → Bool) : List α → List α :=
   WellFounded.fix (InvImage.wfₓ length Nat.lt_wf) (Qsort.f lt)
 
 @[simp]
-theorem qsort_nil {α} (lt : α → α → Bool) : qsort lt [] = [] := by
-  rw [qsort, WellFounded.fix_eq, qsort.F]
+theorem qsort_nil {α} (lt : α → α → Bool) : qsort lt [] = [] := by rw [qsort, WellFounded.fix_eq, qsort.F]
 
 @[simp]
 theorem qsort_cons {α} (lt : α → α → Bool) (h t) :

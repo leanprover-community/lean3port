@@ -13,8 +13,7 @@ namespace Stringₓ
 namespace Iterator
 
 @[simp]
-theorem next_to_string_mk_iterator (s : Stringₓ) : s.mkIterator.nextToString = s := by
-  induction s <;> rfl
+theorem next_to_string_mk_iterator (s : Stringₓ) : s.mkIterator.nextToString = s := by induction s <;> rfl
 
 @[simp]
 theorem length_next_to_string_next (it : Iterator) : it.next.nextToString.length = it.nextToString.length - 1 := by
@@ -35,9 +34,7 @@ private def split_core (p : Charₓ → Bool) : Iterator → Iterator → List S
     if h : stop.hasNext then
       -- wf hint
       have : stop.nextToString.length - 1 < stop.nextToString.length :=
-        Nat.sub_ltₓ (Iterator.zero_lt_length_next_to_string_of_has_next h)
-          (by
-            decide)
+        Nat.sub_ltₓ (Iterator.zero_lt_length_next_to_string_of_has_next h) (by decide)
       if p stop.curr then
         let rest := stop.next.nextToString
         (start.extract stop).getOrElse "" :: split_core stop.next stop.next

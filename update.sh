@@ -19,6 +19,7 @@ mathlib4_rev=$(
   jq -r '.packages[] | select(.name=="mathlib") | .rev'
 )
 
+# We specify a suffix for `-i` for macos compatibility.
 sed -i .bak '
   /^def tag / s/"\(.*\)"$/"'$tag'"/;
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/

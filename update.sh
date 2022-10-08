@@ -23,6 +23,7 @@ sed -i .bak '
   /^def tag / s/"\(.*\)"$/"'$tag'"/;
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean
+rm lakefile.lean.bak
 lake update
 
 rm -rf Leanbin

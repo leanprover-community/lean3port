@@ -33,9 +33,9 @@ structure StdGen where
 def stdRange :=
   (1, 2147483562)
 
-instance : HasRepr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
+instance : Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
 
-def stdNextₓ : StdGen → Nat × StdGen
+def stdNext : StdGen → Nat × StdGen
   | ⟨s1, s2⟩ =>
     let k : Int := s1 / 53668
     let s1' : Int := 40014 * ((s1 : Int) - k * 53668) - k * 12211
@@ -47,27 +47,28 @@ def stdNextₓ : StdGen → Nat × StdGen
     let z' : Int := if z < 1 then z + 2147483562 else z % 2147483562
     (z'.toNat, ⟨s1''.toNat, s2''.toNat⟩)
 
-def stdSplitₓ : StdGen → StdGen × StdGen
+def stdSplit : StdGen → StdGen × StdGen
   | g@⟨s1, s2⟩ =>
     let new_s1 := if s1 = 2147483562 then 1 else s1 + 1
     let new_s2 := if s2 = 1 then 2147483398 else s2 - 1
-    let new_g := (stdNextₓ g).2
+    let new_g := (stdNext g).2
     let left_g := StdGen.mk new_s1 new_g.2
     let right_g := StdGen.mk new_g.1 new_s2
     (left_g, right_g)
 
 instance : RandomGen StdGen where
-  range := fun _ => stdRange
-  next := stdNextₓ
-  split := stdSplitₓ
+  range _ := stdRange
+  next := stdNext
+  split := stdSplit
 
 /-- Return a standard number generator. -/
-def mkStdGenₓ (s : Nat := 0) : StdGen :=
+def mkStdGen (s : Nat := 0) : StdGen :=
   let q := s / 2147483562
   let s1 := s % 2147483562
   let s2 := q % 2147483398
   ⟨s1 + 1, s2 + 1⟩
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.comp_val -/
 /-
 Auxiliary function for random_nat_val.
 Generate random values until we exceed the target magnitude.
@@ -84,21 +85,21 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
       by_cases h:(r + 1) / gen_mag = 0
       · rw [h]
         simp
-        apply Nat.zero_lt_succₓ
+        apply Nat.zero_lt_succ
         
-      · have : (r + 1) / gen_mag > 0 := Nat.pos_of_ne_zeroₓ h
+      · have : (r + 1) / gen_mag > 0 := Nat.pos_of_ne_zero h
         have h₁ : (r + 1) / gen_mag - 1 < (r + 1) / gen_mag := by
-          apply Nat.sub_ltₓ
+          apply Nat.sub_lt
           assumption
           run_tac
             tactic.comp_val
-        have h₂ : (r + 1) / gen_mag ≤ r + 1 := by apply Nat.div_le_selfₓ
-        exact lt_of_lt_of_leₓ h₁ h₂
+        have h₂ : (r + 1) / gen_mag ≤ r + 1 := by apply Nat.div_le_self
+        exact lt_of_lt_of_le h₁ h₂
         
     rand_nat_aux (r' / gen_mag - 1) v' g'
 
 /-- Generate a random natural number in the interval [lo, hi]. -/
-def randNatₓ {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen :=
+def randNat {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen :=
   let lo' := if lo > hi then hi else lo
   let hi' := if lo > hi then lo else hi
   let (gen_lo, gen_hi) := RandomGen.range g
@@ -112,12 +113,12 @@ def randNatₓ {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × g
     1000
   let k := hi' - lo' + 1
   let tgt_mag := k * q
-  let (v, g') := randNatAuxₓ gen_lo gen_mag (Nat.zero_lt_succₓ _) tgt_mag 0 g
+  let (v, g') := randNatAux gen_lo gen_mag (Nat.zero_lt_succ _) tgt_mag 0 g
   let v' := lo' + v % k
   (v', g')
 
 /-- Generate a random Boolean. -/
-def randBoolₓ {gen : Type u} [RandomGen gen] (g : gen) : Bool × gen :=
-  let (v, g') := randNatₓ g 0 1
+def randBool {gen : Type u} [RandomGen gen] (g : gen) : Bool × gen :=
+  let (v, g') := randNat g 0 1
   (v = 1, g')
 

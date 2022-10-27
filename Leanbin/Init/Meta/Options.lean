@@ -20,13 +20,13 @@ unsafe axiom options.set_bool : options → Name → Bool → options
 
 unsafe axiom options.set_nat : options → Name → Nat → options
 
-unsafe axiom options.set_string : options → Name → Stringₓ → options
+unsafe axiom options.set_string : options → Name → String → options
 
 unsafe axiom options.get_bool : options → Name → Bool → Bool
 
 unsafe axiom options.get_nat : options → Name → Nat → Nat
 
-unsafe axiom options.get_string : options → Name → Stringₓ → Stringₓ
+unsafe axiom options.get_string : options → Name → String → String
 
 unsafe axiom options.join : options → options → options
 

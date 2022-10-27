@@ -18,49 +18,49 @@ import Leanbin.Init.Data.Char.Basic
    we need to bind string_imp.mk and string_imp.cases_on in the VM.
 -/
 structure StringImp where
-  data : List Charₓ
+  data : List Char
 
-def Stringₓ :=
+def String :=
   StringImp
 
-def List.asStringₓ (s : List Charₓ) : Stringₓ :=
+def List.asString (s : List Char) : String :=
   ⟨s⟩
 
-namespace Stringₓ
+namespace String
 
-instance : LT Stringₓ :=
+instance : LT String :=
   ⟨fun s₁ s₂ => s₁.data < s₂.data⟩
 
 -- Remark: this function has a VM builtin efficient implementation.
-instance hasDecidableLt (s₁ s₂ : Stringₓ) : Decidable (s₁ < s₂) :=
-  List.hasDecidableLtₓ s₁.data s₂.data
+instance hasDecidableLt (s₁ s₂ : String) : Decidable (s₁ < s₂) :=
+  List.hasDecidableLt s₁.data s₂.data
 
-instance hasDecidableEq : DecidableEq Stringₓ := fun ⟨x⟩ ⟨y⟩ =>
-  match List.hasDecEqₓ x y with
+instance hasDecidableEq : DecidableEq String := fun ⟨x⟩ ⟨y⟩ =>
+  match List.hasDecEq x y with
   | is_true p => isTrue (congr_arg StringImp.mk p)
   | is_false p => isFalse fun q => p (StringImp.mk.inj q)
 
-def empty : Stringₓ :=
+def empty : String :=
   ⟨[]⟩
 
-def length : Stringₓ → Nat
+def length : String → Nat
   | ⟨s⟩ => s.length
 
 /- The internal implementation uses dynamic arrays and will perform destructive updates
    if the string is not shared. -/
-def push : Stringₓ → Charₓ → Stringₓ
+def push : String → Char → String
   | ⟨s⟩, c => ⟨s ++ [c]⟩
 
 /- The internal implementation uses dynamic arrays and will perform destructive updates
    if the string is not shared. -/
-def append : Stringₓ → Stringₓ → Stringₓ
+def append : String → String → String
   | ⟨a⟩, ⟨b⟩ => ⟨a ++ b⟩
 
 -- O(n) in the VM, where n is the length of the string
-def toList : Stringₓ → List Charₓ
+def toList : String → List Char
   | ⟨s⟩ => s
 
-def fold {α} (a : α) (f : α → Charₓ → α) (s : Stringₓ) : α :=
+def fold {α} (a : α) (f : α → Char → α) (s : String) : α :=
   s.toList.foldl f a
 
 /- In the VM, the string iterator is implemented as a pointer to the string being iterated + index.
@@ -69,24 +69,24 @@ def fold {α} (a : α) (f : α → Charₓ → α) (s : Stringₓ) : α :=
    we need to bind string_imp.mk and string_imp.cases_on in the VM.
 -/
 structure IteratorImp where
-  fst : List Charₓ
-  snd : List Charₓ
+  fst : List Char
+  snd : List Char
 
 def Iterator :=
   iterator_imp
 
-def mkIterator : Stringₓ → Iterator
+def mkIterator : String → Iterator
   | ⟨s⟩ => ⟨[], s⟩
 
 namespace Iterator
 
-def curr : Iterator → Charₓ
+def curr : Iterator → Char
   | ⟨p, c :: n⟩ => c
   | _ => default
 
 /- In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
    if it is. -/
-def setCurr : Iterator → Charₓ → Iterator
+def setCurr : Iterator → Char → Iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩
   | it, c' => it
 
@@ -106,26 +106,26 @@ def hasPrev : Iterator → Bool
   | ⟨[], n⟩ => false
   | _ => true
 
-def insert : Iterator → Stringₓ → Iterator
+def insert : Iterator → String → Iterator
   | ⟨p, n⟩, ⟨s⟩ => ⟨p, s ++ n⟩
 
 def remove : Iterator → Nat → Iterator
   | ⟨p, n⟩, m => ⟨p, n.drop m⟩
 
 -- In the VM, `to_string` is a constant time operation.
-def toString : Iterator → Stringₓ
+def toString : Iterator → String
   | ⟨p, n⟩ => ⟨p.reverse ++ n⟩
 
 def toEnd : Iterator → Iterator
   | ⟨p, n⟩ => ⟨n.reverse ++ p, []⟩
 
-def nextToString : Iterator → Stringₓ
+def nextToString : Iterator → String
   | ⟨p, n⟩ => ⟨n⟩
 
-def prevToString : Iterator → Stringₓ
+def prevToString : Iterator → String
   | ⟨p, n⟩ => ⟨p.reverse⟩
 
-protected def extractCore : List Charₓ → List Charₓ → Option (List Charₓ)
+protected def extractCore : List Char → List Char → Option (List Char)
   | [], cs => none
   | c :: cs₁, cs₂ =>
     if cs₁ = cs₂ then some [c]
@@ -134,7 +134,13 @@ protected def extractCore : List Charₓ → List Charₓ → Option (List Char�
       | none => none
       | some r => some (c :: r)
 
-def extract : Iterator → Iterator → Option Stringₓ
+/- warning: string.iterator.extract -> String.Iterator.extract is a dubious translation:
+lean 3 declaration is
+  String.Iterator -> String.Iterator -> (Option.{0} String)
+but is expected to have type
+  String.Iterator -> String.Iterator -> String
+Case conversion may be inaccurate. Consider using '#align string.iterator.extract String.Iterator.extractₓ'. -/
+def extract : Iterator → Iterator → Option String
   | ⟨p₁, n₁⟩, ⟨p₂, n₂⟩ =>
     if p₁.reverse ++ n₁ ≠ p₂.reverse ++ n₂ then none
     else
@@ -146,39 +152,39 @@ def extract : Iterator → Iterator → Option Stringₓ
 
 end Iterator
 
-end Stringₓ
+end String
 
 -- The following definitions do not have builtin support in the VM
-instance : Inhabited Stringₓ :=
-  ⟨Stringₓ.empty⟩
+instance : Inhabited String :=
+  ⟨String.empty⟩
 
-instance : SizeOf Stringₓ :=
-  ⟨Stringₓ.length⟩
+instance : SizeOf String :=
+  ⟨String.length⟩
 
-instance : Append Stringₓ :=
-  ⟨Stringₓ.append⟩
+instance : Append String :=
+  ⟨String.append⟩
 
-namespace Stringₓ
+namespace String
 
-def str : Stringₓ → Charₓ → Stringₓ :=
+def str : String → Char → String :=
   push
 
-def isEmpty (s : Stringₓ) : Bool :=
-  toBool (s.length = 0)
+def isEmpty (s : String) : Bool :=
+  decide (s.length = 0)
 
-def front (s : Stringₓ) : Charₓ :=
+def front (s : String) : Char :=
   s.mkIterator.curr
 
-def back (s : Stringₓ) : Charₓ :=
+def back (s : String) : Char :=
   s.mkIterator.toEnd.prev.curr
 
-def join (l : List Stringₓ) : Stringₓ :=
+def join (l : List String) : String :=
   l.foldl (fun r s => r ++ s) ""
 
-def singleton (c : Charₓ) : Stringₓ :=
+def singleton (c : Char) : String :=
   empty.push c
 
-def intercalate (s : Stringₓ) (ss : List Stringₓ) : Stringₓ :=
+def intercalate (s : String) (ss : List String) : String :=
   (List.intercalate s.toList (ss.map toList)).asString
 
 namespace Iterator
@@ -193,44 +199,44 @@ def prevn : Iterator → Nat → Iterator
 
 end Iterator
 
-def popBack (s : Stringₓ) : Stringₓ :=
+def popBack (s : String) : String :=
   s.mkIterator.toEnd.prev.prevToString
 
-def popnBack (s : Stringₓ) (n : Nat) : Stringₓ :=
+def popnBack (s : String) (n : Nat) : String :=
   (s.mkIterator.toEnd.prevn n).prevToString
 
-def backn (s : Stringₓ) (n : Nat) : Stringₓ :=
+def backn (s : String) (n : Nat) : String :=
   (s.mkIterator.toEnd.prevn n).nextToString
 
-end Stringₓ
+end String
 
-protected def Charₓ.toString (c : Charₓ) : Stringₓ :=
-  Stringₓ.singleton c
+protected def Char.toString (c : Char) : String :=
+  String.singleton c
 
-private def to_nat_core : Stringₓ.Iterator → Nat → Nat → Nat
+private def to_nat_core : String.Iterator → Nat → Nat → Nat
   | it, 0, r => r
   | it, i + 1, r =>
     let c := it.curr
     let r := r * 10 + c.toNat - '0'.toNat
     to_nat_core it.next i r
 
-def Stringₓ.toNat (s : Stringₓ) : Nat :=
+def String.toNat (s : String) : Nat :=
   toNatCore s.mkIterator s.length 0
 
-namespace Stringₓ
+namespace String
 
-private theorem nil_ne_append_singleton : ∀ (c : Charₓ) (l : List Charₓ), [] ≠ l ++ [c]
+private theorem nil_ne_append_singleton : ∀ (c : Char) (l : List Char), [] ≠ l ++ [c]
   | c, [] => fun h => List.noConfusion h
   | c, d :: l => fun h => List.noConfusion h
 
-theorem empty_ne_str : ∀ (c : Charₓ) (s : Stringₓ), Empty ≠ str s c
+theorem empty_ne_str : ∀ (c : Char) (s : String), Empty ≠ str s c
   | c, ⟨l⟩ => fun h : StringImp.mk [] = StringImp.mk (l ++ [c]) =>
     (StringImp.noConfusion h) fun h => nil_ne_append_singleton _ _ h
 
-theorem str_ne_empty (c : Charₓ) (s : Stringₓ) : str s c ≠ Empty :=
+theorem str_ne_empty (c : Char) (s : String) : str s c ≠ Empty :=
   (empty_ne_str c s).symm
 
-private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Charₓ} (l₁ l₂ : List Charₓ), c₁ ≠ c₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
+private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Char} (l₁ l₂ : List Char), c₁ ≠ c₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
   | c₁, c₂, [], [], h₁, h₂ => List.noConfusion h₂ fun h _ => absurd h h₁
   | c₁, c₂, d₁ :: l₁, [], h₁, h₂ =>
     have : d₁ :: (l₁ ++ [c₁]) = [c₂] := h₂
@@ -245,12 +251,12 @@ private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Charₓ} (l₁ l₂ : Lis
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := List.noConfusion this fun _ h => h
     absurd this (str_ne_str_left_aux l₁ l₂ h₁)
 
-theorem str_ne_str_left : ∀ {c₁ c₂ : Charₓ} (s₁ s₂ : Stringₓ), c₁ ≠ c₂ → str s₁ c₁ ≠ str s₂ c₂
+theorem str_ne_str_left : ∀ {c₁ c₂ : Char} (s₁ s₂ : String), c₁ ≠ c₂ → str s₁ c₁ ≠ str s₂ c₂
   | c₁, c₂, StringImp.mk l₁, StringImp.mk l₂, h₁, h₂ =>
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := StringImp.noConfusion h₂ id
     absurd this (str_ne_str_left_aux l₁ l₂ h₁)
 
-private theorem str_ne_str_right_aux : ∀ (c₁ c₂ : Charₓ) {l₁ l₂ : List Charₓ}, l₁ ≠ l₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
+private theorem str_ne_str_right_aux : ∀ (c₁ c₂ : Char) {l₁ l₂ : List Char}, l₁ ≠ l₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
   | c₁, c₂, [], [], h₁, h₂ => absurd rfl h₁
   | c₁, c₂, d₁ :: l₁, [], h₁, h₂ =>
     have : d₁ :: (l₁ ++ [c₁]) = [c₂] := h₂
@@ -269,7 +275,7 @@ private theorem str_ne_str_right_aux : ∀ (c₁ c₂ : Charₓ) {l₁ l₂ : Li
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := List.noConfusion aux₁ fun _ h => h
     absurd this (str_ne_str_right_aux c₁ c₂ aux₂)
 
-theorem str_ne_str_right : ∀ (c₁ c₂ : Charₓ) {s₁ s₂ : Stringₓ}, s₁ ≠ s₂ → str s₁ c₁ ≠ str s₂ c₂
+theorem str_ne_str_right : ∀ (c₁ c₂ : Char) {s₁ s₂ : String}, s₁ ≠ s₂ → str s₁ c₁ ≠ str s₂ c₂
   | c₁, c₂, StringImp.mk l₁, StringImp.mk l₂, h₁, h₂ =>
     have aux : l₁ ≠ l₂ := fun h =>
       have : StringImp.mk l₁ = StringImp.mk l₂ := Eq.subst h rfl
@@ -277,5 +283,5 @@ theorem str_ne_str_right : ∀ (c₁ c₂ : Charₓ) {s₁ s₂ : Stringₓ}, s�
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := StringImp.noConfusion h₂ id
     absurd this (str_ne_str_right_aux c₁ c₂ aux)
 
-end Stringₓ
+end String
 

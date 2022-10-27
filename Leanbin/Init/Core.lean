@@ -52,8 +52,8 @@ inductive PUnit : Sort u
 abbrev Unit : Type :=
   PUnit
 
-@[matchPattern]
-abbrev Unit.star : Unit :=
+@[match_pattern]
+abbrev Unit.unit : Unit :=
   PUnit.unit
 
 /-- Gadget for defining thunks, thunk parameters have special treatment.
@@ -65,7 +65,7 @@ an application
      f "hello" (λ _, 10)
 -/
 @[reducible]
-def Thunkₓ (α : Type u) : Type u :=
+def Thunk' (α : Type u) : Type u :=
   Unit → α
 
 inductive True : Prop
@@ -88,7 +88,7 @@ Related mathlib tactic: `contrapose`.
 def Not (a : Prop) :=
   a → False
 
--- ./././Mathport/Syntax/Translate/Command.lean:308:30: infer kinds are unsupported in Lean 4: refl []
+/- ./././Mathport/Syntax/Translate/Command.lean:321:30: infer kinds are unsupported in Lean 4: refl [] -/
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
 
@@ -112,7 +112,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 -/
 init_quot
 
--- ./././Mathport/Syntax/Translate/Command.lean:308:30: infer kinds are unsupported in Lean 4: refl []
+/- ./././Mathport/Syntax/Translate/Command.lean:321:30: infer kinds are unsupported in Lean 4: refl [] -/
 /-- Heterogeneous equality.
 
 Its purpose is to write down equalities between terms whose types are not definitionally equal.
@@ -153,21 +153,15 @@ structure And (a b : Prop) : Prop where intro ::
   left : a
   right : b
 
-theorem And.elim_left {a b : Prop} (h : And a b) : a :=
-  h.1
-
-theorem And.elim_right {a b : Prop} (h : And a b) : b :=
-  h.2
-
 -- eq basic support
 attribute [refl] Eq.refl
 
 -- This is a `def`, so that it can be used as pattern in the equation compiler.
-@[matchPattern]
+@[match_pattern]
 def rfl {α : Sort u} {a : α} : a = a :=
   Eq.refl a
 
-@[elabAsElim, subst]
+@[elab_as_elim, subst]
 theorem Eq.subst {α : Sort u} {P : α → Prop} {a b : α} (h₁ : a = b) (h₂ : P a) : P b :=
   Eq.ndrec h₂ h₁
 
@@ -180,14 +174,14 @@ theorem Eq.symm {α : Sort u} {a b : α} (h : a = b) : b = a :=
   h ▸ rfl
 
 -- This is a `def`, so that it can be used as pattern in the equation compiler.
-@[matchPattern]
+@[match_pattern]
 def HEq.rfl {α : Sort u} {a : α} : HEq a a :=
   HEq.refl a
 
 theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
-  have : ∀ (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') (h₂ : α = α'), (Eq.recOnₓ h₂ a : α') = a' :=
-    fun (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') => HEq.recOnₓ h₁ fun h₂ : α = α => rfl
-  show (Eq.recOnₓ (Eq.refl α) a : α) = a' from this α a' h (Eq.refl α)
+  have : ∀ (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') (h₂ : α = α'), (Eq.recOn h₂ a : α') = a' :=
+    fun (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') => HEq.recOn h₁ fun h₂ : α = α => rfl
+  show (Eq.recOn (Eq.refl α) a : α) = a' from this α a' h (Eq.refl α)
 
 /- The following four lemmas could not be automatically generated when the
    structures were declared, so we prove them manually here. -/
@@ -231,7 +225,7 @@ inductive Or (a b : Prop) : Prop
 theorem Or.intro_left {a : Prop} (b : Prop) (ha : a) : Or a b :=
   Or.inl ha
 
-theorem Or.intro_rightₓ (a : Prop) {b : Prop} (hb : b) : Or a b :=
+theorem Or.intro_right (a : Prop) {b : Prop} (hb : b) : Or a b :=
   Or.inr hb
 
 structure Sigma {α : Type u} (β : α → Type v) where mk ::
@@ -334,7 +328,7 @@ class LT (α : Type u) where
 class Append (α : Type u) where
   append : α → α → α
 
-class HasAndthen (α : Type u) (β : Type v) (σ : outParam <| Type w) where
+class AndThen' (α : Type u) (β : Type v) (σ : outParam <| Type w) where
   andthen : α → β → σ
 
 class Union (α : Type u) where
@@ -346,13 +340,13 @@ class Inter (α : Type u) where
 class Sdiff (α : Type u) where
   sdiff : α → α → α
 
-class HasEquivₓ (α : Sort u) where
+class HasEquiv (α : Sort u) where
   Equiv : α → α → Prop
 
-class Subset (α : Type u) where
+class HasSubset (α : Type u) where
   Subset : α → α → Prop
 
-class SSubset (α : Type u) where
+class HasSSubset (α : Type u) where
   Ssubset : α → α → Prop
 
 /-! Type classes `has_emptyc` and `has_insert` are
@@ -382,32 +376,32 @@ class Membership (α : outParam <| Type u) (γ : Type v) where
 class Pow (α : Type u) (β : Type v) where
   pow : α → β → α
 
-export HasAndthen (andthen)
+export AndThen' (andthen)
 
 export Pow (pow)
 
 -- mathport name: «expr ⊂ »
 infixl:50
   " ⊂ " =>-- Note this is different to `|`.
-  SSubset.Ssubset
+  HasSSubset.SSubset
 
 export Append (append)
 
 @[reducible]
-def Ge {α : Type u} [LE α] (a b : α) : Prop :=
+def ge {α : Type u} [LE α] (a b : α) : Prop :=
   LE.le b a
 
 @[reducible]
-def Gt {α : Type u} [LT α] (a b : α) : Prop :=
+def gt {α : Type u} [LT α] (a b : α) : Prop :=
   LT.lt b a
 
 @[reducible]
-def Superset {α : Type u} [Subset α] (a b : α) : Prop :=
-  Subset.Subset b a
+def Superset {α : Type u} [HasSubset α] (a b : α) : Prop :=
+  HasSubset.Subset b a
 
 @[reducible]
-def Ssuperset {α : Type u} [SSubset α] (a b : α) : Prop :=
-  SSubset.Ssubset b a
+def Ssuperset {α : Type u} [HasSSubset α] (a b : α) : Prop :=
+  HasSSubset.SSubset b a
 
 -- mathport name: «expr ⊇ »
 infixl:50 " ⊇ " => Superset
@@ -421,16 +415,16 @@ def bit0 {α : Type u} [s : Add α] (a : α) : α :=
 def bit1 {α : Type u} [s₁ : One α] [s₂ : Add α] (a : α) : α :=
   bit0 a + 1
 
-attribute [matchPattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
+attribute [match_pattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 
 export Insert (insert)
 
-class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] : Prop where
+class LawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] : Prop where
   insert_emptyc_eq : ∀ x : α, (insert x ∅ : β) = {x}
 
 export Singleton (singleton)
 
-export IsLawfulSingleton (insert_emptyc_eq)
+export LawfulSingleton (insert_emptyc_eq)
 
 attribute [simp] insert_emptyc_eq
 
@@ -443,7 +437,7 @@ protected def add : Nat → Nat → Nat
 
 /- We mark the following definitions as pattern to make sure they can be used in recursive equations,
      and reduced by the equation compiler. -/
-attribute [matchPattern] Nat.add Nat.add
+attribute [match_pattern] Nat.add Nat.add
 
 end Nat
 
@@ -497,9 +491,6 @@ def Std.Prec.maxPlus : Nat :=
 class SizeOf (α : Sort u) where
   sizeof : α → Nat
 
-def sizeof {α : Sort u} [s : SizeOf α] : α → Nat :=
-  SizeOf.sizeof
-
 /-
 Declare sizeof instances and lemmas for types declared before has_sizeof.
 From now on, the inductive compiler will automatically generate sizeof instances and lemmas.
@@ -518,33 +509,33 @@ instance : SizeOf Nat :=
   ⟨Nat.sizeof⟩
 
 protected def Prod.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : Prod α β → Nat
-  | ⟨a, b⟩ => 1 + sizeof a + sizeof b
+  | ⟨a, b⟩ => 1 + sizeOf a + sizeOf b
 
 instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (Prod α β) :=
   ⟨Prod.sizeof⟩
 
 protected def Sum.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : Sum α β → Nat
-  | Sum.inl a => 1 + sizeof a
-  | Sum.inr b => 1 + sizeof b
+  | Sum.inl a => 1 + sizeOf a
+  | Sum.inr b => 1 + sizeOf b
 
 instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (Sum α β) :=
   ⟨Sum.sizeof⟩
 
 protected def PSum.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → Nat
-  | PSum.inl a => 1 + sizeof a
-  | PSum.inr b => 1 + sizeof b
+  | PSum.inl a => 1 + sizeOf a
+  | PSum.inr b => 1 + sizeOf b
 
 instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=
   ⟨PSum.sizeof⟩
 
 protected def Sigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : Sigma β → Nat
-  | ⟨a, b⟩ => 1 + sizeof a + sizeof b
+  | ⟨a, b⟩ => 1 + sizeOf a + sizeOf b
 
 instance (α : Type u) (β : α → Type v) [SizeOf α] [∀ a, SizeOf (β a)] : SizeOf (Sigma β) :=
   ⟨Sigma.sizeof⟩
 
 protected def PSigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : PSigma β → Nat
-  | ⟨a, b⟩ => 1 + sizeof a + sizeof b
+  | ⟨a, b⟩ => 1 + sizeOf a + sizeOf b
 
 instance (α : Type u) (β : α → Type v) [SizeOf α] [∀ a, SizeOf (β a)] : SizeOf (PSigma β) :=
   ⟨PSigma.sizeof⟩
@@ -563,25 +554,25 @@ instance : SizeOf Bool :=
 
 protected def Option.sizeof {α : Type u} [SizeOf α] : Option α → Nat
   | none => 1
-  | some a => 1 + sizeof a
+  | some a => 1 + sizeOf a
 
 instance (α : Type u) [SizeOf α] : SizeOf (Option α) :=
   ⟨Option.sizeof⟩
 
 protected def List.sizeof {α : Type u} [SizeOf α] : List α → Nat
   | List.nil => 1
-  | List.cons a l => 1 + sizeof a + List.sizeof l
+  | List.cons a l => 1 + sizeOf a + List.sizeof l
 
 instance (α : Type u) [SizeOf α] : SizeOf (List α) :=
   ⟨List.sizeof⟩
 
 protected def Subtype.sizeof {α : Type u} [SizeOf α] {p : α → Prop} : Subtype p → Nat
-  | ⟨a, _⟩ => sizeof a
+  | ⟨a, _⟩ => sizeOf a
 
 instance {α : Type u} [SizeOf α] (p : α → Prop) : SizeOf (Subtype p) :=
   ⟨Subtype.sizeof⟩
 
-theorem nat_add_zero (n : Nat) : n + 0 = n :=
+theorem add_zero (n : Nat) : n + 0 = n :=
   rfl
 
 -- Combinator calculus
@@ -589,13 +580,31 @@ namespace Combinator
 
 universe u₁ u₂ u₃
 
-def i {α : Type u₁} (a : α) :=
+/- warning: combinator.I -> Combinator.I is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u₁}}, α -> α
+but is expected to have type
+  forall {α : Sort.{u_1}}, α -> α
+Case conversion may be inaccurate. Consider using '#align combinator.I Combinator.Iₓ'. -/
+def I {α : Type u₁} (a : α) :=
   a
 
-def k {α : Type u₁} {β : Type u₂} (a : α) (b : β) :=
+/- warning: combinator.K -> Combinator.K is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u₁}} {β : Type.{u₂}}, α -> β -> α
+but is expected to have type
+  forall {α : Sort.{u_1}} {β : Sort.{u_2}}, α -> β -> α
+Case conversion may be inaccurate. Consider using '#align combinator.K Combinator.Kₓ'. -/
+def K {α : Type u₁} {β : Type u₂} (a : α) (b : β) :=
   a
 
-def s {α : Type u₁} {β : Type u₂} {γ : Type u₃} (x : α → β → γ) (y : α → β) (z : α) :=
+/- warning: combinator.S -> Combinator.S is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u₁}} {β : Type.{u₂}} {γ : Type.{u₃}}, (α -> β -> γ) -> (α -> β) -> α -> γ
+but is expected to have type
+  forall {α : Sort.{u_1}} {β : Sort.{u_2}} {γ : Sort.{u_3}}, (α -> β -> γ) -> (α -> β) -> α -> γ
+Case conversion may be inaccurate. Consider using '#align combinator.S Combinator.Sₓ'. -/
+def S {α : Type u₁} {β : Type u₂} {γ : Type u₃} (x : α → β → γ) (y : α → β) (z : α) :=
   x z (y z)
 
 end Combinator
@@ -615,7 +624,7 @@ inductive BinTree (α : Type u)
   | leaf (val : α) : BinTree
   | node (left right : BinTree) : BinTree
 
-attribute [elabWithoutExpectedType] BinTree.node BinTree.leaf
+attribute [elab_without_expected_type] BinTree.node BinTree.leaf
 
 /-- Like `by apply_instance`, but not dependent on the tactic framework. -/
 @[reducible]

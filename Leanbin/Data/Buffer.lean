@@ -7,12 +7,12 @@ Authors: Leonardo de Moura
 universe u w
 
 def Buffer (α : Type u) :=
-  Σn, Arrayₓ n α
+  Σn, Array' n α
 
 def mkBuffer {α : Type u} : Buffer α :=
-  ⟨0, { data := fun i => Finₓ.elim0 i }⟩
+  ⟨0, { data := fun i => Fin.elim0 i }⟩
 
-def Arrayₓ.toBuffer {α : Type u} {n : Nat} (a : Arrayₓ n α) : Buffer α :=
+def Array'.toBuffer {α : Type u} {n : Nat} (a : Array' n α) : Buffer α :=
   ⟨n, a⟩
 
 namespace Buffer
@@ -25,7 +25,7 @@ def nil : Buffer α :=
 def size (b : Buffer α) : Nat :=
   b.1
 
-def toArray (b : Buffer α) : Arrayₓ b.size α :=
+def toArray (b : Buffer α) : Array' b.size α :=
   b.2
 
 def pushBack : Buffer α → α → Buffer α
@@ -35,10 +35,10 @@ def popBack : Buffer α → Buffer α
   | ⟨0, a⟩ => ⟨0, a⟩
   | ⟨n + 1, a⟩ => ⟨n, a.popBack⟩
 
-def read : ∀ b : Buffer α, Finₓ b.size → α
+def read : ∀ b : Buffer α, Fin b.size → α
   | ⟨n, a⟩, i => a.read i
 
-def write : ∀ b : Buffer α, Finₓ b.size → α → Buffer α
+def write : ∀ b : Buffer α, Fin b.size → α → Buffer α
   | ⟨n, a⟩, i, v => ⟨n, a.write i v⟩
 
 def read' [Inhabited α] : Buffer α → Nat → α
@@ -48,56 +48,56 @@ def write' : Buffer α → Nat → α → Buffer α
   | ⟨n, a⟩, i, v => ⟨n, a.write' i v⟩
 
 theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) : read b ⟨i, h⟩ = read' b i := by
-  cases b <;> unfold read read' <;> simp [Arrayₓ.read_eq_read']
+  cases b <;> unfold read read' <;> simp [Array'.read_eq_read']
 
 theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) : write b ⟨i, h⟩ v = write' b i v := by
-  cases b <;> unfold write write' <;> simp [Arrayₓ.write_eq_write']
+  cases b <;> unfold write write' <;> simp [Array'.write_eq_write']
 
 def toList (b : Buffer α) : List α :=
   b.toArray.toList
 
-protected def toString (b : Buffer Charₓ) : Stringₓ :=
+protected def toString (b : Buffer Char) : String :=
   b.toArray.toList.asString
 
 def appendList {α : Type u} : Buffer α → List α → Buffer α
   | b, [] => b
   | b, v :: vs => append_list (b.pushBack v) vs
 
-def appendString (b : Buffer Charₓ) (s : Stringₓ) : Buffer Charₓ :=
+def appendString (b : Buffer Char) (s : String) : Buffer Char :=
   b.appendList s.toList
 
 theorem lt_aux_1 {a b c : Nat} (h : a + c < b) : a < b :=
-  lt_of_le_of_ltₓ (Nat.le_add_rightₓ a c) h
+  lt_of_le_of_lt (Nat.le_add_right a c) h
 
 theorem lt_aux_2 {n : Nat} (h : 0 < n) : n - 1 < n :=
-  Nat.sub_ltₓ h (Nat.succ_posₓ 0)
+  Nat.sub_lt h (Nat.succ_pos 0)
 
 theorem lt_aux_3 {n i} (h : i + 1 < n) : n - 2 - i < n :=
-  have : n > 0 := lt_transₓ (Nat.zero_lt_succₓ i) h
-  have : n - 2 < n := Nat.sub_ltₓ this (by decide)
-  lt_of_le_of_ltₓ (Nat.sub_leₓ _ _) this
+  have : n > 0 := lt_trans (Nat.zero_lt_succ i) h
+  have : n - 2 < n := Nat.sub_lt this (by decide)
+  lt_of_le_of_lt (Nat.sub_le _ _) this
 
-def appendArray {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Arrayₓ n α → ∀ i : Nat, i < n → Buffer α
+def appendArray {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Array' n α → ∀ i : Nat, i < n → Buffer α
   | ⟨m, b⟩, a, 0, _ =>
-    let i : Finₓ n := ⟨n - 1, lt_aux_2 nz⟩
+    let i : Fin n := ⟨n - 1, lt_aux_2 nz⟩
     ⟨m + 1, b.pushBack (a.read i)⟩
   | ⟨m, b⟩, a, j + 1, h =>
-    let i : Finₓ n := ⟨n - 2 - j, lt_aux_3 h⟩
+    let i : Fin n := ⟨n - 2 - j, lt_aux_3 h⟩
     append_array ⟨m + 1, b.pushBack (a.read i)⟩ a j (lt_aux_1 h)
 
 protected def append {α : Type u} : Buffer α → Buffer α → Buffer α
   | b, ⟨0, a⟩ => b
-  | b, ⟨n + 1, a⟩ => appendArray (Nat.zero_lt_succₓ _) b a n (Nat.lt_succ_selfₓ _)
+  | b, ⟨n + 1, a⟩ => appendArray (Nat.zero_lt_succ _) b a n (Nat.lt_succ_self _)
 
-def iterate : ∀ b : Buffer α, β → (Finₓ b.size → α → β → β) → β
+def iterate : ∀ b : Buffer α, β → (Fin b.size → α → β → β) → β
   | ⟨_, a⟩, b, f => a.iterate b f
 
-def foreach : ∀ b : Buffer α, (Finₓ b.size → α → α) → Buffer α
+def foreach : ∀ b : Buffer α, (Fin b.size → α → α) → Buffer α
   | ⟨n, a⟩, f => ⟨n, a.foreach f⟩
 
 /-- Monadically map a function over the buffer. -/
 @[inline]
-def mmap {m} [Monadₓ m] (b : Buffer α) (f : α → m β) : m (Buffer β) := do
+def mmap {m} [Monad m] (b : Buffer α) (f : α → m β) : m (Buffer β) := do
   let b' ← b.2.mmap f
   return b'
 
@@ -109,7 +109,7 @@ def map : Buffer α → (α → β) → Buffer β
 def foldl : Buffer α → β → (α → β → β) → β
   | ⟨_, a⟩, b, f => a.foldl b f
 
-def revIterate : ∀ b : Buffer α, β → (Finₓ b.size → α → β → β) → β
+def revIterate : ∀ b : Buffer α, β → (Fin b.size → α → β → β) → β
   | ⟨_, a⟩, b, f => a.revIterate b f
 
 def take (b : Buffer α) (n : Nat) : Buffer α :=
@@ -133,8 +133,8 @@ instance : Membership α (Buffer α) :=
 instance : Append (Buffer α) :=
   ⟨Buffer.append⟩
 
-instance [HasRepr α] : HasRepr (Buffer α) :=
-  ⟨reprₓ ∘ to_list⟩
+instance [Repr α] : Repr (Buffer α) :=
+  ⟨repr ∘ to_list⟩
 
 unsafe instance [has_to_format α] : has_to_format (Buffer α) :=
   ⟨to_fmt ∘ to_list⟩
@@ -149,12 +149,12 @@ def List.toBuffer {α : Type u} (l : List α) : Buffer α :=
 
 @[reducible]
 def CharBuffer :=
-  Buffer Charₓ
+  Buffer Char
 
 /-- Convert a format object into a character buffer with the provided
     formatting options. -/
-unsafe axiom format.to_buffer : format → options → Buffer Charₓ
+unsafe axiom format.to_buffer : format → options → Buffer Char
 
-def Stringₓ.toCharBuffer (s : Stringₓ) : CharBuffer :=
+def String.toCharBuffer (s : String) : CharBuffer :=
   Buffer.nil.appendString s
 

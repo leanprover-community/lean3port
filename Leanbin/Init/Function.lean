@@ -104,7 +104,7 @@ def Surjective (f : α → β) : Prop :=
 theorem Surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) : Surjective (g ∘ f) :=
   fun c : φ =>
   Exists.elim (hg c) fun b hb =>
-    Exists.elim (hf b) fun a ha => Exists.introₓ a (show g (f a) = c from Eq.trans (congr_arg g ha) hb)
+    Exists.elim (hf b) fun a ha => Exists.intro a (show g (f a) = c from Eq.trans (congr_arg g ha) hb)
 
 /-- A function is called bijective if it is both injective and surjective. -/
 def Bijective (f : α → β) :=

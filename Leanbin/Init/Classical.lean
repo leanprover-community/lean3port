@@ -80,7 +80,7 @@ theorem em : p ∨ ¬p :=
 end Diaconescu
 
 theorem exists_true_of_nonempty {α : Sort u} : Nonempty α → ∃ x : α, True
-  | ⟨x⟩ => ⟨x, trivialₓ⟩
+  | ⟨x⟩ => ⟨x, trivial⟩
 
 noncomputable def inhabitedOfNonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
   ⟨choice h⟩
@@ -136,11 +136,11 @@ theorem skolem {α : Sort u} {b : α → Sort v} {p : ∀ x, b x → Prop} :
   ⟨axiom_of_choice, fun ⟨f, hw⟩ x => ⟨f x, hw x⟩⟩
 
 theorem prop_complete (a : Prop) : a = True ∨ a = False :=
-  Or.elim (em a) (fun t => Or.inl (eq_true_intro t)) fun f => Or.inr (eq_false_intro f)
+  Or.elim (em a) (fun t => Or.inl (eq_true t)) fun f => Or.inr (eq_false f)
 
 section Aux
 
-@[elabAsElim]
+@[elab_as_elim]
 theorem cases_true_false (p : Prop → Prop) (h1 : p True) (h2 : p False) (a : Prop) : p a :=
   Or.elim (prop_complete a) (fun ht : a = True => ht.symm ▸ h1) fun hf : a = False => hf.symm ▸ h2
 

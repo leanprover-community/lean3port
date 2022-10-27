@@ -22,9 +22,9 @@ open Lean.Parser
 
 open Native
 
--- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
+/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
 -- mathport name: «expr ?»
-local postfix:1024 "?" => optionalₓ
+local postfix:1024 "?" => optional
 
 -- mathport name: «expr *»
 local postfix:1024 "*" => many
@@ -113,7 +113,7 @@ unsafe def propagate_tags (tac : itactic) : tactic Unit := do
       focus1 <| do
         tac
         let gs ← get_goals
-        when (bnot gs) <| do
+        when (not gs) <| do
             let new_tag ← get_main_tag
             when new_tag <| with_enable_tags (set_main_tag tag)
 
@@ -125,7 +125,7 @@ unsafe def concat_tags (tac : tactic (List (Name × expr))) : tactic Unit :=
       let r
         ←-- remove assigned metavars
               r.mfilter
-            fun ⟨n, m⟩ => bnot <$> is_assigned m
+            fun ⟨n, m⟩ => not <$> is_assigned m
       match r with
         | [(_, m)] => set_tag m in_tag
         |-- if there is only new subgoal, we just propagate `in_tag`
@@ -192,7 +192,7 @@ unsafe def introv (ns : parse ident_*) : tactic Unit :=
 
 /-- Parse a current name and new name for `rename`. -/
 private unsafe def rename_arg_parser : parser (Name × Name) :=
-  Prod.mk <$> ident <*> (optionalₓ (tk "->") *> ident)
+  Prod.mk <$> ident <*> (optional (tk "->") *> ident)
 
 /-- Parse the arguments of `rename`. -/
 private unsafe def rename_args_parser : parser (List (Name × Name)) :=
@@ -383,7 +383,7 @@ unsafe def get_rule_eqn_lemmas (r : rw_rule) : tactic (List Name) :=
   | local_const n _ _ _ => aux n
   | _ => return []
 
--- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas
+/- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit :=
   rs.mmap' fun r => do
     save_info r
@@ -398,9 +398,9 @@ private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit 
         (eq_lemmas eq_lemmas.empty)
 
 private unsafe def uses_hyp (e : expr) (h : expr) : Bool :=
-  (e.fold false) fun t _ r => r || toBool (t = h)
+  (e.fold false) fun t _ r => r || decide (t = h)
 
--- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas
+/- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_hyp (cfg : RewriteCfg) : List rw_rule → expr → tactic Unit
   | [], hyp => skip
   | r :: rs, hyp => do
@@ -581,7 +581,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
--- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
+/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -850,13 +850,13 @@ unsafe def casesm (rec : parse <| (tk "*")?) (ps : parse pexpr_list_or_texpr) : 
 private unsafe def try_cases_for_types (type_names : List Name) (at_most_one : Bool) : tactic Unit :=
   any_hyp fun h => do
     let I ← expr.get_app_fn <$> (infer_type h >>= head_beta)
-    guardₓ I
-    guardₓ (I ∈ type_names)
+    guard I
+    guard (I ∈ type_names)
     tactic.focus1
         (cases_core h >>
           if at_most_one then do
             let n ← num_goals
-            guardₓ (n ≤ 1)
+            guard (n ≤ 1)
           else skip)
 
 /-- `cases_type I` applies the `cases` tactic to a hypothesis `h : (I ...)`
@@ -872,8 +872,8 @@ cases_type* or and
 unsafe def cases_type (one : parse <| (tk "!")?) (rec : parse <| (tk "*")?) (type_names : parse ident*) : tactic Unit :=
   do
   let type_names ← type_names.mmap resolve_constant
-  if rec then try_cases_for_types type_names (bnot one)
-    else tactic.focus1 <| tactic.repeat <| try_cases_for_types type_names (bnot one)
+  if rec then try_cases_for_types type_names (not one)
+    else tactic.focus1 <| tactic.repeat <| try_cases_for_types type_names (not one)
 
 /--
 Tries to solve the current goal using a canonical proof of `true`, or the `reflexivity` tactic, or the `contradiction` tactic.
@@ -1229,32 +1229,32 @@ private unsafe def simp_lemmas.resolve_and_add (s : simp_lemmas) (u : List Name)
   match e with
     | const n _ =>
       (do
-          guardₓ ¬symm
+          guard ¬symm
           has_attribute `congr n
           let s ← s n
           pure (s, u)) <|>
         (do
             let b ← is_valid_simp_lemma_cnst n
-            guardₓ b
+            guard b
             save_const_type_info n ref
             let s ← s n symm
             return (s, u)) <|>
           (do
               let eqns ← get_eqn_lemmas_for tt n
-              guardₓ (eqns > 0)
+              guard (eqns > 0)
               save_const_type_info n ref
               let s ← add_simps s (eqns fun e => (e, ff))
               return (s, u)) <|>
             (do
                 let env ← get_env
-                guardₓ (env n).isSome
+                guard (env n).isSome
                 return (s, n :: u)) <|>
               report_invalid_simp_lemma n
     | _ =>
       (do
           let e ← i_to_expr_no_subgoals p
           let b ← is_valid_simp_lemma e
-          guardₓ b
+          guard b
           try (save_type_info e ref)
           let s ← s e symm
           return (s, u)) <|>
@@ -1332,7 +1332,7 @@ unsafe def simp_core_aux (cfg : SimpConfig) (discharger : tactic Unit) (s : simp
   let (lms, goal_simplified) ←
     if tgt then (simp_target s u cfg discharger >>= fun ns => return (ns, true)) <|> return (mk_name_set, false)
       else return (mk_name_set, false)
-  guardₓ (cfg = ff ∨ to_remove > 0 ∨ goal_simplified) <|> fail "simplify tactic failed to simplify"
+  guard (cfg = ff ∨ to_remove > 0 ∨ goal_simplified) <|> fail "simplify tactic failed to simplify"
   to_remove fun h => try (clear h)
   return (lmss lms)
 
@@ -1624,7 +1624,7 @@ unsafe def success_if_fail (tac : itactic) : tactic Unit :=
 
 unsafe def guard_expr_eq (t : expr) (p : parse <| tk ":=" *> texpr) : tactic Unit := do
   let e ← to_expr p
-  guardₓ (alpha_eqv t e)
+  guard (alpha_eqv t e)
 
 /-- `guard_target t` fails if the target of the main goal is not `t`.
 We use this tactic for writing tests.
@@ -1800,10 +1800,10 @@ protected unsafe def apply_inj_lemma : tactic Unit := do
   let expr.const C _ ← return lhs.get_app_fn
   -- We disable auto_param and opt_param support to address issue #1943
       applyc
-      (Name.mk_string "inj" C) { AutoParam := ff, optParam := ff }
+      (Name.mk_string "inj" C) { autoParam := ff, optParam := ff }
   assumption
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 /- Auxiliary tactic for proving `I.C.inj_eq` lemmas.
    These lemmas are automatically generated by the equation compiler.
    Example:
@@ -1832,46 +1832,56 @@ end Tactic
 -- Define inj_eq lemmas for inductive datatypes that were declared before `mk_inj_eq`
 universe u v
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Sum.inl.inj_eq {α : Type u} (β : Type v) (a₁ a₂ : α) : (@Sum.inl α β a₁ = Sum.inl a₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Sum.inr.inj_eq (α : Type u) {β : Type v} (b₁ b₂ : β) : (@Sum.inr α β b₁ = Sum.inr b₂) = (b₁ = b₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem PSum.inl.inj_eq {α : Sort u} (β : Sort v) (a₁ a₂ : α) : (@PSum.inl α β a₁ = PSum.inl a₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem PSum.inr.inj_eq (α : Sort u) {β : Sort v} (b₁ b₂ : β) : (@PSum.inr α β b₁ = PSum.inr b₂) = (b₁ = b₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Sigma.mk.inj_eq {α : Type u} {β : α → Type v} (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) :
     (Sigma.mk a₁ b₁ = Sigma.mk a₂ b₂) = (a₁ = a₂ ∧ HEq b₁ b₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem PSigma.mk.inj_eq {α : Sort u} {β : α → Sort v} (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) :
     (PSigma.mk a₁ b₁ = PSigma.mk a₂ b₂) = (a₁ = a₂ ∧ HEq b₁ b₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Subtype.mk.inj_eq {α : Sort u} {p : α → Prop} (a₁ : α) (h₁ : p a₁) (a₂ : α) (h₂ : p a₂) :
     (Subtype.mk a₁ h₁ = Subtype.mk a₂ h₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Option.some.inj_eq {α : Type u} (a₁ a₂ : α) : (some a₁ = some a₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem List.cons.inj_eq {α : Type u} (h₁ : α) (t₁ : List α) (h₂ : α) (t₂ : List α) :
     (List.cons h₁ t₁ = List.cons h₂ t₂) = (h₁ = h₂ ∧ t₁ = t₂) := by
   run_tac
     tactic.mk_inj_eq
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Nat.succ.inj_eq (n₁ n₂ : Nat) : (Nat.succ n₁ = Nat.succ n₂) = (n₁ = n₂) := by
   run_tac
     tactic.mk_inj_eq

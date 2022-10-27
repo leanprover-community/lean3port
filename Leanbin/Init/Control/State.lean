@@ -13,90 +13,90 @@ import Leanbin.Init.Control.Except
 
 universe u v w
 
-structure StateTₓ (σ : Type u) (m : Type u → Type v) (α : Type u) : Type max u v where
+structure StateT (σ : Type u) (m : Type u → Type v) (α : Type u) : Type max u v where
   run : σ → m (α × σ)
 
-attribute [pp_using_anonymous_constructor] StateTₓ
+attribute [pp_using_anonymous_constructor] StateT
 
 @[reducible]
 def State (σ α : Type u) : Type u :=
-  StateTₓ σ id α
+  StateT σ id α
 
-namespace StateTₓ
+namespace StateT
 
 section
 
 variable {σ : Type u} {m : Type u → Type v}
 
-variable [Monadₓ m]
+variable [Monad m]
 
 variable {α β : Type u}
 
 @[inline]
-protected def pure (a : α) : StateTₓ σ m α :=
+protected def pure (a : α) : StateT σ m α :=
   ⟨fun s => pure (a, s)⟩
 
 @[inline]
-protected def bind (x : StateTₓ σ m α) (f : α → StateTₓ σ m β) : StateTₓ σ m β :=
+protected def bind (x : StateT σ m α) (f : α → StateT σ m β) : StateT σ m β :=
   ⟨fun s => do
     let (a, s') ← x.run s
     (f a).run s'⟩
 
-instance : Monadₓ (StateTₓ σ m) where
-  pure := @StateTₓ.pure _ _ _
-  bind := @StateTₓ.bind _ _ _
+instance : Monad (StateT σ m) where
+  pure := @StateT.pure _ _ _
+  bind := @StateT.bind _ _ _
 
-protected def orelse [Alternativeₓ m] {α : Type u} (x₁ x₂ : StateTₓ σ m α) : StateTₓ σ m α :=
+protected def orelse [Alternative m] {α : Type u} (x₁ x₂ : StateT σ m α) : StateT σ m α :=
   ⟨fun s => x₁.run s <|> x₂.run s⟩
 
-protected def failure [Alternativeₓ m] {α : Type u} : StateTₓ σ m α :=
+protected def failure [Alternative m] {α : Type u} : StateT σ m α :=
   ⟨fun s => failure⟩
 
-instance [Alternativeₓ m] : Alternativeₓ (StateTₓ σ m) where
-  failure := @StateTₓ.failure _ _ _ _
-  orelse := @StateTₓ.orelse _ _ _ _
+instance [Alternative m] : Alternative (StateT σ m) where
+  failure := @StateT.failure _ _ _ _
+  orelse := @StateT.orelse _ _ _ _
 
 @[inline]
-protected def get : StateTₓ σ m σ :=
+protected def get : StateT σ m σ :=
   ⟨fun s => pure (s, s)⟩
 
 @[inline]
-protected def put : σ → StateTₓ σ m PUnit := fun s' => ⟨fun s => pure (PUnit.unit, s')⟩
+protected def put : σ → StateT σ m PUnit := fun s' => ⟨fun s => pure (PUnit.unit, s')⟩
 
 @[inline]
-protected def modify (f : σ → σ) : StateTₓ σ m PUnit :=
+protected def modify (f : σ → σ) : StateT σ m PUnit :=
   ⟨fun s => pure (PUnit.unit, f s)⟩
 
 @[inline]
-protected def lift {α : Type u} (t : m α) : StateTₓ σ m α :=
+protected def lift {α : Type u} (t : m α) : StateT σ m α :=
   ⟨fun s => do
     let a ← t
     pure (a, s)⟩
 
-instance : HasMonadLift m (StateTₓ σ m) :=
-  ⟨@StateTₓ.lift σ m _⟩
+instance : HasMonadLift m (StateT σ m) :=
+  ⟨@StateT.lift σ m _⟩
 
 @[inline]
-protected def monadMap {σ m m'} [Monadₓ m] [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : StateTₓ σ m α → StateTₓ σ m' α :=
+protected def monadMap {σ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) : StateT σ m α → StateT σ m' α :=
   fun x => ⟨fun st => f (x.run st)⟩
 
-instance (σ m m') [Monadₓ m] [Monadₓ m'] : MonadFunctorₓ m m' (StateTₓ σ m) (StateTₓ σ m') :=
-  ⟨@StateTₓ.monadMap σ m m' _ _⟩
+instance (σ m m') [Monad m] [Monad m'] : MonadFunctor m m' (StateT σ m) (StateT σ m') :=
+  ⟨@StateT.monadMap σ m m' _ _⟩
 
-protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monadₓ m] (split : σ → σ' × σ'') (join : σ' → σ'' → σ)
-    (x : StateTₓ σ' m α) : StateTₓ σ m α :=
+protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monad m] (split : σ → σ' × σ'') (join : σ' → σ'' → σ)
+    (x : StateT σ' m α) : StateT σ m α :=
   ⟨fun st => do
     let (st, ctx) := split st
     let (a, st') ← x.run st
     pure (a, join st' ctx)⟩
 
-instance (ε) [MonadExcept ε m] : MonadExcept ε (StateTₓ σ m) where
-  throw := fun α => StateTₓ.lift ∘ throw
-  catch := fun α x c => ⟨fun s => catch (x.run s) fun e => StateTₓ.run (c e) s⟩
+instance (ε) [MonadExcept ε m] : MonadExcept ε (StateT σ m) where
+  throw α := StateT.lift ∘ throw
+  catch α x c := ⟨fun s => catch (x.run s) fun e => StateT.run (c e) s⟩
 
 end
 
-end StateTₓ
+end StateT
 
 /--
 An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Class.html).
@@ -112,7 +112,7 @@ An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/
     However, by parametricity the types `∀ m [monad m], σ → m (α × σ)` and `σ → α × σ` should be
     equivalent because the only way to obtain an `m` is through `pure`.
     -/
-class MonadStateₓ (σ : outParam (Type u)) (m : Type u → Type v) where
+class MonadState (σ : outParam (Type u)) (m : Type u → Type v) where
   lift {α : Type u} : State σ α → m α
 
 section
@@ -121,32 +121,37 @@ variable {σ : Type u} {m : Type u → Type v}
 
 -- NOTE: The ordering of the following two instances determines that the top-most `state_t` monad layer
 -- will be picked first
-instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadStateₓ σ m] [HasMonadLift m n] :
-    MonadStateₓ σ n :=
-  ⟨fun α x => monadLift (MonadStateₓ.lift x : m α)⟩
+instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadState σ m] [HasMonadLift m n] : MonadState σ n :=
+  ⟨fun α x => monadLift (MonadState.lift x : m α)⟩
 
-instance [Monadₓ m] : MonadStateₓ σ (StateTₓ σ m) :=
+instance [Monad m] : MonadState σ (StateT σ m) :=
   ⟨fun α x => ⟨fun s => pure (x.run s)⟩⟩
 
-variable [Monadₓ m] [MonadStateₓ σ m]
+variable [Monad m] [MonadState σ m]
 
 /-- Obtain the top-most state of a monad stack. -/
 @[inline]
 def get : m σ :=
-  MonadStateₓ.lift StateTₓ.get
+  MonadState.lift StateT.get
 
 /-- Set the top-most state of a monad stack. -/
 @[inline]
 def put (st : σ) : m PUnit :=
-  MonadStateₓ.lift (StateTₓ.put st)
+  MonadState.lift (StateT.put st)
 
+/- warning: modify -> modify is a dubious translation:
+lean 3 declaration is
+  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [_inst_1 : Monad.{u v} m] [_inst_2 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
+but is expected to have type
+  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [inst._@.Init.Prelude._hyg.11916 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
+Case conversion may be inaccurate. Consider using '#align modify modifyₓ'. -/
 /-- Map the top-most state of a monad stack.
 
     Note: `modify f` may be preferable to `f <$> get >>= put` because the latter
     does not use the state linearly (without sufficient inlining). -/
 @[inline]
-def modifyₓ (f : σ → σ) : m PUnit :=
-  MonadStateₓ.lift (StateTₓ.modify f)
+def modify (f : σ → σ) : m PUnit :=
+  MonadState.lift (StateT.modify f)
 
 end
 
@@ -193,14 +198,14 @@ section
 variable {σ σ' : Type u} {m m' : Type u → Type v}
 
 instance (priority := 100) monadStateAdapterTrans {n n' : Type u → Type v} [MonadStateAdapter σ σ' m m']
-    [MonadFunctorₓ m m' n n'] : MonadStateAdapter σ σ' n n' :=
+    [MonadFunctor m m' n n'] : MonadStateAdapter σ σ' n n' :=
   ⟨fun σ'' α split join => monadMap fun α => (adaptState split join : m α → m' α)⟩
 
-instance [Monadₓ m] : MonadStateAdapter σ σ' (StateTₓ σ m) (StateTₓ σ' m) :=
-  ⟨fun σ'' α => StateTₓ.adapt⟩
+instance [Monad m] : MonadStateAdapter σ σ' (StateT σ m) (StateT σ' m) :=
+  ⟨fun σ'' α => StateT.adapt⟩
 
 end
 
-instance (σ m out) [MonadRun out m] : MonadRun (fun α => σ → out (α × σ)) (StateTₓ σ m) :=
+instance (σ m out) [MonadRun out m] : MonadRun (fun α => σ → out (α × σ)) (StateT σ m) :=
   ⟨fun α x => run ∘ fun σ => x.run σ⟩
 

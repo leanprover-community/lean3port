@@ -4,7 +4,7 @@ import Leanbin.Init.Logic
 import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.Char.Basic
 
-namespace Charₓ
+namespace Char
 
 theorem val_of_nat_eq_of_is_valid {n : Nat} : IsValidChar n → (ofNat n).val = n := by
   intro h <;> unfold of_nat <;> rw [dif_pos h]
@@ -21,5 +21,5 @@ theorem of_nat_ne_of_ne {n₁ n₂ : Nat} (h₁ : n₁ ≠ n₂) (h₂ : IsValid
   rw [val_of_nat_eq_of_is_valid h₂, val_of_nat_eq_of_is_valid h₃]
   assumption
 
-end Charₓ
+end Char
 

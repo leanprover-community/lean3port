@@ -93,9 +93,9 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
         s (fun u => return u)
         (fun found_result s r p e => do
           let found ← tactic.unwrap found_result
-          guardₓ (Not found)
+          guard (Not found)
           let matched ← tactic.match_pattern pat e >> return true <|> return false
-          guardₓ matched
+          guard matched
           let res ← tactic.capture (c.convert e r)
           -- If an error occurs in conversion, capture it; `ext_simplify_core` will not
             -- propagate it.
@@ -124,7 +124,7 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
         (fun found_result s r p e => do
           let i ← tactic.unwrap found_result
           let matched ← tactic.match_pattern pat e >> return true <|> return false
-          guardₓ matched
+          guard matched
           if i ∈ occs then do
               let res ← tactic.capture (c e r)
               -- If an error occurs in conversion, capture it; `ext_simplify_core` will not
@@ -162,7 +162,7 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let (new_lhs, prf, _) ← tactic.rewrite h l cfg
   update_lhs new_lhs prf
 
--- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas
+/- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
   rs.mmap' fun r => do
     save_info r
@@ -203,7 +203,7 @@ open Interactive.Types
 open Tactic
 
 -- mathport name: «expr ?»
-local postfix:1024 "?" => optionalₓ
+local postfix:1024 "?" => optional
 
 private unsafe def conv_at (h_name : Name) (c : conv Unit) : tactic Unit := do
   let h ← get_local h_name

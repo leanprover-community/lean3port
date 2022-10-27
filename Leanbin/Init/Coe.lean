@@ -50,7 +50,7 @@ class Coe (a : Sort u) (b : Sort v) : Sort max max 1 u v where
   coe : a → b
 
 /-- Auxiliary class that contains the transitive closure of `has_coe`. -/
-class CoeTₓ (a : Sort u) (b : Sort v) where
+class CoeT (a : Sort u) (b : Sort v) where
   coe : a → b
 
 class CoeFun (a : Sort u) (F : outParam (a → Sort v)) : Sort max max 1 u v where
@@ -68,8 +68,8 @@ def liftT {a : Sort u} {b : Sort v} [HasLiftT a b] : a → b :=
 def coeB {a : Sort u} {b : Sort v} [Coe a b] : a → b :=
   @Coe.coe a b _
 
-def coeT {a : Sort u} {b : Sort v} [CoeTₓ a b] : a → b :=
-  @CoeT.coeₓ a b _
+def coeT {a : Sort u} {b : Sort v} [CoeT a b] : a → b :=
+  @CoeT.coe a b _
 
 def coeFnB {a : Sort u} {b : a → Sort v} [CoeFun a b] : ∀ x : a, b x :=
   CoeFun.coe
@@ -109,10 +109,10 @@ instance liftTrans {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [HasLiftT b c
 instance liftBase {a : Sort u} {b : Sort v} [HasLift a b] : HasLiftT a b :=
   ⟨lift⟩
 
-instance coeTransₓ {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [CoeTₓ b c] [Coe a b] : CoeTₓ a c :=
+instance coeTrans {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [CoeT b c] [Coe a b] : CoeT a c :=
   ⟨fun x => coeT (coeB x : b)⟩
 
-instance coeBaseₓ {a : Sort u} {b : Sort v} [Coe a b] : CoeTₓ a b :=
+instance coeBase {a : Sort u} {b : Sort v} [Coe a b] : CoeT a b :=
   ⟨coeB⟩
 
 /-- We add this instance directly into `has_coe_t` to avoid non-termination.
@@ -128,7 +128,7 @@ instance coeBaseₓ {a : Sort u} {b : Sort v} [Coe a b] : CoeTₓ a b :=
    4- `coe_option at (has_coe (option α) ?b₂)`
           `?b₂ := option (option α))`
    ... -/
-instance coeOption {a : Type u} : CoeTₓ a (Option a) :=
+instance coeOption {a : Type u} : CoeT a (Option a) :=
   ⟨fun x => some x⟩
 
 /-- Auxiliary transitive closure for `has_coe` which does not contain
@@ -152,7 +152,7 @@ instance coeSortTrans {a : Sort u₁} {b : Sort u₂} {c : Sort v} [CoeSort b c]
   ⟨fun x => coeSort (@HasCoeTAux.coe a b _ x)⟩
 
 /-- Every coercion is also a lift -/
-instance coeToLift {a : Sort u} {b : Sort v} [CoeTₓ a b] : HasLiftT a b :=
+instance coeToLift {a : Sort u} {b : Sort v} [CoeT a b] : HasLiftT a b :=
   ⟨coeT⟩
 
 /-! ### Basic coercions -/

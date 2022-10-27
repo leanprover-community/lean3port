@@ -52,7 +52,7 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
   let ty ← infer_type pr
   assertv `h' ty pr >> skip
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 -- Target is of the form (decidable (C ... = C ...)) where C is a constructor
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
@@ -116,7 +116,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   let num_indices := inductive_num_indices env I_name
   let idx_names :=
     List.map (fun p : Name × Nat => mkNumName p.fst p.snd)
-      (List.zipₓ (List.repeat `idx num_indices) (List.iota num_indices))
+      (List.zip (List.repeat `idx num_indices) (List.iota num_indices))
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then
@@ -128,7 +128,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
       cases
   all_goals' (dec_eq_case_1 I_name F_name)
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def mk_dec_eq_instance : tactic Unit := do
   let env ← get_env
   let pi x1 i1 d1 (pi x2 i2 d2 b) ← target >>= whnf
@@ -145,6 +145,7 @@ unsafe def mk_dec_eq_instance : tactic Unit := do
       return ()
   mk_dec_eq_instance_core
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
 unsafe instance binder_info.has_decidable_eq : DecidableEq BinderInfo := by
   run_tac
     mk_dec_eq_instance

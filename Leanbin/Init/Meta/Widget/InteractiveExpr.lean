@@ -26,7 +26,7 @@ namespace InteractiveExpression
 unsafe inductive sf : Type
   | tag_expr : Expr.Address → expr → sf → sf
   | compose : sf → sf → sf
-  | of_string : Stringₓ → sf
+  | of_string : String → sf
 
 unsafe def sf.repr : sf → format
   | sf.tag_expr addr e a =>
@@ -34,15 +34,15 @@ unsafe def sf.repr : sf → format
       format.nest 2 <|
         "(tag_expr " ++ to_fmt addr ++ format.line ++ "`(" ++ to_fmt e ++ ")" ++ format.line ++ a.repr ++ ")"
   | sf.compose a b => a.repr ++ format.line ++ b.repr
-  | sf.of_string s => reprₓ s
+  | sf.of_string s => repr s
 
 unsafe instance : has_to_format sf :=
   ⟨sf.repr⟩
 
-unsafe instance : HasToString sf :=
+unsafe instance : ToString sf :=
   ⟨fun s => s.repr.toString⟩
 
-unsafe instance : HasRepr sf :=
+unsafe instance : Repr sf :=
   ⟨fun s => s.repr.toString⟩
 
 unsafe def sf.of_eformat : eformat → sf
@@ -147,7 +147,7 @@ unsafe def filter_local : filter_type → expr → tactic Bool
   | filter_type.none, e => pure true
   | filter_type.no_instances, e => do
     let t ← tactic.infer_type e
-    bnot <$> tactic.is_class t
+    not <$> tactic.is_class t
   | filter_type.only_props, e => do
     let t ← tactic.infer_type e
     tactic.is_prop t
@@ -173,7 +173,7 @@ unsafe def show_type_component : tc expr Empty :=
 
 /-- A group of local constants in the context that should be rendered as one line. -/
 unsafe structure local_collection where
-  key : Stringₓ
+  key : String
   locals : List expr
   type : expr
   deriving DecidableEq

@@ -13,9 +13,9 @@ universe u v
 inductive Ordering
   | lt
   | Eq
-  | Gt
+  | GT.gt
 
-instance : HasRepr Ordering :=
+instance : Repr Ordering :=
   ⟨fun s =>
     match s with
     | Ordering.lt => "lt"
@@ -27,18 +27,18 @@ namespace Ordering
 def swap : Ordering → Ordering
   | lt => gt
   | Eq => eq
-  | Gt => lt
+  | GT.gt => lt
 
 @[inline]
 def orElse : Ordering → Ordering → Ordering
   | lt, _ => lt
   | Eq, o => o
-  | Gt, _ => gt
+  | GT.gt, _ => gt
 
 theorem swap_swap : ∀ o : Ordering, o.swap.swap = o
   | lt => rfl
   | Eq => rfl
-  | Gt => rfl
+  | GT.gt => rfl
 
 end Ordering
 
@@ -53,16 +53,16 @@ instance : DecidableEq Ordering := fun a b =>
   | Ordering.lt =>
     match b with
     | Ordering.lt => isTrue rfl
-    | Ordering.eq => isFalse fun h => Ordering.noConfusionₓ h
-    | Ordering.gt => isFalse fun h => Ordering.noConfusionₓ h
+    | Ordering.eq => isFalse fun h => Ordering.noConfusion h
+    | Ordering.gt => isFalse fun h => Ordering.noConfusion h
   | Ordering.eq =>
     match b with
-    | Ordering.lt => isFalse fun h => Ordering.noConfusionₓ h
+    | Ordering.lt => isFalse fun h => Ordering.noConfusion h
     | Ordering.eq => isTrue rfl
-    | Ordering.gt => isFalse fun h => Ordering.noConfusionₓ h
+    | Ordering.gt => isFalse fun h => Ordering.noConfusion h
   | Ordering.gt =>
     match b with
-    | Ordering.lt => isFalse fun h => Ordering.noConfusionₓ h
-    | Ordering.eq => isFalse fun h => Ordering.noConfusionₓ h
+    | Ordering.lt => isFalse fun h => Ordering.noConfusion h
+    | Ordering.eq => isFalse fun h => Ordering.noConfusion h
     | Ordering.gt => isTrue rfl
 

@@ -22,67 +22,67 @@ Similar to Haskell's `show`.
 See also `has_repr`, which is used to output a string which is a valid lean code.
 See also `has_to_format` and `has_to_tactic_format`, `format` has additional support for colours and pretty printing multilines.
  -/
-class HasToString (α : Type u) where
-  toString : α → Stringₓ
+class ToString (α : Type u) where
+  toString : α → String
 
-def toString {α : Type u} [HasToString α] : α → Stringₓ :=
-  HasToString.toString
+def toString {α : Type u} [ToString α] : α → String :=
+  ToString.toString
 
-instance : HasToString Stringₓ :=
+instance : ToString String :=
   ⟨fun s => s⟩
 
-instance : HasToString Bool :=
+instance : ToString Bool :=
   ⟨fun b => cond b "tt" "ff"⟩
 
-instance {p : Prop} : HasToString (Decidable p) :=
+instance {p : Prop} : ToString (Decidable p) :=
   ⟨-- Remark: type class inference will not consider local instance `b` in the new elaborator
   fun b : Decidable p => @ite _ p b "tt" "ff"⟩
 
-protected def List.toStringAuxₓ {α : Type u} [HasToString α] : Bool → List α → Stringₓ
+protected def List.toStringAux {α : Type u} [ToString α] : Bool → List α → String
   | b, [] => ""
-  | tt, x :: xs => toString x ++ List.toStringAuxₓ false xs
-  | ff, x :: xs => ", " ++ toString x ++ List.toStringAuxₓ false xs
+  | tt, x :: xs => toString x ++ List.toStringAux false xs
+  | ff, x :: xs => ", " ++ toString x ++ List.toStringAux false xs
 
-protected def List.toStringₓ {α : Type u} [HasToString α] : List α → Stringₓ
+protected def List.toString {α : Type u} [ToString α] : List α → String
   | [] => "[]"
-  | x :: xs => "[" ++ List.toStringAuxₓ true (x :: xs) ++ "]"
+  | x :: xs => "[" ++ List.toStringAux true (x :: xs) ++ "]"
 
-instance {α : Type u} [HasToString α] : HasToString (List α) :=
-  ⟨List.toStringₓ⟩
+instance {α : Type u} [ToString α] : ToString (List α) :=
+  ⟨List.toString⟩
 
-instance : HasToString Unit :=
+instance : ToString Unit :=
   ⟨fun u => "star"⟩
 
-instance : HasToString Nat :=
-  ⟨fun n => reprₓ n⟩
+instance : ToString Nat :=
+  ⟨fun n => repr n⟩
 
-instance : HasToString Charₓ :=
+instance : ToString Char :=
   ⟨fun c => c.toString⟩
 
-instance (n : Nat) : HasToString (Finₓ n) :=
+instance (n : Nat) : ToString (Fin n) :=
   ⟨fun f => toString f.val⟩
 
-instance : HasToString Unsigned :=
+instance : ToString Unsigned :=
   ⟨fun n => toString n.val⟩
 
-instance {α : Type u} [HasToString α] : HasToString (Option α) :=
+instance {α : Type u} [ToString α] : ToString (Option α) :=
   ⟨fun o =>
     match o with
     | none => "none"
     | some a => "(some " ++ toString a ++ ")"⟩
 
-instance {α : Type u} {β : Type v} [HasToString α] [HasToString β] : HasToString (Sum α β) :=
+instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (Sum α β) :=
   ⟨fun s =>
     match s with
     | inl a => "(inl " ++ toString a ++ ")"
     | inr b => "(inr " ++ toString b ++ ")"⟩
 
-instance {α : Type u} {β : Type v} [HasToString α] [HasToString β] : HasToString (α × β) :=
+instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (α × β) :=
   ⟨fun ⟨a, b⟩ => "(" ++ toString a ++ ", " ++ toString b ++ ")"⟩
 
-instance {α : Type u} {β : α → Type v} [HasToString α] [s : ∀ x, HasToString (β x)] : HasToString (Sigma β) :=
+instance {α : Type u} {β : α → Type v} [ToString α] [s : ∀ x, ToString (β x)] : ToString (Sigma β) :=
   ⟨fun ⟨a, b⟩ => "⟨" ++ toString a ++ ", " ++ toString b ++ "⟩"⟩
 
-instance {α : Type u} {p : α → Prop} [HasToString α] : HasToString (Subtype p) :=
+instance {α : Type u} {p : α → Prop} [ToString α] : ToString (Subtype p) :=
   ⟨fun s => toString (val s)⟩
 

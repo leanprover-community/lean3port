@@ -19,9 +19,9 @@ An action may return an empty list. This is useful for actions that just return
 information such as: the type of an expression, its normal form, etc.
 -/
 unsafe structure hole_command where
-  Name : Stringₓ
-  descr : Stringₓ
-  action : List pexpr → tactic (List (Stringₓ × Stringₓ))
+  Name : String
+  descr : String
+  action : List pexpr → tactic (List (String × String))
 
 open Tactic
 
@@ -29,7 +29,7 @@ open Tactic
 unsafe def infer_type_cmd : hole_command where
   Name := "Infer"
   descr := "Infer type of the expression in the hole"
-  action := fun ps => do
+  action ps := do
     let [p] ← return ps | fail "Infer command failed, the hole must contain a single term"
     let e ← to_expr p
     let t ← infer_type e
@@ -40,7 +40,7 @@ unsafe def infer_type_cmd : hole_command where
 unsafe def show_goal_cmd : hole_command where
   Name := "Show"
   descr := "Show the current goal"
-  action := fun _ => do
+  action _ := do
     trace_state
     return []
 
@@ -48,7 +48,7 @@ unsafe def show_goal_cmd : hole_command where
 unsafe def use_cmd : hole_command where
   Name := "Use"
   descr := "Try to fill the hole using the given argument"
-  action := fun ps => do
+  action ps := do
     let [p] ← return ps | fail "Use command failed, the hole must contain a single term"
     let t ← target
     let e ← to_expr (pquote.1 (%%ₓp : %%ₓt))

@@ -9,30 +9,30 @@ import Leanbin.Init.Data.Char.Lemmas
 import Leanbin.Init.Meta.Default
 import Leanbin.Init.Data.Int.Default
 
-namespace Charₓ
+namespace Char
 
-def IsWhitespace (c : Charₓ) : Prop :=
+def IsWhitespace (c : Char) : Prop :=
   c ∈ [' ', '\t', '\n']
 
-def IsUpper (c : Charₓ) : Prop :=
+def IsUpper (c : Char) : Prop :=
   c.val ≥ 65 ∧ c.val ≤ 90
 
-def IsLower (c : Charₓ) : Prop :=
+def IsLower (c : Char) : Prop :=
   c.val ≥ 97 ∧ c.val ≤ 122
 
-def IsAlpha (c : Charₓ) : Prop :=
+def IsAlpha (c : Char) : Prop :=
   c.IsUpper ∨ c.IsLower
 
-def IsDigit (c : Charₓ) : Prop :=
+def IsDigit (c : Char) : Prop :=
   c.val ≥ 48 ∧ c.val ≤ 57
 
-def IsAlphanum (c : Charₓ) : Prop :=
+def IsAlphanum (c : Char) : Prop :=
   c.IsAlpha ∨ c.IsDigit
 
-def IsPunctuation (c : Charₓ) : Prop :=
+def IsPunctuation (c : Char) : Prop :=
   c ∈ [' ', ',', '.', '?', '!', ';', '-', ''']
 
-def toLower (c : Charₓ) : Charₓ :=
+def toLower (c : Char) : Char :=
   let n := toNat c
   if n ≥ 65 ∧ n ≤ 90 then ofNat (n + 32) else c
 
@@ -71,5 +71,5 @@ instance decidableIsPunctuation : DecidablePred IsPunctuation := by
   delta is_punctuation
   infer_instance
 
-end Charₓ
+end Char
 

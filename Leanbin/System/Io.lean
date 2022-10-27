@@ -11,7 +11,7 @@ axiom IoCore : Type → Type → Type
 
 -- Auxiliary definition used in the builtin implementation of monad_io_random_impl
 def ioRandNat : StdGen → Nat → Nat → Nat × StdGen :=
-  randNatₓ
+  randNat
 
 @[instance]
 axiom monadIoImpl : MonadIo IoCore
@@ -37,13 +37,13 @@ axiom monadIoProcessImpl : MonadIoProcess IoCore
 @[instance]
 axiom monadIoRandomImpl : MonadIoRandom IoCore
 
-instance ioCoreIsMonad (e : Type) : Monadₓ (IoCore e) :=
+instance ioCoreIsMonad (e : Type) : Monad (IoCore e) :=
   monadIoIsMonad IoCore e
 
 instance ioCoreIsMonadFail : MonadFail (IoCore Io.Error) :=
   monadIoIsMonadFail IoCore
 
-instance ioCoreIsAlternative : Alternativeₓ (IoCore Io.Error) :=
+instance ioCoreIsAlternative : Alternative (IoCore Io.Error) :=
   monadIoIsAlternative IoCore
 
 @[reducible]
@@ -73,31 +73,31 @@ def finally {α e} (a : IoCore e α) (cleanup : IoCore e Unit) : IoCore e α := 
     | Sum.inr res => return res
     | Sum.inl error => MonadIo.fail _ _ error
 
-protected def fail {α : Type} (s : Stringₓ) : Io α :=
+protected def fail {α : Type} (s : String) : Io α :=
   MonadIo.fail _ _ (Io.Error.other s)
 
-def putStr : Stringₓ → Io Unit :=
+def putStr : String → Io Unit :=
   MonadIoTerminal.putStr
 
-def putStrLn (s : Stringₓ) : Io Unit :=
+def putStrLn (s : String) : Io Unit :=
   putStr s >> putStr "\n"
 
-def getLine : Io Stringₓ :=
+def getLine : Io String :=
   MonadIoTerminal.getLine
 
-def cmdlineArgs : Io (List Stringₓ) :=
+def cmdlineArgs : Io (List String) :=
   return (MonadIoTerminal.cmdlineArgs IoCore)
 
-def print {α} [HasToString α] (s : α) : Io Unit :=
+def print {α} [ToString α] (s : α) : Io Unit :=
   put_str ∘ toString <| s
 
-def printLn {α} [HasToString α] (s : α) : Io Unit :=
+def printLn {α} [ToString α] (s : α) : Io Unit :=
   print s >> putStr "\n"
 
 def Handle : Type :=
   MonadIo.Handle IoCore
 
-def mkFileHandle (s : Stringₓ) (m : Mode) (bin : Bool := false) : Io Handle :=
+def mkFileHandle (s : String) (m : Mode) (bin : Bool := false) : Io Handle :=
   MonadIoFileSystem.mkFileHandle s m bin
 
 def stdin : Io Handle :=
@@ -117,15 +117,15 @@ unsafe def deserialize : Handle → Io expr :=
 
 namespace Env
 
-def get (env_var : Stringₓ) : Io (Option Stringₓ) :=
+def get (env_var : String) : Io (Option String) :=
   MonadIoEnvironment.getEnv env_var
 
 /-- get the current working directory -/
-def getCwd : Io Stringₓ :=
+def getCwd : Io String :=
   MonadIoEnvironment.getCwd
 
 /-- set the current working directory -/
-def setCwd (cwd : Stringₓ) : Io Unit :=
+def setCwd (cwd : String) : Io Unit :=
   MonadIoEnvironment.setCwd cwd
 
 end Env
@@ -135,13 +135,13 @@ namespace Net
 def Socket : Type :=
   MonadIoNetSystem.Socket IoCore
 
-def listen : Stringₓ → Nat → Io Socket :=
+def listen : String → Nat → Io Socket :=
   MonadIoNetSystem.listen
 
 def accept : Socket → Io Socket :=
   MonadIoNetSystem.accept
 
-def connect : Stringₓ → Io Socket :=
+def connect : String → Io Socket :=
   MonadIoNetSystem.connect
 
 def recv : Socket → Nat → Io CharBuffer :=
@@ -172,20 +172,20 @@ def read : Handle → Nat → Io CharBuffer :=
 def write : Handle → CharBuffer → Io Unit :=
   MonadIoFileSystem.write
 
-def getChar (h : Handle) : Io Charₓ := do
+def getChar (h : Handle) : Io Char := do
   let b ← read h 1
-  if h : b = 1 then return <| b ⟨0, h ▸ Nat.zero_lt_oneₓ⟩ else Io.fail "get_char failed"
+  if h : b = 1 then return <| b ⟨0, h ▸ Nat.zero_lt_one⟩ else Io.fail "get_char failed"
 
 def getLine : Handle → Io CharBuffer :=
   MonadIoFileSystem.getLine
 
-def putChar (h : Handle) (c : Charₓ) : Io Unit :=
+def putChar (h : Handle) (c : Char) : Io Unit :=
   write h (mkBuffer.pushBack c)
 
-def putStr (h : Handle) (s : Stringₓ) : Io Unit :=
+def putStr (h : Handle) (s : String) : Io Unit :=
   write h (mkBuffer.appendString s)
 
-def putStrLn (h : Handle) (s : Stringₓ) : Io Unit :=
+def putStrLn (h : Handle) (s : String) : Io Unit :=
   putStr h s >> putStr h "\n"
 
 def readToEnd (h : Handle) : Io CharBuffer :=
@@ -196,26 +196,26 @@ def readToEnd (h : Handle) : Io CharBuffer :=
         let c ← read h 1024
         return <| some (r ++ c)
 
-def readFile (s : Stringₓ) (bin := false) : Io CharBuffer := do
+def readFile (s : String) (bin := false) : Io CharBuffer := do
   let h ← mkFileHandle s Io.Mode.read bin
   read_to_end h
 
-def fileExists : Stringₓ → Io Bool :=
+def fileExists : String → Io Bool :=
   MonadIoFileSystem.fileExists
 
-def dirExists : Stringₓ → Io Bool :=
+def dirExists : String → Io Bool :=
   MonadIoFileSystem.dirExists
 
-def remove : Stringₓ → Io Unit :=
+def remove : String → Io Unit :=
   MonadIoFileSystem.remove
 
-def rename : Stringₓ → Stringₓ → Io Unit :=
+def rename : String → String → Io Unit :=
   MonadIoFileSystem.rename
 
-def mkdir (path : Stringₓ) (recursive : Bool := false) : Io Bool :=
+def mkdir (path : String) (recursive : Bool := false) : Io Bool :=
   MonadIoFileSystem.mkdir path recursive
 
-def rmdir : Stringₓ → Io Bool :=
+def rmdir : String → Io Bool :=
   MonadIoFileSystem.rmdir
 
 end Fs
@@ -268,12 +268,12 @@ unsafe def pp {α : Type} [has_to_format α] (a : α) : Io Unit :=
 
     The process will run to completion with its output captured by a pipe, and
     read into `string` which is then returned. -/
-def Io.cmd (args : Io.Process.SpawnArgs) : Io Stringₓ := do
+def Io.cmd (args : Io.Process.SpawnArgs) : Io String := do
   let child ← Io.Proc.spawn { args with stdout := Io.Process.Stdio.piped }
   let buf ← Io.Fs.readToEnd child.stdout
   Io.Fs.close child
   let exitv ← Io.Proc.wait child
-  when (exitv ≠ 0) <| Io.fail <| "process exited with status " ++ reprₓ exitv
+  when (exitv ≠ 0) <| Io.fail <| "process exited with status " ++ repr exitv
   return buf
 
 /-- This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.

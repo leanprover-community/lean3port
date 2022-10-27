@@ -75,7 +75,7 @@ unsafe def mk_has_reflect_instance : tactic Unit := do
   let env ← get_env
   let v_name : Name ← return `_v
   let F_name : Name ← return `_F
-  guardₓ (env I_name = 0) <|> fail "mk_has_reflect_instance failed, indexed families are currently not supported"
+  guard (env I_name = 0) <|> fail "mk_has_reflect_instance failed, indexed families are currently not supported"
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then

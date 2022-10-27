@@ -11,7 +11,7 @@ import Leanbin.Init.Data.ToString
 /-- Reflect a C++ name object. The VM replaces it with the C++ implementation. -/
 inductive Name
   | anonymous : Name
-  | mk_string : Stringₓ → Name → Name
+  | mk_string : String → Name → Name
   | mk_numeral : Unsigned → Name → Name
 
 /-- Gadget for automatic parameter support. This is similar to the opt_param gadget, but it uses
@@ -19,26 +19,26 @@ inductive Name
     Like opt_param, this gadget only affects elaboration.
     For example, the tactic will *not* be invoked during type class resolution. -/
 @[reducible]
-def AutoParam.{u} (α : Sort u) (tac_name : Name) : Sort u :=
+def autoParam'.{u} (α : Sort u) (tac_name : Name) : Sort u :=
   α
 
 @[simp]
-theorem auto_param_eq.{u} (α : Sort u) (n : Name) : AutoParam α n = α :=
+theorem auto_param_eq.{u} (α : Sort u) (n : Name) : autoParam' α n = α :=
   rfl
 
 instance : Inhabited Name :=
   ⟨Name.anonymous⟩
 
-def mkStrName (n : Name) (s : Stringₓ) : Name :=
+def mkStrName (n : Name) (s : String) : Name :=
   Name.mk_string s n
 
 def mkNumName (n : Name) (v : Nat) : Name :=
   Name.mk_numeral (Unsigned.ofNat' v) n
 
-def mkSimpleName (s : Stringₓ) : Name :=
+def mkSimpleName (s : String) : Name :=
   mkStrName Name.anonymous s
 
-instance stringToName : Coe Stringₓ Name :=
+instance stringToName : Coe String Name :=
   ⟨mkSimpleName⟩
 
 open Name
@@ -53,16 +53,16 @@ def Name.updatePrefix : Name → Name → Name
   | mk_string s p, new_p => mk_string s new_p
   | mk_numeral s p, new_p => mk_numeral s new_p
 
--- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option eqn_compiler.ite
+/- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option eqn_compiler.ite -/
 -- Without this option, we get errors when defining the following definitions.
 set_option eqn_compiler.ite false
 
-def Name.toStringWithSep (sep : Stringₓ) : Name → Stringₓ
+def Name.toStringWithSep (sep : String) : Name → String
   | anonymous => "[anonymous]"
   | mk_string s anonymous => s
-  | mk_numeral v anonymous => reprₓ v
+  | mk_numeral v anonymous => repr v
   | mk_string s n => Name.toStringWithSep n ++ sep ++ s
-  | mk_numeral v n => Name.toStringWithSep n ++ sep ++ reprₓ v
+  | mk_numeral v n => Name.toStringWithSep n ++ sep ++ repr v
 
 private def name.components' : Name → List Name
   | anonymous => []
@@ -72,16 +72,16 @@ private def name.components' : Name → List Name
 def Name.components (n : Name) : List Name :=
   (Name.components' n).reverse
 
-protected def Name.toString : Name → Stringₓ :=
+protected def Name.toString : Name → String :=
   Name.toStringWithSep "."
 
-protected def Name.repr (n : Name) : Stringₓ :=
+protected def Name.repr (n : Name) : String :=
   "`" ++ n.toString
 
-instance : HasToString Name :=
+instance : ToString Name :=
   ⟨Name.toString⟩
 
-instance : HasRepr Name :=
+instance : Repr Name :=
   ⟨Name.repr⟩
 
 -- TODO(Leo): provide a definition in Lean.

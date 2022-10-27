@@ -20,7 +20,7 @@ structure Pos where
 instance : DecidableEq Pos
   | ⟨l₁, c₁⟩, ⟨l₂, c₂⟩ =>
     if h₁ : l₁ = l₂ then
-      if h₂ : c₁ = c₂ then isTrue (Eq.recOnₓ h₁ (Eq.recOnₓ h₂ rfl))
+      if h₂ : c₁ = c₂ then isTrue (Eq.recOn h₁ (Eq.recOn h₂ rfl))
       else isFalse fun contra => Pos.noConfusion contra fun e₁ e₂ => absurd e₂ h₂
     else isFalse fun contra => Pos.noConfusion contra fun e₁ e₂ => absurd e₁ h₁
 
@@ -51,7 +51,7 @@ inductive BinderInfo-- `(x : α)`
 
   | aux_decl
 
-instance : HasRepr BinderInfo :=
+instance : Repr BinderInfo :=
   ⟨fun bi =>
     match bi with
     | BinderInfo.default => "default"
@@ -155,9 +155,9 @@ attribute [instance] expr.has_decidable_eq
 /-- Compares expressions while ignoring binder names. -/
 unsafe axiom expr.alpha_eqv : expr → expr → Bool
 
-protected unsafe axiom expr.to_string : expr elab → Stringₓ
+protected unsafe axiom expr.to_string : expr elab → String
 
-unsafe instance : HasToString (expr elab) :=
+unsafe instance : ToString (expr elab) :=
   ⟨expr.to_string⟩
 
 unsafe instance : has_to_format (expr elab) :=
@@ -328,7 +328,7 @@ unsafe def reflected.subst {α : Sort v} {β : α → Sort u} {f : ∀ a : α, �
 protected unsafe axiom expr.reflect (e : expr elab) : reflected _ e
 
 @[instance]
-protected unsafe axiom string.reflect (s : Stringₓ) : reflected _ s
+protected unsafe axiom string.reflect (s : String) : reflected _ s
 
 @[inline]
 unsafe instance {α : Sort u} (a : α) : Coe (reflected _ a) expr :=
@@ -506,13 +506,13 @@ unsafe def is_lt (e : expr) : Option (expr × expr) :=
   is_bin_arith_app e `` LT.lt
 
 unsafe def is_gt (e : expr) : Option (expr × expr) :=
-  is_bin_arith_app e `` Gt
+  is_bin_arith_app e `` GT.gt
 
 unsafe def is_le (e : expr) : Option (expr × expr) :=
   is_bin_arith_app e `` LE.le
 
 unsafe def is_ge (e : expr) : Option (expr × expr) :=
-  is_bin_arith_app e `` Ge
+  is_bin_arith_app e `` GE.ge
 
 unsafe def is_heq : expr → Option (expr × expr × expr × expr)
   | quote.1 (@HEq (%%ₓα) (%%ₓa) (%%ₓβ) (%%ₓb)) => some (α, a, β, b)
@@ -527,7 +527,7 @@ unsafe def is_pi : expr → Bool
   | e => false
 
 unsafe def is_arrow : expr → Bool
-  | pi _ _ _ b => bnot (has_var b)
+  | pi _ _ _ b => not (has_var b)
   | e => false
 
 unsafe def is_let : expr → Bool
@@ -604,7 +604,7 @@ unsafe def pis : List expr → expr → expr
 
 unsafe def extract_opt_auto_param : expr → expr
   | quote.1 (@optParam (%%ₓt) _) => extract_opt_auto_param t
-  | quote.1 (@AutoParam (%%ₓt) _) => extract_opt_auto_param t
+  | quote.1 (@autoParam' (%%ₓt) _) => extract_opt_auto_param t
   | e => e
 
 open Format
@@ -621,15 +621,15 @@ unsafe def to_raw_fmt : expr elab → format
   | mvar n m t => p ["mvar", to_fmt n, to_fmt m, to_raw_fmt t]
   | local_const n m bi t => p ["local_const", to_fmt n, to_fmt m, to_raw_fmt t]
   | app e f => p ["app", to_raw_fmt e, to_raw_fmt f]
-  | lam n bi e t => p ["lam", to_fmt n, reprₓ bi, to_raw_fmt e, to_raw_fmt t]
-  | pi n bi e t => p ["pi", to_fmt n, reprₓ bi, to_raw_fmt e, to_raw_fmt t]
+  | lam n bi e t => p ["lam", to_fmt n, repr bi, to_raw_fmt e, to_raw_fmt t]
+  | pi n bi e t => p ["pi", to_fmt n, repr bi, to_raw_fmt e, to_raw_fmt t]
   | elet n g e f => p ["elet", to_fmt n, to_raw_fmt g, to_raw_fmt e, to_raw_fmt f]
   | macro d args =>
     sbracket (format.join (List.intersperse " " ("macro" :: to_fmt (macro_def_name d) :: args.map to_raw_fmt)))
 
 /-- Fold an accumulator `a` over each subexpression in the expression `e`.
 The `nat` passed to `fn` is the number of binders above the subexpression. -/
-unsafe def mfold {α : Type} {m : Type → Type} [Monadₓ m] (e : expr) (a : α) (fn : expr → Nat → α → m α) : m α :=
+unsafe def mfold {α : Type} {m : Type → Type} [Monad m] (e : expr) (a : α) (fn : expr → Nat → α → m α) : m α :=
   fold e (return a) fun e n a => a >>= fn e n
 
 end Expr

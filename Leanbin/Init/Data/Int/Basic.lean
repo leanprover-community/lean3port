@@ -20,15 +20,15 @@ inductive Int : Type
 instance : Coe Nat Int :=
   ⟨Int.ofNat⟩
 
-protected def Int.reprₓ : Int → Stringₓ
-  | Int.ofNat n => reprₓ n
-  | Int.negSucc n => "-" ++ reprₓ (succ n)
+protected def Int.repr : Int → String
+  | Int.ofNat n => repr n
+  | Int.negSucc n => "-" ++ repr (succ n)
 
-instance : HasRepr Int :=
-  ⟨Int.reprₓ⟩
+instance : Repr Int :=
+  ⟨Int.repr⟩
 
-instance : HasToString Int :=
-  ⟨Int.reprₓ⟩
+instance : ToString Int :=
+  ⟨Int.repr⟩
 
 namespace Int
 
@@ -189,16 +189,16 @@ attribute [local simp]
 
 -- some basic functions and properties
 protected theorem coe_nat_inj {m n : ℕ} (h : (↑m : ℤ) = ↑n) : m = n :=
-  Int.ofNat.injₓ h
+  Int.ofNat.inj h
 
 theorem of_nat_eq_of_nat_iff (m n : ℕ) : ofNat m = ofNat n ↔ m = n :=
-  Iff.intro Int.ofNat.injₓ (congr_arg _)
+  Iff.intro Int.ofNat.inj (congr_arg _)
 
 protected theorem coe_nat_eq_coe_nat_iff (m n : ℕ) : (↑m : ℤ) = ↑n ↔ m = n :=
   of_nat_eq_of_nat_iff m n
 
 theorem neg_succ_of_nat_inj_iff {m n : ℕ} : negSucc m = negSucc n ↔ m = n :=
-  ⟨negSucc.injₓ, fun H => by simp [H]⟩
+  ⟨negSucc.inj, fun H => by simp [H]⟩
 
 theorem neg_succ_of_nat_eq (n : ℕ) : -[1 + n] = -(n + 1) :=
   rfl
@@ -209,7 +209,13 @@ protected theorem neg_neg : ∀ a : ℤ, - -a = a
   | of_nat (n + 1) => rfl
   | -[1 + n] => rfl
 
-protected theorem neg_injₓ {a b : ℤ} (h : -a = -b) : a = b := by rw [← Int.neg_neg a, ← Int.neg_neg b, h]
+/- warning: int.neg_inj -> Int.neg_inj is a dubious translation:
+lean 3 declaration is
+  forall {a : Int} {b : Int}, (Eq.{1} Int (Neg.neg.{0} Int Int.hasNeg a) (Neg.neg.{0} Int Int.hasNeg b)) -> (Eq.{1} Int a b)
+but is expected to have type
+  forall {a : Int} {b : Int}, Iff (Eq.{1} Int (Neg.neg.{0} Int Int.instNegInt a) (Neg.neg.{0} Int Int.instNegInt b)) (Eq.{1} Int a b)
+Case conversion may be inaccurate. Consider using '#align int.neg_inj Int.neg_injₓ'. -/
+protected theorem neg_inj {a b : ℤ} (h : -a = -b) : a = b := by rw [← Int.neg_neg a, ← Int.neg_neg b, h]
 
 protected theorem sub_eq_add_neg {a b : ℤ} : a - b = a + -b :=
   rfl
@@ -221,13 +227,13 @@ theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : �
     intro k
     cases k
     · intro e
-      cases' Nat.Le.dest (Nat.le_of_sub_eq_zeroₓ e) with k h
+      cases' Nat.le.dest (Nat.le_of_sub_eq_zero e) with k h
       rw [h.symm, Nat.add_sub_cancel_left]
       apply hp
       
     · intro heq
-      have h : m ≤ n := Nat.le_of_ltₓ (Nat.lt_of_sub_eq_succₓ HEq)
-      rw [Nat.sub_eq_iff_eq_addₓ h] at heq
+      have h : m ≤ n := Nat.le_of_lt (Nat.lt_of_sub_eq_succ HEq)
+      rw [Nat.sub_eq_iff_eq_add h] at heq
       rw [HEq, Nat.add_comm]
       apply hn
       
@@ -236,10 +242,10 @@ theorem sub_nat_nat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : �
 
 theorem sub_nat_nat_add_left {m n : ℕ} : subNatNat (m + n) m = ofNat n := by
   dsimp only [sub_nat_nat]
-  rw [Nat.sub_eq_zero_of_leₓ]
+  rw [Nat.sub_eq_zero_of_le]
   dsimp only [sub_nat_nat._match_1]
   rw [Nat.add_sub_cancel_left]
-  apply Nat.le_add_rightₓ
+  apply Nat.le_add_right
 
 theorem sub_nat_nat_add_right {m n : ℕ} : subNatNat m (m + n + 1) = negSucc n :=
   calc
@@ -261,10 +267,10 @@ theorem sub_nat_nat_add_add (m n k : ℕ) : subNatNat (m + k) (n + k) = subNatNa
     exact sub_nat_nat_add_right
 
 theorem sub_nat_nat_of_le {m n : ℕ} (h : n ≤ m) : subNatNat m n = ofNat (m - n) :=
-  sub_nat_nat_of_sub_eq_zero (Nat.sub_eq_zero_of_leₓ h)
+  sub_nat_nat_of_sub_eq_zero (Nat.sub_eq_zero_of_le h)
 
 theorem sub_nat_nat_of_lt {m n : ℕ} (h : m < n) : subNatNat m n = -[1 + pred (n - m)] := by
-  have : n - m = succ (pred (n - m)) := Eq.symm (succ_pred_eq_of_posₓ (Nat.sub_pos_of_ltₓ h))
+  have : n - m = succ (pred (n - m)) := Eq.symm (succ_pred_eq_of_pos (Nat.sub_pos_of_lt h))
   rw [sub_nat_nat_of_sub_eq_succ this]
 
 -- nat_abs
@@ -281,7 +287,7 @@ theorem eq_zero_of_nat_abs_eq_zero : ∀ {a : ℤ}, natAbs a = 0 → a = 0
   | -[1 + m'], H => absurd H (succ_ne_zero _)
 
 theorem nat_abs_pos_of_ne_zero {a : ℤ} (h : a ≠ 0) : 0 < natAbs a :=
-  (Nat.eq_zero_or_posₓ _).resolve_left <| mt eq_zero_of_nat_abs_eq_zero h
+  (Nat.eq_zero_or_pos _).resolve_left <| mt eq_zero_of_nat_abs_eq_zero h
 
 theorem nat_abs_zero : natAbs (0 : Int) = (0 : Nat) :=
   rfl
@@ -330,19 +336,19 @@ theorem sign_neg_one : sign (-1) = -1 :=
 -- All three pairs satisfy the identity x % y + (x / y) * y = x
 -- unconditionally.
 -- E-rounding: This pair satisfies 0 ≤ mod x y < nat_abs y for y ≠ 0
-protected def divₓ : ℤ → ℤ → ℤ
+protected def div : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => ofNat (m / n)
   | (m : ℕ), -[1 + n] => -ofNat (m / succ n)
   | -[1 + m], 0 => 0
   | -[1 + m], (n + 1 : ℕ) => -[1 + m / succ n]
   | -[1 + m], -[1 + n] => ofNat (succ (m / succ n))
 
-protected def modₓ : ℤ → ℤ → ℤ
+protected def mod : ℤ → ℤ → ℤ
   | (m : ℕ), n => (m % natAbs n : ℕ)
   | -[1 + m], n => subNatNat (natAbs n) (succ (m % natAbs n))
 
 -- F-rounding: This pair satisfies fdiv x y = floor (x / y)
-def fdivₓ : ℤ → ℤ → ℤ
+def fdiv : ℤ → ℤ → ℤ
   | 0, _ => 0
   | (m : ℕ), (n : ℕ) => ofNat (m / n)
   | (m + 1 : ℕ), -[1 + n] => -[1 + m / succ n]
@@ -350,7 +356,7 @@ def fdivₓ : ℤ → ℤ → ℤ
   | -[1 + m], (n + 1 : ℕ) => -[1 + m / succ n]
   | -[1 + m], -[1 + n] => ofNat (succ m / succ n)
 
-def fmodₓ : ℤ → ℤ → ℤ
+def fmod : ℤ → ℤ → ℤ
   | 0, _ => 0
   | (m : ℕ), (n : ℕ) => ofNat (m % n)
   | (m + 1 : ℕ), -[1 + n] => subNatNat (m % succ n) n
@@ -371,14 +377,14 @@ def rem : ℤ → ℤ → ℤ
   | -[1 + m], -[1 + n] => -ofNat (succ m % succ n)
 
 instance : Div ℤ :=
-  ⟨Int.divₓ⟩
+  ⟨Int.div⟩
 
 instance : Mod ℤ :=
-  ⟨Int.modₓ⟩
+  ⟨Int.mod⟩
 
 -- gcd
-def gcdₓ (m n : ℤ) : ℕ :=
-  gcdₓ (natAbs m) (natAbs n)
+def gcd (m n : ℤ) : ℕ :=
+  gcd (natAbs m) (natAbs n)
 
 /-
    int is a ring
@@ -400,38 +406,41 @@ protected theorem zero_add (a : ℤ) : 0 + a = a :=
 theorem sub_nat_nat_sub {m n : ℕ} (h : n ≤ m) (k : ℕ) : subNatNat (m - n) k = subNatNat m (k + n) :=
   calc
     subNatNat (m - n) k = subNatNat (m - n + n) (k + n) := by rw [sub_nat_nat_add_add]
-    _ = subNatNat m (k + n) := by rw [Nat.sub_add_cancelₓ h]
+    _ = subNatNat m (k + n) := by rw [Nat.sub_add_cancel h]
     
 
+/- ./././Mathport/Syntax/Translate/Tactic/Basic.lean:51:50: missing argument -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:65:38: in transitivity #[[]]: ./././Mathport/Syntax/Translate/Tactic/Basic.lean:54:35: expecting parse arg -/
 theorem sub_nat_nat_add (m n k : ℕ) : subNatNat (m + n) k = ofNat m + subNatNat n k := by
-  have h := le_or_ltₓ k n
+  have h := le_or_lt k n
   cases' h with h' h'
   · rw [sub_nat_nat_of_le h']
-    have h₂ : k ≤ m + n := le_transₓ h' (Nat.le_add_leftₓ _ _)
+    have h₂ : k ≤ m + n := le_trans h' (Nat.le_add_left _ _)
     rw [sub_nat_nat_of_le h₂]
     simp
-    rw [Nat.add_sub_assocₓ h']
+    rw [Nat.add_sub_assoc h']
     
   rw [sub_nat_nat_of_lt h']
   simp
-  rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h')]
-  trans
-  rw [← Nat.sub_add_cancelₓ (le_of_ltₓ h')]
+  rw [succ_pred_eq_of_pos (Nat.sub_pos_of_lt h')]
+  trace
+    "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:65:38: in transitivity #[[]]: ./././Mathport/Syntax/Translate/Tactic/Basic.lean:54:35: expecting parse arg"
+  rw [← Nat.sub_add_cancel (le_of_lt h')]
   apply sub_nat_nat_add_add
 
 theorem sub_nat_nat_add_neg_succ_of_nat (m n k : ℕ) : subNatNat m n + -[1 + k] = subNatNat m (n + succ k) := by
-  have h := le_or_ltₓ n m
+  have h := le_or_lt n m
   cases' h with h' h'
   · rw [sub_nat_nat_of_le h']
     simp
     rw [sub_nat_nat_sub h', Nat.add_comm]
     
-  have h₂ : m < n + succ k := Nat.lt_of_lt_of_leₓ h' (Nat.le_add_rightₓ _ _)
+  have h₂ : m < n + succ k := Nat.lt_of_lt_of_le h' (Nat.le_add_right _ _)
   have h₃ : m ≤ n + k := le_of_succ_le_succ h₂
   rw [sub_nat_nat_of_lt h', sub_nat_nat_of_lt h₂]
   simp [Nat.add_comm]
-  rw [← add_succ, succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h'), add_succ, succ_sub h₃, pred_succ]
-  rw [Nat.add_comm n, Nat.add_sub_assocₓ (le_of_ltₓ h')]
+  rw [← add_succ, succ_pred_eq_of_pos (Nat.sub_pos_of_lt h'), add_succ, succ_sub h₃, pred_succ]
+  rw [Nat.add_comm n, Nat.add_sub_assoc (le_of_lt h')]
 
 theorem add_assoc_aux1 (m n : ℕ) : ∀ c : ℤ, ofNat m + ofNat n + c = ofNat m + (ofNat n + c)
   | of_nat k => by simp [Nat.add_assoc]
@@ -523,19 +532,19 @@ theorem neg_of_nat_eq_sub_nat_nat_zero : ∀ n, negOfNat n = subNatNat 0 n
   | succ n => rfl
 
 theorem of_nat_mul_sub_nat_nat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat (m * n) (m * k) := by
-  have h₀ : m > 0 ∨ 0 = m := Decidable.lt_or_eq_of_leₓ m.zero_le
+  have h₀ : m > 0 ∨ 0 = m := Decidable.lt_or_eq_of_le m.zero_le
   cases' h₀ with h₀ h₀
-  · have h := Nat.lt_or_geₓ n k
+  · have h := Nat.lt_or_ge n k
     cases' h with h h
-    · have h' : m * n < m * k := Nat.mul_lt_mul_of_pos_leftₓ h h₀
+    · have h' : m * n < m * k := Nat.mul_lt_mul_of_pos_left h h₀
       rw [sub_nat_nat_of_lt h, sub_nat_nat_of_lt h']
       simp
-      rw [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h)]
+      rw [succ_pred_eq_of_pos (Nat.sub_pos_of_lt h)]
       rw [← neg_of_nat_of_succ, Nat.mul_sub_left_distrib]
-      rw [← succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h')]
+      rw [← succ_pred_eq_of_pos (Nat.sub_pos_of_lt h')]
       rfl
       
-    have h' : m * k ≤ m * n := Nat.mul_le_mul_leftₓ _ h
+    have h' : m * k ≤ m * n := Nat.mul_le_mul_left _ h
     rw [sub_nat_nat_of_le h, sub_nat_nat_of_le h']
     simp
     rw [Nat.mul_sub_left_distrib]
@@ -562,18 +571,18 @@ theorem neg_of_nat_add (m n : ℕ) : negOfNat m + negOfNat n = negOfNat (m + n) 
 
 theorem neg_succ_of_nat_mul_sub_nat_nat (m n k : ℕ) : -[1 + m] * subNatNat n k = subNatNat (succ m * k) (succ m * n) :=
   by
-  have h := Nat.lt_or_geₓ n k
+  have h := Nat.lt_or_ge n k
   cases' h with h h
-  · have h' : succ m * n < succ m * k := Nat.mul_lt_mul_of_pos_leftₓ h (Nat.succ_posₓ m)
-    rw [sub_nat_nat_of_lt h, sub_nat_nat_of_le (le_of_ltₓ h')]
-    simp [succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h), Nat.mul_sub_left_distrib]
+  · have h' : succ m * n < succ m * k := Nat.mul_lt_mul_of_pos_left h (Nat.succ_pos m)
+    rw [sub_nat_nat_of_lt h, sub_nat_nat_of_le (le_of_lt h')]
+    simp [succ_pred_eq_of_pos (Nat.sub_pos_of_lt h), Nat.mul_sub_left_distrib]
     
-  have h' : n > k ∨ k = n := Decidable.lt_or_eq_of_leₓ h
+  have h' : n > k ∨ k = n := Decidable.lt_or_eq_of_le h
   cases' h' with h' h'
-  · have h₁ : succ m * n > succ m * k := Nat.mul_lt_mul_of_pos_leftₓ h' (Nat.succ_posₓ m)
+  · have h₁ : succ m * n > succ m * k := Nat.mul_lt_mul_of_pos_left h' (Nat.succ_pos m)
     rw [sub_nat_nat_of_le h, sub_nat_nat_of_lt h₁]
     simp [Nat.mul_sub_left_distrib, Nat.mul_comm]
-    rw [Nat.mul_comm k, Nat.mul_comm n, ← succ_pred_eq_of_pos (Nat.sub_pos_of_ltₓ h₁), ← neg_of_nat_of_succ]
+    rw [Nat.mul_comm k, Nat.mul_comm n, ← succ_pred_eq_of_pos (Nat.sub_pos_of_lt h₁), ← neg_of_nat_of_succ]
     rfl
     
   subst h'
@@ -614,14 +623,14 @@ protected theorem distrib_right (a b c : ℤ) : (a + b) * c = a * c + b * c := b
   rw [Int.mul_comm, Int.distrib_left]
   simp [Int.mul_comm]
 
-protected theorem zero_ne_one : (0 : Int) ≠ 1 := fun h : 0 = 1 => succ_ne_zero _ (Int.ofNat.injₓ h).symm
+protected theorem zero_ne_one : (0 : Int) ≠ 1 := fun h : 0 = 1 => succ_ne_zero _ (Int.ofNat.inj h).symm
 
 theorem of_nat_sub {n m : ℕ} (h : m ≤ n) : ofNat (n - m) = ofNat n - ofNat m :=
   show ofNat (n - m) = ofNat n + negOfNat m from
     match m, h with
     | 0, h => rfl
     | succ m, h =>
-      show ofNat (n - succ m) = subNatNat n (succ m) by delta sub_nat_nat <;> rw [Nat.sub_eq_zero_of_leₓ h] <;> rfl
+      show ofNat (n - succ m) = subNatNat n (succ m) by delta sub_nat_nat <;> rw [Nat.sub_eq_zero_of_le h] <;> rfl
 
 protected theorem add_left_comm (a b c : ℤ) : a + (b + c) = b + (a + c) := by
   rw [← Int.add_assoc, Int.add_comm a, Int.add_assoc]
@@ -640,7 +649,7 @@ protected theorem neg_add {a b : ℤ} : -(a + b) = -a + -b :=
 
 theorem neg_succ_of_nat_coe' (n : ℕ) : -[1 + n] = -↑n - 1 := by rw [Int.sub_eq_add_neg, ← Int.neg_add] <;> rfl
 
-protected theorem coe_nat_subₓ {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑m - ↑n :=
+protected theorem coe_nat_sub {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑m - ↑n :=
   of_nat_sub
 
 attribute [local simp] Int.sub_eq_add_neg
@@ -662,10 +671,10 @@ theorem to_nat_sub (m n : ℕ) : toNat (m - n) = m - n := by
   rw [← Int.sub_nat_nat_eq_coe] <;>
     exact
       sub_nat_nat_elim m n (fun m n i => to_nat i = m - n) (fun i n => by rw [Nat.add_sub_cancel_left] <;> rfl)
-        fun i n => by rw [Nat.add_assoc, Nat.sub_eq_zero_of_leₓ (Nat.le_add_rightₓ _ _)] <;> rfl
+        fun i n => by rw [Nat.add_assoc, Nat.sub_eq_zero_of_le (Nat.le_add_right _ _)] <;> rfl
 
 -- Since mod x y is always nonnegative when y ≠ 0, we can make a nat version of it
-def natModₓ (m n : ℤ) : ℕ :=
+def natMod (m n : ℤ) : ℕ :=
   (m % n).toNat
 
 protected theorem one_mul : ∀ a : ℤ, (1 : ℤ) * a = a

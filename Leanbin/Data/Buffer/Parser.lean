@@ -8,7 +8,7 @@ import Leanbin.Data.Dlist
 
 inductive ParseResult (α : Type)
   | done (pos : ℕ) (result : α) : ParseResult
-  | fail (pos : ℕ) (expected : Dlist Stringₓ) : ParseResult
+  | fail (pos : ℕ) (expected : Dlist String) : ParseResult
 
 /-- The parser monad. If you are familiar with the Parsec library in Haskell, you will understand this.  -/
 def Parser (α : Type) :=
@@ -44,15 +44,15 @@ private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β
   cases q result input pos_1 <;> try dsimp only [bind]
   all_goals rfl
 
-protected def fail (msg : Stringₓ) : Parser α := fun _ pos => ParseResult.fail Pos (Dlist.singleton msg)
+protected def fail (msg : String) : Parser α := fun _ pos => ParseResult.fail Pos (Dlist.singleton msg)
 
-instance : Monadₓ Parser where
+instance : Monad Parser where
   pure := @Parser.pure
   bind := @Parser.bind
 
-instance : IsLawfulMonad Parser where
+instance : LawfulMonad Parser where
   id_map := @Parser.id_map
-  pure_bind := fun _ _ _ _ => rfl
+  pure_bind _ _ _ _ := rfl
   bind_assoc := @Parser.bind_assoc
 
 instance : MonadFail Parser :=
@@ -76,7 +76,7 @@ protected def orelse (p q : Parser α) : Parser α := fun input pos =>
       | ok => ok
   | ok => ok
 
-instance : Alternativeₓ Parser where
+instance : Alternative Parser where
   failure := @Parser.failure
   orelse := @Parser.orelse
 
@@ -84,24 +84,24 @@ instance : Inhabited (Parser α) :=
   ⟨Parser.failure⟩
 
 /-- Overrides the expected token name, and does not consume input on failure. -/
-def decorateErrors (msgs : Thunkₓ (List Stringₓ)) (p : Parser α) : Parser α := fun input pos =>
+def decorateErrors (msgs : Thunk' (List String)) (p : Parser α) : Parser α := fun input pos =>
   match p input Pos with
   | ParseResult.fail _ expected => ParseResult.fail Pos (Dlist.lazyOfList (msgs ()))
   | ok => ok
 
 /-- Overrides the expected token name, and does not consume input on failure. -/
-def decorateError (msg : Thunkₓ Stringₓ) (p : Parser α) : Parser α :=
+def decorateError (msg : Thunk' String) (p : Parser α) : Parser α :=
   decorateErrors [msg ()] p
 
 /-- Matches a single character. Fails only if there is no more input. -/
-def anyChar : Parser Charₓ := fun input pos =>
+def anyChar : Parser Char := fun input pos =>
   if h : Pos < input.size then
     let c := input.read ⟨Pos, h⟩
     ParseResult.done (Pos + 1) c
   else ParseResult.fail Pos Dlist.empty
 
 /-- Matches a single character satisfying the given predicate. -/
-def sat (p : Charₓ → Prop) [DecidablePred p] : Parser Charₓ := fun input pos =>
+def sat (p : Char → Prop) [DecidablePred p] : Parser Char := fun input pos =>
   if h : Pos < input.size then
     let c := input.read ⟨Pos, h⟩
     if p c then ParseResult.done (Pos + 1) c else ParseResult.fail Pos Dlist.empty
@@ -112,7 +112,7 @@ def eps : Parser Unit :=
   return ()
 
 /-- Matches the given character. -/
-def ch (c : Charₓ) : Parser Unit :=
+def ch (c : Char) : Parser Unit :=
   decorateError c.toString <| sat (· = c) >> eps
 
 /-- Matches a whole char_buffer.  Does not consume input in case of failure. -/
@@ -120,17 +120,17 @@ def charBuf (s : CharBuffer) : Parser Unit :=
   decorateError s.toString <| s.toList.mmap' ch
 
 /-- Matches one out of a list of characters. -/
-def oneOf (cs : List Charₓ) : Parser Charₓ :=
+def oneOf (cs : List Char) : Parser Char :=
   (decorateErrors do
       let c ← cs
       return c) <|
     sat (· ∈ cs)
 
-def oneOf' (cs : List Charₓ) : Parser Unit :=
+def oneOf' (cs : List Char) : Parser Unit :=
   oneOf cs >> eps
 
 /-- Matches a string.  Does not consume input in case of failure. -/
-def str (s : Stringₓ) : Parser Unit :=
+def str (s : String) : Parser Unit :=
   decorateError s <| s.toList.mmap' ch
 
 /-- Number of remaining input characters. -/
@@ -140,7 +140,7 @@ def remaining : Parser ℕ := fun input pos => ParseResult.done Pos (input.size 
 def eof : Parser Unit :=
   decorateError "<end-of-file>" <| do
     let rem ← remaining
-    guardₓ <| rem = 0
+    guard <| rem = 0
 
 def foldrCore (f : α → β → β) (p : Parser α) (b : β) : ∀ reps : ℕ, Parser β
   | 0 => failure
@@ -171,8 +171,8 @@ def foldl (f : α → β → α) (a : α) (p : Parser β) : Parser α := fun inp
 def many (p : Parser α) : Parser (List α) :=
   foldr List.cons p []
 
-def manyChar (p : Parser Charₓ) : Parser Stringₓ :=
-  List.asStringₓ <$> many p
+def manyChar (p : Parser Char) : Parser String :=
+  List.asString <$> many p
 
 /-- Matches zero or more occurrences of `p`. -/
 def many' (p : Parser α) : Parser Unit :=
@@ -183,8 +183,8 @@ def many1 (p : Parser α) : Parser (List α) :=
   List.cons <$> p <*> many p
 
 /-- Matches one or more occurences of the char parser `p` and implodes them into a string. -/
-def manyChar1 (p : Parser Charₓ) : Parser Stringₓ :=
-  List.asStringₓ <$> many1 p
+def manyChar1 (p : Parser Char) : Parser String :=
+  List.asString <$> many1 p
 
 /-- Matches one or more occurrences of `p`, separated by `sep`. -/
 def sepBy1 (sep : Parser Unit) (p : Parser α) : Parser (List α) :=
@@ -214,30 +214,30 @@ def nat : Parser Nat :=
 /-- Fixpoint combinator satisfying `fix F = F (fix F)`. -/
 def fix (F : Parser α → Parser α) : Parser α := fun input pos => fixCore F (input.size - Pos + 1) input Pos
 
-private def make_monospaced : Charₓ → Charₓ
+private def make_monospaced : Char → Char
   | '\n' => ' '
   | '\t' => ' '
   | '\x0d' => ' '
   | c => c
 
-def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Dlist Stringₓ) : CharBuffer :=
+def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Dlist String) : CharBuffer :=
   let left_ctx := (input.take Pos).takeRight 10
   let right_ctx := (input.drop Pos).take 10
   (left_ctx.map makeMonospaced ++ right_ctx.map makeMonospaced ++ "\n".toCharBuffer ++ left_ctx.map fun _ => ' ') ++
             "^\n".toCharBuffer ++
           "\n".toCharBuffer ++
         "expected: ".toCharBuffer ++
-      Stringₓ.toCharBuffer (" | ".intercalate expected.toList) ++
+      String.toCharBuffer (" | ".intercalate expected.toList) ++
     "\n".toCharBuffer
 
 /-- Runs a parser on the given input.  The parser needs to match the complete input. -/
-def run (p : Parser α) (input : CharBuffer) : Sum Stringₓ α :=
+def run (p : Parser α) (input : CharBuffer) : Sum String α :=
   match (p <* eof) input 0 with
   | ParseResult.done Pos res => Sum.inr res
   | ParseResult.fail Pos expected => Sum.inl <| Buffer.toString <| mkErrorMsg input Pos expected
 
 /-- Runs a parser on the given input.  The parser needs to match the complete input. -/
-def runString (p : Parser α) (input : Stringₓ) : Sum Stringₓ α :=
+def runString (p : Parser α) (input : String) : Sum String α :=
   run p input.toCharBuffer
 
 end Parser

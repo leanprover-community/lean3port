@@ -40,7 +40,7 @@ def code : Coord → ℕ
   | coord.elet_assignment => 7
   | coord.elet_body => 8
 
-protected def repr : Coord → Stringₓ
+protected def repr : Coord → String
   | coord.app_fn => "app_fn"
   | coord.app_arg => "app_arg"
   | coord.lam_var_type => "lam_var_type"
@@ -51,10 +51,10 @@ protected def repr : Coord → Stringₓ
   | coord.elet_assignment => "elet_assignment"
   | coord.elet_body => "elet_body"
 
-instance : HasRepr Coord :=
+instance : Repr Coord :=
   ⟨Coord.repr⟩
 
-instance : HasToString Coord :=
+instance : ToString Coord :=
   ⟨Coord.repr⟩
 
 unsafe instance : has_to_format Coord :=
@@ -92,13 +92,13 @@ namespace Address
 unsafe instance has_dec_eq : DecidableEq Address :=
   (inferInstance : DecidableEq (List Expr.Coord))
 
-protected def toString : Address → Stringₓ :=
+protected def toString : Address → String :=
   toString ∘ List.map Coord.repr
 
-instance hasRepr : HasRepr Address :=
+instance hasRepr : Repr Address :=
   ⟨Address.toString⟩
 
-instance hasToString : HasToString Address :=
+instance hasToString : ToString Address :=
   ⟨Address.toString⟩
 
 unsafe instance has_to_format : has_to_format Address :=

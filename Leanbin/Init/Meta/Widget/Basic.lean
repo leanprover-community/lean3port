@@ -184,13 +184,13 @@ Usually, giving instructions to the editor to perform some task.
 - `custom` can be used to pass custom effects to the client without having to recompile Lean.
 -/
 unsafe inductive effect : Type
-  | insert_text_absolute (file_name : Option Stringₓ) (p : Pos) (text : Stringₓ)
-  | insert_text_relative (relative_line : Int) (text : Stringₓ)
-  | reveal_position (file_name : Option Stringₓ) (p : Pos)
-  | highlight_position (file_name : Option Stringₓ) (p : Pos)
+  | insert_text_absolute (file_name : Option String) (p : Pos) (text : String)
+  | insert_text_relative (relative_line : Int) (text : String)
+  | reveal_position (file_name : Option String) (p : Pos)
+  | highlight_position (file_name : Option String) (p : Pos)
   | clear_highlighting
-  | copy_text (text : Stringₓ)
-  | custom (key : Stringₓ) (value : Stringₓ)
+  | copy_text (text : String)
+  | custom (key : String) (value : String)
 
 unsafe def effects :=
   List effect
@@ -213,15 +213,15 @@ mutual
     with_effects {Props Action : Type} (emit : Props → Action → effects) :
       component Props Action → component Props Action
   unsafe inductive html : Type → Type
-    | element {α : Type} (tag : Stringₓ) (attrs : List (attr α)) (children : List (html α)) : html α
-    | of_string {α : Type} : Stringₓ → html α
+    | element {α : Type} (tag : String) (attrs : List (attr α)) (children : List (html α)) : html α
+    | of_string {α : Type} : String → html α
     | of_component {α : Type} {Props : Type} : Props → component Props α → html α
   unsafe inductive attr : Type → Type
-    | val {α : Type} (name : Stringₓ) (value : json) : attr α
+    | val {α : Type} (name : String) (value : json) : attr α
     | mouse_event {α : Type} (kind : MouseEventKind) (handler : Unit → α) : attr α
-    | style {α : Type} : List (Stringₓ × Stringₓ) → attr α
+    | style {α : Type} : List (String × String) → attr α
     | tooltip {α : Type} : html α → attr α
-    | text_change_event {α : Type} (handler : Stringₓ → α) : attr α
+    | text_change_event {α : Type} (handler : String → α) : attr α
 end
 
 variable {α β : Type} {π : Type}
@@ -253,7 +253,7 @@ unsafe def stateless {π α : Type} [DecidableEq π] (view : π → List (html �
 
 /-- Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
 unsafe def with_props_eq (test : π → π → Bool) : component π α → component π α
-  | c => component.with_should_update (fun x y => bnot <| test x y) c
+  | c => component.with_should_update (fun x y => not <| test x y) c
 
 end Component
 
@@ -272,12 +272,12 @@ end
 
 unsafe instance attr.is_functor : Functor attr where map := @attr.map_action
 
-unsafe instance html.is_functor : Functor html where map := fun _ _ => html.map_action
+unsafe instance html.is_functor : Functor html where map _ _ := html.map_action
 
 namespace Html
 
 /-- See Note [use has_coe_t]. -/
-unsafe instance to_string_coe [HasToString β] : CoeTₓ β (html α) :=
+unsafe instance to_string_coe [ToString β] : CoeT β (html α) :=
   ⟨html.of_string ∘ toString⟩
 
 unsafe instance : EmptyCollection (html α) :=
@@ -288,14 +288,14 @@ unsafe instance list_coe : Coe (html α) (List (html α)) :=
 
 end Html
 
-unsafe def as_element : html α → Option (Stringₓ × List (attr α) × List (html α))
+unsafe def as_element : html α → Option (String × List (attr α) × List (html α))
   | html.element t a c => some ⟨t, a, c⟩
   | _ => none
 
-unsafe def key [HasToString β] : β → attr α
+unsafe def key [ToString β] : β → attr α
   | s => attr.val "key" <| toString s
 
-unsafe def className : Stringₓ → attr α
+unsafe def className : String → attr α
   | s => attr.val "className" <| s
 
 unsafe def on_click : (Unit → α) → attr α
@@ -308,29 +308,29 @@ unsafe def on_mouse_leave : (Unit → α) → attr α
   | a => attr.mouse_event MouseEventKind.on_mouse_leave a
 
 /-- Alias for `html.element`. -/
-unsafe def h : Stringₓ → List (attr α) → List (html α) → html α :=
+unsafe def h : String → List (attr α) → List (html α) → html α :=
   html.element
 
 /-- Alias for className. -/
-unsafe def cn : Stringₓ → attr α :=
+unsafe def cn : String → attr α :=
   className
 
-unsafe def button : Stringₓ → Thunkₓ α → html α
+unsafe def button : String → Thunk' α → html α
   | s, t => h "button" [on_click t] [s]
 
-unsafe def textbox : Stringₓ → (Stringₓ → α) → html α
+unsafe def textbox : String → (String → α) → html α
   | s, t => h "input" [attr.val "type" "text", attr.val "value" s, attr.text_change_event t] []
 
 unsafe structure select_item (α : Type) where
   result : α
-  key : Stringₓ
+  key : String
   view : List (html α)
 
 /-- Choose from a dropdown selection list. -/
 unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html α
   | items, value =>
     let k :=
-      match List.filterₓ (fun i => select_item.result i = value) items with
+      match List.filter' (fun i => select_item.result i = value) items with
       | [] => ""
       | h :: _ => select_item.key h
     h "select"
@@ -352,16 +352,16 @@ unsafe def with_attrs : List (attr α) → html α → html α
 unsafe def with_attr : attr α → html α → html α
   | a, x => with_attrs [a] x
 
-unsafe def with_style : Stringₓ → Stringₓ → html α → html α
+unsafe def with_style : String → String → html α → html α
   | k, v, h => with_attr (attr.style [(k, v)]) h
 
-unsafe def with_cn : Stringₓ → html α → html α
+unsafe def with_cn : String → html α → html α
   | s, h => with_attr (className s) h
 
-unsafe def with_key {β} [HasToString β] : β → html α → html α
+unsafe def with_key {β} [ToString β] : β → html α → html α
   | s, h => with_attr (key s) h
 
-unsafe def effect.insert_text : Stringₓ → effect :=
+unsafe def effect.insert_text : String → effect :=
   effect.insert_text_relative 0
 
 end Widget

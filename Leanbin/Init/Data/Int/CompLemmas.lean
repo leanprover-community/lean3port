@@ -12,11 +12,11 @@ namespace Int
 
 -- Auxiliary lemmas for proving that to int numerals are different 
 -- 1. Lemmas for reducing the problem to the case where the numerals are positive
-protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_injₓ h₂) h₁
+protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_inj h₂) h₁
 
 protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ => by
   have : -a = -0 := by rwa [Int.neg_zero]
-  have : a = 0 := Int.neg_injₓ this
+  have : a = 0 := Int.neg_inj this
   contradiction
 
 protected theorem zero_ne_neg_of_ne {a : ℤ} (h : 0 ≠ a) : 0 ≠ -a :=
@@ -25,46 +25,46 @@ protected theorem zero_ne_neg_of_ne {a : ℤ} (h : 0 ≠ a) : 0 ≠ -a :=
 protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b := fun h₁ h₂ h => by
   rw [← h] at h₂
   change 0 < a at h₁
-  have := le_of_ltₓ h₁
-  exact absurd (le_of_ltₓ h₁) (not_le_of_gtₓ (Int.neg_of_neg_posₓ h₂))
+  have := le_of_lt h₁
+  exact absurd (le_of_lt h₁) (not_le_of_gt (Int.neg_of_neg_pos h₂))
 
 protected theorem ne_neg_of_pos {a b : ℤ} : 0 < a → 0 < b → a ≠ -b := fun h₁ h₂ => Ne.symm (Int.neg_ne_of_pos h₂ h₁)
 
 -- 2. Lemmas for proving that positive int numerals are nonneg and positive
 protected theorem one_pos : 0 < (1 : Int) :=
-  Int.zero_lt_oneₓ
+  Int.zero_lt_one
 
-protected theorem bit0_pos {a : ℤ} : 0 < a → 0 < bit0 a := fun h => Int.add_posₓ h h
+protected theorem bit0_pos {a : ℤ} : 0 < a → 0 < bit0 a := fun h => Int.add_pos h h
 
 protected theorem bit1_pos {a : ℤ} : 0 ≤ a → 0 < bit1 a := fun h =>
-  Int.lt_add_of_le_of_posₓ (Int.add_nonnegₓ h h) Int.zero_lt_oneₓ
+  Int.lt_add_of_le_of_pos (Int.add_nonneg h h) Int.zero_lt_one
 
 protected theorem zero_nonneg : 0 ≤ (0 : ℤ) :=
-  le_reflₓ 0
+  le_refl 0
 
 protected theorem one_nonneg : 0 ≤ (1 : ℤ) :=
-  le_of_ltₓ Int.zero_lt_oneₓ
+  le_of_lt Int.zero_lt_one
 
-protected theorem bit0_nonneg {a : ℤ} : 0 ≤ a → 0 ≤ bit0 a := fun h => Int.add_nonnegₓ h h
+protected theorem bit0_nonneg {a : ℤ} : 0 ≤ a → 0 ≤ bit0 a := fun h => Int.add_nonneg h h
 
-protected theorem bit1_nonneg {a : ℤ} : 0 ≤ a → 0 ≤ bit1 a := fun h => le_of_ltₓ (Int.bit1_pos h)
+protected theorem bit1_nonneg {a : ℤ} : 0 ≤ a → 0 ≤ bit1 a := fun h => le_of_lt (Int.bit1_pos h)
 
 protected theorem nonneg_of_pos {a : ℤ} : 0 < a → 0 ≤ a :=
-  le_of_ltₓ
+  le_of_lt
 
 -- 3. nat_abs auxiliary lemmas
 theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
-  @Lt.intro _ _ n
+  @lt.intro _ _ n
     (by
       simp [neg_succ_of_nat_coe, Int.coe_nat_succ, Int.coe_nat_add, Int.coe_nat_one, Int.add_comm, Int.add_left_comm,
         Int.neg_add, Int.add_right_neg, Int.zero_add])
 
 theorem zero_le_of_nat (n : ℕ) : 0 ≤ ofNat n :=
-  @Le.intro _ _ n (by rw [Int.zero_add, Int.coe_nat_eq])
+  @le.intro _ _ n (by rw [Int.zero_add, Int.coe_nat_eq])
 
 theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → ofNat (natAbs a) = a
   | of_nat n, h => rfl
-  | neg_succ_of_nat n, h => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_geₓ h)
+  | neg_succ_of_nat n, h => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_ge h)
 
 theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : natAbs a ≠ natAbs b) : a ≠ b :=
   fun h => by
@@ -89,8 +89,8 @@ protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → 
   | of_nat n, of_nat m, h₁, h₂ => by
     have : ofNat n + ofNat m = ofNat (n + m) := rfl
     simp [nat_abs_of_nat_core, this]
-  | _, neg_succ_of_nat m, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero m) (not_lt_of_geₓ h₂)
-  | neg_succ_of_nat n, _, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_geₓ h₁)
+  | _, neg_succ_of_nat m, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero m) (not_lt_of_ge h₂)
+  | neg_succ_of_nat n, _, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_ge h₁)
 
 protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
   | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ => by
@@ -107,7 +107,7 @@ protected theorem nat_abs_bit0_step {a : Int} {n : Nat} (h : natAbs a = n) : nat
 
 protected theorem nat_abs_bit1_nonneg {a : Int} (h : 0 ≤ a) : natAbs (bit1 a) = bit1 (natAbs a) :=
   show natAbs (bit0 a + 1) = bit0 (natAbs a) + natAbs 1 by
-    rw [Int.nat_abs_add_nonneg (Int.bit0_nonneg h) (le_of_ltₓ Int.zero_lt_oneₓ), Int.nat_abs_bit0]
+    rw [Int.nat_abs_add_nonneg (Int.bit0_nonneg h) (le_of_lt Int.zero_lt_one), Int.nat_abs_bit0]
 
 protected theorem nat_abs_bit1_nonneg_step {a : Int} {n : Nat} (h₁ : 0 ≤ a) (h₂ : natAbs a = n) :
     natAbs (bit1 a) = bit1 n := by

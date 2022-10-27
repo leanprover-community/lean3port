@@ -17,44 +17,44 @@ def div2 : ℤ → ℤ
 
 def bodd : ℤ → Bool
   | of_nat n => n.bodd
-  | -[1 + n] => bnot n.bodd
+  | -[1 + n] => not n.bodd
 
 def bit (b : Bool) : ℤ → ℤ :=
   cond b bit1 bit0
 
 def testBit : ℤ → ℕ → Bool
   | (m : ℕ), n => Nat.testBit m n
-  | -[1 + m], n => bnot (Nat.testBit m n)
+  | -[1 + m], n => not (Nat.testBit m n)
 
 def natBitwise (f : Bool → Bool → Bool) (m n : ℕ) : ℤ :=
-  cond (f false false) (-[1 + Nat.bitwiseₓ (fun x y => bnot (f x y)) m n]) (Nat.bitwiseₓ f m n)
+  cond (f false false) (-[1 + Nat.bitwise (fun x y => not (f x y)) m n]) (Nat.bitwise f m n)
 
 def bitwise (f : Bool → Bool → Bool) : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => natBitwise f m n
-  | (m : ℕ), -[1 + n] => natBitwise (fun x y => f x (bnot y)) m n
-  | -[1 + m], (n : ℕ) => natBitwise (fun x y => f (bnot x) y) m n
-  | -[1 + m], -[1 + n] => natBitwise (fun x y => f (bnot x) (bnot y)) m n
+  | (m : ℕ), -[1 + n] => natBitwise (fun x y => f x (not y)) m n
+  | -[1 + m], (n : ℕ) => natBitwise (fun x y => f (not x) y) m n
+  | -[1 + m], -[1 + n] => natBitwise (fun x y => f (not x) (not y)) m n
 
 def lnot : ℤ → ℤ
   | (m : ℕ) => -[1 + m]
   | -[1 + m] => m
 
 def lor : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.lorₓ m n
+  | (m : ℕ), (n : ℕ) => Nat.lor m n
   | (m : ℕ), -[1 + n] => -[1 + Nat.ldiff n m]
   | -[1 + m], (n : ℕ) => -[1 + Nat.ldiff m n]
-  | -[1 + m], -[1 + n] => -[1 + Nat.landₓ m n]
+  | -[1 + m], -[1 + n] => -[1 + Nat.land m n]
 
 def land : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.landₓ m n
+  | (m : ℕ), (n : ℕ) => Nat.land m n
   | (m : ℕ), -[1 + n] => Nat.ldiff m n
   | -[1 + m], (n : ℕ) => Nat.ldiff n m
-  | -[1 + m], -[1 + n] => -[1 + Nat.lorₓ m n]
+  | -[1 + m], -[1 + n] => -[1 + Nat.lor m n]
 
 def ldiff : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.ldiff m n
-  | (m : ℕ), -[1 + n] => Nat.landₓ m n
-  | -[1 + m], (n : ℕ) => -[1 + Nat.lorₓ m n]
+  | (m : ℕ), -[1 + n] => Nat.land m n
+  | -[1 + m], (n : ℕ) => -[1 + Nat.lor m n]
   | -[1 + m], -[1 + n] => Nat.ldiff n m
 
 def lxor : ℤ → ℤ → ℤ

@@ -45,20 +45,20 @@ unsafe def show_help : vm Unit := do
   vm.put_str " rbreak fn - remove breakpoint\n"
   vm.put_str " bs        - show breakpoints\n"
 
-unsafe def add_breakpoint (s : State) (args : List Stringₓ) : vm State :=
+unsafe def add_breakpoint (s : State) (args : List String) : vm State :=
   match args with
   | [arg] => do
     let fn ← return <| toQualifiedName arg
     let ok ← is_valid_fn_prefix fn
-    if ok then return { s with fnBps := fn :: List.filterₓ (fun fn' => fn ≠ fn') s }
+    if ok then return { s with fnBps := fn :: List.filter' (fun fn' => fn ≠ fn') s }
       else vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >> return s
   | _ => vm.put_str "invalid 'break <fn>' command, incorrect number of arguments\n" >> return s
 
-unsafe def remove_breakpoint (s : State) (args : List Stringₓ) : vm State :=
+unsafe def remove_breakpoint (s : State) (args : List String) : vm State :=
   match args with
   | [arg] => do
     let fn ← return <| toQualifiedName arg
-    return { s with fnBps := List.filterₓ (fun fn' => fn ≠ fn') s }
+    return { s with fnBps := List.filter' (fun fn' => fn ≠ fn') s }
   | _ => vm.put_str "invalid 'rbreak <fn>' command, incorrect number of arguments\n" >> return s
 
 unsafe def show_breakpoints : List Name → vm Unit
@@ -76,7 +76,7 @@ unsafe def down_cmd (frame : Nat) : vm Nat := do
   let sz ← vm.call_stack_size
   if frame ≥ sz - 1 then return frame else show_frame (frame + 1) >> return (frame + 1)
 
-unsafe def pidx_cmd : Nat → List Stringₓ → vm Unit
+unsafe def pidx_cmd : Nat → List String → vm Unit
   | frame, [arg] => do
     let idx ← return <| arg.toNat
     let sz ← vm.stack_size
@@ -106,13 +106,13 @@ unsafe def print_var : Nat → Nat → Name → vm Unit
             vm.put_str "\n"
           else print_var (i + 1) ep v
 
-unsafe def print_cmd : Nat → List Stringₓ → vm Unit
+unsafe def print_cmd : Nat → List String → vm Unit
   | frame, [arg] => do
     let (bp, ep) ← vm.call_stack_var_range frame
     print_var bp ep (to_qualified_name arg)
   | _, _ => vm.put_str "invalid 'print <var>' command, incorrect number of arguments\n"
 
-unsafe def cmd_loop_core : State → Nat → List Stringₓ → vm State
+unsafe def cmd_loop_core : State → Nat → List String → vm State
   | s, frame, default_cmd => do
     let is_eof ← vm.eof
     if is_eof then do
@@ -174,7 +174,7 @@ unsafe def cmd_loop_core : State → Nat → List Stringₓ → vm State
                                       vm.put_str "unknown command, type 'help' for help\n"
                                       cmd_loop_core s frame default_cmd
 
-unsafe def cmd_loop (s : State) (default_cmd : List Stringₓ) : vm State := do
+unsafe def cmd_loop (s : State) (default_cmd : List String) : vm State := do
   let csz ← vm.call_stack_size
   cmd_loop_core s (csz - 1) default_cmd
 

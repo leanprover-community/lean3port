@@ -27,14 +27,14 @@ open Exceptional
 
 variable {α : Type}
 
-variable [HasToString α]
+variable [ToString α]
 
-protected unsafe def exceptional.to_string : exceptional α → Stringₓ
+protected unsafe def exceptional.to_string : exceptional α → String
   | success a => toString a
   | exception e => "Exception: " ++ toString (e options.mk)
 
-unsafe instance : HasToString (exceptional α) :=
-  HasToString.mk exceptional.to_string
+unsafe instance : ToString (exceptional α) :=
+  ToString.mk exceptional.to_string
 
 end
 
@@ -64,7 +64,7 @@ unsafe def fail (f : format) : exceptional α :=
 
 end Exceptional
 
-unsafe instance : Monadₓ exceptional where
+unsafe instance : Monad exceptional where
   pure := @exceptional.return
   bind := @exceptional.bind
 

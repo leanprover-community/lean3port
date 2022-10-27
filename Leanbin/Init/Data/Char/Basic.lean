@@ -20,31 +20,31 @@ theorem is_valid_char_range_2 (n : Nat) (h₁ : 57343 < n) (h₂ : n < 1114112) 
 
 /-- The `char` type represents an unicode scalar value.
     See http://www.unicode.org/glossary/#unicode_scalar_value). -/
-structure Charₓ where
+structure Char where
   val : Nat
   valid : IsValidChar val
 
-instance : SizeOf Charₓ :=
+instance : SizeOf Char :=
   ⟨fun c => c.val⟩
 
-namespace Charₓ
+namespace Char
 
-protected def Lt (a b : Charₓ) : Prop :=
+protected def Lt (a b : Char) : Prop :=
   a.val < b.val
 
-protected def Le (a b : Charₓ) : Prop :=
+protected def Le (a b : Char) : Prop :=
   a.val ≤ b.val
 
-instance : LT Charₓ :=
-  ⟨Charₓ.Lt⟩
+instance : LT Char :=
+  ⟨Char.Lt⟩
 
-instance : LE Charₓ :=
-  ⟨Charₓ.Le⟩
+instance : LE Char :=
+  ⟨Char.Le⟩
 
-instance decidableLt (a b : Charₓ) : Decidable (a < b) :=
+instance decidableLt (a b : Char) : Decidable (a < b) :=
   Nat.decidableLt _ _
 
-instance decidableLe (a b : Charₓ) : Decidable (a ≤ b) :=
+instance decidableLe (a b : Char) : Decidable (a ≤ b) :=
   Nat.decidableLe _ _
 
 /-
@@ -62,28 +62,28 @@ theorem zero_lt_d800 : 0 < 55296 :=
               Nat.bit0_ne_zero <|
                 Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
 
-@[matchPattern]
-def ofNat (n : Nat) : Charₓ :=
+@[match_pattern]
+def ofNat (n : Nat) : Char :=
   if h : IsValidChar n then { val := n, valid := h } else { val := 0, valid := Or.inl zero_lt_d800 }
 
-def toNat (c : Charₓ) : Nat :=
+def toNat (c : Char) : Nat :=
   c.val
 
-theorem eq_of_veq : ∀ {c d : Charₓ}, c.val = d.val → c = d
+theorem eq_of_veq : ∀ {c d : Char}, c.val = d.val → c = d
   | ⟨v, h⟩, ⟨_, _⟩, rfl => rfl
 
-theorem veq_of_eq : ∀ {c d : Charₓ}, c = d → c.val = d.val
+theorem veq_of_eq : ∀ {c d : Char}, c = d → c.val = d.val
   | _, _, rfl => rfl
 
-theorem ne_of_vne {c d : Charₓ} (h : c.val ≠ d.val) : c ≠ d := fun h' => absurd (veq_of_eq h') h
+theorem ne_of_vne {c d : Char} (h : c.val ≠ d.val) : c ≠ d := fun h' => absurd (veq_of_eq h') h
 
-theorem vne_of_ne {c d : Charₓ} (h : c ≠ d) : c.val ≠ d.val := fun h' => absurd (eq_of_veq h') h
+theorem vne_of_ne {c d : Char} (h : c ≠ d) : c.val ≠ d.val := fun h' => absurd (eq_of_veq h') h
 
-end Charₓ
+end Char
 
-instance : DecidableEq Charₓ := fun i j =>
-  decidableOfDecidableOfIff (Nat.decidableEq i.val j.val) ⟨Charₓ.eq_of_veq, Charₓ.veq_of_eq⟩
+instance : DecidableEq Char := fun i j =>
+  decidable_of_decidable_of_iff (Nat.decidableEq i.val j.val) ⟨Char.eq_of_veq, Char.veq_of_eq⟩
 
-instance : Inhabited Charₓ :=
+instance : Inhabited Char :=
   ⟨'A'⟩
 

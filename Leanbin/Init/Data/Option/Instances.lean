@@ -10,10 +10,10 @@ import Leanbin.Init.Control.Lawful
 
 universe u v
 
-instance : IsLawfulMonad Option where
-  id_map := fun α x => Option.rec rfl (fun x => rfl) x
-  pure_bind := fun α β x f => rfl
-  bind_assoc := fun α β γ x f g => Option.rec rfl (fun x => rfl) x
+instance : LawfulMonad Option where
+  id_map α x := Option.rec rfl (fun x => rfl) x
+  pure_bind α β x f := rfl
+  bind_assoc α β γ x f g := Option.rec rfl (fun x => rfl) x
 
 theorem Option.eq_of_eq_some {α : Type u} : ∀ {x y : Option α}, (∀ z, x = some z ↔ y = some z) → x = y
   | none, none, h => rfl
@@ -21,9 +21,9 @@ theorem Option.eq_of_eq_some {α : Type u} : ∀ {x y : Option α}, (∀ z, x = 
   | some z, none, h => Option.noConfusion ((h z).1 rfl)
   | some z, some w, h => Option.noConfusion ((h w).2 rfl) (congr_arg some)
 
-theorem Option.eq_some_of_is_some {α : Type u} : ∀ {o : Option α} (h : Option.isSome o), o = some (Option.getₓ h)
+theorem Option.eq_some_of_isSome {α : Type u} : ∀ {o : Option α} (h : Option.isSome o), o = some (Option.get h)
   | some x, h => rfl
 
-theorem Option.eq_none_of_is_none {α : Type u} : ∀ {o : Option α}, o.isNone → o = none
+theorem Option.eq_none_of_isNone {α : Type u} : ∀ {o : Option α}, o.isNone → o = none
   | none, h => rfl
 

@@ -6,17 +6,17 @@ Author: Leonardo de Moura
 prelude
 import Leanbin.Init.Logic
 
-theorem punit_eq (a b : PUnit) : a = b :=
+theorem subsingleton (a b : PUnit) : a = b :=
   PUnit.recOn a (PUnit.recOn b rfl)
 
-theorem punit_eq_star (a : PUnit) : a = PUnit.unit :=
-  punit_eq a PUnit.unit
+theorem eq_punit (a : PUnit) : a = PUnit.unit :=
+  subsingleton a PUnit.unit
 
 instance : Subsingleton PUnit :=
-  Subsingleton.intro punit_eq
+  Subsingleton.intro subsingleton
 
 instance : Inhabited PUnit :=
   ⟨PUnit.unit⟩
 
-instance : DecidableEq PUnit := fun a b => isTrue (punit_eq a b)
+instance : DecidableEq PUnit := fun a b => isTrue (subsingleton a b)
 

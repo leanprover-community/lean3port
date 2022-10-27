@@ -7,7 +7,7 @@ import Leanbin.Data.Buffer
 import Leanbin.System.Random
 
 inductive Io.Error
-  | other : Stringₓ → Io.Error
+  | other : String → Io.Error
   | sys : Nat → Io.Error
 
 inductive Io.Mode
@@ -23,9 +23,9 @@ inductive Io.Process.Stdio
 
 structure Io.Process.SpawnArgs where
   -- Command name.
-  cmd : Stringₓ
+  cmd : String
   -- Arguments for the process
-  args : List Stringₓ := []
+  args : List String := []
   -- Configuration for the process' stdin handle.
   stdin := Stdio.inherit
   -- Configuration for the process' stdout handle.
@@ -33,12 +33,12 @@ structure Io.Process.SpawnArgs where
   -- Configuration for the process' stderr handle.
   stderr := Stdio.inherit
   -- Working directory for the process.
-  cwd : Option Stringₓ := none
+  cwd : Option String := none
   -- Environment variables for the process.
-  env : List (Stringₓ × Option Stringₓ) := []
+  env : List (String × Option String) := []
 
 class MonadIo (m : Type → Type → Type) where
-  [Monad : ∀ e, Monadₓ (m e)]
+  [Monad : ∀ e, Monad (m e)]
   -- TODO(Leo): use monad_except after it is merged
   catch : ∀ e₁ e₂ α, m e₁ α → (e₁ → m e₂ α) → m e₂ α
   fail : ∀ e α, e → m e α
@@ -47,24 +47,24 @@ class MonadIo (m : Type → Type → Type) where
   Handle : Type
 
 class MonadIoTerminal (m : Type → Type → Type) where
-  putStr : Stringₓ → m Io.Error Unit
-  getLine : m Io.Error Stringₓ
-  cmdlineArgs : List Stringₓ
+  putStr : String → m Io.Error Unit
+  getLine : m Io.Error String
+  cmdlineArgs : List String
 
 open MonadIo (Handle)
 
 class MonadIoNetSystem (m : Type → Type → Type) [MonadIo m] where
   Socket : Type
-  listen : Stringₓ → Nat → m Io.Error socket
+  listen : String → Nat → m Io.Error socket
   accept : socket → m Io.Error socket
-  connect : Stringₓ → m Io.Error socket
+  connect : String → m Io.Error socket
   recv : socket → Nat → m Io.Error CharBuffer
   send : socket → CharBuffer → m Io.Error Unit
   close : socket → m Io.Error Unit
 
 class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
   -- Remark: in Haskell, they also provide  (Maybe TextEncoding) and  NewlineMode
-  mkFileHandle : Stringₓ → Io.Mode → Bool → m Io.Error (Handle m)
+  mkFileHandle : String → Io.Mode → Bool → m Io.Error (Handle m)
   isEof : Handle m → m Io.Error Bool
   flush : Handle m → m Io.Error Unit
   close : Handle m → m Io.Error Unit
@@ -74,22 +74,22 @@ class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
   stdin : m Io.Error (Handle m)
   stdout : m Io.Error (Handle m)
   stderr : m Io.Error (Handle m)
-  fileExists : Stringₓ → m Io.Error Bool
-  dirExists : Stringₓ → m Io.Error Bool
-  remove : Stringₓ → m Io.Error Unit
-  rename : Stringₓ → Stringₓ → m Io.Error Unit
-  mkdir : Stringₓ → Bool → m Io.Error Bool
-  rmdir : Stringₓ → m Io.Error Bool
+  fileExists : String → m Io.Error Bool
+  dirExists : String → m Io.Error Bool
+  remove : String → m Io.Error Unit
+  rename : String → String → m Io.Error Unit
+  mkdir : String → Bool → m Io.Error Bool
+  rmdir : String → m Io.Error Bool
 
 unsafe class monad_io_serial (m : Type → Type → Type) [MonadIo m] where
   serialize : Handle m → expr → m Io.Error Unit
   deserialize : Handle m → m Io.Error expr
 
 class MonadIoEnvironment (m : Type → Type → Type) where
-  getEnv : Stringₓ → m Io.Error (Option Stringₓ)
+  getEnv : String → m Io.Error (Option String)
   -- we don't provide set_env as it is (thread-)unsafe (at least with glibc)
-  getCwd : m Io.Error Stringₓ
-  setCwd : Stringₓ → m Io.Error Unit
+  getCwd : m Io.Error String
+  setCwd : String → m Io.Error Unit
 
 class MonadIoProcess (m : Type → Type → Type) [MonadIo m] where
   Child : Type
@@ -104,13 +104,13 @@ class MonadIoRandom (m : Type → Type → Type) where
   setRandGen : StdGen → m Io.Error Unit
   rand : Nat → Nat → m Io.Error Nat
 
-instance monadIoIsMonad (m : Type → Type → Type) (e : Type) [MonadIo m] : Monadₓ (m e) :=
+instance monadIoIsMonad (m : Type → Type → Type) (e : Type) [MonadIo m] : Monad (m e) :=
   MonadIo.monad e
 
 instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] :
-    MonadFail (m Io.Error) where fail := fun α s => MonadIo.fail _ _ (Io.Error.other s)
+    MonadFail (m Io.Error) where fail α s := MonadIo.fail _ _ (Io.Error.other s)
 
-instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternativeₓ (m Io.Error) where
-  orelse := fun α a b => MonadIo.catch _ _ _ a fun _ => b
-  failure := fun α => MonadIo.fail _ _ (Io.Error.other "failure")
+instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternative (m Io.Error) where
+  orelse α a b := MonadIo.catch _ _ _ a fun _ => b
+  failure α := MonadIo.fail _ _ (Io.Error.other "failure")
 

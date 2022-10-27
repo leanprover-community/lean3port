@@ -27,11 +27,11 @@ So for example, if one had the lemma `p : x = y`, then the conversion for `p` wo
 unsafe def conv (α : Type u) :=
   tactic α
 
-unsafe instance : Monadₓ conv := by dsimp only [conv] <;> infer_instance
+unsafe instance : Monad conv := by dsimp only [conv] <;> infer_instance
 
 unsafe instance : MonadFail conv := by dsimp only [conv] <;> infer_instance
 
-unsafe instance : Alternativeₓ conv := by dsimp only [conv] <;> infer_instance
+unsafe instance : Alternative conv := by dsimp only [conv] <;> infer_instance
 
 namespace Conv
 
@@ -118,7 +118,7 @@ private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List 
 Take the target equality `f x y = X` and try to apply the congruence lemma for `f` to it (namely `x = x' → y = y' → f x y = f x' y'`). -/
 unsafe def congr : conv Unit := do
   let (r, lhs, rhs) ← target_lhs_rhs
-  guardₓ (r = `eq)
+  guard (r = `eq)
   let fn := lhs.get_app_fn
   let args := lhs.get_app_args
   let cgr_lemma ← mk_congr_lemma_simp fn (some args.length)
@@ -133,7 +133,7 @@ unsafe def congr : conv Unit := do
 unsafe def funext : conv Unit :=
   iterate' <| do
     let (r, lhs, rhs) ← target_lhs_rhs
-    guardₓ (r = `eq)
+    guard (r = `eq)
     let expr.lam n _ _ _ ← return lhs
     tactic.applyc `funext
     intro n

@@ -230,18 +230,18 @@ unsafe instance : Zero float :=
 unsafe instance : One float :=
   ⟨float.one⟩
 
-unsafe axiom to_repr : float → Stringₓ
+unsafe axiom to_repr : float → String
 
-unsafe instance : HasRepr float :=
+unsafe instance : Repr float :=
   ⟨to_repr⟩
 
-unsafe instance : HasToString float :=
+unsafe instance : ToString float :=
   ⟨to_repr⟩
 
 unsafe instance : has_to_format float :=
   ⟨format.of_string ∘ toString⟩
 
-unsafe axiom of_string : Stringₓ → Option float
+unsafe axiom of_string : String → Option float
 
 unsafe instance has_nat_pow : Pow float Nat :=
   ⟨fun a b => native.float.pow a (float.of_nat b)⟩

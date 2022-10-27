@@ -15,7 +15,7 @@ namespace ModuleInfo
 /-- The absolute path to the `.lean` file containing the module (e.g. `".../data/dlist.lean"`). -/
 @[reducible]
 unsafe def module_id :=
-  Stringₓ
+  String
 
 /-- The name of the module, as used in an import command (e.g. `data.dlist`). -/
 @[reducible]
@@ -48,10 +48,10 @@ unsafe def of_module_name (name : module_name) (cur_module : module_id := "") : 
 /-- Returns the `module_id` of the module. -/
 protected unsafe axiom id : module_info → module_id
 
-unsafe instance : HasRepr module_info :=
+unsafe instance : Repr module_info :=
   ⟨module_info.id⟩
 
-unsafe instance : HasToString module_info :=
+unsafe instance : ToString module_info :=
   ⟨module_info.id⟩
 
 unsafe instance : has_to_format module_info :=

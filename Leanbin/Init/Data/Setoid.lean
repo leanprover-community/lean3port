@@ -9,31 +9,31 @@ import Leanbin.Init.Logic
 
 universe u
 
-class Setoidₓ (α : Sort u) where
+class Setoid (α : Sort u) where
   R : α → α → Prop
-  iseqv : Equivalenceₓ r
+  iseqv : Equivalence r
 
-instance (priority := 100) setoidHasEquiv {α : Sort u} [Setoidₓ α] : HasEquivₓ α :=
-  ⟨Setoidₓ.R⟩
+instance (priority := 100) setoidHasEquiv {α : Sort u} [Setoid α] : HasEquiv α :=
+  ⟨Setoid.R⟩
 
-namespace Setoidₓ
+namespace Setoid
 
-variable {α : Sort u} [Setoidₓ α]
+variable {α : Sort u} [Setoid α]
 
 @[refl]
 theorem refl (a : α) : a ≈ a :=
-  match Setoidₓ.iseqv with
+  match Setoid.iseqv with
   | ⟨h_refl, h_symm, h_trans⟩ => h_refl a
 
 @[symm]
 theorem symm {a b : α} (hab : a ≈ b) : b ≈ a :=
-  match Setoidₓ.iseqv with
+  match Setoid.iseqv with
   | ⟨h_refl, h_symm, h_trans⟩ => h_symm hab
 
 @[trans]
 theorem trans {a b c : α} (hab : a ≈ b) (hbc : b ≈ c) : a ≈ c :=
-  match Setoidₓ.iseqv with
+  match Setoid.iseqv with
   | ⟨h_refl, h_symm, h_trans⟩ => h_trans hab hbc
 
-end Setoidₓ
+end Setoid
 

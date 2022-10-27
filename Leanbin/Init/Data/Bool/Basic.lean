@@ -19,25 +19,25 @@ def cond.{u} {a : Type u} : Bool → a → a → a
 
 /-- Boolean OR -/
 @[inline]
-def bor : Bool → Bool → Bool
+def or : Bool → Bool → Bool
   | tt, b => true
   | ff, b => b
 
 /-- Boolean AND -/
 @[inline]
-def band : Bool → Bool → Bool
+def and : Bool → Bool → Bool
   | tt, b => b
   | ff, b => false
 
 /-- Boolean NOT -/
 @[inline]
-def bnot : Bool → Bool
+def not : Bool → Bool
   | tt => false
   | ff => true
 
 /-- Boolean XOR -/
 @[inline]
-def bxor : Bool → Bool → Bool
+def xor : Bool → Bool → Bool
   | tt, ff => true
   | ff, tt => true
   | _, _ => false

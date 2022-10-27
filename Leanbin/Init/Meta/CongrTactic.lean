@@ -21,14 +21,14 @@ unsafe def apply_congr_core (clemma : congr_lemma) : tactic Unit := do
 
 unsafe def apply_eq_congr_core (tgt : expr) : tactic Unit := do
   let (lhs, rhs) ← match_eq tgt
-  guardₓ lhs
+  guard lhs
   let clemma ← mk_specialized_congr_lemma lhs
   apply_congr_core clemma
 
 unsafe def apply_heq_congr_core : tactic Unit := do
   try (applyc `eq_of_heq)
   let (α, lhs, β, rhs) ← target >>= match_heq
-  guardₓ lhs
+  guard lhs
   let clemma ← mk_hcongr_lemma lhs.get_app_fn lhs.get_app_num_args
   apply_congr_core clemma
 

@@ -14,7 +14,7 @@ import Leanbin.Init.Data.List.Qsort
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
   show a + 0 < a + b by
-    apply Nat.add_lt_add_leftₓ
+    apply Nat.add_lt_add_left
     assumption
 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
@@ -22,17 +22,17 @@ theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
   suffices 0 < a + 1 by
     simp [Nat.add_comm]
     assumption
-  Nat.zero_lt_succₓ _
+  Nat.zero_lt_succ _
 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
-theorem Nat.lt_add_rightₓ (a b c : Nat) : a < b → a < b + c := fun h => lt_of_lt_of_leₓ h (Nat.le_add_rightₓ _ _)
+theorem Nat.lt_add_right (a b c : Nat) : a < b → a < b + c := fun h => lt_of_lt_of_le h (Nat.le_add_right _ _)
 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
-theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_leₓ h (Nat.le_add_leftₓ _ _)
+theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_le h (Nat.le_add_left _ _)
 
 protected def PSum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → ℕ
-  | PSum.inl a => sizeof a
-  | PSum.inr b => sizeof b
+  | PSum.inl a => sizeOf a
+  | PSum.inr b => sizeOf b
 
 @[reducible]
 protected def PSum.hasSizeofAlt.{u, v} (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=
@@ -61,7 +61,7 @@ unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do
 
 private unsafe def clear_wf_rec_goal_aux : List expr → tactic Unit
   | [] => return ()
-  | h :: hs => clear_wf_rec_goal_aux hs >> try (guardₓ (h.local_pp_name.is_internal || h.is_aux_decl) >> clear h)
+  | h :: hs => clear_wf_rec_goal_aux hs >> try (guard (h.local_pp_name.is_internal || h.is_aux_decl) >> clear h)
 
 unsafe def clear_internals : tactic Unit :=
   local_context >>= clear_wf_rec_goal_aux
@@ -73,8 +73,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | quote.1 (PSigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
   | _ => failed
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -88,7 +88,7 @@ unsafe def process_lex : tactic Unit → tactic Unit
       else tac
 
 private unsafe def unfold_sizeof_measure : tactic Unit :=
-  dunfold_target [`` SizeofMeasure, `` Measureₓ, `` InvImage] { failIfUnchanged := false }
+  dunfold_target [`` SizeofMeasure, `` Measure, `` InvImage] { failIfUnchanged := false }
 
 private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
   | s, [] => return s
@@ -106,9 +106,9 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
       | _ => return s
     else return s
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def unfold_sizeof_loop : tactic Unit := do
-  dunfold_target [`` sizeof, `` SizeOf.sizeof] { failIfUnchanged := ff }
+  dunfold_target [`` SizeOf.sizeOf, `` SizeOf.sizeOf] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
   simp_target S >> unfold_sizeof_loop <|> try sorry
 
@@ -157,12 +157,12 @@ private unsafe def sort_args (args : List expr) : List expr :=
 private def tagged_proof.wf : Unit :=
   ()
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def cancel_nat_add_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
   let ty ← infer_type lhs >>= whnf
-  guardₓ (ty = quote.1 Nat)
+  guard (ty = quote.1 Nat)
   let lhs_args := collect_add_args lhs
   let rhs_args := collect_add_args rhs
   let common := lhs_args.bagInter rhs_args
@@ -181,12 +181,12 @@ unsafe def cancel_nat_add_lt : tactic Unit := do
 
 unsafe def check_target_is_value_lt : tactic Unit := do
   let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
-  guardₓ lhs
+  guard lhs
 
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
--- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs]
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>

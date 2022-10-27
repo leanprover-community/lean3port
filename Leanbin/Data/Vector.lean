@@ -27,11 +27,11 @@ instance [DecidableEq α] : DecidableEq (Vector α n) := by
   unfold Vector
   infer_instance
 
-@[matchPattern]
+@[match_pattern]
 def nil : Vector α 0 :=
   ⟨[], rfl⟩
 
-@[matchPattern]
+@[match_pattern]
 def cons : α → Vector α n → Vector α (Nat.succ n)
   | a, ⟨v, h⟩ => ⟨a :: v, congr_arg Nat.succ h⟩
 
@@ -63,14 +63,20 @@ theorem cons_head_tail : ∀ v : Vector α (succ n), cons (head v) (tail v) = v
 def toList (v : Vector α n) : List α :=
   v.1
 
-def nth : ∀ v : Vector α n, Finₓ n → α
+def nth : ∀ v : Vector α n, Fin n → α
   | ⟨l, h⟩, i => l.nthLe i.1 (by rw [h] <;> exact i.2)
 
 def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
   | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ => ⟨l₁ ++ l₂, by simp [*]⟩
 
-@[elabAsElim]
-def elimₓ {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
+/- warning: vector.elim -> Vector.elim is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u_1}} {C : forall {n : Nat}, (Vector.{u_1} α n) -> Sort.{u}}, (forall (l : List.{u_1} α), C (List.length.{u_1} α l) (Subtype.mk.{succ u_1} (List.{u_1} α) (fun (l_1 : List.{u_1} α) => Eq.{1} Nat (List.length.{u_1} α l_1) (List.length.{u_1} α l)) l (Vector.Elim._proof_1.{u_1} α l))) -> (forall {n : Nat} (v : Vector.{u_1} α n), C n v)
+but is expected to have type
+  forall {α : Type.{_aux_param_0}} {C : forall {n : Nat}, (Vector.{_aux_param_0} α n) -> Sort.{u}}, (forall (l : List.{_aux_param_0} α), C (List.length.{_aux_param_0} α l) (Subtype.mk.{succ _aux_param_0} (List.{_aux_param_0} α) (fun (l_1 : List.{_aux_param_0} α) => Eq.{1} Nat (List.length.{_aux_param_0} α l_1) (List.length.{_aux_param_0} α l)) l (rfl.{1} Nat (List.length.{_aux_param_0} α l)))) -> (forall {n : Nat} (v : Vector.{_aux_param_0} α n), C n v)
+Case conversion may be inaccurate. Consider using '#align vector.elim Vector.elimₓ'. -/
+@[elab_as_elim]
+def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
   | ⟨l, h⟩ =>
     match n, h with
     | _, rfl => H l
@@ -93,15 +99,15 @@ def repeat (a : α) (n : ℕ) : Vector α n :=
   ⟨List.repeat a n, List.length_repeat a n⟩
 
 def drop (i : ℕ) : Vector α n → Vector α (n - i)
-  | ⟨l, p⟩ => ⟨List.dropₓ i l, by simp [*]⟩
+  | ⟨l, p⟩ => ⟨List.drop i l, by simp [*]⟩
 
 def take (i : ℕ) : Vector α n → Vector α (min i n)
-  | ⟨l, p⟩ => ⟨List.takeₓ i l, by simp [*]⟩
+  | ⟨l, p⟩ => ⟨List.take i l, by simp [*]⟩
 
-def removeNth (i : Finₓ n) : Vector α n → Vector α (n - 1)
-  | ⟨l, p⟩ => ⟨List.removeNthₓ l i.1, by rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
+def removeNth (i : Fin n) : Vector α n → Vector α (n - 1)
+  | ⟨l, p⟩ => ⟨List.removeNth l i.1, by rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
 
-def ofFn : ∀ {n}, (Finₓ n → α) → Vector α n
+def ofFn : ∀ {n}, (Fin n → α) → Vector α n
   | 0, f => nil
   | n + 1, f => cons (f 0) (of_fn fun i => f i.succ)
 
@@ -153,12 +159,12 @@ theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) : toList 
   rfl
 
 @[simp]
-theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.dropₓ n (toList v) := by
+theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.drop n (toList v) := by
   cases v
   rfl
 
 @[simp]
-theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.takeₓ n (toList v) := by
+theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.take n (toList v) := by
   cases v
   rfl
 

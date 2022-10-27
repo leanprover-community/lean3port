@@ -77,7 +77,7 @@ unsafe def existsi (e : expr) : tactic Unit := do
   eapply (app t e)
   let t_type ← infer_type t >>= whnf
   let e_type ← infer_type e
-  guardₓ t_type <|> fail "existsi tactic failed, failed to infer type"
+  guard t_type <|> fail "existsi tactic failed, failed to infer type"
   unify t_type e_type <|> fail "existsi tactic failed, type mismatch between given term witness and expected type"
 
 end Tactic

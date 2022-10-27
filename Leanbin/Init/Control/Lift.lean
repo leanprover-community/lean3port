@@ -46,26 +46,38 @@ instance hasMonadLiftTRefl (m) : HasMonadLiftT m m :=
 theorem monad_lift_refl {m : Type u → Type v} {α} : (monadLift : m α → m α) = id :=
   rfl
 
+/- warning: monad_functor -> MonadFunctor is a dubious translation:
+lean 3 declaration is
+  (Type.{u} -> Type.{v}) -> (Type.{u} -> Type.{v}) -> (Type.{u} -> Type.{w}) -> (Type.{u} -> Type.{w}) -> Sort.{max (succ (succ u)) (succ v) (succ w)}
+but is expected to have type
+  (Type.{u} -> Type.{v}) -> (Type.{u} -> Type.{w}) -> Sort.{max (max (succ (succ u)) (succ v)) (succ w)}
+Case conversion may be inaccurate. Consider using '#align monad_functor MonadFunctorₓ'. -/
 /-- A functor in the category of monads. Can be used to lift monad-transforming functions.
     Based on pipes' [MFunctor](https://hackage.haskell.org/package/pipes-2.4.0/docs/Control-MFunctor.html),
     but not restricted to monad transformers.
     Alternatively, an implementation of [MonadTransFunctor](http://duairc.netsoc.ie/layers-docs/Control-Monad-Layer.html#t:MonadTransFunctor). -/
-class MonadFunctorₓ (m m' : Type u → Type v) (n n' : Type u → Type w) where
+class MonadFunctor (m m' : Type u → Type v) (n n' : Type u → Type w) where
   monadMap {α : Type u} : (∀ {α}, m α → m' α) → n α → n' α
 
+/- warning: monad_functor_t -> MonadFunctorT is a dubious translation:
+lean 3 declaration is
+  (Type.{u} -> Type.{v}) -> (Type.{u} -> Type.{v}) -> (Type.{u} -> Type.{w}) -> (Type.{u} -> Type.{w}) -> Sort.{max (succ (succ u)) (succ v) (succ w)}
+but is expected to have type
+  (Type.{u} -> Type.{v}) -> (Type.{u} -> Type.{w}) -> Sort.{max (max (succ (succ u)) (succ v)) (succ w)}
+Case conversion may be inaccurate. Consider using '#align monad_functor_t MonadFunctorTₓ'. -/
 /-- The reflexive-transitive closure of `monad_functor`.
     `monad_map` is used to transitively lift monad morphisms such as `state_t.zoom`.
     A generalization of [MonadLiftFunctor](http://duairc.netsoc.ie/layers-docs/Control-Monad-Layer.html#t:MonadLiftFunctor), which can only lift endomorphisms (i.e. m = m', n = n'). -/
-class MonadFunctorTₓ (m m' : Type u → Type v) (n n' : Type u → Type w) where
+class MonadFunctorT (m m' : Type u → Type v) (n n' : Type u → Type w) where
   monadMap {α : Type u} : (∀ {α}, m α → m' α) → n α → n' α
 
-export MonadFunctorTₓ (monadMap)
+export MonadFunctorT (monadMap)
 
-instance (priority := 100) monadFunctorTTrans (m m' n n' o o') [MonadFunctorTₓ m m' n n'] [MonadFunctorₓ n n' o o'] :
-    MonadFunctorTₓ m m' o o' :=
-  ⟨fun α f => MonadFunctorₓ.monadMap fun α => (monadMap @f : n α → n' α)⟩
+instance (priority := 100) monadFunctorTTrans (m m' n n' o o') [MonadFunctorT m m' n n'] [MonadFunctor n n' o o'] :
+    MonadFunctorT m m' o o' :=
+  ⟨fun α f => MonadFunctor.monadMap fun α => (monadMap @f : n α → n' α)⟩
 
-instance monadFunctorTRefl (m m') : MonadFunctorTₓ m m' m m' :=
+instance monadFunctorTRefl (m m') : MonadFunctorT m m' m m' :=
   ⟨fun α f => f⟩
 
 @[simp]

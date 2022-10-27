@@ -19,7 +19,7 @@ inductive Format.Color
   | cyan
   | grey
 
-def Format.Color.toString : Format.Color → Stringₓ
+def Format.Color.toString : Format.Color → String
   | Format.Color.red => "red"
   | Format.Color.green => "green"
   | Format.Color.orange => "orange"
@@ -63,14 +63,14 @@ unsafe axiom format.highlight : format → Color → format
 When printing the given format `f`, if `f.flatten` fits without need for linebreaks then print the `f.flatten`, else print `f` unflattened with linebreaks. -/
 unsafe axiom format.group : format → format
 
-unsafe axiom format.of_string : Stringₓ → format
+unsafe axiom format.of_string : String → format
 
 unsafe axiom format.of_nat : Nat → format
 
 /-- Flattening removes all of the `format.nest` items from the format tree.  -/
 unsafe axiom format.flatten : format → format
 
-unsafe axiom format.to_string (f : format) (o : options := options.mk) : Stringₓ
+unsafe axiom format.to_string (f : format) (o : options := options.mk) : String
 
 unsafe axiom format.of_options : options → format
 
@@ -85,7 +85,7 @@ unsafe instance : Inhabited format :=
 unsafe instance : Append format :=
   ⟨format.compose⟩
 
-unsafe instance : HasToString format :=
+unsafe instance : ToString format :=
   ⟨fun f => f.toString options.mk⟩
 
 /-- Use this instead of `has_to_string` to enable prettier formatting.
@@ -103,7 +103,7 @@ unsafe def to_fmt {α : Type u} [has_to_format α] : α → format :=
 unsafe instance nat_to_format : Coe Nat format :=
   ⟨format.of_nat⟩
 
-unsafe instance string_to_format : Coe Stringₓ format :=
+unsafe instance string_to_format : Coe String format :=
   ⟨format.of_string⟩
 
 open Format List
@@ -127,7 +127,7 @@ unsafe instance : has_to_format Bool :=
 unsafe instance {p : Prop} : has_to_format (Decidable p) :=
   ⟨fun b : Decidable p => @ite _ p b (of_string "tt") (of_string "ff")⟩
 
-unsafe instance : has_to_format Stringₓ :=
+unsafe instance : has_to_format String :=
   ⟨fun s => format.of_string s⟩
 
 unsafe instance : has_to_format Nat :=
@@ -136,8 +136,8 @@ unsafe instance : has_to_format Nat :=
 unsafe instance : has_to_format Unsigned :=
   ⟨fun n => to_fmt n.toNat⟩
 
-unsafe instance : has_to_format Charₓ :=
-  ⟨fun c : Charₓ => format.of_string c.toString⟩
+unsafe instance : has_to_format Char :=
+  ⟨fun c : Char => format.of_string c.toString⟩
 
 unsafe def list.to_format {α : Type u} [has_to_format α] : List α → format
   | [] => to_fmt "[]"
@@ -179,7 +179,7 @@ open Subtype
 unsafe instance {α : Type u} {p : α → Prop} [has_to_format α] : has_to_format (Subtype p) :=
   ⟨fun s => to_fmt (val s)⟩
 
-unsafe def format.bracket : Stringₓ → Stringₓ → format → format
+unsafe def format.bracket : String → String → format → format
   | o, c, f => to_fmt o ++ nest o.length f ++ to_fmt c
 
 /-- Surround with "()". -/

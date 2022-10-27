@@ -23,8 +23,8 @@ namespace Acc
 
 variable {α : Sort u} {r : α → α → Prop}
 
-theorem invₓ {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
-  Acc.recOnₓ h₁ (fun x₁ ac₁ ih h₂ => ac₁ y h₂) h₂
+theorem inv {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
+  Acc.recOn h₁ (fun x₁ ac₁ ih h₂ => ac₁ y h₂) h₂
 
 end Acc
 
@@ -50,8 +50,8 @@ local infixl:50 "≺" => r
 
 parameter (hwf : WellFounded r)
 
-def recursionₓ {C : α → Sort v} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
-  Acc.recOnₓ (apply hwf a) fun x₁ ac₁ ih => h x₁ ih
+def recursion {C : α → Sort v} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
+  Acc.recOn (apply hwf a) fun x₁ ac₁ ih => h x₁ ih
 
 theorem induction {C : α → Prop} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
   recursion a h
@@ -61,9 +61,9 @@ variable {C : α → Sort v}
 variable (F : ∀ x, (∀ y, y≺x → C y) → C x)
 
 def fixF (x : α) (a : Acc r x) : C x :=
-  Acc.recOnₓ a fun x₁ ac₁ ih => F x₁ ih
+  Acc.recOn a fun x₁ ac₁ ih => F x₁ ih
 
-theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.invₓ acx p) :=
+theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.inv acx p) :=
   Acc.drec (fun x r ih => rfl) acx
 
 end
@@ -98,10 +98,10 @@ parameter (h₁ : Subrelation Q r)
 
 parameter (h₂ : WellFounded r)
 
-theorem accessibleₓ {a : α} (ac : Acc r a) : Acc Q a :=
-  Acc.recOnₓ ac fun x ax ih => Acc.intro x fun (y : α) (lt : Q y x) => ih y (h₁ lt)
+theorem accessible {a : α} (ac : Acc r a) : Acc Q a :=
+  Acc.recOn ac fun x ax ih => Acc.intro x fun (y : α) (lt : Q y x) => ih y (h₁ lt)
 
-theorem wfₓ : WellFounded Q :=
+theorem wf : WellFounded Q :=
   ⟨fun a => accessible (apply h₂ a)⟩
 
 end
@@ -120,12 +120,12 @@ parameter (f : α → β)
 parameter (h : WellFounded r)
 
 private def acc_aux {b : β} (ac : Acc r b) : ∀ x : α, f x = b → Acc (InvImage r f) x :=
-  Acc.recOnₓ ac fun x acx ih z e => Acc.intro z fun y lt => Eq.recOnₓ e (fun acx ih => ih (f y) lt y rfl) acx ih
+  Acc.recOn ac fun x acx ih z e => Acc.intro z fun y lt => Eq.recOn e (fun acx ih => ih (f y) lt y rfl) acx ih
 
-theorem accessibleₓ {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
+theorem accessible {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
   acc_aux ac a rfl
 
-theorem wfₓ : WellFounded (InvImage r f) :=
+theorem wf : WellFounded (InvImage r f) :=
   ⟨fun a => accessible (apply h (f a))⟩
 
 end
@@ -133,22 +133,22 @@ end
 end InvImage
 
 /-- less-than is well-founded -/
-theorem Nat.lt_wf : WellFounded Nat.Lt :=
-  ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zeroₓ n)) fun n ih =>
+theorem Nat.lt_wf : WellFounded Nat.lt :=
+  ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zero n)) fun n ih =>
       Acc.intro (Nat.succ n) fun m h =>
-        Or.elim (Nat.eq_or_lt_of_leₓ (Nat.le_of_succ_le_succₓ h)) (fun e => Eq.substr e ih) (Acc.invₓ ih)⟩
+        Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih) (Acc.inv ih)⟩
 
-def Measureₓ {α : Sort u} : (α → ℕ) → α → α → Prop :=
+def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
   InvImage (· < ·)
 
-theorem measure_wf {α : Sort u} (f : α → ℕ) : WellFounded (Measureₓ f) :=
-  InvImage.wfₓ f Nat.lt_wf
+theorem measure_wf {α : Sort u} (f : α → ℕ) : WellFounded (Measure f) :=
+  InvImage.wf f Nat.lt_wf
 
 def SizeofMeasure (α : Sort u) [SizeOf α] : α → α → Prop :=
-  Measureₓ sizeof
+  Measure sizeOf
 
 theorem sizeof_measure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure α) :=
-  measure_wf sizeof
+  measure_wf sizeOf
 
 instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : HasWellFounded α where
   R := SizeofMeasure α
@@ -187,13 +187,13 @@ parameter {ra : α → α → Prop}{rb : β → β → Prop}
 local infixl:50 "≺" => Lex ra rb
 
 theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc (Lex ra rb) (a, b) :=
-  Acc.recOnₓ aca fun xa aca iha b =>
-    Acc.recOnₓ (acb b) fun xb acb ihb =>
+  Acc.recOn aca fun xa aca iha b =>
+    Acc.recOn (acb b) fun xb acb ihb =>
       Acc.intro (xa, xb) fun p lt =>
         have aux : xa = xa → xb = xb → Acc (Lex ra rb) p :=
           @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p (xa, xb) lt
-            (fun a₁ b₁ a₂ b₂ h (eq₂ : a₂ = xa) (eq₃ : b₂ = xb) => iha a₁ (Eq.recOnₓ eq₂ h) b₁)
-            fun a b₁ b₂ h (eq₂ : a = xa) (eq₃ : b₂ = xb) => Eq.recOnₓ eq₂.symm (ihb b₁ (Eq.recOnₓ eq₃ h))
+            (fun a₁ b₁ a₂ b₂ h (eq₂ : a₂ = xa) (eq₃ : b₂ = xb) => iha a₁ (Eq.recOn eq₂ h) b₁)
+            fun a b₁ b₂ h (eq₂ : a = xa) (eq₃ : b₂ = xb) => Eq.recOn eq₂.symm (ihb b₁ (Eq.recOn eq₃ h))
         aux rfl rfl
 
 -- The lexicographical order of well founded relations is well-founded
@@ -206,7 +206,7 @@ theorem rprod_sub_lex : ∀ a b, Rprod ra rb a b → Lex ra rb a b := fun a b h 
 
 -- The relational product of well founded relations is well-founded
 theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Rprod ra rb) :=
-  Subrelation.wfₓ rprod_sub_lex (lex_wf ha hb)
+  Subrelation.wf rprod_sub_lex (lex_wf ha hb)
 
 end
 

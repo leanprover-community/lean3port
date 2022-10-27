@@ -15,16 +15,16 @@ class Pure (f : Type u → Type v) where
 
 export Pure (pure)
 
-class Seqₓ (f : Type u → Type v) : Type max (u + 1) v where
+class Seq (f : Type u → Type v) : Type max (u + 1) v where
   seq : ∀ {α β : Type u}, f (α → β) → f α → f β
 
-class SeqLeftₓ (f : Type u → Type v) : Type max (u + 1) v where
+class SeqLeft (f : Type u → Type v) : Type max (u + 1) v where
   seqLeft : ∀ {α β : Type u}, f α → f β → f α
 
-class SeqRightₓ (f : Type u → Type v) : Type max (u + 1) v where
+class SeqRight (f : Type u → Type v) : Type max (u + 1) v where
   seqRight : ∀ {α β : Type u}, f α → f β → f β
 
-class Applicativeₓ (f : Type u → Type v) extends Functor f, Pure f, Seqₓ f, SeqLeftₓ f, SeqRightₓ f where
+class Applicative (f : Type u → Type v) extends Functor f, Pure f, Seq f, SeqLeft f, SeqRight f where
   map := fun _ _ x y => pure x <*> y
   seqLeft := fun α β a b => const β <$> a <*> b
   seqRight := fun α β a b => const α id <$> a <*> b

@@ -69,7 +69,7 @@ unsafe def mk_has_sizeof_instance_core (use_default : Bool) : tactic Unit := do
   let num_indices := inductive_num_indices env I_name
   let idx_names :=
     List.map (fun p : Name × Nat => mkNumName p.fst p.snd)
-      (List.zipₓ (List.repeat `idx num_indices) (List.iota num_indices))
+      (List.zip (List.repeat `idx num_indices) (List.iota num_indices))
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then

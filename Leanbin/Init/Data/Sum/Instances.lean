@@ -8,6 +8,7 @@ import Leanbin.Init.Meta.MkDecEqInstance
 
 universe u v
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
 instance {α : Type u} {β : Type v} [DecidableEq α] [DecidableEq β] : DecidableEq (Sum α β) := by
   run_tac
     tactic.mk_dec_eq_instance

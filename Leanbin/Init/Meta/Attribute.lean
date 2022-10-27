@@ -33,8 +33,8 @@ unsafe def user_attribute.dflt_cache_cfg : tactic Unit :=
 unsafe def user_attribute.dflt_parser : tactic Unit :=
   tactic.exact (quote.1 (pure () : lean.parser Unit))
 
--- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic user_attribute.dflt_cache_cfg
--- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic user_attribute.dflt_parser
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic user_attribute.dflt_cache_cfg -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic user_attribute.dflt_parser -/
 /-- A __user attribute__ is an attribute defined by the user (ie, not built in to Lean).
 ### Type parameters
 - `cache_ty` is the type of a cached VM object that is computed from all of the declarations in the environment tagged with this attribute.
@@ -59,7 +59,7 @@ and stored and can be retrieved with `user_attribute.get_param`.
  -/
 unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Unit) where
   Name : Name
-  descr : Stringₓ
+  descr : String
   after_set : Option (∀ (decl : Name) (prio : Nat) (persistent : Bool), Tactic Unit) := none
   before_unset : Option (∀ (decl : Name) (persistent : Bool), Tactic Unit) := none
   cache_cfg : user_attribute_cache_cfg cache_ty := by

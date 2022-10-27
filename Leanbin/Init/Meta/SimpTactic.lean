@@ -264,7 +264,7 @@ private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
 /-- Delta reduce the given constant names -/
 unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tactic expr :=
   let unfold (u : Unit) (e : expr) : tactic (Unit × expr × Bool) := do
-    guardₓ (is_delta_target e cs)
+    guard (is_delta_target e cs)
     let expr.const f_name f_lvls ← return e.get_app_fn
     let env ← get_env
     let decl ← env.get f_name
@@ -445,7 +445,7 @@ unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : Lis
 
 unsafe def simp_intros (s : simp_lemmas) (to_unfold : List Name := []) (ids : List Name := [])
     (cfg : SimpIntrosConfig := {  }) : tactic Unit :=
-  step <| simp_intros_aux cfg.toSimpConfig cfg.useHyps to_unfold s (bnot ids.Empty) ids
+  step <| simp_intros_aux cfg.toSimpConfig cfg.useHyps to_unfold s (not ids.Empty) ids
 
 end SimpIntros
 
@@ -514,7 +514,7 @@ unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × 
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← pre a e
-      guardₓ ¬expr.alpha_eqv new_e e
+      guard ¬expr.alpha_eqv new_e e
       return (new_a, new_e, some pr, tt))
     (fun _ _ _ _ _ => failed) `eq e
 
@@ -533,7 +533,7 @@ unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α �
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed) (fun _ _ _ _ _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← post a e
-      guardₓ ¬expr.alpha_eqv new_e e
+      guard ¬expr.alpha_eqv new_e e
       return (new_a, new_e, some pr, tt))
     `eq e
 
@@ -619,7 +619,7 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
       add_new_hyps r
       let (lms, target_changed) ←
         (simp_target s to_unfold cfg discharger >>= fun ns => return (ns, true)) <|> return (mk_name_set, false)
-      guardₓ (cfg = ff ∨ target_changed ∨ r fun e => e ≠ none) <|> fail "simp_all tactic failed to simplify"
+      guard (cfg = ff ∨ target_changed ∨ r fun e => e ≠ none) <|> fail "simp_all tactic failed to simplify"
       clear_old_hyps r
       return lms
   | e :: es, r, s, m => do

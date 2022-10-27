@@ -35,11 +35,11 @@ theorem bodd_two : bodd 2 = ff :=
   rfl
 
 @[simp]
-theorem bodd_succ (n : ℕ) : bodd (succ n) = bnot (bodd n) := by
+theorem bodd_succ (n : ℕ) : bodd (succ n) = not (bodd n) := by
   unfold bodd bodd_div2 <;> cases bodd_div2 n <;> cases fst <;> rfl
 
 @[simp]
-theorem bodd_add (m n : ℕ) : bodd (m + n) = bxor (bodd m) (bodd n) := by
+theorem bodd_add (m n : ℕ) : bodd (m + n) = xor (bodd m) (bodd n) := by
   induction' n with n IH
   · simp
     cases bodd m <;> rfl
@@ -60,8 +60,8 @@ theorem bodd_mul (m n : ℕ) : bodd (m * n) = (bodd m && bodd n) := by
 
 theorem mod_two_of_bodd (n : ℕ) : n % 2 = cond (bodd n) 1 0 := by
   have := congr_arg bodd (mod_add_div n 2)
-  simp [bnot] at this
-  rw [show ∀ b, (ff && b) = ff by intros <;> cases b <;> rfl, show ∀ b, bxor b ff = b by intros <;> cases b <;> rfl] at
+  simp [not] at this
+  rw [show ∀ b, (ff && b) = ff by intros <;> cases b <;> rfl, show ∀ b, xor b ff = b by intros <;> cases b <;> rfl] at
     this
   rw [← this]
   cases' mod_two_eq_zero_or_one n with h h <;> rw [h] <;> rfl
@@ -87,14 +87,14 @@ theorem bodd_add_div2 : ∀ n, cond (bodd n) 1 0 + 2 * div2 n = n
   | succ n => by
     simp
     refine' Eq.trans _ (congr_arg succ (bodd_add_div2 n))
-    cases bodd n <;> simp [cond, bnot]
+    cases bodd n <;> simp [cond, not]
     · rw [Nat.add_comm, Nat.zero_add]
       
     · rw [succ_mul, Nat.add_comm 1, Nat.zero_add]
       
 
 theorem div2_val (n) : div2 n = n / 2 := by
-  refine' Nat.eq_of_mul_eq_mul_leftₓ (by decide) (Nat.add_left_cancel (Eq.trans _ (Nat.mod_add_divₓ n 2).symm))
+  refine' Nat.eq_of_mul_eq_mul_left (by decide) (Nat.add_left_cancel (Eq.trans _ (Nat.mod_add_div n 2).symm))
   rw [mod_two_of_bodd, bodd_add_div2]
 
 def bit (b : Bool) : ℕ → ℕ :=
@@ -154,7 +154,7 @@ def binaryRec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) 
         change div2 n < n
         rw [div2_val]
         apply (div_lt_iff_lt_mul <| succ_pos 1).2
-        have := Nat.mul_lt_mul_of_pos_leftₓ (lt_succ_self 1) (lt_of_le_of_neₓ n.zero_le (Ne.symm n0))
+        have := Nat.mul_lt_mul_of_pos_left (lt_succ_self 1) (lt_of_le_of_ne n.zero_le (Ne.symm n0))
         rwa [Nat.mul_one] at this
       rw [← show bit (bodd n) n' = n from bit_decomp n] <;> exact f (bodd n) n' (binary_rec n')
 
@@ -164,21 +164,21 @@ def size : ℕ → ℕ :=
 def bits : ℕ → List Bool :=
   binaryRec [] fun b _ IH => b :: IH
 
-def bitwiseₓ (f : Bool → Bool → Bool) : ℕ → ℕ → ℕ :=
+def bitwise (f : Bool → Bool → Bool) : ℕ → ℕ → ℕ :=
   binaryRec (fun n => cond (f false true) n 0) fun a m Ia =>
     binaryRec (cond (f true false) (bit a m) 0) fun b n _ => bit (f a b) (Ia n)
 
-def lorₓ : ℕ → ℕ → ℕ :=
-  bitwiseₓ bor
+def lor : ℕ → ℕ → ℕ :=
+  bitwise or
 
-def landₓ : ℕ → ℕ → ℕ :=
-  bitwiseₓ band
+def land : ℕ → ℕ → ℕ :=
+  bitwise and
 
 def ldiff : ℕ → ℕ → ℕ :=
-  bitwiseₓ fun a b => a && bnot b
+  bitwise fun a b => a && not b
 
 def lxor : ℕ → ℕ → ℕ :=
-  bitwiseₓ bxor
+  bitwise xor
 
 @[simp]
 theorem binary_rec_zero {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) : binaryRec z f 0 = z := by
@@ -208,7 +208,7 @@ theorem shiftl'_sub (b m) : ∀ {n k}, k ≤ n → shiftl' b m (n - k) = shiftr 
     simp [shiftl']
     rw [Nat.add_comm, shiftr_add]
     simp [shiftr, div2_bit]
-    apply shiftl'_sub (Nat.le_of_succ_le_succₓ h)
+    apply shiftl'_sub (Nat.le_of_succ_le_succ h)
 
 theorem shiftl_sub : ∀ (m) {n k}, k ≤ n → shiftl m (n - k) = shiftr (shiftl m n) k :=
   shiftl'_sub _
@@ -261,21 +261,21 @@ theorem bitwise_bit_aux {f : Bool → Bool → Bool} (h : f false false = ff) :
     
 
 @[simp]
-theorem bitwise_zero_left (f : Bool → Bool → Bool) (n) : bitwiseₓ f 0 n = cond (f false true) n 0 := by
+theorem bitwise_zero_left (f : Bool → Bool → Bool) (n) : bitwise f 0 n = cond (f false true) n 0 := by
   unfold bitwise <;> rw [binary_rec_zero]
 
 @[simp]
 theorem bitwise_zero_right (f : Bool → Bool → Bool) (h : f false false = ff) (m) :
-    bitwiseₓ f m 0 = cond (f true false) m 0 := by
+    bitwise f m 0 = cond (f true false) m 0 := by
   unfold bitwise <;> apply bit_cases_on m <;> intros <;> rw [binary_rec_eq, binary_rec_zero] <;> exact bitwise_bit_aux h
 
 @[simp]
-theorem bitwise_zero (f : Bool → Bool → Bool) : bitwiseₓ f 0 0 = 0 := by
-  rw [bitwise_zero_left] <;> cases f ff tt <;> rfl
+theorem bitwise_zero (f : Bool → Bool → Bool) : bitwise f 0 0 = 0 := by rw [bitwise_zero_left] <;> cases f ff tt <;> rfl
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.swap -/
 @[simp]
 theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = ff) (a m b n) :
-    bitwiseₓ f (bit a m) (bit b n) = bit (f a b) (bitwiseₓ f m n) := by
+    bitwise f (bit a m) (bit b n) = bit (f a b) (bitwise f m n) := by
   unfold bitwise
   rw [binary_rec_eq, binary_rec_eq]
   · induction' ftf : f tt ff with <;> dsimp [cond]
@@ -296,7 +296,7 @@ theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = ff) (a m b
     
 
 theorem bitwise_swap {f : Bool → Bool → Bool} (h : f false false = ff) :
-    bitwiseₓ (Function.swap f) = Function.swap (bitwiseₓ f) := by
+    bitwise (Function.swap f) = Function.swap (bitwise f) := by
   funext m n
   revert n
   dsimp [Function.swap]
@@ -308,24 +308,24 @@ theorem bitwise_swap {f : Bool → Bool → Bool} (h : f false false = ff) :
   rw [bitwise_bit, bitwise_bit, IH] <;> exact h
 
 @[simp]
-theorem lor_bit : ∀ a m b n, lorₓ (bit a m) (bit b n) = bit (a || b) (lorₓ m n) :=
+theorem lor_bit : ∀ a m b n, lor (bit a m) (bit b n) = bit (a || b) (lor m n) :=
   bitwise_bit rfl
 
 @[simp]
-theorem land_bit : ∀ a m b n, landₓ (bit a m) (bit b n) = bit (a && b) (landₓ m n) :=
+theorem land_bit : ∀ a m b n, land (bit a m) (bit b n) = bit (a && b) (land m n) :=
   bitwise_bit rfl
 
 @[simp]
-theorem ldiff_bit : ∀ a m b n, ldiff (bit a m) (bit b n) = bit (a && bnot b) (ldiff m n) :=
+theorem ldiff_bit : ∀ a m b n, ldiff (bit a m) (bit b n) = bit (a && not b) (ldiff m n) :=
   bitwise_bit rfl
 
 @[simp]
-theorem lxor_bit : ∀ a m b n, lxor (bit a m) (bit b n) = bit (bxor a b) (lxor m n) :=
+theorem lxor_bit : ∀ a m b n, lxor (bit a m) (bit b n) = bit (xor a b) (lxor m n) :=
   bitwise_bit rfl
 
 @[simp]
 theorem test_bit_bitwise {f : Bool → Bool → Bool} (h : f false false = ff) (m n k) :
-    testBit (bitwiseₓ f m n) k = f (testBit m k) (testBit n k) := by
+    testBit (bitwise f m n) k = f (testBit m k) (testBit n k) := by
   revert m n <;>
     induction' k with k IH <;>
       intro m n <;> apply bit_cases_on m <;> intro a m' <;> apply bit_cases_on n <;> intro b n' <;> rw [bitwise_bit h]
@@ -335,19 +335,19 @@ theorem test_bit_bitwise {f : Bool → Bool → Bool} (h : f false false = ff) (
     
 
 @[simp]
-theorem test_bit_lor : ∀ m n k, testBit (lorₓ m n) k = (testBit m k || testBit n k) :=
+theorem test_bit_lor : ∀ m n k, testBit (lor m n) k = (testBit m k || testBit n k) :=
   test_bit_bitwise rfl
 
 @[simp]
-theorem test_bit_land : ∀ m n k, testBit (landₓ m n) k = (testBit m k && testBit n k) :=
+theorem test_bit_land : ∀ m n k, testBit (land m n) k = (testBit m k && testBit n k) :=
   test_bit_bitwise rfl
 
 @[simp]
-theorem test_bit_ldiff : ∀ m n k, testBit (ldiff m n) k = (testBit m k && bnot (testBit n k)) :=
+theorem test_bit_ldiff : ∀ m n k, testBit (ldiff m n) k = (testBit m k && not (testBit n k)) :=
   test_bit_bitwise rfl
 
 @[simp]
-theorem test_bit_lxor : ∀ m n k, testBit (lxor m n) k = bxor (testBit m k) (testBit n k) :=
+theorem test_bit_lxor : ∀ m n k, testBit (lxor m n) k = xor (testBit m k) (testBit n k) :=
   test_bit_bitwise rfl
 
 end Nat

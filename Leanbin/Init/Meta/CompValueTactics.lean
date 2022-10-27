@@ -27,7 +27,7 @@ open Expr
 
 unsafe def comp_val : tactic Unit := do
   let t ← target >>= instantiate_mvars
-  guardₓ (is_app t)
+  guard (is_app t)
   let type ← infer_type t.app_arg
   (do
         is_def_eq type (const `nat [])
@@ -68,16 +68,16 @@ unsafe def comp_val : tactic Unit := do
               exact pr) <|>
             (do
                 let type ← whnf type
-                guardₓ (type = quote.1 (@Subtype Nat))
+                guard (type = quote.1 (@Subtype Nat))
                 applyc `subtype.ne_of_val_ne
                 let (quote.1 (Subtype.mk (%%ₓa) (%%ₓha)), quote.1 (Subtype.mk (%%ₓb) (%%ₓhb))) ← is_ne t
                 let pr ← mk_nat_val_ne_proof a b
                 exact pr) <|>
               (do
                   let type ← whnf type
-                  guardₓ (type = quote.1 @Finₓ)
-                  applyc `` Finₓ.ne_of_vne
-                  let (quote.1 (Finₓ.mk (%%ₓa) (%%ₓha)), quote.1 (Finₓ.mk (%%ₓb) (%%ₓhb))) ← is_ne t
+                  guard (type = quote.1 @Fin)
+                  applyc `` Fin.ne_of_vne
+                  let (quote.1 (Fin.mk (%%ₓa) (%%ₓha)), quote.1 (Fin.mk (%%ₓb) (%%ₓhb))) ← is_ne t
                   let pr ← mk_nat_val_ne_proof a b
                   exact pr) <|>
                 do

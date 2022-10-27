@@ -36,7 +36,7 @@ unsafe def execute_with (cfg : SmtConfig) (tac : smt_tactic Unit) : tactic Unit 
 unsafe instance : interactive.executor smt_tactic where
   config_type := SmtConfig
   Inhabited := ⟨{  }⟩
-  execute_with := fun cfg tac => using_smt tac cfg
+  execute_with cfg tac := using_smt tac cfg
 
 namespace Interactive
 
@@ -47,7 +47,7 @@ open _Root_.Interactive
 open Interactive.Types
 
 -- mathport name: «expr ?»
-local postfix:1024 "?" => optionalₓ
+local postfix:1024 "?" => optional
 
 -- mathport name: «expr *»
 local postfix:1024 "*" => many
@@ -294,7 +294,7 @@ unsafe def eblast_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
 
 unsafe def guard_expr_eq (t : expr) (p : parse <| tk ":=" *> texpr) : smt_tactic Unit := do
   let e ← to_expr p
-  guardₓ (expr.alpha_eqv t e)
+  guard (expr.alpha_eqv t e)
 
 unsafe def guard_target (p : parse texpr) : smt_tactic Unit := do
   let t ← target

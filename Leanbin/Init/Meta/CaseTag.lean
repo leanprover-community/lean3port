@@ -140,11 +140,11 @@ protected unsafe def case_tag.to_format : CaseTag → format
 
 end
 
-protected def CaseTag.repr : CaseTag → Stringₓ
+protected def CaseTag.repr : CaseTag → String
   | pi names num_arguments => "(pi " ++ names.repr ++ " " ++ num_arguments.repr ++ ")"
   | hyps names arguments => "(hyps " ++ names.repr ++ " " ++ arguments.repr ++ ")"
 
-protected def CaseTag.toString : CaseTag → Stringₓ
+protected def CaseTag.toString : CaseTag → String
   | pi names num_arguments => "(pi " ++ names.toString ++ " " ++ toString num_arguments ++ ")"
   | hyps names arguments => "(hyps " ++ names.toString ++ " " ++ arguments.toString ++ ")"
 
@@ -155,10 +155,10 @@ open Name (mk_string mk_numeral)
 unsafe instance : has_to_format CaseTag :=
   ⟨case_tag.to_format⟩
 
-instance : HasRepr CaseTag :=
+instance : Repr CaseTag :=
   ⟨CaseTag.repr⟩
 
-instance : HasToString CaseTag :=
+instance : ToString CaseTag :=
   ⟨CaseTag.toString⟩
 
 /-- The constructor names associated with a case tag.
@@ -219,11 +219,11 @@ private unsafe def parse_arguments : List Name → List Name × List Name
 unsafe def parse : List Name → Option CaseTag
   | [] => none
   | mk_numeral n `_case.pi :: ns => do
-    guardₓ <| ns fun n => ¬n
+    guard <| ns fun n => ¬n
     some <| pi ns n
   | `_case.hyps :: ns => do
     let ⟨args, ns⟩ := parse_arguments ns
-    guardₓ <| ns fun n => ¬n
+    guard <| ns fun n => ¬n
     some <| hyps ns args
   | _ => none
 

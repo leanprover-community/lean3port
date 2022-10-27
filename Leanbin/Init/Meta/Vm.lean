@@ -97,7 +97,7 @@ unsafe axiom arity : vm_decl → Nat
 unsafe axiom pos : vm_decl → Option Pos
 
 /-- Return .olean file where the given VM declaration was imported from. -/
-unsafe axiom olean : vm_decl → Option Stringₓ
+unsafe axiom olean : vm_decl → Option String
 
 /-- Return names .olean file where the given VM declaration was imported from. -/
 unsafe axiom args_info : vm_decl → List vm_local_info
@@ -116,14 +116,14 @@ unsafe axiom vm_core.ret {α : Type} : α → vm_core α
 
 unsafe axiom vm_core.bind {α β : Type} : vm_core α → (α → vm_core β) → vm_core β
 
-unsafe instance : Monadₓ vm_core where
+unsafe instance : Monad vm_core where
   map := @vm_core.map
   pure := @vm_core.ret
   bind := @vm_core.bind
 
 @[reducible]
 unsafe def vm (α : Type) : Type :=
-  OptionTₓ vm_core α
+  OptionT vm_core α
 
 namespace Vm
 
@@ -136,7 +136,7 @@ unsafe axiom get_decl : Name → vm vm_decl
 unsafe axiom decl_of_idx : Nat → vm vm_decl
 
 unsafe def get_override : vm_decl → vm vm_decl
-  | d => OptionTₓ.ofOption d.override_idx >>= decl_of_idx
+  | d => OptionT.ofOption d.override_idx >>= decl_of_idx
 
 unsafe axiom get_options : vm options
 
@@ -181,11 +181,11 @@ unsafe axiom bp : vm Nat
 unsafe axiom pc : vm Nat
 
 /-- Convert the given vm_obj into a string -/
-unsafe axiom obj_to_string : vm_obj → vm Stringₓ
+unsafe axiom obj_to_string : vm_obj → vm String
 
-unsafe axiom put_str : Stringₓ → vm Unit
+unsafe axiom put_str : String → vm Unit
 
-unsafe axiom get_line : vm Stringₓ
+unsafe axiom get_line : vm String
 
 /-- Return tt if end of the input stream has been reached.
    For example, this can happen if the user presses Ctrl-D -/

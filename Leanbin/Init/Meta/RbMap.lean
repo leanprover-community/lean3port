@@ -60,7 +60,7 @@ unsafe def values {key : Type} {data : Type} (m : rb_map key data) : List data :
 unsafe def to_list {key : Type} {data : Type} (m : rb_map key data) : List (key × data) :=
   fold m [] fun k v res => (k, v) :: res
 
-unsafe def mfold {key data α : Type} {m : Type → Type} [Monadₓ m] (mp : rb_map key data) (a : α)
+unsafe def mfold {key data α : Type} {m : Type → Type} [Monad m] (mp : rb_map key data) (a : α)
     (fn : key → data → α → m α) : m α :=
   mp.fold (return a) fun k d act => act >>= fn k d
 
@@ -131,12 +131,12 @@ end
 
 section
 
-variable {key : Type} {data : Type} [HasToString key] [HasToString data]
+variable {key : Type} {data : Type} [ToString key] [ToString data]
 
-private unsafe def key_data_to_string (k : key) (d : data) (first : Bool) : Stringₓ :=
+private unsafe def key_data_to_string (k : key) (d : data) (first : Bool) : String :=
   (if first then "" else ", ") ++ toString k ++ " ← " ++ toString d
 
-unsafe instance : HasToString (rb_map key data) :=
+unsafe instance : ToString (rb_map key data) :=
   ⟨fun m => "⟨" ++ fst (fold m ("", true) fun k d p => (fst p ++ key_data_to_string k d (snd p), false)) ++ "⟩"⟩
 
 end
@@ -196,7 +196,7 @@ unsafe def empty {key : Type} (s : rb_set key) : Bool :=
 unsafe def fold {key α : Type} (s : rb_set key) (a : α) (fn : key → α → α) : α :=
   rb_map.fold s a fun k _ a => fn k a
 
-unsafe def mfold {key α : Type} {m : Type → Type} [Monadₓ m] (s : rb_set key) (a : α) (fn : key → α → m α) : m α :=
+unsafe def mfold {key α : Type} {m : Type → Type} [Monad m] (s : rb_set key) (a : α) (fn : key → α → m α) : m α :=
   s.fold (return a) fun k act => act >>= fn k
 
 unsafe def to_list {key : Type} (s : rb_set key) : List key :=
@@ -264,7 +264,7 @@ unsafe instance : has_to_format name_set :=
 unsafe def of_list (l : List Name) : name_set :=
   List.foldl name_set.insert mk_name_set l
 
-unsafe def mfold {α : Type} {m : Type → Type} [Monadₓ m] (ns : name_set) (a : α) (fn : Name → α → m α) : m α :=
+unsafe def mfold {α : Type} {m : Type → Type} [Monad m] (ns : name_set) (a : α) (fn : Name → α → m α) : m α :=
   ns.fold (return a) fun k act => act >>= fn k
 
 end NameSet

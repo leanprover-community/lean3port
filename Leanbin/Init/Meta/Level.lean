@@ -45,9 +45,9 @@ unsafe axiom level.instantiate : level → List (Name × level) → level
 
 unsafe axiom level.to_format : level → options → format
 
-unsafe axiom level.to_string : level → Stringₓ
+unsafe axiom level.to_string : level → String
 
-unsafe instance : HasToString level :=
+unsafe instance : ToString level :=
   ⟨level.to_string⟩
 
 unsafe instance : has_to_format level :=

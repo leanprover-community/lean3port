@@ -37,12 +37,12 @@ def Occurrences.contains : Occurrences → Nat → Bool
 instance : Inhabited Occurrences :=
   ⟨all⟩
 
-def occurrencesRepr : Occurrences → Stringₓ
+def occurrencesRepr : Occurrences → String
   | Occurrences.all => "*"
-  | Occurrences.pos l => reprₓ l
-  | Occurrences.neg l => "-" ++ reprₓ l
+  | Occurrences.pos l => repr l
+  | Occurrences.neg l => "-" ++ repr l
 
-instance : HasRepr Occurrences :=
+instance : Repr Occurrences :=
   ⟨occurrencesRepr⟩
 
 unsafe def occurrences_to_format : Occurrences → format

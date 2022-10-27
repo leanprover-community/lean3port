@@ -7,7 +7,7 @@ prelude
 import Leanbin.Init.Data.Bool.Basic
 import Leanbin.Init.Meta.Default
 
-attribute [simp] cond bor band bnot bxor
+attribute [simp] cond or and not xor
 
 @[simp]
 theorem cond_a_a.{u} {α : Type u} (b : Bool) (a : α) : cond b a a = a := by cases b <;> simp
@@ -43,20 +43,20 @@ theorem tt_bor (b : Bool) : (tt || b) = tt := by cases b <;> simp
 theorem ff_bor (b : Bool) : (ff || b) = b := by cases b <;> simp
 
 @[simp]
-theorem bxor_self (b : Bool) : bxor b b = ff := by cases b <;> simp
+theorem bxor_self (b : Bool) : xor b b = ff := by cases b <;> simp
 
 @[simp]
-theorem bxor_tt (b : Bool) : bxor b true = bnot b := by cases b <;> simp
+theorem bxor_tt (b : Bool) : xor b true = not b := by cases b <;> simp
 
-theorem bxor_ff (b : Bool) : bxor b false = b := by cases b <;> simp
-
-@[simp]
-theorem tt_bxor (b : Bool) : bxor true b = bnot b := by cases b <;> simp
-
-theorem ff_bxor (b : Bool) : bxor false b = b := by cases b <;> simp
+theorem bxor_ff (b : Bool) : xor b false = b := by cases b <;> simp
 
 @[simp]
-theorem bnot_bnot (b : Bool) : bnot (bnot b) = b := by cases b <;> simp
+theorem tt_bxor (b : Bool) : xor true b = not b := by cases b <;> simp
+
+theorem ff_bxor (b : Bool) : xor false b = b := by cases b <;> simp
+
+@[simp]
+theorem bnot_bnot (b : Bool) : not (not b) = b := by cases b <;> simp
 
 theorem tt_eq_ff_eq_false : ¬tt = ff := by contradiction
 
@@ -83,7 +83,7 @@ theorem bor_eq_true_eq_eq_tt_or_eq_tt (a b : Bool) : ((a || b) = tt) = (a = tt �
   cases a <;> cases b <;> simp
 
 @[simp]
-theorem bnot_eq_true_eq_eq_ff (a : Bool) : (bnot a = tt) = (a = ff) := by cases a <;> simp
+theorem bnot_eq_true_eq_eq_ff (a : Bool) : (not a = tt) = (a = ff) := by cases a <;> simp
 
 @[simp]
 theorem band_eq_false_eq_eq_ff_or_eq_ff (a b : Bool) : ((a && b) = ff) = (a = ff ∨ b = ff) := by
@@ -94,7 +94,7 @@ theorem bor_eq_false_eq_eq_ff_and_eq_ff (a b : Bool) : ((a || b) = ff) = (a = ff
   cases a <;> cases b <;> simp
 
 @[simp]
-theorem bnot_eq_ff_eq_eq_tt (a : Bool) : (bnot a = ff) = (a = tt) := by cases a <;> simp
+theorem bnot_eq_ff_eq_eq_tt (a : Bool) : (not a = ff) = (a = tt) := by cases a <;> simp
 
 @[simp]
 theorem coe_ff : ↑ff = False :=
@@ -113,18 +113,18 @@ theorem coe_sort_tt : ↥tt = True :=
   show (tt = tt) = True by simp
 
 @[simp]
-theorem to_bool_iff (p : Prop) [d : Decidable p] : toBool p = tt ↔ p :=
+theorem to_bool_iff (p : Prop) [d : Decidable p] : decide p = tt ↔ p :=
   match d with
   | is_true hp => ⟨fun h => hp, fun _ => rfl⟩
   | is_false hnp => ⟨fun h => Bool.noConfusion h, fun hp => absurd hp hnp⟩
 
-theorem to_bool_true {p : Prop} [Decidable p] : p → toBool p :=
+theorem to_bool_true {p : Prop} [Decidable p] : p → decide p :=
   (to_bool_iff p).2
 
-theorem to_bool_tt {p : Prop} [Decidable p] : p → toBool p = tt :=
+theorem to_bool_tt {p : Prop} [Decidable p] : p → decide p = tt :=
   to_bool_true
 
-theorem of_to_bool_true {p : Prop} [Decidable p] : toBool p → p :=
+theorem of_to_bool_true {p : Prop} [Decidable p] : decide p → p :=
   (to_bool_iff p).1
 
 theorem bool_iff_false {b : Bool} : ¬b ↔ b = ff := by cases b <;> exact by decide
@@ -133,16 +133,16 @@ theorem bool_eq_false {b : Bool} : ¬b → b = ff :=
   bool_iff_false.1
 
 @[simp]
-theorem to_bool_ff_iff (p : Prop) [Decidable p] : toBool p = ff ↔ ¬p :=
+theorem to_bool_ff_iff (p : Prop) [Decidable p] : decide p = ff ↔ ¬p :=
   bool_iff_false.symm.trans (not_congr (to_bool_iff _))
 
-theorem to_bool_ff {p : Prop} [Decidable p] : ¬p → toBool p = ff :=
+theorem to_bool_ff {p : Prop} [Decidable p] : ¬p → decide p = ff :=
   (to_bool_ff_iff p).2
 
-theorem of_to_bool_ff {p : Prop} [Decidable p] : toBool p = ff → ¬p :=
+theorem of_to_bool_ff {p : Prop} [Decidable p] : decide p = ff → ¬p :=
   (to_bool_ff_iff p).1
 
-theorem to_bool_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) : toBool p = toBool q := by
+theorem to_bool_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) : decide p = decide q := by
   induction' h' : to_bool q with
   exact to_bool_ff (mt h.1 <| of_to_bool_ff h')
   exact to_bool_true (h.2 <| of_to_bool_true h')
@@ -154,7 +154,7 @@ theorem bor_coe_iff (a b : Bool) : a || b ↔ a ∨ b := by cases a <;> cases b 
 theorem band_coe_iff (a b : Bool) : a && b ↔ a ∧ b := by cases a <;> cases b <;> exact by decide
 
 @[simp]
-theorem bxor_coe_iff (a b : Bool) : bxor a b ↔ Xorₓ a b := by cases a <;> cases b <;> exact by decide
+theorem bxor_coe_iff (a b : Bool) : xor a b ↔ Xor' a b := by cases a <;> cases b <;> exact by decide
 
 @[simp]
 theorem ite_eq_tt_distrib (c : Prop) [Decidable c] (a b : Bool) :

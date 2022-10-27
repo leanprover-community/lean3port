@@ -59,7 +59,7 @@ unsafe axiom smt_state.to_format : smt_state → tactic_state → format
 unsafe axiom smt_state.classical : smt_state → Bool
 
 unsafe def smt_tactic :=
-  StateTₓ smt_state tactic
+  StateT smt_state tactic
 
 unsafe instance : Append smt_state :=
   List.hasAppend
@@ -68,11 +68,11 @@ section
 
 attribute [local reducible] smt_tactic
 
-unsafe instance : Monadₓ smt_tactic := by infer_instance
+unsafe instance : Monad smt_tactic := by infer_instance
 
-unsafe instance : Alternativeₓ smt_tactic := by infer_instance
+unsafe instance : Alternative smt_tactic := by infer_instance
 
-unsafe instance : MonadStateₓ smt_state smt_tactic := by infer_instance
+unsafe instance : MonadState smt_state smt_tactic := by infer_instance
 
 end
 
@@ -276,7 +276,7 @@ unsafe def seq (tac1 : smt_tactic Unit) (tac2 : smt_tactic Unit) : smt_tactic Un
   let (new_ss, new_ts) ← get_goals
   set_goals (new_ss ++ ss) (new_ts ++ ts)
 
-unsafe instance : HasAndthen (smt_tactic Unit) (smt_tactic Unit) (smt_tactic Unit) :=
+unsafe instance : AndThen' (smt_tactic Unit) (smt_tactic Unit) (smt_tactic Unit) :=
   ⟨seq⟩
 
 unsafe def focus1 {α} (tac : smt_tactic α) : smt_tactic α := do
@@ -401,11 +401,11 @@ unsafe def add_ematch_lhs_lemma_from_decl : Name → smt_tactic Unit :=
 unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
   add_ematch_eqn_lemmas_for_core reducible
 
--- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `f
+/- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `f -/
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do
-    try ((is_prop f >> guardₓ (f && bnot (f f.is_arrow))) >> proof_for f >>= add_ematch_lemma_core reducible ff)
+    try ((is_prop f >> guard (f && not (f f.is_arrow))) >> proof_for f >>= add_ematch_lemma_core reducible ff)
     add_lemmas_from_facts_core fs
 
 unsafe def add_lemmas_from_facts : smt_tactic Unit :=

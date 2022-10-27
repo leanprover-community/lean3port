@@ -31,7 +31,7 @@ inductive CongrArgKind
 
 namespace CongrArgKind
 
-def toString : CongrArgKind → Stringₓ
+def toString : CongrArgKind → String
   | fixed => "fixed"
   | fixed_no_param => "fixed_no_param"
   | Eq => "eq"
@@ -39,7 +39,7 @@ def toString : CongrArgKind → Stringₓ
   | HEq => "heq"
   | subsingleton_inst => "subsingleton_inst"
 
-instance : HasRepr CongrArgKind :=
+instance : Repr CongrArgKind :=
   ⟨toString⟩
 
 unsafe instance : has_to_format CongrArgKind :=

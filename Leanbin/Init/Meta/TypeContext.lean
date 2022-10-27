@@ -26,11 +26,11 @@ protected unsafe axiom fail : format → type_context α
 protected unsafe def failure : type_context α :=
   type_context.fail ""
 
-unsafe instance : Monadₓ type_context where
+unsafe instance : Monad type_context where
   bind := @type_context.bind
   pure := @type_context.pure
 
-unsafe instance : MonadFail type_context where fail := fun α => type_context.fail ∘ to_fmt
+unsafe instance : MonadFail type_context where fail α := type_context.fail ∘ to_fmt
 
 unsafe axiom get_env : type_context environment
 
@@ -151,9 +151,9 @@ unsafe axiom try {α : Type} : type_context α → type_context (Option α)
 unsafe def orelse {α : Type} : type_context α → type_context α → type_context α
   | x, y => try x >>= fun x => Option.rec y pure x
 
-unsafe instance type_context_alternative : Alternativeₓ type_context where
-  failure := fun α => type_context.fail "failed"
-  orelse := fun α x y => type_context.orelse x y
+unsafe instance type_context_alternative : Alternative type_context where
+  failure α := type_context.fail "failed"
+  orelse α x y := type_context.orelse x y
 
 /-- Runs the given type_context monad using the type context of the current tactic state.
 You can use this to perform unsafe operations such as direct metavariable assignment and the use of temporary metavariables.

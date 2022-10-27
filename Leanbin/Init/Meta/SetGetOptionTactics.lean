@@ -16,7 +16,7 @@ unsafe def set_nat_option (n : Name) (v : Nat) : tactic Unit := do
   let s ← read
   write <| tactic_state.set_options s (options.set_nat (tactic_state.get_options s) n v)
 
-unsafe def set_string_option (n : Name) (v : Stringₓ) : tactic Unit := do
+unsafe def set_string_option (n : Name) (v : String) : tactic Unit := do
   let s ← read
   write <| tactic_state.set_options s (options.set_string (tactic_state.get_options s) n v)
 
@@ -28,7 +28,7 @@ unsafe def get_nat_option (n : Name) (default : Nat) : tactic Nat := do
   let s ← read
   return <| options.get_nat (tactic_state.get_options s) n default
 
-unsafe def get_string_option (n : Name) (default : Stringₓ) : tactic Stringₓ := do
+unsafe def get_string_option (n : Name) (default : String) : tactic String := do
   let s ← read
   return <| options.get_string (tactic_state.get_options s) n default
 

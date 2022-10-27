@@ -53,7 +53,7 @@ end TacticState
 unsafe instance : has_to_format tactic_state :=
   ⟨tactic_state.to_format⟩
 
-unsafe instance : HasToString tactic_state :=
+unsafe instance : ToString tactic_state :=
   ⟨fun s => (to_fmt s).toString s.get_options⟩
 
 /-- `tactic` is the monad for building tactics.
@@ -101,7 +101,7 @@ infixl:2 " >>=[tactic] " => interaction_monad_bind
 -- mathport name: «expr >>[tactic] »
 infixl:2 " >>[tactic] " => interaction_monad_seq
 
-unsafe instance : Alternativeₓ tactic :=
+unsafe instance : Alternative tactic :=
   { interaction_monad.monad with failure := @interaction_monad.failed _, orelse := @interaction_monad_orelse _ }
 
 unsafe def tactic.up.{u₁, u₂} {α : Type u₂} (t : tactic α) : tactic (ULift.{u₁} α) := fun s =>
@@ -130,7 +130,7 @@ namespace Interactive
     end
     ```
 -/
-unsafe class executor (m : Type → Type u) [Monadₓ m] where
+unsafe class executor (m : Type → Type u) [Monad m] where
   config_type : Type
   [Inhabited : Inhabited config_type]
   execute_with : config_type → m Unit → tactic Unit
@@ -138,11 +138,11 @@ unsafe class executor (m : Type → Type u) [Monadₓ m] where
 attribute [inline] executor.execute_with
 
 @[inline]
-unsafe def executor.execute_explicit (m : Type → Type u) [Monadₓ m] [e : executor m] : m Unit → tactic Unit :=
+unsafe def executor.execute_explicit (m : Type → Type u) [Monad m] [e : executor m] : m Unit → tactic Unit :=
   executor.execute_with e.Inhabited.default
 
 @[inline]
-unsafe def executor.execute_with_explicit (m : Type → Type u) [Monadₓ m] [executor m] :
+unsafe def executor.execute_with_explicit (m : Type → Type u) [Monad m] [executor m] :
     executor.config_type m → m Unit → tactic Unit :=
   executor.execute_with
 
@@ -150,7 +150,7 @@ unsafe def executor.execute_with_explicit (m : Type → Type u) [Monadₓ m] [ex
 unsafe instance executor_tactic : executor tactic where
   config_type := Unit
   Inhabited := ⟨()⟩
-  execute_with := fun _ => id
+  execute_with _ := id
 
 end Interactive
 
@@ -394,7 +394,7 @@ unsafe def trace {α : Type u} [has_to_tactic_format α] (a : α) : tactic Unit 
 
 unsafe def trace_call_stack : tactic Unit := fun state => traceCallStack (success () state)
 
-unsafe def timetac {α : Type u} (desc : Stringₓ) (t : Thunkₓ (tactic α)) : tactic α := fun s => timeitₓ desc (t () s)
+unsafe def timetac {α : Type u} (desc : String) (t : Thunk' (tactic α)) : tactic α := fun s => timeit desc (t () s)
 
 unsafe def trace_state : tactic Unit := do
   let s ← read
@@ -638,7 +638,7 @@ structure ApplyCfg where
   approx := true
   NewGoals := NewGoals.non_dep_first
   instances := true
-  AutoParam := true
+  autoParam := true
   optParam := true
   unify := true
 
@@ -726,10 +726,10 @@ unsafe axiom set_env_core : environment → tactic Unit
 unsafe axiom set_env : environment → tactic Unit
 
 /-- `doc_string env d k` returns the doc string for `d` (if available) -/
-unsafe axiom doc_string : Name → tactic Stringₓ
+unsafe axiom doc_string : Name → tactic String
 
 /-- Set the docstring for the given declaration. -/
-unsafe axiom add_doc_string : Name → Stringₓ → tactic Unit
+unsafe axiom add_doc_string : Name → String → tactic Unit
 
 /-- Create an auxiliary definition with name `c` where `type` and `value` may contain local constants and
 meta-variables. This function collects all dependencies (universe parameters, universe metavariables,
@@ -746,16 +746,16 @@ unsafe axiom add_aux_decl (c : Name) (type : expr) (val : expr) (is_lemma : Bool
 The returned object is a list of modules, indexed by `(some filename)` for imported modules
 and `none` for the active one, where each module in the list is paired with a list
 of `(position_in_file, docstring)` pairs. -/
-unsafe axiom olean_doc_strings : tactic (List (Option Stringₓ × List (Pos × Stringₓ)))
+unsafe axiom olean_doc_strings : tactic (List (Option String × List (Pos × String)))
 
 /-- Returns a list of docstrings in the active module. An entry in the list can be either:
 - a top-level (`/-! ... -/`) docstring, represented as `(none, docstring)`
 - a declaration-specific (`/-- ... -/`) docstring, represented as `(some decl_name, docstring)` -/
-unsafe def module_doc_strings : tactic (List (Option Name × Stringₓ)) := do
+unsafe def module_doc_strings : tactic (List (Option Name × String)) := do
   let mod_docs
     ←-- Obtain a list of top-level docs in current module.
       olean_doc_strings
-  let mod_docs : List (List (Option Name × Stringₓ)) :=
+  let mod_docs : List (List (Option Name × String)) :=
     mod_docs.filterMap fun d => if d.1.isNone then some (d.2.map fun pos_doc => ⟨none, pos_doc.2⟩) else none
   let mod_docs := mod_docs.join
   let e
@@ -1113,7 +1113,7 @@ unsafe def match_refl_app (e : expr) : tactic (Name × expr × expr) := do
     | none => fail "expression is not an application of a reflexive relation"
 
 unsafe def match_app_of (e : expr) (n : Name) : tactic (List expr) :=
-  guardₓ (expr.is_app_of e n) >> return e.get_app_args
+  guard (expr.is_app_of e n) >> return e.get_app_args
 
 unsafe def get_local_type (n : Name) : tactic expr :=
   get_local n >>= infer_type
@@ -1187,12 +1187,12 @@ unsafe def definev (h : Name) (t : expr) (v : expr) : tactic expr :=
 
 /-- Add `h : t := pr` to the current goal -/
 unsafe def pose (h : Name) (t : Option expr := none) (pr : expr) : tactic expr :=
-  let dv := fun t => definev h t pr
+  let dv t := definev h t pr
   Option.casesOn t (infer_type pr >>= dv) dv
 
 /-- Add `h : t` to the current goal, given a proof `pr : t` -/
 unsafe def note (h : Name) (t : Option expr := none) (pr : expr) : tactic expr :=
-  let dv := fun t => assertv h t pr
+  let dv t := assertv h t pr
   Option.casesOn t (infer_type pr >>= dv) dv
 
 /-- Return the number of goals that need to be solved -/
@@ -1329,7 +1329,7 @@ unsafe def all_goals' (tac : tactic Unit) : tactic Unit := do
   all_goals'_core tac gs []
 
 private unsafe def any_goals_core {α} (tac : tactic α) : List expr → List expr → Bool → tactic (List (Option α))
-  | [], ac, progress => guardₓ progress *> set_goals ac *> pure []
+  | [], ac, progress => guard progress *> set_goals ac *> pure []
   | g :: gs, ac, progress =>
     mcond (is_assigned g) (any_goals_core gs ac progress) <| do
       set_goals [g]
@@ -1347,7 +1347,7 @@ unsafe def any_goals {α} (tac : tactic α) : tactic (List (Option α)) := do
   any_goals_core tac gs [] ff
 
 private unsafe def any_goals'_core (tac : tactic Unit) : List expr → List expr → Bool → tactic Unit
-  | [], ac, progress => guardₓ progress >> set_goals ac
+  | [], ac, progress => guard progress >> set_goals ac
   | g :: gs, ac, progress =>
     mcond (is_assigned g) (any_goals'_core gs ac progress) <| do
       set_goals [g]
@@ -1405,10 +1405,10 @@ unsafe def seq_focus' (tac1 : tactic Unit) (tacs2 : List (tactic Unit)) : tactic
   let gs' ← get_goals
   set_goals (gs' ++ gs)
 
-unsafe instance andthen_seq : HasAndthen (tactic Unit) (tactic Unit) (tactic Unit) :=
+unsafe instance andthen_seq : AndThen' (tactic Unit) (tactic Unit) (tactic Unit) :=
   ⟨seq'⟩
 
-unsafe instance andthen_seq_focus : HasAndthen (tactic Unit) (List (tactic Unit)) (tactic Unit) :=
+unsafe instance andthen_seq_focus : AndThen' (tactic Unit) (List (tactic Unit)) (tactic Unit) :=
   ⟨seq_focus'⟩
 
 unsafe axiom is_trace_enabled_for : Name → Bool
@@ -1432,7 +1432,7 @@ unsafe def apply_opt_param : tactic Unit := do
   exact v
 
 unsafe def apply_auto_param : tactic Unit := do
-  let quote.1 (AutoParam (%%ₓtype) (%%ₓtac_name_expr)) ← target
+  let quote.1 (autoParam' (%%ₓtype) (%%ₓtac_name_expr)) ← target
   change type
   let tac_name ← eval_expr Name tac_name_expr
   let tac ← eval_expr (tactic Unit) (expr.const tac_name [])
@@ -1446,11 +1446,11 @@ unsafe def has_opt_auto_param (ms : List expr) : tactic Bool :=
     false
 
 unsafe def try_apply_opt_auto_param (cfg : ApplyCfg) (ms : List expr) : tactic Unit :=
-  when (cfg.AutoParam || cfg.optParam) <|
+  when (cfg.autoParam || cfg.optParam) <|
     mwhen (has_opt_auto_param ms) <| do
       let gs ← get_goals
       ms fun m =>
-          mwhen (bnot <$> is_assigned m) <|
+          mwhen (not <$> is_assigned m) <|
             (set_goals [m] >> when cfg (try apply_opt_param)) >> when cfg (try apply_auto_param)
       set_goals gs
 
@@ -1465,7 +1465,7 @@ unsafe def try_apply_opt_auto_param_for_apply (cfg : ApplyCfg) (ms : List (Name 
   mwhen (has_opt_auto_param_for_apply ms) <| do
     let gs ← get_goals
     ms fun m =>
-        mwhen (bnot <$> is_assigned m.2) <|
+        mwhen (not <$> is_assigned m.2) <|
           (set_goals [m.2] >> when cfg (try apply_opt_param)) >> when cfg (try apply_auto_param)
     set_goals gs
 
@@ -1698,7 +1698,7 @@ unsafe def funext_lst (ids : List Name) : tactic Unit :=
 
 private unsafe def get_undeclared_const (env : environment) (base : Name) : ℕ → Name
   | i =>
-    let n := mkStrName base ("_aux_" ++ reprₓ i)
+    let n := mkStrName base ("_aux_" ++ repr i)
     if ¬env.contains n then n else get_undeclared_const (i + 1)
 
 unsafe def new_aux_decl_name : tactic Name := do
@@ -1923,7 +1923,7 @@ unsafe def set_main_tag (t : Tag) : tactic Unit := do
 
 unsafe def subst (h : expr) : tactic Unit :=
   (do
-      guardₓ h
+      guard h
       let some (α, lhs, β, rhs) ← expr.is_heq <$> infer_type h
       is_def_eq α β
       let new_h_type ← mk_app `eq [lhs, rhs]
@@ -1961,11 +1961,11 @@ unsafe def order_laws_tac :=
   (whnf_target >> intros) >> to_expr (pquote.1 (Iff.refl _)) >>= exact
 
 unsafe def monad_from_pure_bind {m : Type u → Type v} (pure : ∀ {α : Type u}, α → m α)
-    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) : Monadₓ m where
+    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) : Monad m where
   pure := @pure
   bind := @bind
 
-unsafe instance : Monadₓ task where
+unsafe instance : Monad task where
   map := @task.map
   bind := @task.bind
   pure := @task.pure

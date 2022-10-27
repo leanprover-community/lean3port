@@ -14,7 +14,7 @@ open Lean
 open Lean.Parser
 
 -- mathport name: «expr ?»
-local postfix:1024 "?" => optionalₓ
+local postfix:1024 "?" => optional
 
 -- mathport name: «expr *»
 local postfix:1024 "*" => many
@@ -73,14 +73,14 @@ namespace Types
 variable {α β : Type}
 
 -- optimized pretty printer
-unsafe def brackets (l r : Stringₓ) (p : parser α) :=
+unsafe def brackets (l r : String) (p : parser α) :=
   tk l *> p <* tk r
 
 unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
 
--- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
--- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
+/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -126,7 +126,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
--- ./././Mathport/Syntax/Translate/Command.lean:621:29: warning: unsupported: precedence command
+/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format
@@ -149,7 +149,7 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
   | quote.1 ident_ => return ["id"]
   | quote.1 (parser.pexpr (%%ₓv)) => return ["expr"]
   | quote.1 small_nat => return ["n"]
-  | quote.1 (tk (%%ₓc)) => List.ret <$> to_fmt <$> eval_expr Stringₓ c
+  | quote.1 (tk (%%ₓc)) => List.ret <$> to_fmt <$> eval_expr String c
   | quote.1 cur_pos => return []
   | quote.1 (pure _) => return []
   | quote.1 (_ <$> %%ₓp) => parser_desc_aux p
@@ -176,7 +176,7 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
   | quote.1 (many (%%ₓp)) => do
     let f ← parser_desc_aux p
     return [maybe_paren f ++ "*"]
-  | quote.1 (optionalₓ (%%ₓp)) => do
+  | quote.1 (optional (%%ₓp)) => do
     let f ← parser_desc_aux p
     return [maybe_paren f ++ "?"]
   | quote.1 (sep_by (%%ₓsep) (%%ₓp)) => do
@@ -191,8 +191,8 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
         else if f₂ then [maybe_paren f₁ ++ "?"] else [paren <| join <| f₁ ++ [to_fmt " | "] ++ f₂]
   | quote.1 (brackets (%%ₓl) (%%ₓr) (%%ₓp)) => do
     let f ← parser_desc_aux p
-    let l ← eval_expr Stringₓ l
-    let r ← eval_expr Stringₓ r
+    let l ← eval_expr String l
+    let r ← eval_expr String r
     -- much better than the naive [l, " ", f, " ", r]
         return
         [to_fmt l ++ join f ++ to_fmt r]
@@ -200,7 +200,7 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
     let e' ←
       (do
             let e' ← unfold e
-            guardₓ <| e' ≠ e
+            guard <| e' ≠ e
             return e') <|>
           do
           let f ← pp e
@@ -237,7 +237,7 @@ unsafe structure decl_modifiers where
 unsafe structure decl_meta_info where
   attrs : decl_attributes
   modifiers : decl_modifiers
-  doc_string : Option Stringₓ
+  doc_string : Option String
 
 unsafe structure single_inductive_decl where
   attrs : decl_attributes
@@ -264,7 +264,7 @@ open InteractionMonad
 
 open Interactive
 
-private unsafe def parse_format : Stringₓ → List Charₓ → parser pexpr
+private unsafe def parse_format : String → List Char → parser pexpr
   | Acc, [] => pure (pquote.1 (to_fmt (%%ₓreflect Acc)))
   | Acc, '\n' :: s => do
     let f ← parse_format "" s
@@ -280,10 +280,10 @@ private unsafe def parse_format : Stringₓ → List Charₓ → parser pexpr
   | Acc, c :: s => parse_format (Acc.str c) s
 
 @[user_notation]
-unsafe def format_macro (_ : parse <| tk "format!") (s : Stringₓ) : parser pexpr :=
+unsafe def format_macro (_ : parse <| tk "format!") (s : String) : parser pexpr :=
   parse_format "" s.toList
 
-private unsafe def parse_sformat : Stringₓ → List Charₓ → parser pexpr
+private unsafe def parse_sformat : String → List Char → parser pexpr
   | Acc, [] => pure <| pexpr.of_expr (reflect Acc)
   | Acc, '{' :: '{' :: s => parse_sformat (Acc ++ "{") s
   | Acc, '{' :: s => do
@@ -296,7 +296,7 @@ private unsafe def parse_sformat : Stringₓ → List Charₓ → parser pexpr
   | Acc, c :: s => parse_sformat (Acc.str c) s
 
 @[user_notation]
-unsafe def sformat_macro (_ : parse <| tk "sformat!") (s : Stringₓ) : parser pexpr :=
+unsafe def sformat_macro (_ : parse <| tk "sformat!") (s : String) : parser pexpr :=
   parse_sformat "" s.toList
 
 end Macros

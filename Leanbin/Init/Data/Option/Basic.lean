@@ -14,7 +14,13 @@ universe u v
 
 namespace Option
 
-def toMonadₓ {m : Type → Type} [Monadₓ m] [Alternativeₓ m] {A} : Option A → m A
+/- warning: option.to_monad -> Option.toMonad is a dubious translation:
+lean 3 declaration is
+  forall {m : Type -> Type} [_inst_1 : Monad.{0 0} m] [_inst_2 : Alternative.{0 0} m] {A : Type}, (Option.{0} A) -> (m A)
+but is expected to have type
+  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Data.Option.Basic._hyg.16 : Monad.{u_1 u_2} m] [inst._@.Init.Data.Option.Basic._hyg.19 : Alternative.{u_1 u_2} m], (Option.{u_1} α) -> (m α)
+Case conversion may be inaccurate. Consider using '#align option.to_monad Option.toMonadₓ'. -/
+def toMonad {m : Type → Type} [Monad m] [Alternative m] {A} : Option A → m A
   | none => failure
   | some a => return a
 
@@ -30,7 +36,7 @@ def isNone {α : Type u} : Option α → Bool
   | some _ => false
   | none => true
 
-def getₓ {α : Type u} : ∀ {o : Option α}, isSome o → α
+def get {α : Type u} : ∀ {o : Option α}, isSome o → α
   | some x, h => x
   | none, h => False.ndrec _ <| Bool.ff_ne_tt h
 
@@ -56,7 +62,7 @@ theorem map_id {α} : (Option.map id : Option α → Option α) = id :=
     | none => rfl
     | some x => rfl
 
-instance : Monadₓ Option where
+instance : Monad Option where
   pure := @some
   bind := @Option.bind
   map := @Option.map
@@ -66,7 +72,7 @@ protected def orelse {α : Type u} : Option α → Option α → Option α
   | none, some a => some a
   | none, none => none
 
-instance : Alternativeₓ Option where
+instance : Alternative Option where
   failure := @none
   orelse := @Option.orelse
 

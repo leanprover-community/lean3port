@@ -27,18 +27,18 @@ unsafe inductive feature
 
 namespace Feature
 
-protected unsafe def to_string : feature → Stringₓ
+protected unsafe def to_string : feature → String
   | const n => n.toString
   | arg p c => p.toString ++ "→" ++ c.toString
 
-protected unsafe def repr : feature → Stringₓ
+protected unsafe def repr : feature → String
   | const n => "(const `" ++ n.toString ++ ")"
   | arg p c => "(arg `" ++ p.toString ++ " `" ++ c.toString ++ ")"
 
-unsafe instance : HasToString feature :=
+unsafe instance : ToString feature :=
   ⟨feature.to_string⟩
 
-unsafe instance : HasRepr feature :=
+unsafe instance : Repr feature :=
   ⟨feature.repr⟩
 
 unsafe instance : has_to_tactic_format feature :=
@@ -79,11 +79,11 @@ unsafe def of_thm (n : Name) (cfg : FeatureCfg := {  }) : tactic feature_vec := 
 
 protected unsafe axiom to_list (fv : feature_vec) : List feature
 
-unsafe instance : HasToString feature_vec :=
+unsafe instance : ToString feature_vec :=
   ⟨toString ∘ feature_vec.to_list⟩
 
-unsafe instance : HasRepr feature_vec :=
-  ⟨reprₓ ∘ feature_vec.to_list⟩
+unsafe instance : Repr feature_vec :=
+  ⟨repr ∘ feature_vec.to_list⟩
 
 unsafe instance : has_to_tactic_format feature_vec :=
   ⟨pp ∘ feature_vec.to_list⟩
@@ -112,11 +112,11 @@ unsafe axiom features (fs : feature_stats) : List feature
 unsafe def features_with_idf (fs : feature_stats) : List (feature × float) :=
   fs.features.map fun f => (f, fs.idf f)
 
-unsafe instance : HasToString feature_stats :=
+unsafe instance : ToString feature_stats :=
   ⟨toString ∘ feature_stats.features_with_idf⟩
 
-unsafe instance : HasRepr feature_stats :=
-  ⟨reprₓ ∘ feature_stats.features_with_idf⟩
+unsafe instance : Repr feature_stats :=
+  ⟨repr ∘ feature_stats.features_with_idf⟩
 
 unsafe instance : has_to_tactic_format feature_stats :=
   ⟨pp ∘ feature_stats.features_with_idf⟩

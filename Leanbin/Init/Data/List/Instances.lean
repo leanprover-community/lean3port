@@ -12,12 +12,12 @@ universe u v
 
 attribute [local simp] join List.ret
 
-instance : Monadₓ List where
+instance : Monad List where
   pure := @List.ret
   map := @List.map
   bind := @List.bind
 
-instance : IsLawfulMonad List where
+instance : LawfulMonad List where
   bind_pure_comp_eq_map := by
     intro α β f l
     induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
@@ -34,7 +34,7 @@ instance : IsLawfulMonad List where
       simp [(· >>= ·), ih]
       
 
-instance : Alternativeₓ List :=
+instance : Alternative List :=
   { List.monad with failure := @List.nil, orelse := @List.append }
 
 namespace List
@@ -47,7 +47,7 @@ instance binTreeToList : Coe (BinTree α) (List α) :=
 instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] => isFalse (by simp [List.not_bex_nil])
   | x :: xs =>
-    if h₁ : p x then isTrue ⟨x, mem_cons_selfₓ _ _, h₁⟩
+    if h₁ : p x then isTrue ⟨x, mem_cons_self _ _, h₁⟩
     else
       match decidable_bex xs with
       | is_true h₂ =>

@@ -21,7 +21,7 @@ structure ParamInfo where
 -- previous parameters it depends on
 open Format List Decidable
 
-private unsafe def ppfield {α : Type} [has_to_format α] (fname : Stringₓ) (v : α) : format :=
+private unsafe def ppfield {α : Type} [has_to_format α] (fname : String) (v : α) : format :=
   group <| to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length + 4) (to_fmt v)
 
 private unsafe def concat_fields (f₁ f₂ : format) : format :=
@@ -114,7 +114,7 @@ unsafe axiom get_spec_prefix_size (t : expr) (nargs : Nat) (md := semireducible)
 
 private unsafe def is_next_explicit : List ParamInfo → Bool
   | [] => true
-  | p :: ps => bnot p.isImplicit && bnot p.isInstImplicit
+  | p :: ps => not p.isImplicit && not p.isInstImplicit
 
 unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) : List expr → List ParamInfo → α → tactic α
   | [], _, a => return a

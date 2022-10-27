@@ -31,61 +31,73 @@ If you just want to view the object as a string for a trace message, use `has_to
 Reference: https://github.com/leanprover/lean/issues/1664
 
  -/
-class HasRepr (α : Type u) where
-  repr : α → Stringₓ
+class Repr (α : Type u) where
+  repr : α → String
 
+/- warning: repr -> repr is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u}} [_inst_1 : Repr.{u} α], α -> String
+but is expected to have type
+  forall {α : Type.{u_1}} [inst._@.Init.Data.Repr._hyg.17 : Repr.{u_1} α], α -> Std.Format
+Case conversion may be inaccurate. Consider using '#align repr reprₓ'. -/
 /--
 `repr` is similar to `to_string` except that we should have the property `eval (repr x) = x` for most sensible datatypes.
 Hence, `repr "hello"` has the value `"\"hello\""` not `"hello"`.  -/
-def reprₓ {α : Type u} [HasRepr α] : α → Stringₓ :=
-  HasRepr.repr
+def repr {α : Type u} [Repr α] : α → String :=
+  Repr.repr
 
-instance : HasRepr Bool :=
+instance : Repr Bool :=
   ⟨fun b => cond b "tt" "ff"⟩
 
-instance {p : Prop} : HasRepr (Decidable p) :=
+instance {p : Prop} : Repr (Decidable p) :=
   ⟨-- Remark: type class inference will not consider local instance `b` in the new elaborator
   fun b : Decidable p => @ite _ p b "tt" "ff"⟩
 
-protected def List.reprAux {α : Type u} [HasRepr α] : Bool → List α → Stringₓ
+protected def List.reprAux {α : Type u} [Repr α] : Bool → List α → String
   | b, [] => ""
-  | tt, x :: xs => reprₓ x ++ List.reprAux false xs
-  | ff, x :: xs => ", " ++ reprₓ x ++ List.reprAux false xs
+  | tt, x :: xs => repr x ++ List.reprAux false xs
+  | ff, x :: xs => ", " ++ repr x ++ List.reprAux false xs
 
-protected def List.reprₓ {α : Type u} [HasRepr α] : List α → Stringₓ
+/- warning: list.repr -> List.repr is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u}} [_inst_1 : Repr.{u} α], (List.{u} α) -> String
+but is expected to have type
+  forall {α : Type.{u_1}} [inst._@.Init.Data.Repr._hyg.2104 : Repr.{u_1} α], (List.{u_1} α) -> Nat -> Std.Format
+Case conversion may be inaccurate. Consider using '#align list.repr List.reprₓ'. -/
+protected def List.repr {α : Type u} [Repr α] : List α → String
   | [] => "[]"
   | x :: xs => "[" ++ List.reprAux true (x :: xs) ++ "]"
 
-instance {α : Type u} [HasRepr α] : HasRepr (List α) :=
-  ⟨List.reprₓ⟩
+instance {α : Type u} [Repr α] : Repr (List α) :=
+  ⟨List.repr⟩
 
-instance : HasRepr Unit :=
+instance : Repr Unit :=
   ⟨fun u => "star"⟩
 
-instance {α : Type u} [HasRepr α] : HasRepr (Option α) :=
+instance {α : Type u} [Repr α] : Repr (Option α) :=
   ⟨fun o =>
     match o with
     | none => "none"
-    | some a => "(some " ++ reprₓ a ++ ")"⟩
+    | some a => "(some " ++ repr a ++ ")"⟩
 
-instance {α : Type u} {β : Type v} [HasRepr α] [HasRepr β] : HasRepr (Sum α β) :=
+instance {α : Type u} {β : Type v} [Repr α] [Repr β] : Repr (Sum α β) :=
   ⟨fun s =>
     match s with
-    | inl a => "(inl " ++ reprₓ a ++ ")"
-    | inr b => "(inr " ++ reprₓ b ++ ")"⟩
+    | inl a => "(inl " ++ repr a ++ ")"
+    | inr b => "(inr " ++ repr b ++ ")"⟩
 
-instance {α : Type u} {β : Type v} [HasRepr α] [HasRepr β] : HasRepr (α × β) :=
-  ⟨fun ⟨a, b⟩ => "(" ++ reprₓ a ++ ", " ++ reprₓ b ++ ")"⟩
+instance {α : Type u} {β : Type v} [Repr α] [Repr β] : Repr (α × β) :=
+  ⟨fun ⟨a, b⟩ => "(" ++ repr a ++ ", " ++ repr b ++ ")"⟩
 
-instance {α : Type u} {β : α → Type v} [HasRepr α] [s : ∀ x, HasRepr (β x)] : HasRepr (Sigma β) :=
-  ⟨fun ⟨a, b⟩ => "⟨" ++ reprₓ a ++ ", " ++ reprₓ b ++ "⟩"⟩
+instance {α : Type u} {β : α → Type v} [Repr α] [s : ∀ x, Repr (β x)] : Repr (Sigma β) :=
+  ⟨fun ⟨a, b⟩ => "⟨" ++ repr a ++ ", " ++ repr b ++ "⟩"⟩
 
-instance {α : Type u} {p : α → Prop} [HasRepr α] : HasRepr (Subtype p) :=
-  ⟨fun s => reprₓ (val s)⟩
+instance {α : Type u} {p : α → Prop} [Repr α] : Repr (Subtype p) :=
+  ⟨fun s => repr (val s)⟩
 
 namespace Nat
 
-def digitCharₓ (n : ℕ) : Charₓ :=
+def digitChar (n : ℕ) : Char :=
   if n = 0 then '0'
   else
     if n = 1 then '1'
@@ -117,54 +129,54 @@ def digitSucc (base : ℕ) : List ℕ → List ℕ
   | [] => [1]
   | d :: ds => if d + 1 = base then 0 :: digit_succ ds else (d + 1) :: ds
 
-def toDigitsₓ (base : ℕ) : ℕ → List ℕ
+def toDigits' (base : ℕ) : ℕ → List ℕ
   | 0 => [0]
   | n + 1 => digitSucc base (to_digits n)
 
-protected def reprₓ (n : ℕ) : Stringₓ :=
-  ((toDigitsₓ 10 n).map digitCharₓ).reverse.asString
+protected def repr (n : ℕ) : String :=
+  ((toDigits' 10 n).map digitChar).reverse.asString
 
 end Nat
 
-instance : HasRepr Nat :=
-  ⟨Nat.reprₓ⟩
+instance : Repr Nat :=
+  ⟨Nat.repr⟩
 
-def hexDigitReprₓ (n : Nat) : Stringₓ :=
-  Stringₓ.singleton <| Nat.digitCharₓ n
+def hexDigitRepr (n : Nat) : String :=
+  String.singleton <| Nat.digitChar n
 
-def charToHex (c : Charₓ) : Stringₓ :=
-  let n := Charₓ.toNat c
+def charToHex (c : Char) : String :=
+  let n := Char.toNat c
   let d2 := n / 16
   let d1 := n % 16
-  hexDigitReprₓ d2 ++ hexDigitReprₓ d1
+  hexDigitRepr d2 ++ hexDigitRepr d1
 
-def Charₓ.quoteCore (c : Charₓ) : Stringₓ :=
+def Char.quoteCore (c : Char) : String :=
   if c = '\n' then "\\n"
   else
     if c = '\t' then "\\t"
     else
       if c = '\\' then "\\\\"
-      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else Stringₓ.singleton c
+      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
 
-instance : HasRepr Charₓ :=
-  ⟨fun c => "'" ++ Charₓ.quoteCore c ++ "'"⟩
+instance : Repr Char :=
+  ⟨fun c => "'" ++ Char.quoteCore c ++ "'"⟩
 
-def Stringₓ.quoteAux : List Charₓ → Stringₓ
+def String.quoteAux : List Char → String
   | [] => ""
-  | x :: xs => Charₓ.quoteCore x ++ Stringₓ.quoteAux xs
+  | x :: xs => Char.quoteCore x ++ String.quoteAux xs
 
-def Stringₓ.quote (s : Stringₓ) : Stringₓ :=
-  if s.isEmpty = tt then "\"\"" else "\"" ++ Stringₓ.quoteAux s.toList ++ "\""
+def String.quote (s : String) : String :=
+  if s.isEmpty = tt then "\"\"" else "\"" ++ String.quoteAux s.toList ++ "\""
 
-instance : HasRepr Stringₓ :=
-  ⟨Stringₓ.quote⟩
+instance : Repr String :=
+  ⟨String.quote⟩
 
-instance (n : Nat) : HasRepr (Finₓ n) :=
-  ⟨fun f => reprₓ f.val⟩
+instance (n : Nat) : Repr (Fin n) :=
+  ⟨fun f => repr f.val⟩
 
-instance : HasRepr Unsigned :=
-  ⟨fun n => reprₓ n.val⟩
+instance : Repr Unsigned :=
+  ⟨fun n => repr n.val⟩
 
-def Charₓ.repr (c : Charₓ) : Stringₓ :=
-  reprₓ c
+def Char.repr (c : Char) : String :=
+  repr c
 

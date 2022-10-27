@@ -20,7 +20,7 @@ variable {α : Type u} {β : Type v} {γ : Type w}
 
 namespace List
 
-protected def hasDecEqₓ [s : DecidableEq α] : DecidableEq (List α)
+protected def hasDecEq [s : DecidableEq α] : DecidableEq (List α)
   | [], [] => isTrue rfl
   | a :: as, [] => isFalse fun h => List.noConfusion h
   | [], b :: bs => isFalse fun h => List.noConfusion h
@@ -33,7 +33,7 @@ protected def hasDecEqₓ [s : DecidableEq α] : DecidableEq (List α)
     | is_false nab => isFalse fun h => List.noConfusion h fun hab _ => absurd hab nab
 
 instance [DecidableEq α] : DecidableEq (List α) :=
-  List.hasDecEqₓ
+  List.hasDecEq
 
 @[simp]
 protected def append : List α → List α → List α
@@ -43,12 +43,12 @@ protected def append : List α → List α → List α
 instance : Append (List α) :=
   ⟨List.append⟩
 
-protected def Memₓ : α → List α → Prop
+protected def Mem : α → List α → Prop
   | a, [] => False
   | a, b :: l => a = b ∨ mem a l
 
 instance : Membership α (List α) :=
-  ⟨List.Memₓ⟩
+  ⟨List.Mem⟩
 
 instance decidableMem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a ∈ l)
   | [] => isFalse not_false
@@ -57,21 +57,21 @@ instance decidableMem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a 
     else
       match decidable_mem l with
       | is_true h₂ => isTrue (Or.inr h₂)
-      | is_false h₂ => isFalse (not_orₓ h₁ h₂)
+      | is_false h₂ => isFalse (not_or_of_not h₁ h₂)
 
 instance : EmptyCollection (List α) :=
   ⟨List.nil⟩
 
-protected def eraseₓ {α} [DecidableEq α] : List α → α → List α
+protected def erase' {α} [DecidableEq α] : List α → α → List α
   | [], b => []
   | a :: l, b => if a = b then l else a :: erase l b
 
-protected def bagInterₓ {α} [DecidableEq α] : List α → List α → List α
+protected def bagInter' {α} [DecidableEq α] : List α → List α → List α
   | [], _ => []
   | _, [] => []
   | a :: l₁, l₂ => if a ∈ l₂ then a :: bag_inter l₁ (l₂.erase a) else bag_inter l₁ l₂
 
-protected def diffₓ {α} [DecidableEq α] : List α → List α → List α
+protected def diff' {α} [DecidableEq α] : List α → List α → List α
   | l, [] => l
   | l₁, a :: l₂ => if a ∈ l₁ then diff (l₁.erase a) l₂ else diff l₁ l₂
 
@@ -96,10 +96,10 @@ def nth : List α → Nat → Option α
 def nthLe : ∀ (l : List α) (n), n < l.length → α
   | [], n, h => absurd h n.not_lt_zero
   | a :: l, 0, h => a
-  | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succₓ h)
+  | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succ h)
 
 @[simp]
-def headₓ [Inhabited α] : List α → α
+def head' [Inhabited α] : List α → α
   | [] => default
   | a :: l => a
 
@@ -145,17 +145,17 @@ def filterMap (f : α → Option β) : List α → List β
     | none => filter_map l
     | some b => b :: filter_map l
 
-def filterₓ (p : α → Prop) [DecidablePred p] : List α → List α
+def filter' (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | a :: l => if p a then a :: filter l else filter l
 
-def partitionₓ (p : α → Prop) [DecidablePred p] : List α → List α × List α
+def partition' (p : α → Prop) [DecidablePred p] : List α → List α × List α
   | [] => ([], [])
   | a :: l =>
     let (l₁, l₂) := partition l
     if p a then (a :: l₁, l₂) else (l₁, a :: l₂)
 
-def dropWhileₓ (p : α → Prop) [DecidablePred p] : List α → List α
+def dropWhile' (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | a :: l => if p a then drop_while l else a :: l
 
@@ -167,11 +167,11 @@ def dropWhileₓ (p : α → Prop) [DecidablePred p] : List α → List α
   drop_while (not ∘ eq 1) [0, 1, 2, 3] = [1, 2, 3]
   ```
 -/
-def afterₓ (p : α → Prop) [DecidablePred p] : List α → List α
+def after' (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | x :: xs => if p x then xs else after xs
 
-def spanₓ (p : α → Prop) [DecidablePred p] : List α → List α × List α
+def span' (p : α → Prop) [DecidablePred p] : List α → List α × List α
   | [] => ([], [])
   | a :: xs =>
     if p a then
@@ -183,30 +183,30 @@ def findIndex (p : α → Prop) [DecidablePred p] : List α → Nat
   | [] => 0
   | a :: l => if p a then 0 else succ (find_index l)
 
-def indexOfₓ [DecidableEq α] (a : α) : List α → Nat :=
+def indexOf' [DecidableEq α] (a : α) : List α → Nat :=
   findIndex (Eq a)
 
-def removeAllₓ [DecidableEq α] (xs ys : List α) : List α :=
-  filterₓ (· ∉ ys) xs
+def removeAll' [DecidableEq α] (xs ys : List α) : List α :=
+  filter' (· ∉ ys) xs
 
 def updateNth : List α → ℕ → α → List α
   | x :: xs, 0, a => a :: xs
   | x :: xs, i + 1, a => x :: update_nth xs i a
   | [], _, _ => []
 
-def removeNthₓ : List α → ℕ → List α
+def removeNth : List α → ℕ → List α
   | [], _ => []
   | x :: xs, 0 => xs
   | x :: xs, i + 1 => x :: remove_nth xs i
 
 @[simp]
-def dropₓ : ℕ → List α → List α
+def drop : ℕ → List α → List α
   | 0, a => a
   | succ n, [] => []
   | succ n, x :: r => drop n r
 
 @[simp]
-def takeₓ : ℕ → List α → List α
+def take : ℕ → List α → List α
   | 0, a => []
   | succ n, [] => []
   | succ n, x :: r => x :: take n r
@@ -233,12 +233,12 @@ def bor (l : List Bool) : Bool :=
 def band (l : List Bool) : Bool :=
   all l id
 
-def zipWithₓ (f : α → β → γ) : List α → List β → List γ
+def zipWith (f : α → β → γ) : List α → List β → List γ
   | x :: xs, y :: ys => f x y :: zip_with xs ys
   | _, _ => []
 
-def zipₓ : List α → List β → List (Prod α β) :=
-  zipWithₓ Prod.mk
+def zip : List α → List β → List (Prod α β) :=
+  zipWith Prod.mk
 
 def unzip : List (α × β) → List α × List β
   | [] => ([], [])
@@ -246,29 +246,29 @@ def unzip : List (α × β) → List α × List β
     match unzip t with
     | (al, bl) => (a :: al, b :: bl)
 
-protected def insertₓ [DecidableEq α] (a : α) (l : List α) : List α :=
+protected def insert [DecidableEq α] (a : α) (l : List α) : List α :=
   if a ∈ l then l else a :: l
 
 instance [DecidableEq α] : Insert α (List α) :=
-  ⟨List.insertₓ⟩
+  ⟨List.insert⟩
 
 instance : Singleton α (List α) :=
   ⟨fun x => [x]⟩
 
-instance [DecidableEq α] : IsLawfulSingleton α (List α) :=
+instance [DecidableEq α] : LawfulSingleton α (List α) :=
   ⟨fun x => show (if x ∈ ([] : List α) then [] else [x]) = [x] from if_neg not_false⟩
 
-protected def unionₓ [DecidableEq α] (l₁ l₂ : List α) : List α :=
+protected def union [DecidableEq α] (l₁ l₂ : List α) : List α :=
   foldr insert l₂ l₁
 
 instance [DecidableEq α] : Union (List α) :=
-  ⟨List.unionₓ⟩
+  ⟨List.union⟩
 
-protected def interₓ [DecidableEq α] (l₁ l₂ : List α) : List α :=
-  filterₓ (· ∈ l₂) l₁
+protected def inter [DecidableEq α] (l₁ l₂ : List α) : List α :=
+  filter' (· ∈ l₂) l₁
 
 instance [DecidableEq α] : Inter (List α) :=
-  ⟨List.interₓ⟩
+  ⟨List.inter⟩
 
 @[simp]
 def repeat (a : α) : ℕ → List α
@@ -300,7 +300,7 @@ def last : ∀ l : List α, l ≠ [] → α
   | a :: b :: l, h => last (b :: l) fun h => List.noConfusion h
 
 def ilast [Inhabited α] : List α → α
-  | [] => arbitrary α
+  | [] => default α
   | [a] => a
   | [a, b] => b
   | a :: b :: l => ilast l
@@ -326,18 +326,18 @@ protected def bind {α : Type u} {β : Type v} (a : List α) (b : α → List β
 protected def ret {α : Type u} (a : α) : List α :=
   [a]
 
-protected def Lt [LT α] : List α → List α → Prop
+protected def lt [LT α] : List α → List α → Prop
   | [], [] => False
   | [], b :: bs => True
   | a :: as, [] => False
   | a :: as, b :: bs => a < b ∨ ¬b < a ∧ lt as bs
 
 instance [LT α] : LT (List α) :=
-  ⟨List.Lt⟩
+  ⟨List.lt⟩
 
-instance hasDecidableLtₓ [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, Decidable (l₁ < l₂)
+instance hasDecidableLt [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, Decidable (l₁ < l₂)
   | [], [] => isFalse not_false
-  | [], b :: bs => isTrue trivialₓ
+  | [], b :: bs => isTrue trivial
   | a :: as, [] => isFalse not_false
   | a :: as, b :: bs =>
     match h a b with
@@ -366,14 +366,14 @@ theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] : �
   fun l₁ l₂ => show (l₁ < l₂) = ¬¬l₁ < l₂ from Eq.subst (propext (not_not_iff (l₁ < l₂))).symm rfl
 
 /-- `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/
-def isPrefixOfₓ [DecidableEq α] : List α → List α → Bool
+def isPrefixOf' [DecidableEq α] : List α → List α → Bool
   | [], _ => true
   | _, [] => false
-  | a :: as, b :: bs => toBool (a = b) && is_prefix_of as bs
+  | a :: as, b :: bs => decide (a = b) && is_prefix_of as bs
 
 /-- `is_suffix_of l₁ l₂` returns `tt` iff `l₁` is a suffix of `l₂`. -/
-def isSuffixOfₓ [DecidableEq α] (l₁ l₂ : List α) : Bool :=
-  isPrefixOfₓ l₁.reverse l₂.reverse
+def isSuffixOf' [DecidableEq α] (l₁ l₂ : List α) : Bool :=
+  isPrefixOf' l₁.reverse l₂.reverse
 
 end List
 

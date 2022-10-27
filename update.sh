@@ -20,7 +20,7 @@ mathlib4_rev=$(
 )
 
 # We specify a suffix for `-i` for macos compatibility.
-sed -i .bak '
+sed -i.bak '
   /^def tag / s/"\(.*\)"$/"'$tag'"/;
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean

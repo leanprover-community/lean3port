@@ -6,19 +6,19 @@ Authors: Leonardo de Moura
 
 namespace Debugger
 
-def isSpace (c : Charₓ) : Bool :=
-  if c = ' ' ∨ c = Charₓ.ofNat 11 ∨ c = '\n' then true else false
+def isSpace (c : Char) : Bool :=
+  if c = ' ' ∨ c = Char.ofNat 11 ∨ c = '\n' then true else false
 
-private def split_core : List Charₓ → Option Stringₓ → List Stringₓ
-  | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some <| Stringₓ.singleton c)
+private def split_core : List Char → Option String → List String
+  | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some <| String.singleton c)
   | c :: cs, some s => if isSpace c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
 
-def split (s : Stringₓ) : List Stringₓ :=
+def split (s : String) : List String :=
   splitCore s.toList none
 
-def toQualifiedNameCore : List Charₓ → Name → Stringₓ → Name
+def toQualifiedNameCore : List Char → Name → String → Name
   | [], r, s => if s.isEmpty then r else mkStrName r s
   | c :: cs, r, s =>
     if isSpace c then to_qualified_name_core cs r s
@@ -26,20 +26,20 @@ def toQualifiedNameCore : List Charₓ → Name → Stringₓ → Name
       if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (mkStrName r s) ""
       else to_qualified_name_core cs r (s.str c)
 
-def toQualifiedName (s : Stringₓ) : Name :=
+def toQualifiedName (s : String) : Name :=
   toQualifiedNameCore s.toList Name.anonymous ""
 
-def oleanToLean (s : Stringₓ) :=
+def oleanToLean (s : String) :=
   s.popnBack 5 ++ "lean"
 
-unsafe def get_file (fn : Name) : vm Stringₓ :=
+unsafe def get_file (fn : Name) : vm String :=
   (do
       let d ← vm.get_decl fn
       let some n ← return (vm_decl.olean d) | failure
       return (olean_to_lean n)) <|>
     return "[current file]"
 
-unsafe def pos_info (fn : Name) : vm Stringₓ :=
+unsafe def pos_info (fn : Name) : vm String :=
   (do
       let d ← vm.get_decl fn
       let some p ← return (vm_decl.pos d) | failure
@@ -47,7 +47,7 @@ unsafe def pos_info (fn : Name) : vm Stringₓ :=
       return s! "{file }:{p }:{p}") <|>
     return "<position not available>"
 
-unsafe def show_fn (header : Stringₓ) (fn : Name) (frame : Nat) : vm Unit := do
+unsafe def show_fn (header : String) (fn : Name) (frame : Nat) : vm Unit := do
   let pos ← pos_info fn
   vm.put_str s! "[{frame }] {header}"
   if header = "" then return () else vm.put_str " "
@@ -55,7 +55,7 @@ unsafe def show_fn (header : Stringₓ) (fn : Name) (frame : Nat) : vm Unit := d
       s! "{fn } at {Pos}
         "
 
-unsafe def show_curr_fn (header : Stringₓ) : vm Unit := do
+unsafe def show_curr_fn (header : String) : vm Unit := do
   let fn ← vm.curr_fn
   let sz ← vm.call_stack_size
   show_fn header fn (sz - 1)
@@ -73,7 +73,7 @@ unsafe def show_frame (frame_idx : Nat) : vm Unit := do
   let fn ← if frame_idx ≥ sz then vm.curr_fn else vm.call_stack_fn frame_idx
   show_fn "" fn frame_idx
 
-unsafe def type_to_string : Option expr → Nat → vm Stringₓ
+unsafe def type_to_string : Option expr → Nat → vm String
   | none, i => do
     let o ← vm.stack_obj i
     match o with

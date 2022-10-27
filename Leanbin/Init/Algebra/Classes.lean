@@ -22,76 +22,59 @@ implemented.
 -/
 
 
-@[algebra]
 class IsSymmOp (α : Type u) (β : outParam (Type v)) (op : α → α → β) : Prop where
   symm_op : ∀ a b, op a b = op b a
 
-@[algebra]
 class IsCommutative (α : Type u) (op : α → α → α) : Prop where
   comm : ∀ a b, op a b = op b a
 
 instance (priority := 100) is_symm_op_of_is_commutative (α : Type u) (op : α → α → α) [IsCommutative α op] :
     IsSymmOp α α op where symm_op := IsCommutative.comm
 
-@[algebra]
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
   assoc : ∀ a b c, op (op a b) c = op a (op b c)
 
-@[algebra]
 class IsLeftId (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_id : ∀ a, op o a = a
 
-@[algebra]
 class IsRightId (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   right_id : ∀ a, op a o = a
 
-@[algebra]
 class IsLeftNull (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_null : ∀ a, op o a = o
 
-@[algebra]
 class IsRightNull (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   right_null : ∀ a, op a o = o
 
-@[algebra]
 class IsLeftCancel (α : Type u) (op : α → α → α) : Prop where
   left_cancel : ∀ a b c, op a b = op a c → b = c
 
-@[algebra]
 class IsRightCancel (α : Type u) (op : α → α → α) : Prop where
   right_cancel : ∀ a b c, op a b = op c b → a = c
 
-@[algebra]
 class IsIdempotent (α : Type u) (op : α → α → α) : Prop where
   idempotent : ∀ a, op a a = a
 
-@[algebra]
 class IsLeftDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam <| α → α → α) : Prop where
   left_distrib : ∀ a b c, op₁ a (op₂ b c) = op₂ (op₁ a b) (op₁ a c)
 
-@[algebra]
 class IsRightDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam <| α → α → α) : Prop where
   right_distrib : ∀ a b c, op₁ (op₂ a b) c = op₂ (op₁ a c) (op₁ b c)
 
-@[algebra]
 class IsLeftInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α) : Prop where
   left_inv : ∀ a, op (inv a) a = o
 
-@[algebra]
 class IsRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α) : Prop where
   right_inv : ∀ a, op a (inv a) = o
 
-@[algebra]
 class IsCondLeftInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α)
   (p : outParam <| α → Prop) : Prop where
   left_inv : ∀ a, p a → op (inv a) a = o
 
-@[algebra]
 class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α)
   (p : outParam <| α → Prop) : Prop where
   right_inv : ∀ a, p a → op a (inv a) = o
 
-@[algebra]
 class IsDistinct (α : Type u) (a : α) (b : α) : Prop where
   distinct : a ≠ b
 
@@ -106,105 +89,87 @@ class is_idempotent (α : Type u) (f : α → α) : Prop :=
 -/
 /-- `is_irrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never
 holds). -/
-@[algebra]
 class IsIrrefl (α : Type u) (r : α → α → Prop) : Prop where
   irrefl : ∀ a, ¬r a a
 
 /-- `is_refl X r` means the binary relation `r` on `X` is reflexive. -/
-@[algebra]
 class IsRefl (α : Type u) (r : α → α → Prop) : Prop where
   refl : ∀ a, r a a
 
 /-- `is_symm X r` means the binary relation `r` on `X` is symmetric. -/
-@[algebra]
 class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
   symm : ∀ a b, r a b → r b a
 
 /-- The opposite of a symmetric relation is symmetric. -/
 instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] :
-    IsSymmOp α Prop r where symm_op := fun a b => propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
+    IsSymmOp α Prop r where symm_op a b := propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
 
 /-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
 `r a b → ¬ r b a`. -/
-@[algebra]
 class IsAsymm (α : Type u) (r : α → α → Prop) : Prop where
   asymm : ∀ a b, r a b → ¬r b a
 
 /-- `is_antisymm X r` means the binary relation `r` on `X` is antisymmetric. -/
-@[algebra]
 class IsAntisymm (α : Type u) (r : α → α → Prop) : Prop where
   antisymm : ∀ a b, r a b → r b a → a = b
 
 /-- `is_trans X r` means the binary relation `r` on `X` is transitive. -/
-@[algebra]
 class IsTrans (α : Type u) (r : α → α → Prop) : Prop where
   trans : ∀ a b c, r a b → r b c → r a c
 
 /-- `is_total X r` means that the binary relation `r` on `X` is total, that is, that for any
 `x y : X` we have `r x y` or `r y x`.-/
-@[algebra]
 class IsTotal (α : Type u) (r : α → α → Prop) : Prop where
   Total : ∀ a b, r a b ∨ r b a
 
 /-- `is_preorder X r` means that the binary relation `r` on `X` is a pre-order, that is, reflexive
 and transitive. -/
-@[algebra]
 class IsPreorder (α : Type u) (r : α → α → Prop) extends IsRefl α r, IsTrans α r : Prop
 
 /-- `is_total_preorder X r` means that the binary relation `r` on `X` is total and a preorder. -/
-@[algebra]
 class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α r, IsTotal α r : Prop
 
 /-- Every total pre-order is a pre-order. -/
 instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] : IsPreorder α r where
   trans := s.trans
-  refl := fun a => Or.elim (@IsTotal.total _ r _ a a) id id
+  refl a := Or.elim (@IsTotal.total _ r _ a a) id id
 
 /-- `is_partial_order X r` means that the binary relation `r` on `X` is a partial order, that is,
 `is_preorder X r` and `is_antisymm X r`. -/
-@[algebra]
 class IsPartialOrder (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsAntisymm α r : Prop
 
 /-- `is_linear_order X r` means that the binary relation `r` on `X` is a linear order, that is,
 `is_partial_order X r` and `is_total X r`. -/
-@[algebra]
 class IsLinearOrder (α : Type u) (r : α → α → Prop) extends IsPartialOrder α r, IsTotal α r : Prop
 
 /-- `is_equiv X r` means that the binary relation `r` on `X` is an equivalence relation, that
 is, `is_preorder X r` and `is_symm X r`. -/
-@[algebra]
 class IsEquiv (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsSymm α r : Prop
 
 /-- `is_per X r` means that the binary relation `r` on `X` is a partial equivalence relation, that
 is, `is_symm X r` and `is_trans X r`. -/
-@[algebra]
 class IsPer (α : Type u) (r : α → α → Prop) extends IsSymm α r, IsTrans α r : Prop
 
 /-- `is_strict_order X r` means that the binary relation `r` on `X` is a strict order, that is,
 `is_irrefl X r` and `is_trans X r`. -/
-@[algebra]
 class IsStrictOrder (α : Type u) (r : α → α → Prop) extends IsIrrefl α r, IsTrans α r : Prop
 
 /-- `is_incomp_trans X lt` means that for `lt` a binary relation on `X`, the incomparable relation
 `λ a b, ¬ lt a b ∧ ¬ lt b a` is transitive. -/
-@[algebra]
 class IsIncompTrans (α : Type u) (lt : α → α → Prop) : Prop where
   incomp_trans : ∀ a b c, ¬lt a b ∧ ¬lt b a → ¬lt b c ∧ ¬lt c b → ¬lt a c ∧ ¬lt c a
 
 /-- `is_strict_weak_order X lt` means that the binary relation `lt` on `X` is a strict weak order,
 that is, `is_strict_order X lt` and `is_incomp_trans X lt`. -/
-@[algebra]
 class IsStrictWeakOrder (α : Type u) (lt : α → α → Prop) extends IsStrictOrder α lt, IsIncompTrans α lt : Prop
 
 /-- `is_trichotomous X lt` means that the binary relation `lt` on `X` is trichotomous, that is,
 either `lt a b` or `a = b` or `lt b a` for any `a` and `b`. -/
-@[algebra]
 class IsTrichotomous (α : Type u) (lt : α → α → Prop) : Prop where
   trichotomous : ∀ a b, lt a b ∨ a = b ∨ lt b a
 
 /-- `is_strict_total_order X lt` means that the binary relation `lt` on `X` is a strict total order,
 that is, `is_trichotomous X lt` and `is_strict_order X lt`. -/
-@[algebra]
 class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrichotomous α lt, IsStrictOrder α lt : Prop
 
 /-- Equality is an equivalence relation. -/
@@ -251,35 +216,35 @@ section ExplicitRelationVariants
 
 variable (r)
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem irrefl_of [IsIrrefl α r] (a : α) : ¬a≺a :=
   irrefl a
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem refl_of [IsRefl α r] (a : α) : a≺a :=
   refl a
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem trans_of [IsTrans α r] {a b c : α} : a≺b → b≺c → a≺c :=
   trans
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem symm_of [IsSymm α r] {a b : α} : a≺b → b≺a :=
   symm
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem asymm_of [IsAsymm α r] {a b : α} : a≺b → ¬b≺a :=
   asymm
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem total_of [IsTotal α r] (a b : α) : a≺b ∨ b≺a :=
   IsTotal.total _ _
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem trichotomous_of [IsTrichotomous α r] : ∀ a b : α, a≺b ∨ a = b ∨ b≺a :=
   trichotomous
 
-@[elabWithoutExpectedType]
+@[elab_without_expected_type]
 theorem incomp_trans_of [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a → ¬b≺c ∧ ¬c≺b → ¬a≺c ∧ ¬c≺a :=
   incomp_trans
 
@@ -341,10 +306,10 @@ theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α 
       Iff.mpr (h _ _) nca,
     irrefl := fun a hlt => absurd (refl_of le a) (Iff.mp (h _ _) hlt),
     incomp_trans := fun a b c ⟨nab, nba⟩ ⟨nbc, ncb⟩ =>
-      have hba : le b a := Decidable.of_not_not (Iff.mp (not_iff_not_of_iff (h _ _)) nab)
-      have hab : le a b := Decidable.of_not_not (Iff.mp (not_iff_not_of_iff (h _ _)) nba)
-      have hcb : le c b := Decidable.of_not_not (Iff.mp (not_iff_not_of_iff (h _ _)) nbc)
-      have hbc : le b c := Decidable.of_not_not (Iff.mp (not_iff_not_of_iff (h _ _)) ncb)
+      have hba : le b a := Decidable.of_not_not (Iff.mp (not_congr (h _ _)) nab)
+      have hab : le a b := Decidable.of_not_not (Iff.mp (not_congr (h _ _)) nba)
+      have hcb : le c b := Decidable.of_not_not (Iff.mp (not_congr (h _ _)) nbc)
+      have hbc : le b c := Decidable.of_not_not (Iff.mp (not_congr (h _ _)) ncb)
       have hac : le a c := trans_of le hab hbc
       have hca : le c a := trans_of le hcb hba
       And.intro (fun n => absurd hca (Iff.mp (h _ _) n)) fun n => absurd hac (Iff.mp (h _ _) n) }

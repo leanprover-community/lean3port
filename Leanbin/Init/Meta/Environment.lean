@@ -193,7 +193,7 @@ unsafe axiom trans_for : environment → Name → Option Name
 
 /-- `decl_olean env d` returns the name of the .olean file where d was defined.
    The result is none if d was not defined in an imported file. -/
-unsafe axiom decl_olean : environment → Name → Option Stringₓ
+unsafe axiom decl_olean : environment → Name → Option String
 
 /-- `decl_pos env d` returns the source location of d if available. -/
 unsafe axiom decl_pos : environment → Name → Option Pos
@@ -252,7 +252,7 @@ unsafe def is_definition (env : environment) (n : Name) : Bool :=
 
 end Environment
 
-unsafe instance : HasRepr environment :=
+unsafe instance : Repr environment :=
   ⟨fun e => "[environment]"⟩
 
 unsafe instance : Inhabited environment :=

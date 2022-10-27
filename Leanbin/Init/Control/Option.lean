@@ -10,70 +10,70 @@ import Leanbin.Init.Control.Except
 
 universe u v
 
-structure OptionTₓ (m : Type u → Type v) (α : Type u) : Type v where
+structure OptionT (m : Type u → Type v) (α : Type u) : Type v where
   run : m (Option α)
 
-namespace OptionTₓ
+namespace OptionT
 
-variable {m : Type u → Type v} [Monadₓ m] {α β : Type u}
+variable {m : Type u → Type v} [Monad m] {α β : Type u}
 
 @[inline]
-protected def bindCont {α β : Type u} (f : α → OptionTₓ m β) : Option α → m (Option β)
+protected def bindCont {α β : Type u} (f : α → OptionT m β) : Option α → m (Option β)
   | some a => (f a).run
   | none => pure none
 
 @[inline]
-protected def bind (ma : OptionTₓ m α) (f : α → OptionTₓ m β) : OptionTₓ m β :=
-  ⟨ma.run >>= OptionTₓ.bindCont f⟩
+protected def bind (ma : OptionT m α) (f : α → OptionT m β) : OptionT m β :=
+  ⟨ma.run >>= OptionT.bindCont f⟩
 
 @[inline]
-protected def pure (a : α) : OptionTₓ m α :=
+protected def pure (a : α) : OptionT m α :=
   ⟨pure (some a)⟩
 
-instance : Monadₓ (OptionTₓ m) where
-  pure := @OptionTₓ.pure _ _
-  bind := @OptionTₓ.bind _ _
+instance : Monad (OptionT m) where
+  pure := @OptionT.pure _ _
+  bind := @OptionT.bind _ _
 
-protected def orelse (ma : OptionTₓ m α) (mb : OptionTₓ m α) : OptionTₓ m α :=
+protected def orelse (ma : OptionT m α) (mb : OptionT m α) : OptionT m α :=
   ⟨do
     let some a ← ma.run | mb.run
     pure (some a)⟩
 
 @[inline]
-protected def fail : OptionTₓ m α :=
+protected def fail : OptionT m α :=
   ⟨pure none⟩
 
 @[inline]
-def ofOption : Option α → OptionTₓ m α
+def ofOption : Option α → OptionT m α
   | o => ⟨pure o⟩
 
-instance : Alternativeₓ (OptionTₓ m) :=
-  { OptionTₓ.monad with failure := @OptionTₓ.fail m _, orelse := @OptionTₓ.orelse m _ }
+instance : Alternative (OptionT m) :=
+  { OptionT.monad with failure := @OptionT.fail m _, orelse := @OptionT.orelse m _ }
 
 @[inline]
-protected def lift (ma : m α) : OptionTₓ m α :=
+protected def lift (ma : m α) : OptionT m α :=
   ⟨some <$> ma⟩
 
-instance : HasMonadLift m (OptionTₓ m) :=
-  ⟨@OptionTₓ.lift _ _⟩
+instance : HasMonadLift m (OptionT m) :=
+  ⟨@OptionT.lift _ _⟩
 
 @[inline]
-protected def monadMap {m'} [Monadₓ m'] {α} (f : ∀ {α}, m α → m' α) : OptionTₓ m α → OptionTₓ m' α := fun x => ⟨f x.run⟩
+protected def monadMap {m'} [Monad m'] {α} (f : ∀ {α}, m α → m' α) : OptionT m α → OptionT m' α := fun x => ⟨f x.run⟩
 
-instance (m') [Monadₓ m'] : MonadFunctorₓ m m' (OptionTₓ m) (OptionTₓ m') :=
-  ⟨fun α => OptionTₓ.monadMap⟩
+instance (m') [Monad m'] : MonadFunctor m m' (OptionT m) (OptionT m') :=
+  ⟨fun α => OptionT.monadMap⟩
 
-protected def catch (ma : OptionTₓ m α) (handle : Unit → OptionTₓ m α) : OptionTₓ m α :=
+protected def catch (ma : OptionT m α) (handle : Unit → OptionT m α) : OptionT m α :=
   ⟨do
     let some a ← ma.run | (handle ()).run
     pure a⟩
 
-instance : MonadExcept Unit (OptionTₓ m) where
-  throw := fun _ _ => OptionTₓ.fail
-  catch := @OptionTₓ.catch _ _
+instance : MonadExcept Unit (OptionT m) where
+  throw _ _ := OptionT.fail
+  catch := @OptionT.catch _ _
 
-instance (m out) [MonadRun out m] : MonadRun (fun α => out (Option α)) (OptionTₓ m) :=
-  ⟨fun α => MonadRun.run ∘ OptionTₓ.run⟩
+instance (m out) [MonadRun out m] : MonadRun (fun α => out (Option α)) (OptionT m) :=
+  ⟨fun α => MonadRun.run ∘ OptionT.run⟩
 
-end OptionTₓ
+end OptionT
 

@@ -32,14 +32,14 @@ section
 
 variable {state : Type} {α : Type u}
 
-variable [HasToString α]
+variable [ToString α]
 
-unsafe def interaction_monad.result_to_string : result state α → Stringₓ
+unsafe def interaction_monad.result_to_string : result state α → String
   | success a s => toString a
   | exception (some t) ref s => "Exception: " ++ toString (t ())
   | exception none ref s => "[silent exception]"
 
-unsafe instance interaction_monad.result_has_string : HasToString (result state α) :=
+unsafe instance interaction_monad.result_has_string : ToString (result state α) :=
   ⟨interaction_monad.result_to_string⟩
 
 end
@@ -82,7 +82,7 @@ unsafe def interaction_monad_orelse {α : Type u} (t₁ t₂ : m α) : m α := f
 unsafe def interaction_monad_seq (t₁ : m α) (t₂ : m β) : m β :=
   interaction_monad_bind t₁ fun a => t₂
 
-unsafe instance interaction_monad.monad : Monadₓ m where
+unsafe instance interaction_monad.monad : Monad m where
   map := @interaction_monad_fmap
   pure := @interaction_monad_return
   bind := @interaction_monad_bind

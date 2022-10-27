@@ -133,7 +133,7 @@ unsafe def fold_eqc_core {α} (s : cc_state) (f : α → expr → α) (first : e
 unsafe def fold_eqc {α} (s : cc_state) (e : expr) (a : α) (f : α → expr → α) : α :=
   fold_eqc_core s f e e a
 
-unsafe def mfold_eqc {α} {m : Type → Type} [Monadₓ m] (s : cc_state) (e : expr) (a : α) (f : α → expr → m α) : m α :=
+unsafe def mfold_eqc {α} {m : Type → Type} [Monad m] (s : cc_state) (e : expr) (a : α) (f : α → expr → m α) : m α :=
   fold_eqc s e (return a) fun act e => do
     let a ← act
     f a e

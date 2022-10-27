@@ -63,7 +63,7 @@ unsafe axiom ident : parser Name
 unsafe axiom small_nat : parser Nat
 
 /-- Check that the next token is `tk` and consume it. `tk` must be a registered token. -/
-unsafe axiom tk (tk : Stringₓ) : parser Unit
+unsafe axiom tk (tk : String) : parser Unit
 
 /-- Parse an unelaborated expression using the given right-binding power.
 When `pat := tt`, the expression is parsed as a pattern, i.e. local
@@ -112,7 +112,7 @@ unsafe axiom set_goal_info_pos (p : parser α) : parser α
 unsafe def cur_pos : parser Pos := fun s => success (parser_state.cur_pos s) s
 
 /-- Temporarily replace input of the parser state, run `p`, and return remaining input. -/
-unsafe axiom with_input (p : parser α) (input : Stringₓ) : parser (α × Stringₓ)
+unsafe axiom with_input (p : parser α) (input : String) : parser (α × String)
 
 /-- Parse a top-level command. -/
 unsafe axiom command_like : parser Unit
@@ -123,11 +123,11 @@ unsafe def parser_orelse (p₁ p₂ : parser α) : parser α := fun s =>
     let pos₂ := parser_state.cur_pos s'
     if pos₁ ≠ pos₂ then exception e₁ ref₁ s' else result.cases_on (p₂ s) success exception
 
-unsafe instance : Alternativeₓ parser :=
+unsafe instance : Alternative parser :=
   { interaction_monad.monad with failure := @interaction_monad.failed _, orelse := @parser_orelse }
 
 -- TODO: move
-unsafe def many.{u, v} {f : Type u → Type v} [Monadₓ f] [Alternativeₓ f] {a : Type u} : f a → f (List a)
+unsafe def many.{u, v} {f : Type u → Type v} [Monad f] [Alternative f] {a : Type u} : f a → f (List a)
   | x =>
     (do
         let y ← x
@@ -136,7 +136,7 @@ unsafe def many.{u, v} {f : Type u → Type v} [Monadₓ f] [Alternativeₓ f] {
       pure List.nil
 
 -- mathport name: «expr ?»
-local postfix:100 "?" => optionalₓ
+local postfix:100 "?" => optional
 
 -- mathport name: «expr *»
 local postfix:100 "*" => many
@@ -159,7 +159,7 @@ unsafe instance has_reflect [r : has_reflect α] (p : lean.parser α) :
     return ⟨rp⟩
 
 unsafe instance optional {α : Type} [reflected _ α] (p : parser α) [r : reflectable p] :
-    reflectable (optionalₓ p) where full := reflected_value.subst some <$> r.full <|> return ⟨none⟩
+    reflectable (optional p) where full := reflected_value.subst some <$> r.full <|> return ⟨none⟩
 
 end Reflectable
 
@@ -168,7 +168,7 @@ unsafe def reflect (p : parser α) [r : reflectable p] : parser expr :=
 
 unsafe axiom run {α} : parser α → tactic α
 
-unsafe def run_with_input {α} : parser α → Stringₓ → tactic α := fun p s => Prod.fst <$> run (with_input p s)
+unsafe def run_with_input {α} : parser α → String → tactic α := fun p s => Prod.fst <$> run (with_input p s)
 
 end Parser
 

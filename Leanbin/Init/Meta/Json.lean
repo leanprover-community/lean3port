@@ -9,17 +9,17 @@ import Leanbin.Init.Data.Default
 import Leanbin.Init.Meta.Float
 
 unsafe inductive json : Type
-  | of_string : Stringₓ → json
+  | of_string : String → json
   | of_int : Int → json
   | of_float : native.float → json
   | of_bool : Bool → json
   | null : json
-  | object : List (Stringₓ × json) → json
-  | Arrayₓ : List json → json
+  | object : List (String × json) → json
+  | Array' : List json → json
 
 namespace Json
 
-unsafe instance string_coe : Coe Stringₓ json :=
+unsafe instance string_coe : Coe String json :=
   ⟨json.of_string⟩
 
 unsafe instance int_coe : Coe Int json :=
@@ -37,12 +37,12 @@ unsafe instance array_coe : Coe (List json) json :=
 unsafe instance : Inhabited json :=
   ⟨json.null⟩
 
-protected unsafe axiom parse : Stringₓ → Option json
+protected unsafe axiom parse : String → Option json
 
-protected unsafe axiom unparse : json → Stringₓ
+protected unsafe axiom unparse : json → String
 
 unsafe def to_format : json → format
-  | of_string s => Stringₓ.quote s
+  | of_string s => String.quote s
   | of_int i => toString i
   | of_float f => toString f
   | of_bool tt => "true"
@@ -53,24 +53,24 @@ unsafe def to_format : json → format
         (format.group <|
           format.nest 2 <|
             format.join <|
-              List.intersperse (", " ++ format.line) <| kvs.map fun ⟨k, v⟩ => Stringₓ.quote k ++ ":" ++ to_format v) ++
+              List.intersperse (", " ++ format.line) <| kvs.map fun ⟨k, v⟩ => String.quote k ++ ":" ++ to_format v) ++
       "}"
-  | Arrayₓ js => list.to_format <| js.map to_format
+  | Array' js => list.to_format <| js.map to_format
 
 unsafe instance : has_to_format json :=
   ⟨to_format⟩
 
-unsafe instance : HasToString json :=
+unsafe instance : ToString json :=
   ⟨json.unparse⟩
 
-unsafe instance : HasRepr json :=
+unsafe instance : Repr json :=
   ⟨json.unparse⟩
 
 unsafe instance : DecidableEq json := fun j₁ j₂ => by
   cases j₁ <;> cases j₂ <;> simp <;> try apply Decidable.false
   -- do this explicitly casewise to be extra sure we don't recurse unintentionally, as meta code
   -- doesn't protect against this.
-  case of_string => exact Stringₓ.hasDecidableEq _ _
+  case of_string => exact String.hasDecidableEq _ _
   case of_float => exact native.float.dec_eq _ _
   case of_int => exact Int.decidableEq _ _
   case of_bool => exact Bool.decidableEq _ _

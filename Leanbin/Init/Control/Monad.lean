@@ -20,12 +20,12 @@ def Bind.andThen {α β : Type u} {m : Type u → Type v} [Bind m] (x : m α) (y
   x
   y
 
-class Monadₓ (m : Type u → Type v) extends Applicativeₓ m, Bind m : Type max (u + 1) v where
+class Monad (m : Type u → Type v) extends Applicative m, Bind m : Type max (u + 1) v where
   map := fun α β f x => x >>= pure ∘ f
   seq := fun α β f x => f >>= (· <$> x)
 
 @[reducible, inline]
-def return {m : Type u → Type v} [Monadₓ m] {α : Type u} : α → m α :=
+def return {m : Type u → Type v} [Monad m] {α : Type u} : α → m α :=
   pure
 
 -- Identical to has_bind.and_then, but it is not inlined.

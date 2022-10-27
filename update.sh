@@ -25,6 +25,7 @@ sed -i.bak '
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean
 rm lakefile.lean.bak
+rm lean_packages/manifest.json
 lake update
 
 rm -rf Leanbin

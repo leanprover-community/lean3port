@@ -143,7 +143,7 @@ def put (st : σ) : m PUnit :=
 lean 3 declaration is
   forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [_inst_1 : Monad.{u v} m] [_inst_2 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
 but is expected to have type
-  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [inst._@.Init.Prelude._hyg.11916 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
+  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [inst._@.Init.Prelude._hyg.11980 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
 Case conversion may be inaccurate. Consider using '#align modify modifyₓ'. -/
 /-- Map the top-most state of a monad stack.
 

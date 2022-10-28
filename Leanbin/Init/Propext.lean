@@ -12,7 +12,7 @@ axiom propext {a b : Prop} : (a ↔ b) → a = b
 universe u v
 
 theorem forall_congr {a : Sort u} {p q : a → Prop} (h : ∀ x, p x = q x) : (∀ x, p x) = ∀ x, q x :=
-  propext (forall_congr fun a => (h a).to_iff)
+  propext (forall_congr' fun a => (h a).to_iff)
 
 theorem imp_congr_eq {a b c d : Prop} (h₁ : a = c) (h₂ : b = d) : (a → b) = (c → d) :=
   propext (imp_congr h₁.to_iff h₂.to_iff)

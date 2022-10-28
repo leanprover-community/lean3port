@@ -277,7 +277,7 @@ unsafe instance html.is_functor : Functor html where map _ _ := html.map_action
 namespace Html
 
 /-- See Note [use has_coe_t]. -/
-unsafe instance to_string_coe [ToString β] : CoeT β (html α) :=
+unsafe instance to_string_coe [ToString β] : CoeTC β (html α) :=
   ⟨html.of_string ∘ toString⟩
 
 unsafe instance : EmptyCollection (html α) :=

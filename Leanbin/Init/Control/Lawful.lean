@@ -87,7 +87,7 @@ attribute [simp] pure_bind
 lean 3 declaration is
   forall {α : Type.{u}} {m : Type.{u} -> Type.{v}} [_inst_1 : Monad.{u v} m] [_inst_2 : LawfulMonad.{u v} m _inst_1] (x : m α), Eq.{succ v} (m α) (Bind.bind.{u v} m (Monad.toHasBind.{u v} m _inst_1) α α x (Pure.pure.{u v} m (Applicative.toHasPure.{u v} m (Monad.toApplicative.{u v} m _inst_1)) α)) x
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Control.Lawful._hyg.870 : Monad.{u_1 u_2} m] [inst._@.Init.Control.Lawful._hyg.873 : LawfulMonad.{u_1 u_2} m inst._@.Init.Control.Lawful._hyg.870] (x : m α), Eq.{succ u_2} (m α) (Bind.bind.{u_1 u_2} m (Monad.toBind.{u_1 u_2} m inst._@.Init.Control.Lawful._hyg.870) α α x (Pure.pure.{u_1 u_2} m (Applicative.toPure.{u_1 u_2} m (Monad.toApplicative.{u_1 u_2} m inst._@.Init.Control.Lawful._hyg.870)) α)) x
+  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Control.Lawful._hyg.871 : Monad.{u_1 u_2} m] [inst._@.Init.Control.Lawful._hyg.874 : LawfulMonad.{u_1 u_2} m inst._@.Init.Control.Lawful._hyg.871] (x : m α), Eq.{succ u_2} (m α) (Bind.bind.{u_1 u_2} m (Monad.toBind.{u_1 u_2} m inst._@.Init.Control.Lawful._hyg.871) α α x (Pure.pure.{u_1 u_2} m (Applicative.toPure.{u_1 u_2} m (Monad.toApplicative.{u_1 u_2} m inst._@.Init.Control.Lawful._hyg.871)) α)) x
 Case conversion may be inaccurate. Consider using '#align bind_pure bind_pureₓ'. -/
 -- monad "law" derivable from other laws
 @[simp]

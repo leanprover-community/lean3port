@@ -248,7 +248,7 @@ theorem length_map₂ (f : α → β → γ) (l₁) : ∀ l₂, length (map₂ f
 lean 3 declaration is
   forall {α : Type.{u}} (i : Nat) (l : List.{u} α), Eq.{1} Nat (List.length.{u} α (List.take.{u} α i l)) (LinearOrder.min.{0} Nat Nat.linearOrder i (List.length.{u} α l))
 but is expected to have type
-  forall {α : Type.{u_1}} (i : Nat) (l : List.{u_1} α), Eq.{1} Nat (List.length.{u_1} α (List.take.{u_1} α i l)) (min.{0} Nat instLENat (fun (a : Nat) (b : Nat) => Nat.decLe a b) i (List.length.{u_1} α l))
+  forall {α : Type.{u_1}} (i : Nat) (l : List.{u_1} α), Eq.{1} Nat (List.length.{u_1} α (List.take.{u_1} α i l)) (Min.min.{0} Nat Nat.instMinNat i (List.length.{u_1} α l))
 Case conversion may be inaccurate. Consider using '#align list.length_take List.length_takeₓ'. -/
 @[simp]
 theorem length_take : ∀ (i : ℕ) (l : List α), length (take i l) = min i (length l)

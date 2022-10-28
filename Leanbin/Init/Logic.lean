@@ -595,24 +595,16 @@ theorem exists_unique_of_exists_of_unique {α : Sort u} {p : α → Prop} (hex :
     (hunique : ∀ y₁ y₂, p y₁ → p y₂ → y₁ = y₂) : ∃! x, p x :=
   Exists.elim hex fun x px => ExistsUnique.intro x px fun y => fun this : p y => hunique y x this px
 
-theorem exists_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) : ∃ x, p x :=
+theorem exists {α : Sort u} {p : α → Prop} (h : ∃! x, p x) : ∃ x, p x :=
   Exists.elim h fun x hx => ⟨x, And.left hx⟩
 
-theorem unique_of_exists_unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) {y₁ y₂ : α} (py₁ : p y₁) (py₂ : p y₂) :
-    y₁ = y₂ :=
+theorem unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) {y₁ y₂ : α} (py₁ : p y₁) (py₂ : p y₂) : y₁ = y₂ :=
   ExistsUnique.elim h fun x => fun this : p x => fun unique : ∀ y, p y → y = x =>
     show y₁ = y₂ from Eq.trans (unique _ py₁) (Eq.symm (unique _ py₂))
 
-/- warning: forall_congr clashes with forall_congr_eq -> forall_congr
-warning: forall_congr -> forall_congr is a dubious translation:
-lean 3 declaration is
-  forall {α : Sort.{u}} {p : α -> Prop} {q : α -> Prop}, (forall (a : α), Iff (p a) (q a)) -> (Iff (forall (a : α), p a) (forall (a : α), q a))
-but is expected to have type
-  forall {α : Sort.{u}} {p : α -> Prop} {q : α -> Prop}, (forall (a : α), Eq.{1} Prop (p a) (q a)) -> (Eq.{1} Prop (forall (a : α), p a) (forall (a : α), q a))
-Case conversion may be inaccurate. Consider using '#align forall_congr forall_congrₓ'. -/
 -- exists, forall, exists unique congruences
 @[congr]
-theorem forall_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) : (∀ a, p a) ↔ ∀ a, q a :=
+theorem forall_congr' {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) : (∀ a, p a) ↔ ∀ a, q a :=
   Iff.intro (fun p a => Iff.mp (h a) (p a)) fun q a => Iff.mpr (h a) (q a)
 
 @[congr]
@@ -623,7 +615,7 @@ theorem exists_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) 
 theorem exists_unique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) : ExistsUnique p₁ ↔ ∃! x, p₂ x :=
   --
     exists_congr
-    fun x => and_congr (h x) (forall_congr fun y => imp_congr (h y) Iff.rfl)
+    fun x => and_congr (h x) (forall_congr' fun y => imp_congr (h y) Iff.rfl)
 
 theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x) → ∀ x, ¬p x := fun hne x hp => hne ⟨x, hp⟩
 

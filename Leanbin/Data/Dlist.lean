@@ -52,13 +52,112 @@ def singleton (x : α) : Dlist α :=
 
 attribute [local simp] Function.comp
 
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [(Command.docComment "/--" "`O(1)` Prepend a single element to a dlist -/")] [] [] [] [] [])
+     (Command.def
+      "def"
+      (Command.declId `cons [])
+      (Command.optDeclSig
+       [(Term.explicitBinder "(" [`x] [":" `α] [] ")")]
+       [(Term.typeSpec ":" (Term.arrow (Term.app `Dlist [`α]) "→" (Term.app `Dlist [`α])))])
+      (Command.declValEqns
+       (Term.matchAltsWhereDecls
+        (Term.matchAlts
+         [(Term.matchAlt
+           "|"
+           [[(Term.anonymousCtor "⟨" [`xs "," `h] "⟩")]]
+           "=>"
+           (Term.anonymousCtor
+            "⟨"
+            [(«term_∘_» (Dlist.Data.Dlist.«term_::_» `x "::_") "∘" `xs)
+             ","
+             (Term.byTactic
+              "by"
+              (Tactic.tacticSeq
+               (Tactic.tacticSeq1Indented
+                [(Tactic.abstract
+                  "abstract"
+                  []
+                  (Tactic.tacticSeq
+                   (Tactic.tacticSeq1Indented
+                    [(Tactic.intros "intros" [])
+                     []
+                     (Tactic.simp "simp" [] [] [] [] [])
+                     []
+                     (Tactic.rwSeq "rw" [] (Tactic.rwRuleSeq "[" [(Tactic.rwRule ["←"] `h)] "]") [])])))])))]
+            "⟩"))])
+        []))
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.anonymousCtor
+       "⟨"
+       [(«term_∘_» (Dlist.Data.Dlist.«term_::_» `x "::_") "∘" `xs)
+        ","
+        (Term.byTactic
+         "by"
+         (Tactic.tacticSeq
+          (Tactic.tacticSeq1Indented
+           [(Tactic.abstract
+             "abstract"
+             []
+             (Tactic.tacticSeq
+              (Tactic.tacticSeq1Indented
+               [(Tactic.intros "intros" [])
+                []
+                (Tactic.simp "simp" [] [] [] [] [])
+                []
+                (Tactic.rwSeq "rw" [] (Tactic.rwRuleSeq "[" [(Tactic.rwRule ["←"] `h)] "]") [])])))])))]
+       "⟩")
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.byTactic
+       "by"
+       (Tactic.tacticSeq
+        (Tactic.tacticSeq1Indented
+         [(Tactic.abstract
+           "abstract"
+           []
+           (Tactic.tacticSeq
+            (Tactic.tacticSeq1Indented
+             [(Tactic.intros "intros" [])
+              []
+              (Tactic.simp "simp" [] [] [] [] [])
+              []
+              (Tactic.rwSeq "rw" [] (Tactic.rwRuleSeq "[" [(Tactic.rwRule ["←"] `h)] "]") [])])))])))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeqBracketed'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Tactic.abstract
+       "abstract"
+       []
+       (Tactic.tacticSeq
+        (Tactic.tacticSeq1Indented
+         [(Tactic.intros "intros" [])
+          []
+          (Tactic.simp "simp" [] [] [] [] [])
+          []
+          (Tactic.rwSeq "rw" [] (Tactic.rwRuleSeq "[" [(Tactic.rwRule ["←"] `h)] "]") [])])))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Tactic.tacticSeq1Indented', expected 'Lean.Parser.Tactic.tacticSeqBracketed'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Tactic.rwSeq "rw" [] (Tactic.rwRuleSeq "[" [(Tactic.rwRule ["←"] `h)] "]") [])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«←»', expected 'patternIgnore'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
 /-- `O(1)` Prepend a single element to a dlist -/
-def cons (x : α) : Dlist α → Dlist α
-  | ⟨xs, h⟩ =>
-    ⟨x::_ ∘ xs, by abstract 
-      intros
-      simp
-      rw [← h]⟩
+  def cons ( x : α ) : Dlist α → Dlist α | ⟨ xs , h ⟩ => ⟨ x ::_ ∘ xs , by abstract intros simp rw [ ← h ] ⟩
 
 /-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α

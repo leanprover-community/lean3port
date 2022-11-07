@@ -12,8 +12,10 @@ protected def divCore (y : ℕ) : ℕ → ℕ → ℕ
   | 0, _ => 0
   | fuel + 1, x => if h : 0 < y ∧ y ≤ x then div_core fuel (x - y) + 1 else 0
 
+#print Nat.div /-
 protected def div (x y : ℕ) : ℕ :=
   Nat.divCore y x x
+-/
 
 instance : Div Nat :=
   ⟨Nat.div⟩
@@ -22,8 +24,10 @@ protected def modCore (y : ℕ) : ℕ → ℕ → ℕ
   | 0, x => x
   | fuel + 1, x => if h : 0 < y ∧ y ≤ x then mod_core fuel (x - y) else x
 
+#print Nat.mod /-
 protected def mod (x y : ℕ) : ℕ :=
   Nat.modCore y x x
+-/
 
 instance : Mod Nat :=
   ⟨Nat.mod⟩

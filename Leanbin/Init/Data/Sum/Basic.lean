@@ -12,9 +12,13 @@ universe u v
 
 variable {α : Type u} {β : Type v}
 
+#print Sum.inhabitedLeft /-
 instance Sum.inhabitedLeft [h : Inhabited α] : Inhabited (Sum α β) :=
   ⟨Sum.inl default⟩
+-/
 
+#print Sum.inhabitedRight /-
 instance Sum.inhabitedRight [h : Inhabited β] : Inhabited (Sum α β) :=
   ⟨Sum.inr default⟩
+-/
 

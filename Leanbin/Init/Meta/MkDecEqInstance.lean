@@ -120,7 +120,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then
-      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| mkStrName I_name "brec_on") >> return ()
+      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| .str I_name "brec_on") >> return ()
     else intro v_name >> return ()
   -- Apply cases to first element of type (I ...)
         get_local

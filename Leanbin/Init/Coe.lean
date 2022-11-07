@@ -46,18 +46,24 @@ explicitly in order to match exactly what appears in Lean4.
 -/
 
 
+#print Coe /-
 class Coe (a : Sort u) (b : Sort v) : Sort max max 1 u v where
   coe : a → b
+-/
 
 /-- Auxiliary class that contains the transitive closure of `has_coe`. -/
 class CoeTC (a : Sort u) (b : Sort v) where
   coe : a → b
 
+#print CoeFun /-
 class CoeFun (a : Sort u) (F : outParam (a → Sort v)) : Sort max max 1 u v where
   coe : ∀ x, F x
+-/
 
+#print CoeSort /-
 class CoeSort (a : Sort u) (S : outParam (Sort v)) : Sort max max 1 u v where
   coe : a → S
+-/
 
 def lift {a : Sort u} {b : Sort v} [HasLift a b] : a → b :=
   @HasLift.lift a b _

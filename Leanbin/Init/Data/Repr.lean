@@ -16,6 +16,7 @@ open Sum Subtype Nat
 
 universe u v
 
+#print Repr /-
 /-- Implement `has_repr` if the output string is valid lean code that evaluates back to the original object.
 If you just want to view the object as a string for a trace message, use `has_to_string`.
 
@@ -33,6 +34,7 @@ Reference: https://github.com/leanprover/lean/issues/1664
  -/
 class Repr (α : Type u) where
   repr : α → String
+-/
 
 /- warning: repr -> repr is a dubious translation:
 lean 3 declaration is
@@ -97,6 +99,7 @@ instance {α : Type u} {p : α → Prop} [Repr α] : Repr (Subtype p) :=
 
 namespace Nat
 
+#print Nat.digitChar /-
 def digitChar (n : ℕ) : Char :=
   if n = 0 then '0'
   else
@@ -124,6 +127,7 @@ def digitChar (n : ℕ) : Char :=
                         else
                           if n = 12 then 'c'
                           else if n = 13 then 'd' else if n = 14 then 'e' else if n = 15 then 'f' else '*'
+-/
 
 def digitSucc (base : ℕ) : List ℕ → List ℕ
   | [] => [1]
@@ -133,16 +137,20 @@ def toDigits' (base : ℕ) : ℕ → List ℕ
   | 0 => [0]
   | n + 1 => digitSucc base (to_digits n)
 
+#print Nat.repr /-
 protected def repr (n : ℕ) : String :=
   ((toDigits' 10 n).map digitChar).reverse.asString
+-/
 
 end Nat
 
 instance : Repr Nat :=
   ⟨Nat.repr⟩
 
+#print hexDigitRepr /-
 def hexDigitRepr (n : Nat) : String :=
   String.singleton <| Nat.digitChar n
+-/
 
 def charToHex (c : Char) : String :=
   let n := Char.toNat c
@@ -150,6 +158,7 @@ def charToHex (c : Char) : String :=
   let d1 := n % 16
   hexDigitRepr d2 ++ hexDigitRepr d1
 
+#print Char.quoteCore /-
 def Char.quoteCore (c : Char) : String :=
   if c = '\n' then "\\n"
   else
@@ -157,6 +166,7 @@ def Char.quoteCore (c : Char) : String :=
     else
       if c = '\\' then "\\\\"
       else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
+-/
 
 instance : Repr Char :=
   ⟨fun c => "'" ++ Char.quoteCore c ++ "'"⟩
@@ -165,8 +175,10 @@ def String.quoteAux : List Char → String
   | [] => ""
   | x :: xs => Char.quoteCore x ++ String.quoteAux xs
 
+#print String.quote /-
 def String.quote (s : String) : String :=
   if s.isEmpty = tt then "\"\"" else "\"" ++ String.quoteAux s.toList ++ "\""
+-/
 
 instance : Repr String :=
   ⟨String.quote⟩
@@ -177,6 +189,8 @@ instance (n : Nat) : Repr (Fin n) :=
 instance : Repr Unsigned :=
   ⟨fun n => repr n.val⟩
 
+#print Char.repr /-
 def Char.repr (c : Char) : String :=
   repr c
+-/
 

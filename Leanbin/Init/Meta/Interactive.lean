@@ -22,7 +22,7 @@ open Lean.Parser
 
 open Native
 
-/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:648:29: warning: unsupported: precedence command -/
 -- mathport name: «expr ?»
 local postfix:1024 "?" => optional
 
@@ -581,7 +581,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
-/- ./././Mathport/Syntax/Translate/Command.lean:634:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:648:29: warning: unsupported: precedence command -/
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -1750,14 +1750,14 @@ section AddInteractive
 open Tactic
 
 -- See add_interactive
-private unsafe def add_interactive_aux (new_namespace : Name) : List Name → Tactic Unit
+private unsafe def add_interactive_aux (new_namespace : Name) : List Name → Tactic
   | [] => return ()
   | n :: ns => do
     let env ← get_env
     let d_name ← resolve_constant n
     let declaration.defn _ ls ty val hints trusted ← env.get d_name
     let Name.mk_string h _ ← return d_name
-    let new_name := mkStrName new_namespace h
+    let new_name := .str new_namespace h
     add_decl (declaration.defn new_name ls ty (expr.const d_name (ls level.param)) hints trusted)
     (do
           let doc ← doc_string d_name
@@ -1769,7 +1769,7 @@ private unsafe def add_interactive_aux (new_namespace : Name) : List Name → Ta
 
 This command is useful when we want to update tactic.interactive without closing the current namespace.
 -/
-unsafe def add_interactive (ns : List Name) (p : Name := `tactic.interactive) : Tactic Unit :=
+unsafe def add_interactive (ns : List Name) (p : Name := `tactic.interactive) : Tactic :=
   add_interactive_aux p ns
 
 unsafe def has_dup : tactic Bool := do

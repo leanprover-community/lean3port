@@ -19,11 +19,11 @@ def split (s : String) : List String :=
   splitCore s.toList none
 
 def toQualifiedNameCore : List Char → Name → String → Name
-  | [], r, s => if s.isEmpty then r else mkStrName r s
+  | [], r, s => if s.isEmpty then r else .str r s
   | c :: cs, r, s =>
     if isSpace c then to_qualified_name_core cs r s
     else
-      if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (mkStrName r s) ""
+      if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (.str r s) ""
       else to_qualified_name_core cs r (s.str c)
 
 def toQualifiedName (s : String) : Name :=

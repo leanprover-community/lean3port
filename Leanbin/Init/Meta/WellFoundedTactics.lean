@@ -24,15 +24,17 @@ theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
     assumption
   Nat.zero_lt_succ _
 
+#print Nat.lt_add_right /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_right (a b c : Nat) : a < b → a < b + c := fun h => lt_of_lt_of_le h (Nat.le_add_right _ _)
+-/
 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_le h (Nat.le_add_left _ _)
 
 protected def PSum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → ℕ
-  | PSum.inl a => sizeOf a
-  | PSum.inr b => sizeOf b
+  | PSum.inl a => SizeOf.sizeOf a
+  | PSum.inr b => SizeOf.sizeOf b
 
 @[reducible]
 protected def PSum.hasSizeofAlt.{u, v} (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=

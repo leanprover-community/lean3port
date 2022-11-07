@@ -98,6 +98,7 @@ end
 
 end StateT
 
+#print MonadState /-
 /--
 An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Class.html).
     In contrast to the Haskell implementation, we use overlapping instances to derive instances
@@ -114,6 +115,7 @@ An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/
     -/
 class MonadState (σ : outParam (Type u)) (m : Type u → Type v) where
   lift {α : Type u} : State σ α → m α
+-/
 
 section
 

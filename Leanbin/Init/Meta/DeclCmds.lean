@@ -38,7 +38,7 @@ private unsafe def apply_replacement (replacements : name_map Name) (e : expr) :
    creates the declaration
         lemma g_lemma : forall a, g a > 0 := ... -/
 unsafe def copy_decl_updating_type (replacements : name_map Name) (src_decl_name : Name) (new_decl_name : Name) :
-    Tactic Unit := do
+    Tactic := do
   let env ← get_env
   let decl ← env.get src_decl_name
   let decl := decl.update_name <| new_decl_name
@@ -46,8 +46,7 @@ unsafe def copy_decl_updating_type (replacements : name_map Name) (src_decl_name
   let decl := decl.update_value <| expr.const src_decl_name (decl.univ_params.map level.param)
   add_decl decl
 
-unsafe def copy_decl_using (replacements : name_map Name) (src_decl_name : Name) (new_decl_name : Name) : Tactic Unit :=
-  do
+unsafe def copy_decl_using (replacements : name_map Name) (src_decl_name : Name) (new_decl_name : Name) : Tactic := do
   let env ← get_env
   let decl ← env.get src_decl_name
   let decl := decl.update_name <| new_decl_name

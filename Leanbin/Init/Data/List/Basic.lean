@@ -20,6 +20,7 @@ variable {α : Type u} {β : Type v} {γ : Type w}
 
 namespace List
 
+#print List.hasDecEq /-
 protected def hasDecEq [s : DecidableEq α] : DecidableEq (List α)
   | [], [] => isTrue rfl
   | a :: as, [] => isFalse fun h => List.noConfusion h
@@ -31,21 +32,26 @@ protected def hasDecEq [s : DecidableEq α] : DecidableEq (List α)
       | is_true habs => isTrue (Eq.subst hab (Eq.subst habs rfl))
       | is_false nabs => isFalse fun h => List.noConfusion h fun _ habs => absurd habs nabs
     | is_false nab => isFalse fun h => List.noConfusion h fun hab _ => absurd hab nab
+-/
 
 instance [DecidableEq α] : DecidableEq (List α) :=
   List.hasDecEq
 
+#print List.append /-
 @[simp]
 protected def append : List α → List α → List α
   | [], l => l
   | h :: s, t => h :: append s t
+-/
 
 instance : Append (List α) :=
   ⟨List.append⟩
 
+#print List.Mem /-
 protected def Mem : α → List α → Prop
   | a, [] => False
   | a, b :: l => a = b ∨ mem a l
+-/
 
 instance : Membership α (List α) :=
   ⟨List.Mem⟩
@@ -75,10 +81,12 @@ protected def diff' {α} [DecidableEq α] : List α → List α → List α
   | l, [] => l
   | l₁, a :: l₂ => if a ∈ l₁ then diff (l₁.erase a) l₂ else diff l₁ l₂
 
+#print List.length /-
 @[simp]
 def length : List α → Nat
   | [] => 0
   | a :: l => length l + 1
+-/
 
 def empty : List α → Bool
   | [] => true
@@ -103,21 +111,27 @@ def head' [Inhabited α] : List α → α
   | [] => default
   | a :: l => a
 
+#print List.tail /-
 @[simp]
 def tail : List α → List α
   | [] => []
   | a :: l => l
+-/
 
 def reverseCore : List α → List α → List α
   | [], r => r
   | a :: l, r => reverse_core l (a :: r)
 
+#print List.reverse /-
 def reverse : List α → List α := fun l => reverseCore l []
+-/
 
+#print List.map /-
 @[simp]
 def map (f : α → β) : List α → List β
   | [] => []
   | a :: l => f a :: map l
+-/
 
 @[simp]
 def map₂ (f : α → β → γ) : List α → List β → List γ
@@ -134,16 +148,20 @@ def mapWithIndexCore (f : ℕ → α → β) : ℕ → List α → List β
 def mapWithIndex (f : ℕ → α → β) (as : List α) : List β :=
   mapWithIndexCore f 0 as
 
+#print List.join /-
 def join : List (List α) → List α
   | [] => []
   | l :: ls => l ++ join ls
+-/
 
+#print List.filterMap /-
 def filterMap (f : α → Option β) : List α → List β
   | [] => []
   | a :: l =>
     match f a with
     | none => filter_map l
     | some b => b :: filter_map l
+-/
 
 def filter' (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
@@ -194,38 +212,52 @@ def updateNth : List α → ℕ → α → List α
   | x :: xs, i + 1, a => x :: update_nth xs i a
   | [], _, _ => []
 
+#print List.removeNth /-
 def removeNth : List α → ℕ → List α
   | [], _ => []
   | x :: xs, 0 => xs
   | x :: xs, i + 1 => x :: remove_nth xs i
+-/
 
+#print List.drop /-
 @[simp]
 def drop : ℕ → List α → List α
   | 0, a => a
   | succ n, [] => []
   | succ n, x :: r => drop n r
+-/
 
+#print List.take /-
 @[simp]
 def take : ℕ → List α → List α
   | 0, a => []
   | succ n, [] => []
   | succ n, x :: r => x :: take n r
+-/
 
+#print List.foldl /-
 @[simp]
 def foldl (f : α → β → α) : α → List β → α
   | a, [] => a
   | a, b :: l => foldl (f a b) l
+-/
 
+#print List.foldr /-
 @[simp]
 def foldr (f : α → β → β) (b : β) : List α → β
   | [] => b
   | a :: l => f a (foldr l)
+-/
 
+#print List.any /-
 def any (l : List α) (p : α → Bool) : Bool :=
   foldr (fun a r => p a || r) false l
+-/
 
+#print List.all /-
 def all (l : List α) (p : α → Bool) : Bool :=
   foldr (fun a r => p a && r) true l
+-/
 
 def bor (l : List Bool) : Bool :=
   any l id
@@ -233,21 +265,29 @@ def bor (l : List Bool) : Bool :=
 def band (l : List Bool) : Bool :=
   all l id
 
+#print List.zipWith /-
 def zipWith (f : α → β → γ) : List α → List β → List γ
   | x :: xs, y :: ys => f x y :: zip_with xs ys
   | _, _ => []
+-/
 
+#print List.zip /-
 def zip : List α → List β → List (Prod α β) :=
   zipWith Prod.mk
+-/
 
+#print List.unzip /-
 def unzip : List (α × β) → List α × List β
   | [] => ([], [])
   | (a, b) :: t =>
     match unzip t with
     | (al, bl) => (a :: al, b :: bl)
+-/
 
+#print List.insert /-
 protected def insert [DecidableEq α] (a : α) (l : List α) : List α :=
   if a ∈ l then l else a :: l
+-/
 
 instance [DecidableEq α] : Insert α (List α) :=
   ⟨List.insert⟩
@@ -258,14 +298,18 @@ instance : Singleton α (List α) :=
 instance [DecidableEq α] : LawfulSingleton α (List α) :=
   ⟨fun x => show (if x ∈ ([] : List α) then [] else [x]) = [x] from if_neg not_false⟩
 
+#print List.union /-
 protected def union [DecidableEq α] (l₁ l₂ : List α) : List α :=
   foldr insert l₂ l₁
+-/
 
 instance [DecidableEq α] : Union (List α) :=
   ⟨List.union⟩
 
+#print List.inter /-
 protected def inter [DecidableEq α] (l₁ l₂ : List α) : List α :=
   filter' (· ∈ l₂) l₁
+-/
 
 instance [DecidableEq α] : Inter (List α) :=
   ⟨List.inter⟩
@@ -279,19 +323,27 @@ def rangeCore : ℕ → List ℕ → List ℕ
   | 0, l => l
   | succ n, l => range_core n (n :: l)
 
+#print List.range /-
 def range (n : ℕ) : List ℕ :=
   rangeCore n []
+-/
 
+#print List.iota /-
 def iota : ℕ → List ℕ
   | 0 => []
   | succ n => succ n :: iota n
+-/
 
+#print List.enumFrom /-
 def enumFrom : ℕ → List α → List (ℕ × α)
   | n, [] => nil
   | n, x :: xs => (n, x) :: enum_from (n + 1) xs
+-/
 
+#print List.enum /-
 def enum : List α → List (ℕ × α) :=
   enumFrom 0
+-/
 
 @[simp]
 def last : ∀ l : List α, l ≠ [] → α
@@ -300,7 +352,7 @@ def last : ∀ l : List α, l ≠ [] → α
   | a :: b :: l, h => last (b :: l) fun h => List.noConfusion h
 
 def ilast [Inhabited α] : List α → α
-  | [] => default α
+  | [] => Inhabited.default α
   | [a] => a
   | [a, b] => b
   | a :: b :: l => ilast l
@@ -310,31 +362,40 @@ def init : List α → List α
   | [a] => []
   | a :: l => a :: init l
 
+#print List.intersperse /-
 def intersperse (sep : α) : List α → List α
   | [] => []
   | [x] => [x]
   | x :: xs => x :: sep :: intersperse xs
+-/
 
+#print List.intercalate /-
 def intercalate (sep : List α) (xs : List (List α)) : List α :=
   join (intersperse sep xs)
+-/
 
+#print List.bind /-
 @[inline]
 protected def bind {α : Type u} {β : Type v} (a : List α) (b : α → List β) : List β :=
   join (map b a)
+-/
 
 @[inline]
 protected def ret {α : Type u} (a : α) : List α :=
   [a]
 
+#print List.lt /-
 protected def lt [LT α] : List α → List α → Prop
   | [], [] => False
   | [], b :: bs => True
   | a :: as, [] => False
   | a :: as, b :: bs => a < b ∨ ¬b < a ∧ lt as bs
+-/
 
 instance [LT α] : LT (List α) :=
   ⟨List.lt⟩
 
+#print List.hasDecidableLt /-
 instance hasDecidableLt [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, Decidable (l₁ < l₂)
   | [], [] => isFalse not_false
   | [], b :: bs => isTrue trivial
@@ -349,6 +410,7 @@ instance hasDecidableLt [LT α] [h : DecidableRel ((· < ·) : α → α → Pro
         match has_decidable_lt as bs with
         | is_true h₃ => isTrue (Or.inr ⟨h₂, h₃⟩)
         | is_false h₃ => isFalse fun h => Or.elim h (fun h => absurd h h₁) fun ⟨_, h⟩ => absurd h h₃
+-/
 
 @[reducible]
 protected def Le [LT α] (a b : List α) : Prop :=

@@ -67,7 +67,7 @@ private unsafe def contra_constructor_eq : List expr → tactic Unit
             do
             let tgt ← target
             let I_name ← return <| Name.getPrefix (const_name (get_app_fn lhs))
-            let pr ← mk_app (mkStrName I_name "no_confusion") [tgt, lhs, rhs, H]
+            let pr ← mk_app (.str I_name "no_confusion") [tgt, lhs, rhs, H]
             exact pr
           else contra_constructor_eq Hs
       | _ => contra_constructor_eq Hs

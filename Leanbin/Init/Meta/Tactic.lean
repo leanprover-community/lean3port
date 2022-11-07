@@ -1698,7 +1698,7 @@ unsafe def funext_lst (ids : List Name) : tactic Unit :=
 
 private unsafe def get_undeclared_const (env : environment) (base : Name) : ℕ → Name
   | i =>
-    let n := mkStrName base ("_aux_" ++ repr i)
+    let n := .str base ("_aux_" ++ repr i)
     if ¬env.contains n then n else get_undeclared_const (i + 1)
 
 unsafe def new_aux_decl_name : tactic Name := do

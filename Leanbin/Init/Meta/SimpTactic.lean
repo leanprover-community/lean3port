@@ -462,7 +462,7 @@ unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
     let S' ← has_attribute `congr n >> S.add_congr n <|> S.add_simp n false
     to_simp_lemmas S' ns
 
-unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tactic Unit := do
+unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tactic := do
   let t := quote.1 (user_attribute simp_lemmas)
   let v :=
     quote.1
@@ -514,7 +514,7 @@ unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × 
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← pre a e
-      guard ¬expr.alpha_eqv new_e e
+      guard ¬new_e == e
       return (new_a, new_e, some pr, tt))
     (fun _ _ _ _ _ => failed) `eq e
 
@@ -533,7 +533,7 @@ unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α �
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed) (fun _ _ _ _ _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← post a e
-      guard ¬expr.alpha_eqv new_e e
+      guard ¬new_e == e
       return (new_a, new_e, some pr, tt))
     `eq e
 
@@ -560,7 +560,7 @@ unsafe def non_dep_prop_hyps : tactic (List expr) := do
           let h_type ← infer_type h
           let s := remove_deps s h_type
           let h_val ← head_zeta h
-          let s := if expr.alpha_eqv h_val h then s else remove_deps s h_val
+          let s := if h_val == h then s else remove_deps s h_val
           mcond (is_prop h_type) (return <| s h) (return s))
         mk_name_set
   let t ← target
@@ -625,7 +625,7 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
   | e :: es, r, s, m => do
     let ⟨h, h_type, h_pr, s'⟩ := e
     let (new_h_type, new_pr, lms) ← simplify s' to_unfold h_type { cfg with failIfUnchanged := false } `eq discharger
-    if expr.alpha_eqv h_type new_h_type then do
+    if h_type == new_h_type then do
         let new_lms ← loop es (e :: r) s m
         return (new_lms lms fun n ns => name_set.insert ns n)
       else do

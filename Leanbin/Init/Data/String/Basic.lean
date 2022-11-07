@@ -20,11 +20,15 @@ import Leanbin.Init.Data.Char.Basic
 structure StringImp where
   data : List Char
 
+#print String /-
 def String :=
   StringImp
+-/
 
+#print List.asString /-
 def List.asString (s : List Char) : String :=
   ⟨s⟩
+-/
 
 namespace String
 
@@ -43,22 +47,30 @@ instance hasDecidableEq : DecidableEq String := fun ⟨x⟩ ⟨y⟩ =>
 def empty : String :=
   ⟨[]⟩
 
+#print String.length /-
 def length : String → Nat
   | ⟨s⟩ => s.length
+-/
 
+#print String.push /-
 /- The internal implementation uses dynamic arrays and will perform destructive updates
    if the string is not shared. -/
 def push : String → Char → String
   | ⟨s⟩, c => ⟨s ++ [c]⟩
+-/
 
+#print String.append /-
 /- The internal implementation uses dynamic arrays and will perform destructive updates
    if the string is not shared. -/
 def append : String → String → String
   | ⟨a⟩, ⟨b⟩ => ⟨a ++ b⟩
+-/
 
+#print String.toList /-
 -- O(n) in the VM, where n is the length of the string
 def toList : String → List Char
   | ⟨s⟩ => s
+-/
 
 def fold {α} (a : α) (f : α → Char → α) (s : String) : α :=
   s.toList.foldl f a
@@ -72,39 +84,55 @@ structure IteratorImp where
   fst : List Char
   snd : List Char
 
+#print String.Iterator /-
 def Iterator :=
   iterator_imp
+-/
 
+#print String.mkIterator /-
 def mkIterator : String → Iterator
   | ⟨s⟩ => ⟨[], s⟩
+-/
 
 namespace Iterator
 
+#print String.Iterator.curr /-
 def curr : Iterator → Char
   | ⟨p, c :: n⟩ => c
   | _ => default
+-/
 
+#print String.Iterator.setCurr /-
 /- In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
    if it is. -/
 def setCurr : Iterator → Char → Iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩
   | it, c' => it
+-/
 
+#print String.Iterator.next /-
 def next : Iterator → Iterator
   | ⟨p, c :: n⟩ => ⟨c :: p, n⟩
   | ⟨p, []⟩ => ⟨p, []⟩
+-/
 
+#print String.Iterator.prev /-
 def prev : Iterator → Iterator
   | ⟨c :: p, n⟩ => ⟨p, c :: n⟩
   | ⟨[], n⟩ => ⟨[], n⟩
+-/
 
+#print String.Iterator.hasNext /-
 def hasNext : Iterator → Bool
   | ⟨p, []⟩ => false
   | _ => true
+-/
 
+#print String.Iterator.hasPrev /-
 def hasPrev : Iterator → Bool
   | ⟨[], n⟩ => false
   | _ => true
+-/
 
 def insert : Iterator → String → Iterator
   | ⟨p, n⟩, ⟨s⟩ => ⟨p, s ++ n⟩
@@ -112,12 +140,16 @@ def insert : Iterator → String → Iterator
 def remove : Iterator → Nat → Iterator
   | ⟨p, n⟩, m => ⟨p, n.drop m⟩
 
+#print String.Iterator.toString /-
 -- In the VM, `to_string` is a constant time operation.
 def toString : Iterator → String
   | ⟨p, n⟩ => ⟨p.reverse ++ n⟩
+-/
 
+#print String.Iterator.toEnd /-
 def toEnd : Iterator → Iterator
   | ⟨p, n⟩ => ⟨n.reverse ++ p, []⟩
+-/
 
 def nextToString : Iterator → String
   | ⟨p, n⟩ => ⟨n⟩
@@ -166,36 +198,54 @@ instance : Append String :=
 
 namespace String
 
+#print String.str /-
 def str : String → Char → String :=
   push
+-/
 
+#print String.isEmpty /-
 def isEmpty (s : String) : Bool :=
   decide (s.length = 0)
+-/
 
+#print String.front /-
 def front (s : String) : Char :=
   s.mkIterator.curr
+-/
 
+#print String.back /-
 def back (s : String) : Char :=
   s.mkIterator.toEnd.prev.curr
+-/
 
+#print String.join /-
 def join (l : List String) : String :=
   l.foldl (fun r s => r ++ s) ""
+-/
 
+#print String.singleton /-
 def singleton (c : Char) : String :=
   empty.push c
+-/
 
+#print String.intercalate /-
 def intercalate (s : String) (ss : List String) : String :=
   (List.intercalate s.toList (ss.map toList)).asString
+-/
 
 namespace Iterator
 
+#print String.Iterator.nextn /-
 def nextn : Iterator → Nat → Iterator
   | it, 0 => it
   | it, i + 1 => nextn it.next i
+-/
 
+#print String.Iterator.prevn /-
 def prevn : Iterator → Nat → Iterator
   | it, 0 => it
   | it, i + 1 => prevn it.prev i
+-/
 
 end Iterator
 
@@ -210,8 +260,10 @@ def backn (s : String) (n : Nat) : String :=
 
 end String
 
+#print Char.toString /-
 protected def Char.toString (c : Char) : String :=
   String.singleton c
+-/
 
 private def to_nat_core : String.Iterator → Nat → Nat → Nat
   | it, 0, r => r

@@ -128,7 +128,7 @@ unsafe def fold_eqc_core {α} (s : cc_state) (f : α → expr → α) (first : e
   | c, a =>
     let new_a := f a c
     let next := s.next c
-    if expr.alpha_eqv next first then new_a else fold_eqc_core next new_a
+    if next == first then new_a else fold_eqc_core next new_a
 
 unsafe def fold_eqc {α} (s : cc_state) (e : expr) (a : α) (f : α → expr → α) : α :=
   fold_eqc_core s f e e a

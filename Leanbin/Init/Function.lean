@@ -19,9 +19,11 @@ namespace Function
 
 variable {α : Sort u₁} {β : Sort u₂} {φ : Sort u₃} {δ : Sort u₄} {ζ : Sort u₁}
 
+#print Function.comp /-
 /-- Composition of functions: `(f ∘ g) x = f (g x)`. -/
 @[inline, reducible]
 def comp (f : β → φ) (g : α → β) : α → φ := fun x => f (g x)
+-/
 
 /-- Composition of dependent functions: `(f ∘' g) x = f (g x)`, where type of `g x` depends on `x`
 and type of `f (g x)` depends on `x` and `g x`. -/
@@ -44,19 +46,27 @@ from `β` to `α`. -/
 @[reducible]
 def onFun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y => f (g x) (g y)
 
+#print Function.combine /-
 @[reducible]
 def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y => op (f x y) (g x y)
+-/
 
+#print Function.const /-
 /-- Constant `λ _, a`. -/
 @[reducible]
 def const (β : Sort u₂) (a : α) : β → α := fun x => a
+-/
 
+#print Function.swap /-
 @[reducible]
 def swap {φ : α → β → Sort u₃} (f : ∀ x y, φ x y) : ∀ y x, φ x y := fun y x => f x y
+-/
 
+#print Function.app /-
 @[reducible]
 def app {β : α → Sort u₂} (f : ∀ x, β x) (x : α) : β x :=
   f x
+-/
 
 -- mathport name: «expr on »
 infixl:2 " on " => onFun
@@ -64,77 +74,107 @@ infixl:2 " on " => onFun
 -- mathport name: «expr -[ ]- »
 notation f " -[" op "]- " g => combine f op g
 
+#print Function.left_id /-
 theorem left_id (f : α → β) : id ∘ f = f :=
   rfl
+-/
 
+#print Function.right_id /-
 theorem right_id (f : α → β) : f ∘ id = f :=
   rfl
+-/
 
 @[simp]
 theorem comp_app (f : β → φ) (g : α → β) (a : α) : (f ∘ g) a = f (g a) :=
   rfl
 
+#print Function.comp.assoc /-
 theorem comp.assoc (f : φ → δ) (g : β → φ) (h : α → β) : (f ∘ g) ∘ h = f ∘ g ∘ h :=
   rfl
+-/
 
+#print Function.comp.left_id /-
 @[simp]
 theorem comp.left_id (f : α → β) : id ∘ f = f :=
   rfl
+-/
 
+#print Function.comp.right_id /-
 @[simp]
 theorem comp.right_id (f : α → β) : f ∘ id = f :=
   rfl
+-/
 
+#print Function.comp_const_right /-
 theorem comp_const_right (f : β → φ) (b : β) : f ∘ const α b = const α (f b) :=
   rfl
+-/
 
+#print Function.Injective /-
 /-- A function `f : α → β` is called injective if `f x = f y` implies `x = y`. -/
 def Injective (f : α → β) : Prop :=
   ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂
+-/
 
+#print Function.Injective.comp /-
 theorem Injective.comp {g : β → φ} {f : α → β} (hg : Injective g) (hf : Injective f) : Injective (g ∘ f) := fun a₁ a₂ =>
   fun h => hf (hg h)
+-/
 
+#print Function.Surjective /-
 /-- A function `f : α → β` is called surjective if every `b : β` is equal to `f a`
 for some `a : α`. -/
 @[reducible]
 def Surjective (f : α → β) : Prop :=
   ∀ b, ∃ a, f a = b
+-/
 
+#print Function.Surjective.comp /-
 theorem Surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) : Surjective (g ∘ f) :=
   fun c : φ =>
   Exists.elim (hg c) fun b hb =>
     Exists.elim (hf b) fun a ha => Exists.intro a (show g (f a) = c from Eq.trans (congr_arg g ha) hb)
+-/
 
+#print Function.Bijective /-
 /-- A function is called bijective if it is both injective and surjective. -/
 def Bijective (f : α → β) :=
   Injective f ∧ Surjective f
+-/
 
+#print Function.Bijective.comp /-
 theorem Bijective.comp {g : β → φ} {f : α → β} : Bijective g → Bijective f → Bijective (g ∘ f)
   | ⟨h_ginj, h_gsurj⟩, ⟨h_finj, h_fsurj⟩ => ⟨h_ginj.comp h_finj, h_gsurj.comp h_fsurj⟩
+-/
 
+#print Function.LeftInverse /-
 /-- `left_inverse g f` means that g is a left inverse to f. That is, `g ∘ f = id`. -/
 def LeftInverse (g : β → α) (f : α → β) : Prop :=
   ∀ x, g (f x) = x
+-/
 
 /-- `has_left_inverse f` means that `f` has an unspecified left inverse. -/
 def HasLeftInverse (f : α → β) : Prop :=
   ∃ finv : β → α, LeftInverse finv f
 
+#print Function.RightInverse /-
 /-- `right_inverse g f` means that g is a right inverse to f. That is, `f ∘ g = id`. -/
 def RightInverse (g : β → α) (f : α → β) : Prop :=
   LeftInverse f g
+-/
 
 /-- `has_right_inverse f` means that `f` has an unspecified right inverse. -/
 def HasRightInverse (f : α → β) : Prop :=
   ∃ finv : β → α, RightInverse finv f
 
+#print Function.LeftInverse.injective /-
 theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f := fun h a b faeqfb =>
   calc
     a = g (f a) := (h a).symm
     _ = g (f b) := congr_arg g faeqfb
     _ = b := h b
     
+-/
 
 theorem HasLeftInverse.injective {f : α → β} : HasLeftInverse f → Injective f := fun h =>
   Exists.elim h fun finv inv => inv.Injective
@@ -144,7 +184,9 @@ theorem right_inverse_of_injective_of_left_inverse {f : α → β} {g : β → �
   have h : f (g (f x)) = f x := lfg (f x)
   injf h
 
+#print Function.RightInverse.surjective /-
 theorem RightInverse.surjective {f : α → β} {g : β → α} (h : RightInverse g f) : Surjective f := fun y => ⟨g y, h y⟩
+-/
 
 theorem HasRightInverse.surjective {f : α → β} : HasRightInverse f → Surjective f
   | ⟨finv, inv⟩ => inv.Surjective
@@ -158,12 +200,18 @@ theorem left_inverse_of_surjective_of_right_inverse {f : α → β} {g : β → 
       _ = y := hx
       
 
+#print Function.injective_id /-
 theorem injective_id : Injective (@id α) := fun a₁ a₂ h => h
+-/
 
+#print Function.surjective_id /-
 theorem surjective_id : Surjective (@id α) := fun a => ⟨a, rfl⟩
+-/
 
+#print Function.bijective_id /-
 theorem bijective_id : Bijective (@id α) :=
   ⟨injective_id, surjective_id⟩
+-/
 
 end Function
 
@@ -171,27 +219,39 @@ namespace Function
 
 variable {α : Type u₁} {β : Type u₂} {φ : Type u₃}
 
+#print Function.curry /-
 /-- Interpret a function on `α × β` as a function with two arguments. -/
 @[inline]
 def curry : (α × β → φ) → α → β → φ := fun f a b => f (a, b)
+-/
 
+#print Function.uncurry /-
 /-- Interpret a function with two arguments as a function on `α × β` -/
 @[inline]
 def uncurry : (α → β → φ) → α × β → φ := fun f a => f a.1 a.2
+-/
 
+#print Function.curry_uncurry /-
 @[simp]
 theorem curry_uncurry (f : α → β → φ) : curry (uncurry f) = f :=
   rfl
+-/
 
+#print Function.uncurry_curry /-
 @[simp]
 theorem uncurry_curry (f : α × β → φ) : uncurry (curry f) = f :=
   funext fun ⟨a, b⟩ => rfl
+-/
 
+#print Function.LeftInverse.id /-
 protected theorem LeftInverse.id {g : β → α} {f : α → β} (h : LeftInverse g f) : g ∘ f = id :=
   funext h
+-/
 
+#print Function.RightInverse.id /-
 protected theorem RightInverse.id {g : β → α} {f : α → β} (h : RightInverse g f) : f ∘ g = id :=
   funext h
+-/
 
 end Function
 

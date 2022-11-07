@@ -22,23 +22,35 @@ implemented.
 -/
 
 
+#print IsSymmOp /-
 class IsSymmOp (α : Type u) (β : outParam (Type v)) (op : α → α → β) : Prop where
   symm_op : ∀ a b, op a b = op b a
+-/
 
+#print IsCommutative /-
 class IsCommutative (α : Type u) (op : α → α → α) : Prop where
   comm : ∀ a b, op a b = op b a
+-/
 
+#print is_symm_op_of_is_commutative /-
 instance (priority := 100) is_symm_op_of_is_commutative (α : Type u) (op : α → α → α) [IsCommutative α op] :
     IsSymmOp α α op where symm_op := IsCommutative.comm
+-/
 
+#print IsAssociative /-
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
   assoc : ∀ a b c, op (op a b) c = op a (op b c)
+-/
 
+#print IsLeftId /-
 class IsLeftId (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_id : ∀ a, op o a = a
+-/
 
+#print IsRightId /-
 class IsRightId (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   right_id : ∀ a, op a o = a
+-/
 
 class IsLeftNull (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_null : ∀ a, op o a = o
@@ -46,14 +58,20 @@ class IsLeftNull (α : Type u) (op : α → α → α) (o : outParam α) : Prop 
 class IsRightNull (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   right_null : ∀ a, op a o = o
 
+#print IsLeftCancel /-
 class IsLeftCancel (α : Type u) (op : α → α → α) : Prop where
   left_cancel : ∀ a b c, op a b = op a c → b = c
+-/
 
+#print IsRightCancel /-
 class IsRightCancel (α : Type u) (op : α → α → α) : Prop where
   right_cancel : ∀ a b c, op a b = op c b → a = c
+-/
 
+#print IsIdempotent /-
 class IsIdempotent (α : Type u) (op : α → α → α) : Prop where
   idempotent : ∀ a, op a a = a
+-/
 
 class IsLeftDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam <| α → α → α) : Prop where
   left_distrib : ∀ a b c, op₁ a (op₂ b c) = op₂ (op₁ a b) (op₁ a c)
@@ -78,6 +96,7 @@ class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α
 class IsDistinct (α : Type u) (a : α) (b : α) : Prop where
   distinct : a ≠ b
 
+#print IsIrrefl /-
 /-
 -- The following type class doesn't seem very useful, a regular simp lemma should work for this.
 class is_inv (α : Type u) (β : Type v) (f : α → β) (g : out β → α) : Prop :=
@@ -91,92 +110,131 @@ class is_idempotent (α : Type u) (f : α → α) : Prop :=
 holds). -/
 class IsIrrefl (α : Type u) (r : α → α → Prop) : Prop where
   irrefl : ∀ a, ¬r a a
+-/
 
+#print IsRefl /-
 /-- `is_refl X r` means the binary relation `r` on `X` is reflexive. -/
 class IsRefl (α : Type u) (r : α → α → Prop) : Prop where
   refl : ∀ a, r a a
+-/
 
+#print IsSymm /-
 /-- `is_symm X r` means the binary relation `r` on `X` is symmetric. -/
 class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
   symm : ∀ a b, r a b → r b a
+-/
 
+#print is_symm_op_of_is_symm /-
 /-- The opposite of a symmetric relation is symmetric. -/
 instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] :
     IsSymmOp α Prop r where symm_op a b := propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
+-/
 
+#print IsAsymm /-
 /-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
 `r a b → ¬ r b a`. -/
 class IsAsymm (α : Type u) (r : α → α → Prop) : Prop where
   asymm : ∀ a b, r a b → ¬r b a
+-/
 
+#print IsAntisymm /-
 /-- `is_antisymm X r` means the binary relation `r` on `X` is antisymmetric. -/
 class IsAntisymm (α : Type u) (r : α → α → Prop) : Prop where
   antisymm : ∀ a b, r a b → r b a → a = b
+-/
 
+#print IsTrans /-
 /-- `is_trans X r` means the binary relation `r` on `X` is transitive. -/
 class IsTrans (α : Type u) (r : α → α → Prop) : Prop where
   trans : ∀ a b c, r a b → r b c → r a c
+-/
 
+#print IsTotal /-
 /-- `is_total X r` means that the binary relation `r` on `X` is total, that is, that for any
 `x y : X` we have `r x y` or `r y x`.-/
 class IsTotal (α : Type u) (r : α → α → Prop) : Prop where
   Total : ∀ a b, r a b ∨ r b a
+-/
 
+#print IsPreorder /-
 /-- `is_preorder X r` means that the binary relation `r` on `X` is a pre-order, that is, reflexive
 and transitive. -/
 class IsPreorder (α : Type u) (r : α → α → Prop) extends IsRefl α r, IsTrans α r : Prop
+-/
 
+#print IsTotalPreorder /-
 /-- `is_total_preorder X r` means that the binary relation `r` on `X` is total and a preorder. -/
 class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α r, IsTotal α r : Prop
+-/
 
+#print is_total_preorder_is_preorder /-
 /-- Every total pre-order is a pre-order. -/
 instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] : IsPreorder α r where
   trans := s.trans
   refl a := Or.elim (@IsTotal.total _ r _ a a) id id
+-/
 
+#print IsPartialOrder /-
 /-- `is_partial_order X r` means that the binary relation `r` on `X` is a partial order, that is,
 `is_preorder X r` and `is_antisymm X r`. -/
 class IsPartialOrder (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsAntisymm α r : Prop
+-/
 
+#print IsLinearOrder /-
 /-- `is_linear_order X r` means that the binary relation `r` on `X` is a linear order, that is,
 `is_partial_order X r` and `is_total X r`. -/
 class IsLinearOrder (α : Type u) (r : α → α → Prop) extends IsPartialOrder α r, IsTotal α r : Prop
+-/
 
+#print IsEquiv /-
 /-- `is_equiv X r` means that the binary relation `r` on `X` is an equivalence relation, that
 is, `is_preorder X r` and `is_symm X r`. -/
 class IsEquiv (α : Type u) (r : α → α → Prop) extends IsPreorder α r, IsSymm α r : Prop
+-/
 
 /-- `is_per X r` means that the binary relation `r` on `X` is a partial equivalence relation, that
 is, `is_symm X r` and `is_trans X r`. -/
 class IsPer (α : Type u) (r : α → α → Prop) extends IsSymm α r, IsTrans α r : Prop
 
+#print IsStrictOrder /-
 /-- `is_strict_order X r` means that the binary relation `r` on `X` is a strict order, that is,
 `is_irrefl X r` and `is_trans X r`. -/
 class IsStrictOrder (α : Type u) (r : α → α → Prop) extends IsIrrefl α r, IsTrans α r : Prop
+-/
 
+#print IsIncompTrans /-
 /-- `is_incomp_trans X lt` means that for `lt` a binary relation on `X`, the incomparable relation
 `λ a b, ¬ lt a b ∧ ¬ lt b a` is transitive. -/
 class IsIncompTrans (α : Type u) (lt : α → α → Prop) : Prop where
   incomp_trans : ∀ a b c, ¬lt a b ∧ ¬lt b a → ¬lt b c ∧ ¬lt c b → ¬lt a c ∧ ¬lt c a
+-/
 
+#print IsStrictWeakOrder /-
 /-- `is_strict_weak_order X lt` means that the binary relation `lt` on `X` is a strict weak order,
 that is, `is_strict_order X lt` and `is_incomp_trans X lt`. -/
 class IsStrictWeakOrder (α : Type u) (lt : α → α → Prop) extends IsStrictOrder α lt, IsIncompTrans α lt : Prop
+-/
 
+#print IsTrichotomous /-
 /-- `is_trichotomous X lt` means that the binary relation `lt` on `X` is trichotomous, that is,
 either `lt a b` or `a = b` or `lt b a` for any `a` and `b`. -/
 class IsTrichotomous (α : Type u) (lt : α → α → Prop) : Prop where
   trichotomous : ∀ a b, lt a b ∨ a = b ∨ lt b a
+-/
 
+#print IsStrictTotalOrder /-
 /-- `is_strict_total_order X lt` means that the binary relation `lt` on `X` is a strict total order,
 that is, `is_trichotomous X lt` and `is_strict_order X lt`. -/
 class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrichotomous α lt, IsStrictOrder α lt : Prop
+-/
 
+#print eq_is_equiv /-
 /-- Equality is an equivalence relation. -/
 instance eq_is_equiv (α : Type u) : IsEquiv α (· = ·) where
   symm := @Eq.symm _
   trans := @Eq.trans _
   refl := Eq.refl
+-/
 
 section
 
@@ -185,68 +243,102 @@ variable {α : Type u} {r : α → α → Prop}
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
+#print irrefl /-
 theorem irrefl [IsIrrefl α r] (a : α) : ¬a≺a :=
   IsIrrefl.irrefl a
+-/
 
+#print refl /-
 theorem refl [IsRefl α r] (a : α) : a≺a :=
   IsRefl.refl a
+-/
 
+#print trans /-
 theorem trans [IsTrans α r] {a b c : α} : a≺b → b≺c → a≺c :=
   IsTrans.trans _ _ _
+-/
 
+#print symm /-
 theorem symm [IsSymm α r] {a b : α} : a≺b → b≺a :=
   IsSymm.symm _ _
+-/
 
+#print antisymm /-
 theorem antisymm [IsAntisymm α r] {a b : α} : a≺b → b≺a → a = b :=
   IsAntisymm.antisymm _ _
+-/
 
+#print asymm /-
 theorem asymm [IsAsymm α r] {a b : α} : a≺b → ¬b≺a :=
   IsAsymm.asymm _ _
+-/
 
+#print trichotomous /-
 theorem trichotomous [IsTrichotomous α r] : ∀ a b : α, a≺b ∨ a = b ∨ b≺a :=
   IsTrichotomous.trichotomous
+-/
 
+#print incomp_trans /-
 theorem incomp_trans [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a → ¬b≺c ∧ ¬c≺b → ¬a≺c ∧ ¬c≺a :=
   IsIncompTrans.incomp_trans _ _ _
+-/
 
+#print is_asymm_of_is_trans_of_is_irrefl /-
 instance (priority := 90) is_asymm_of_is_trans_of_is_irrefl [IsTrans α r] [IsIrrefl α r] : IsAsymm α r :=
   ⟨fun a b h₁ h₂ => absurd (trans h₁ h₂) (irrefl a)⟩
+-/
 
 section ExplicitRelationVariants
 
 variable (r)
 
+#print irrefl_of /-
 @[elab_without_expected_type]
 theorem irrefl_of [IsIrrefl α r] (a : α) : ¬a≺a :=
   irrefl a
+-/
 
+#print refl_of /-
 @[elab_without_expected_type]
 theorem refl_of [IsRefl α r] (a : α) : a≺a :=
   refl a
+-/
 
+#print trans_of /-
 @[elab_without_expected_type]
 theorem trans_of [IsTrans α r] {a b c : α} : a≺b → b≺c → a≺c :=
   trans
+-/
 
+#print symm_of /-
 @[elab_without_expected_type]
 theorem symm_of [IsSymm α r] {a b : α} : a≺b → b≺a :=
   symm
+-/
 
+#print asymm_of /-
 @[elab_without_expected_type]
 theorem asymm_of [IsAsymm α r] {a b : α} : a≺b → ¬b≺a :=
   asymm
+-/
 
+#print total_of /-
 @[elab_without_expected_type]
 theorem total_of [IsTotal α r] (a b : α) : a≺b ∨ b≺a :=
   IsTotal.total _ _
+-/
 
+#print trichotomous_of /-
 @[elab_without_expected_type]
 theorem trichotomous_of [IsTrichotomous α r] : ∀ a b : α, a≺b ∨ a = b ∨ b≺a :=
   trichotomous
+-/
 
+#print incomp_trans_of /-
 @[elab_without_expected_type]
 theorem incomp_trans_of [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a → ¬b≺c ∧ ¬c≺b → ¬a≺c ∧ ¬c≺a :=
   incomp_trans
+-/
 
 end ExplicitRelationVariants
 
@@ -294,6 +386,7 @@ a " ≈[" lt "]" b:50 => @Equiv _ lt a b
 
 end StrictWeakOrder
 
+#print is_strict_weak_order_of_is_total_preorder /-
 theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α → Prop} {lt : α → α → Prop} [DecidableRel le]
     [s : IsTotalPreorder α le] (h : ∀ a b, lt a b ↔ ¬le b a) : IsStrictWeakOrder α lt :=
   { trans := fun a b c hab hbc =>
@@ -313,38 +406,53 @@ theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α 
       have hac : le a c := trans_of le hab hbc
       have hca : le c a := trans_of le hcb hba
       And.intro (fun n => absurd hca (Iff.mp (h _ _) n)) fun n => absurd hac (Iff.mp (h _ _) n) }
+-/
 
+#print lt_of_lt_of_incomp /-
 theorem lt_of_lt_of_incomp {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt] [DecidableRel lt] :
     ∀ {a b c}, lt a b → ¬lt b c ∧ ¬lt c b → lt a c := fun a b c hab ⟨nbc, ncb⟩ =>
   have nca : ¬lt c a := fun hca => absurd (trans_of lt hca hab) ncb
   Decidable.by_contradiction fun nac : ¬lt a c =>
     have : ¬lt a b ∧ ¬lt b a := incomp_trans_of lt ⟨nac, nca⟩ ⟨ncb, nbc⟩
     absurd hab this.1
+-/
 
+#print lt_of_incomp_of_lt /-
 theorem lt_of_incomp_of_lt {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt] [DecidableRel lt] :
     ∀ {a b c}, ¬lt a b ∧ ¬lt b a → lt b c → lt a c := fun a b c ⟨nab, nba⟩ hbc =>
   have nca : ¬lt c a := fun hca => absurd (trans_of lt hbc hca) nba
   Decidable.by_contradiction fun nac : ¬lt a c =>
     have : ¬lt b c ∧ ¬lt c b := incomp_trans_of lt ⟨nba, nab⟩ ⟨nac, nca⟩
     absurd hbc this.1
+-/
 
+#print eq_of_incomp /-
 theorem eq_of_incomp {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] {a b} : ¬lt a b ∧ ¬lt b a → a = b :=
   fun ⟨nab, nba⟩ =>
   match trichotomous_of lt a b with
   | Or.inl hab => absurd hab nab
   | Or.inr (Or.inl hab) => hab
   | Or.inr (Or.inr hba) => absurd hba nba
+-/
 
+#print eq_of_eqv_lt /-
 theorem eq_of_eqv_lt {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] {a b} : a ≈[lt]b → a = b :=
   eq_of_incomp
+-/
 
+#print incomp_iff_eq /-
 theorem incomp_iff_eq {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] [IsIrrefl α lt] (a b) :
     ¬lt a b ∧ ¬lt b a ↔ a = b :=
   Iff.intro eq_of_incomp fun hab => Eq.subst hab (And.intro (irrefl_of lt a) (irrefl_of lt a))
+-/
 
+#print eqv_lt_iff_eq /-
 theorem eqv_lt_iff_eq {α : Type u} {lt : α → α → Prop} [IsTrichotomous α lt] [IsIrrefl α lt] (a b) : a ≈[lt]b ↔ a = b :=
   incomp_iff_eq a b
+-/
 
+#print not_lt_of_lt /-
 theorem not_lt_of_lt {α : Type u} {lt : α → α → Prop} [IsStrictOrder α lt] {a b} : lt a b → ¬lt b a := fun h₁ h₂ =>
   absurd (trans_of lt h₁ h₂) (irrefl_of lt _)
+-/
 

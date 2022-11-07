@@ -9,7 +9,7 @@ import Leanbin.Init.Classical
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Algebra.Classes
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option default_priority -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:333:40: warning: unsupported option default_priority -/
 /- Make sure instances defined in this file have lower priority than the ones
    defined for concrete structures -/
 /- Make sure instances defined in this file have lower priority than the ones
@@ -20,7 +20,7 @@ universe u
 
 variable {α : Type u}
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option auto_param.check_exists -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:333:40: warning: unsupported option auto_param.check_exists -/
 set_option auto_param.check_exists false
 
 section Preorder
@@ -30,6 +30,7 @@ section Preorder
 -/
 
 
+#print Preorder /-
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic order_laws_tac -/
 /-- A preorder is a reflexive, transitive relation `≤` with `a < b` defined in the obvious way. -/
 class Preorder (α : Type u) extends LE α, LT α where
@@ -39,90 +40,137 @@ class Preorder (α : Type u) extends LE α, LT α where
   lt_iff_le_not_le : ∀ a b : α, a < b ↔ a ≤ b ∧ ¬b ≤ a := by
     run_tac
       order_laws_tac
+-/
 
 variable [Preorder α]
 
+#print le_refl /-
 /-- The relation `≤` on a preorder is reflexive. -/
 @[refl]
 theorem le_refl : ∀ a : α, a ≤ a :=
   Preorder.le_refl
+-/
 
+#print le_trans /-
 /-- The relation `≤` on a preorder is transitive. -/
 @[trans]
 theorem le_trans : ∀ {a b c : α}, a ≤ b → b ≤ c → a ≤ c :=
   Preorder.le_trans
+-/
 
+#print lt_iff_le_not_le /-
 theorem lt_iff_le_not_le : ∀ {a b : α}, a < b ↔ a ≤ b ∧ ¬b ≤ a :=
   Preorder.lt_iff_le_not_le
+-/
 
+#print lt_of_le_not_le /-
 theorem lt_of_le_not_le : ∀ {a b : α}, a ≤ b → ¬b ≤ a → a < b
   | a, b, hab, hba => lt_iff_le_not_le.mpr ⟨hab, hba⟩
+-/
 
+#print le_not_le_of_lt /-
 theorem le_not_le_of_lt : ∀ {a b : α}, a < b → a ≤ b ∧ ¬b ≤ a
   | a, b, hab => lt_iff_le_not_le.mp hab
+-/
 
+#print le_of_eq /-
 theorem le_of_eq {a b : α} : a = b → a ≤ b := fun h => h ▸ le_refl a
+-/
 
+#print ge_trans /-
 @[trans]
 theorem ge_trans : ∀ {a b c : α}, a ≥ b → b ≥ c → a ≥ c := fun a b c h₁ h₂ => le_trans h₂ h₁
+-/
 
+#print lt_irrefl /-
 theorem lt_irrefl : ∀ a : α, ¬a < a
   | a, haa =>
     match le_not_le_of_lt haa with
     | ⟨h1, h2⟩ => False.ndrec _ (h2 h1)
+-/
 
+#print gt_irrefl /-
 theorem gt_irrefl : ∀ a : α, ¬a > a :=
   lt_irrefl
+-/
 
+#print lt_trans /-
 @[trans]
 theorem lt_trans : ∀ {a b c : α}, a < b → b < c → a < c
   | a, b, c, hab, hbc =>
     match le_not_le_of_lt hab, le_not_le_of_lt hbc with
     | ⟨hab, hba⟩, ⟨hbc, hcb⟩ => lt_of_le_not_le (le_trans hab hbc) fun hca => hcb (le_trans hca hab)
+-/
 
+#print gt_trans /-
 @[trans]
 theorem gt_trans : ∀ {a b c : α}, a > b → b > c → a > c := fun a b c h₁ h₂ => lt_trans h₂ h₁
+-/
 
+#print ne_of_lt /-
 theorem ne_of_lt {a b : α} (h : a < b) : a ≠ b := fun he => absurd h (he ▸ lt_irrefl a)
+-/
 
+#print ne_of_gt /-
 theorem ne_of_gt {a b : α} (h : b < a) : a ≠ b := fun he => absurd h (he ▸ lt_irrefl a)
+-/
 
+#print lt_asymm /-
 theorem lt_asymm {a b : α} (h : a < b) : ¬b < a := fun h1 : b < a => lt_irrefl a (lt_trans h h1)
+-/
 
+#print le_of_lt /-
 theorem le_of_lt : ∀ {a b : α}, a < b → a ≤ b
   | a, b, hab => (le_not_le_of_lt hab).left
+-/
 
+#print lt_of_lt_of_le /-
 @[trans]
 theorem lt_of_lt_of_le : ∀ {a b c : α}, a < b → b ≤ c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hab, hba⟩ := le_not_le_of_lt hab
     (lt_of_le_not_le (le_trans hab hbc)) fun hca => hba (le_trans hbc hca)
+-/
 
+#print lt_of_le_of_lt /-
 @[trans]
 theorem lt_of_le_of_lt : ∀ {a b c : α}, a ≤ b → b < c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hbc, hcb⟩ := le_not_le_of_lt hbc
     (lt_of_le_not_le (le_trans hab hbc)) fun hca => hcb (le_trans hca hab)
+-/
 
+#print gt_of_gt_of_ge /-
 @[trans]
 theorem gt_of_gt_of_ge {a b c : α} (h₁ : a > b) (h₂ : b ≥ c) : a > c :=
   lt_of_le_of_lt h₂ h₁
+-/
 
+#print gt_of_ge_of_gt /-
 @[trans]
 theorem gt_of_ge_of_gt {a b c : α} (h₁ : a ≥ b) (h₂ : b > c) : a > c :=
   lt_of_lt_of_le h₂ h₁
+-/
 
+#print not_le_of_gt /-
 theorem not_le_of_gt {a b : α} (h : a > b) : ¬a ≤ b :=
   (le_not_le_of_lt h).right
+-/
 
+#print not_lt_of_ge /-
 theorem not_lt_of_ge {a b : α} (h : a ≥ b) : ¬a < b := fun hab => not_le_of_gt hab h
+-/
 
+#print le_of_lt_or_eq /-
 theorem le_of_lt_or_eq : ∀ {a b : α}, a < b ∨ a = b → a ≤ b
   | a, b, Or.inl hab => le_of_lt hab
   | a, b, Or.inr hab => hab ▸ le_refl _
+-/
 
+#print le_of_eq_or_lt /-
 theorem le_of_eq_or_lt {a b : α} (h : a = b ∨ a < b) : a ≤ b :=
   Or.elim h le_of_eq le_of_lt
+-/
 
 /-- `<` is decidable if `≤` is. -/
 def decidableLtOfDecidableLe [@DecidableRel α (· ≤ ·)] : @DecidableRel α (· < ·)
@@ -140,19 +188,27 @@ section PartialOrder
 -/
 
 
+#print PartialOrder /-
 /-- A partial order is a reflexive, transitive, antisymmetric relation `≤`. -/
 class PartialOrder (α : Type u) extends Preorder α where
   le_antisymm : ∀ a b : α, a ≤ b → b ≤ a → a = b
+-/
 
 variable [PartialOrder α]
 
+#print le_antisymm /-
 theorem le_antisymm : ∀ {a b : α}, a ≤ b → b ≤ a → a = b :=
   PartialOrder.le_antisymm
+-/
 
+#print le_antisymm_iff /-
 theorem le_antisymm_iff {a b : α} : a = b ↔ a ≤ b ∧ b ≤ a :=
   ⟨fun e => ⟨le_of_eq e, le_of_eq e.symm⟩, fun ⟨h1, h2⟩ => le_antisymm h1 h2⟩
+-/
 
+#print lt_of_le_of_ne /-
 theorem lt_of_le_of_ne {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_le h₁ <| mt (le_antisymm h₁) h₂
+-/
 
 /-- Equality is decidable if `≤` is. -/
 def decidableEqOfDecidableLe [@DecidableRel α (· ≤ ·)] : DecidableEq α
@@ -164,24 +220,34 @@ namespace Decidable
 
 variable [@DecidableRel α (· ≤ ·)]
 
+#print Decidable.lt_or_eq_of_le /-
 theorem lt_or_eq_of_le {a b : α} (hab : a ≤ b) : a < b ∨ a = b :=
   if hba : b ≤ a then Or.inr (le_antisymm hab hba) else Or.inl (lt_of_le_not_le hab hba)
+-/
 
+#print Decidable.eq_or_lt_of_le /-
 theorem eq_or_lt_of_le {a b : α} (hab : a ≤ b) : a = b ∨ a < b :=
   (lt_or_eq_of_le hab).swap
+-/
 
+#print Decidable.le_iff_lt_or_eq /-
 theorem le_iff_lt_or_eq {a b : α} : a ≤ b ↔ a < b ∨ a = b :=
   ⟨lt_or_eq_of_le, le_of_lt_or_eq⟩
+-/
 
 end Decidable
 
 attribute [local instance] Classical.propDecidable
 
+#print lt_or_eq_of_le /-
 theorem lt_or_eq_of_le {a b : α} : a ≤ b → a < b ∨ a = b :=
   Decidable.lt_or_eq_of_le
+-/
 
+#print le_iff_lt_or_eq /-
 theorem le_iff_lt_or_eq {a b : α} : a ≤ b ↔ a < b ∨ a = b :=
   Decidable.le_iff_lt_or_eq
+-/
 
 end PartialOrder
 
@@ -200,6 +266,7 @@ def maxDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → 
 def minDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
   if a ≤ b then a else b
 
+#print LinearOrder /-
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
 /-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
@@ -217,73 +284,108 @@ class LinearOrder (α : Type u) extends PartialOrder α where
   min_def : min = @minDefault α _ decidable_le := by
     run_tac
       tactic.interactive.reflexivity
+-/
 
 variable [LinearOrder α]
 
 attribute [local instance] LinearOrder.decidableLe
 
+#print le_total /-
 theorem le_total : ∀ a b : α, a ≤ b ∨ b ≤ a :=
   LinearOrder.le_total
+-/
 
+#print le_of_not_ge /-
 theorem le_of_not_ge {a b : α} : ¬a ≥ b → a ≤ b :=
   Or.resolve_left (le_total b a)
+-/
 
+#print le_of_not_le /-
 theorem le_of_not_le {a b : α} : ¬a ≤ b → b ≤ a :=
   Or.resolve_left (le_total a b)
+-/
 
+#print not_lt_of_gt /-
 theorem not_lt_of_gt {a b : α} (h : a > b) : ¬a < b :=
   lt_asymm h
+-/
 
+#print lt_trichotomy /-
 theorem lt_trichotomy (a b : α) : a < b ∨ a = b ∨ b < a :=
   Or.elim (le_total a b)
     (fun h : a ≤ b =>
       Or.elim (Decidable.lt_or_eq_of_le h) (fun h : a < b => Or.inl h) fun h : a = b => Or.inr (Or.inl h))
     fun h : b ≤ a =>
     Or.elim (Decidable.lt_or_eq_of_le h) (fun h : b < a => Or.inr (Or.inr h)) fun h : b = a => Or.inr (Or.inl h.symm)
+-/
 
+#print le_of_not_lt /-
 theorem le_of_not_lt {a b : α} (h : ¬b < a) : a ≤ b :=
   match lt_trichotomy a b with
   | Or.inl hlt => le_of_lt hlt
   | Or.inr (Or.inl HEq) => HEq ▸ le_refl a
   | Or.inr (Or.inr hgt) => absurd hgt h
+-/
 
+#print le_of_not_gt /-
 theorem le_of_not_gt {a b : α} : ¬a > b → a ≤ b :=
   le_of_not_lt
+-/
 
+#print lt_of_not_ge /-
 theorem lt_of_not_ge {a b : α} (h : ¬a ≥ b) : a < b :=
   lt_of_le_not_le ((le_total _ _).resolve_right h) h
+-/
 
+#print lt_or_le /-
 theorem lt_or_le (a b : α) : a < b ∨ b ≤ a :=
   if hba : b ≤ a then Or.inr hba else Or.inl <| lt_of_not_ge hba
+-/
 
+#print le_or_lt /-
 theorem le_or_lt (a b : α) : a ≤ b ∨ b < a :=
   (lt_or_le b a).swap
+-/
 
+#print lt_or_ge /-
 theorem lt_or_ge : ∀ a b : α, a < b ∨ a ≥ b :=
   lt_or_le
+-/
 
+#print le_or_gt /-
 theorem le_or_gt : ∀ a b : α, a ≤ b ∨ a > b :=
   le_or_lt
+-/
 
+#print lt_or_gt_of_ne /-
 theorem lt_or_gt_of_ne {a b : α} (h : a ≠ b) : a < b ∨ a > b :=
   match lt_trichotomy a b with
   | Or.inl hlt => Or.inl hlt
   | Or.inr (Or.inl HEq) => absurd HEq h
   | Or.inr (Or.inr hgt) => Or.inr hgt
+-/
 
+#print ne_iff_lt_or_gt /-
 theorem ne_iff_lt_or_gt {a b : α} : a ≠ b ↔ a < b ∨ a > b :=
   ⟨lt_or_gt_of_ne, fun o => Or.elim o ne_of_lt ne_of_gt⟩
+-/
 
+#print lt_iff_not_ge /-
 theorem lt_iff_not_ge (x y : α) : x < y ↔ ¬x ≥ y :=
   ⟨not_le_of_gt, lt_of_not_ge⟩
+-/
 
+#print not_lt /-
 @[simp]
 theorem not_lt {a b : α} : ¬a < b ↔ b ≤ a :=
   ⟨le_of_not_gt, not_lt_of_ge⟩
+-/
 
+#print not_le /-
 @[simp]
 theorem not_le {a b : α} : ¬a ≤ b ↔ b < a :=
   (lt_iff_not_ge _ _).symm
+-/
 
 instance (a b : α) : Decidable (a < b) :=
   LinearOrder.decidableLt a b
@@ -294,8 +396,10 @@ instance (a b : α) : Decidable (a ≤ b) :=
 instance (a b : α) : Decidable (a = b) :=
   LinearOrder.decidableEq a b
 
+#print eq_or_lt_of_not_lt /-
 theorem eq_or_lt_of_not_lt {a b : α} (h : ¬a < b) : a = b ∨ b < a :=
   if h₁ : a = b then Or.inl h₁ else Or.inr (lt_of_not_ge fun hge => h (lt_of_le_of_ne hge h₁))
+-/
 
 instance : IsTotalPreorder α (· ≤ ·) where
   trans := @le_trans _ _

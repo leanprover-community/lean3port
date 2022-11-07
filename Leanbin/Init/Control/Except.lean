@@ -11,9 +11,11 @@ import Leanbin.Init.Control.Lift
 
 universe u v w
 
+#print Except /-
 inductive Except (ε : Type u) (α : Type v)
   | error : ε → Except
   | ok : α → Except
+-/
 
 namespace Except
 
@@ -37,13 +39,17 @@ protected def bind {α β : Type v} (ma : Except ε α) (f : α → Except ε β
   | Except.error err => Except.error err
   | Except.ok v => f v
 
+#print Except.toBool /-
 protected def toBool {α : Type v} : Except ε α → Bool
   | Except.ok _ => true
   | Except.error _ => false
+-/
 
+#print Except.toOption /-
 protected def toOption {α : Type v} : Except ε α → Option α
   | Except.ok a => some a
   | Except.error _ => none
+-/
 
 instance : Monad (Except ε) where
   pure := @return
@@ -108,11 +114,13 @@ end
 
 end ExceptT
 
+#print MonadExcept /-
 /--
 An implementation of [MonadError](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError) -/
 class MonadExcept (ε : outParam (Type u)) (m : Type v → Type w) where
   throw {α : Type v} : ε → m α
   catch {α : Type v} : m α → (ε → m α) → m α
+-/
 
 namespace MonadExcept
 

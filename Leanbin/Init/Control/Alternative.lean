@@ -12,8 +12,10 @@ universe u v
 class HasOrelse (f : Type u → Type v) : Type max (u + 1) v where
   orelse : ∀ {α : Type u}, f α → f α → f α
 
+#print Alternative /-
 class Alternative (f : Type u → Type v) extends Applicative f, HasOrelse f : Type max (u + 1) v where
   failure : ∀ {α : Type u}, f α
+-/
 
 section
 
@@ -23,10 +25,12 @@ variable {f : Type u → Type v} [Alternative f] {α : Type u}
 def failure : f α :=
   Alternative.failure
 
+#print guard /-
 /-- If the condition `p` is decided to be false, then fail, otherwise, return unit. -/
 @[inline]
 def guard {f : Type → Type v} [Alternative f] (p : Prop) [Decidable p] : f Unit :=
   if p then pure () else failure
+-/
 
 @[inline]
 def assert {f : Type → Type v} [Alternative f] (p : Prop) [Decidable p] : f (Inhabited p) :=
@@ -39,9 +43,11 @@ def guardb {f : Type → Type v} [Alternative f] : Bool → f Unit
   | tt => pure ()
   | ff => failure
 
+#print optional /-
 @[inline]
 def optional (x : f α) : f (Option α) :=
   some <$> x <|> pure none
+-/
 
 end
 

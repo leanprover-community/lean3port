@@ -8,10 +8,12 @@ import Leanbin.Init.Data.Nat.Basic
 
 open Nat
 
+#print Fin /-
 /-- `fin n` is the subtype of `ℕ` consisting of natural numbers strictly smaller than `n`. -/
 structure Fin (n : ℕ) where
   val : Nat
   property : val < n
+-/
 
 attribute [pp_using_anonymous_constructor] Fin
 
@@ -40,15 +42,23 @@ def elim0.{u} {α : Fin 0 → Sort u} : ∀ x : Fin 0, α x
 
 variable {n : Nat}
 
+#print Fin.eq_of_veq /-
 theorem eq_of_veq : ∀ {i j : Fin n}, i.val = j.val → i = j
   | ⟨iv, ilt₁⟩, ⟨iv, ilt₂⟩, rfl => rfl
+-/
 
+#print Fin.veq_of_eq /-
 theorem veq_of_eq : ∀ {i j : Fin n}, i = j → i.val = j.val
   | ⟨iv, ilt⟩, _, rfl => rfl
+-/
 
+#print Fin.ne_of_vne /-
 theorem ne_of_vne {i j : Fin n} (h : i.val ≠ j.val) : i ≠ j := fun h' => absurd (veq_of_eq h') h
+-/
 
+#print Fin.vne_of_ne /-
 theorem vne_of_ne {i j : Fin n} (h : i ≠ j) : i.val ≠ j.val := fun h' => absurd (eq_of_veq h') h
+-/
 
 end Fin
 

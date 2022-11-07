@@ -9,6 +9,7 @@ import Leanbin.Init.Data.Prod
 
 universe u v
 
+#print Acc /-
 /-- A value `x : α` is accessible from `r` when every value that's lesser under `r` is also
 accessible. Note that any value that's minimal under `r` is vacuously accessible.
 
@@ -18,22 +19,27 @@ under `r`.
 This is used to state the definition of well-foundedness (see `well_founded`). -/
 inductive Acc {α : Sort u} (r : α → α → Prop) : α → Prop
   | intro (x : α) (h : ∀ y, r y x → Acc y) : Acc x
+-/
 
 namespace Acc
 
 variable {α : Sort u} {r : α → α → Prop}
 
+#print Acc.inv /-
 theorem inv {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
   Acc.recOn h₁ (fun x₁ ac₁ ih h₂ => ac₁ y h₂) h₂
+-/
 
 end Acc
 
+#print WellFounded /-
 /-- A relation `r : α → α → Prop` is well-founded when `∀ x, (∀ y, r y x → P y → P x) → P x` for all
 predicates `P`. Equivalently, `acc r x` for all `x`.
 
 Once you know that a relation is well_founded, you can use it to define fixpoint functions on `α`.-/
 structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro ::
   apply : ∀ a, Acc r a
+-/
 
 class HasWellFounded (α : Sort u) : Type u where
   R : α → α → Prop
@@ -50,18 +56,24 @@ local infixl:50 "≺" => r
 
 parameter (hwf : WellFounded r)
 
+#print WellFounded.recursion /-
 def recursion {C : α → Sort v} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
   Acc.recOn (apply hwf a) fun x₁ ac₁ ih => h x₁ ih
+-/
 
+#print WellFounded.induction /-
 theorem induction {C : α → Prop} (a : α) (h : ∀ x, (∀ y, y≺x → C y) → C x) : C a :=
   recursion a h
+-/
 
 variable {C : α → Sort v}
 
 variable (F : ∀ x, (∀ y, y≺x → C y) → C x)
 
+#print WellFounded.fixF /-
 def fixF (x : α) (a : Acc r x) : C x :=
   Acc.recOn a fun x₁ ac₁ ih => F x₁ ih
+-/
 
 theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.inv acx p) :=
   Acc.drec (fun x r ih => rfl) acx
@@ -70,14 +82,18 @@ end
 
 variable {α : Sort u} {C : α → Sort v} {r : α → α → Prop}
 
+#print WellFounded.fix /-
 /-- Well-founded fixpoint -/
 def fix (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) : C x :=
   fixF F x (apply hwf x)
+-/
 
+#print WellFounded.fix_eq /-
 /-- Well-founded fixpoint satisfies fixpoint equation -/
 theorem fix_eq (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) :
     fix hwf F x = F x fun y h => fix hwf F y :=
   fix_F_eq F x (apply hwf x)
+-/
 
 end WellFounded
 
@@ -101,8 +117,10 @@ parameter (h₂ : WellFounded r)
 theorem accessible {a : α} (ac : Acc r a) : Acc Q a :=
   Acc.recOn ac fun x ax ih => Acc.intro x fun (y : α) (lt : Q y x) => ih y (h₁ lt)
 
+#print Subrelation.wf /-
 theorem wf : WellFounded Q :=
   ⟨fun a => accessible (apply h₂ a)⟩
+-/
 
 end
 
@@ -125,8 +143,10 @@ private def acc_aux {b : β} (ac : Acc r b) : ∀ x : α, f x = b → Acc (InvIm
 theorem accessible {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
   acc_aux ac a rfl
 
+#print InvImage.wf /-
 theorem wf : WellFounded (InvImage r f) :=
   ⟨fun a => accessible (apply h (f a))⟩
+-/
 
 end
 
@@ -138,17 +158,19 @@ theorem Nat.lt_wf : WellFounded Nat.lt :=
       Acc.intro (Nat.succ n) fun m h =>
         Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih) (Acc.inv ih)⟩
 
+#print Measure /-
 def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
   InvImage (· < ·)
+-/
 
 theorem measure_wf {α : Sort u} (f : α → ℕ) : WellFounded (Measure f) :=
   InvImage.wf f Nat.lt_wf
 
 def SizeofMeasure (α : Sort u) [SizeOf α] : α → α → Prop :=
-  Measure sizeOf
+  Measure SizeOf.sizeOf
 
 theorem sizeof_measure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure α) :=
-  measure_wf sizeOf
+  measure_wf SizeOf.sizeOf
 
 instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : HasWellFounded α where
   R := SizeofMeasure α
@@ -166,10 +188,12 @@ variable (ra : α → α → Prop)
 
 variable (rb : β → β → Prop)
 
+#print Prod.Lex /-
 -- Lexicographical order based on ra and rb
 inductive Lex : α × β → α × β → Prop
   | left {a₁} (b₁) {a₂} (b₂) (h : ra a₁ a₂) : lex (a₁, b₁) (a₂, b₂)
   | right (a) {b₁ b₂} (h : rb b₁ b₂) : lex (a, b₁) (a, b₂)
+-/
 
 -- relational product based on ra and rb
 inductive Rprod : α × β → α × β → Prop

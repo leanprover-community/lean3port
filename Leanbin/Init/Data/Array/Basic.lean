@@ -150,7 +150,7 @@ theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.be
   contradiction
 
 instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) := fun a b =>
-  if h : DArray.beq a b = tt then isTrue (of_beq_eq_tt h) else isFalse (of_beq_eq_ff (eq_ff_of_not_eq_tt h))
+  if h : DArray.beq a b = tt then isTrue (of_beq_eq_tt h) else isFalse (of_beq_eq_ff (Bool.eq_false_of_not_eq_true h))
 
 end DArray
 

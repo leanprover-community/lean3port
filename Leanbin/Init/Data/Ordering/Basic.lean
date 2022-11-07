@@ -10,10 +10,12 @@ import Leanbin.Init.Data.Sum.Basic
 
 universe u v
 
+#print Ordering /-
 inductive Ordering
   | lt
   | Eq
   | GT.gt
+-/
 
 instance : Repr Ordering :=
   ⟨fun s =>
@@ -24,10 +26,12 @@ instance : Repr Ordering :=
 
 namespace Ordering
 
+#print Ordering.swap /-
 def swap : Ordering → Ordering
   | lt => gt
   | Eq => eq
   | GT.gt => lt
+-/
 
 @[inline]
 def orElse : Ordering → Ordering → Ordering
@@ -35,10 +39,12 @@ def orElse : Ordering → Ordering → Ordering
   | Eq, o => o
   | GT.gt, _ => gt
 
+#print Ordering.swap_swap /-
 theorem swap_swap : ∀ o : Ordering, o.swap.swap = o
   | lt => rfl
   | Eq => rfl
   | GT.gt => rfl
+-/
 
 end Ordering
 

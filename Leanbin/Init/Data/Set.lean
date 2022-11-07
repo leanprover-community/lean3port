@@ -9,9 +9,11 @@ import Leanbin.Init.Control.Lawful
 
 universe u v
 
+#print Set /-
 /-- A set of elements of type `α`; implemented as a predicate `α → Prop`. -/
 def Set (α : Type u) :=
   α → Prop
+-/
 
 /-- The set `{x | p x}` of elements satisfying the predicate `p`. -/
 def SetOf {α : Type u} (p : α → Prop) : Set α :=

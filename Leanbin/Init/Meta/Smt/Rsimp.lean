@@ -38,7 +38,7 @@ private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) : List Nam
     We say `ex_attr_name` is the "exception set". It is useful for excluding lemmas in `simp_attr_name`
     which are not good or redundant for ematching. -/
 unsafe def mk_hinst_lemma_attr_from_simp_attr (attr_decl_name attr_name : Name) (simp_attr_name : Name)
-    (ex_attr_name : Name) : Tactic Unit := do
+    (ex_attr_name : Name) : Tactic := do
   let t := quote.1 (user_attribute hinst_lemmas)
   let v :=
     quote.1
@@ -133,7 +133,7 @@ unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) :
         (fun _ t => do
           let root ← return <| ccs.root t
           let new_t ← m.find root
-          guard ¬expr.alpha_eqv new_t t
+          guard ¬new_t == t
           let prf ← ccs.eqv_proof t new_t
           return ((), new_t, prf))
         e

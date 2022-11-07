@@ -90,6 +90,7 @@ end
 
 end ReaderT
 
+#print MonadReader /-
 /--
 An implementation of [MonadReader](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader-Class.html#t:MonadReader).
     It does not contain `local` because this function cannot be lifted using `monad_lift`.
@@ -103,6 +104,7 @@ An implementation of [MonadReader](https://hackage.haskell.org/package/mtl-2.2.2
     -/
 class MonadReader (ρ : outParam (Type u)) (m : Type u → Type v) where
   read : m ρ
+-/
 
 export MonadReader (read)
 

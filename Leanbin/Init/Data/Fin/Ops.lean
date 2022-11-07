@@ -13,11 +13,15 @@ open Nat
 
 variable {n : Nat}
 
+#print Fin.succ /-
 protected def succ : Fin n → Fin (succ n)
   | ⟨a, h⟩ => ⟨Nat.succ a, succ_lt_succ h⟩
+-/
 
+#print Fin.ofNat /-
 def ofNat {n : Nat} (a : Nat) : Fin (succ n) :=
   ⟨a % succ n, Nat.mod_lt _ (Nat.zero_lt_succ _)⟩
+-/
 
 private theorem mlt {n b : Nat} : ∀ {a}, n > a → b % n < n
   | 0, h => Nat.mod_lt _ h
@@ -25,17 +29,23 @@ private theorem mlt {n b : Nat} : ∀ {a}, n > a → b % n < n
     have : n > 0 := lt_trans (Nat.zero_lt_succ _) h
     Nat.mod_lt _ this
 
+#print Fin.add /-
 protected def add : Fin n → Fin n → Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a + b) % n, mlt h⟩
+-/
 
+#print Fin.mul /-
 protected def mul : Fin n → Fin n → Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨a * b % n, mlt h⟩
+-/
 
 private theorem sublt {a b n : Nat} (h : a < n) : a - b < n :=
   lt_of_le_of_lt (Nat.sub_le a b) h
 
+#print Fin.sub /-
 protected def sub : Fin n → Fin n → Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a + (n - b)) % n, mlt h⟩
+-/
 
 private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n := by
   cases' b with b
@@ -47,14 +57,18 @@ private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n :=
     exact lt_trans h h₂
     
 
+#print Fin.mod /-
 protected def mod : Fin n → Fin n → Fin n
   | ⟨a, h₁⟩, ⟨b, h₂⟩ => ⟨a % b, modlt h₁ h₂⟩
+-/
 
 private theorem divlt {a b n : Nat} (h : a < n) : a / b < n :=
   lt_of_le_of_lt (Nat.div_le_self a b) h
 
+#print Fin.div /-
 protected def div : Fin n → Fin n → Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨a / b, divlt h⟩
+-/
 
 instance : Zero (Fin (succ n)) :=
   ⟨⟨0, succ_pos n⟩⟩

@@ -19,10 +19,12 @@ variable (r : α → α → Prop)
 
 variable (s : ∀ a, β a → β a → Prop)
 
+#print PSigma.Lex /-
 -- Lexicographical order based on r and s
 inductive Lex : PSigma β → PSigma β → Prop
   | left : ∀ {a₁ : α} (b₁ : β a₁) {a₂ : α} (b₂ : β a₂), r a₁ a₂ → lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
   | right : ∀ (a : α) {b₁ b₂ : β a}, s a b₁ b₂ → lex ⟨a, b₁⟩ ⟨a, b₂⟩
+-/
 
 end
 
@@ -80,10 +82,12 @@ variable (r : α → α → Prop)
 
 variable (s : β → β → Prop)
 
+#print PSigma.RevLex /-
 -- Reverse lexicographical order based on r and s
 inductive RevLex : (@PSigma α fun a => β) → (@PSigma α fun a => β) → Prop
   | left : ∀ {a₁ a₂ : α} (b : β), r a₁ a₂ → rev_lex ⟨a₁, b⟩ ⟨a₂, b⟩
   | right : ∀ (a₁ : α) {b₁ : β} (a₂ : α) {b₂ : β}, s b₁ b₂ → rev_lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
+-/
 
 end
 
@@ -122,8 +126,10 @@ end
 
 section
 
+#print PSigma.SkipLeft /-
 def SkipLeft (α : Type u) {β : Type v} (s : β → β → Prop) : (@PSigma α fun a => β) → (@PSigma α fun a => β) → Prop :=
   RevLex EmptyRelation s
+-/
 
 theorem skip_left_wf (α : Type u) {β : Type v} {s : β → β → Prop} (hb : WellFounded s) : WellFounded (SkipLeft α s) :=
   rev_lex_wf empty_wf hb

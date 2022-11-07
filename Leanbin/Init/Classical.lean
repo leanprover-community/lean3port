@@ -11,19 +11,27 @@ namespace Classical
 
 universe u v
 
+#print Classical.choice /-
 -- the axiom
 axiom choice {α : Sort u} : Nonempty α → α
+-/
 
+#print Classical.indefiniteDescription /-
 noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
   choice <|
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
+-/
 
+#print Classical.choose /-
 noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
   (indefiniteDescription p h).val
+-/
 
+#print Classical.choose_spec /-
 theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose h) :=
   (indefiniteDescription p h).property
+-/
 
 /- Diaconescu's theorem: using function extensionality and propositional extensionality,
    we can get excluded middle from this. -/
@@ -74,13 +82,17 @@ private theorem p_implies_uv (hp : p) : u = v :=
   have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := hpred ▸ fun exU exV => rfl
   show u = v from h₀ _ _
 
+#print Classical.em /-
 theorem em : p ∨ ¬p :=
   Or.elim not_uv_or_p (fun hne : u ≠ v => Or.inr (mt p_implies_uv hne)) Or.inl
+-/
 
 end Diaconescu
 
+#print Classical.exists_true_of_nonempty /-
 theorem exists_true_of_nonempty {α : Sort u} : Nonempty α → ∃ x : α, True
   | ⟨x⟩ => ⟨x, trivial⟩
+-/
 
 noncomputable def inhabitedOfNonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
   ⟨choice h⟩
@@ -88,75 +100,109 @@ noncomputable def inhabitedOfNonempty {α : Sort u} (h : Nonempty α) : Inhabite
 noncomputable def inhabitedOfExists {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : Inhabited α :=
   inhabitedOfNonempty (Exists.elim h fun w hw => ⟨w⟩)
 
+#print Classical.propDecidable /-
 -- all propositions are decidable
 noncomputable def propDecidable (a : Prop) : Decidable a :=
   choice <| Or.elim (em a) (fun ha => ⟨isTrue ha⟩) fun hna => ⟨isFalse hna⟩
+-/
 
 attribute [local instance] prop_decidable
 
+#print Classical.decidableInhabited /-
 noncomputable def decidableInhabited (a : Prop) : Inhabited (Decidable a) :=
   ⟨propDecidable a⟩
+-/
 
 attribute [local instance] decidable_inhabited
 
+#print Classical.typeDecidableEq /-
 noncomputable def typeDecidableEq (α : Sort u) : DecidableEq α := fun x y => propDecidable (x = y)
+-/
 
+#print Classical.typeDecidable /-
 noncomputable def typeDecidable (α : Sort u) : PSum α (α → False) :=
   match propDecidable (Nonempty α) with
   | is_true hp => PSum.inl (@Inhabited.default _ (inhabitedOfNonempty hp))
   | is_false hn => PSum.inr fun a => absurd (Nonempty.intro a) hn
+-/
 
+#print Classical.strongIndefiniteDescription /-
 noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α → Prop) (h : Nonempty α) :
   { x : α // (∃ y : α, p y) → p x } :=
   if hp : ∃ x : α, p x then
     let xp := indefiniteDescription _ hp
     ⟨xp.val, fun h' => xp.property⟩
   else ⟨choice h, fun h => absurd h hp⟩
+-/
 
+#print Classical.epsilon /-
 -- the Hilbert epsilon function
 noncomputable def epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α :=
   (strongIndefiniteDescription p h).val
+-/
 
+#print Classical.epsilon_spec_aux /-
 theorem epsilon_spec_aux {α : Sort u} (h : Nonempty α) (p : α → Prop) : (∃ y, p y) → p (@epsilon α h p) :=
   (strongIndefiniteDescription p h).property
+-/
 
+#print Classical.epsilon_spec /-
 theorem epsilon_spec {α : Sort u} {p : α → Prop} (hex : ∃ y, p y) : p (@epsilon α (nonempty_of_exists hex) p) :=
   epsilon_spec_aux (nonempty_of_exists hex) p hex
+-/
 
+#print Classical.epsilon_singleton /-
 theorem epsilon_singleton {α : Sort u} (x : α) : (@epsilon α ⟨x⟩ fun y => y = x) = x :=
   @epsilon_spec α (fun y => y = x) ⟨x, rfl⟩
+-/
 
+#print Classical.axiom_of_choice /-
 -- the axiom of choice
 theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → Prop} (h : ∀ x, ∃ y, r x y) :
     ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
   ⟨_, fun x => choose_spec (h x)⟩
+-/
 
+#print Classical.skolem /-
 theorem skolem {α : Sort u} {b : α → Sort v} {p : ∀ x, b x → Prop} :
     (∀ x, ∃ y, p x y) ↔ ∃ f : ∀ x, b x, ∀ x, p x (f x) :=
   ⟨axiom_of_choice, fun ⟨f, hw⟩ x => ⟨f x, hw x⟩⟩
+-/
 
+#print Classical.prop_complete /-
 theorem prop_complete (a : Prop) : a = True ∨ a = False :=
   Or.elim (em a) (fun t => Or.inl (eq_true t)) fun f => Or.inr (eq_false f)
+-/
 
 section Aux
 
+#print Classical.cases_true_false /-
 @[elab_as_elim]
 theorem cases_true_false (p : Prop → Prop) (h1 : p True) (h2 : p False) (a : Prop) : p a :=
   Or.elim (prop_complete a) (fun ht : a = True => ht.symm ▸ h1) fun hf : a = False => hf.symm ▸ h2
+-/
 
+#print Classical.cases_on /-
 theorem cases_on (a : Prop) {p : Prop → Prop} (h1 : p True) (h2 : p False) : p a :=
   cases_true_false p h1 h2 a
+-/
 
+#print Classical.by_cases /-
 -- this supercedes by_cases in decidable
 theorem by_cases {p q : Prop} (hpq : p → q) (hnpq : ¬p → q) : q :=
   Decidable.byCases hpq hnpq
+-/
 
+#print Classical.by_contradiction /-
 -- this supercedes by_contradiction in decidable
 theorem by_contradiction {p : Prop} (h : ¬p → False) : p :=
   Decidable.by_contradiction h
+-/
 
+#print Classical.eq_false_or_eq_true /-
 theorem eq_false_or_eq_true (a : Prop) : a = False ∨ a = True :=
   (prop_complete a).symm
+-/
 
 end Aux
 

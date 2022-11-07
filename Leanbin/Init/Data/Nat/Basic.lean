@@ -8,31 +8,49 @@ import Leanbin.Init.Logic
 
 namespace Nat
 
+#print Nat.le /-
 inductive le (a : ℕ) : ℕ → Prop
   | refl : less_than_or_equal a
   | step : ∀ {b}, less_than_or_equal b → less_than_or_equal (succ b)
+-/
 
 instance : LE ℕ :=
   ⟨Nat.le⟩
 
+/- warning: nat.le clashes with nat.less_than_or_equal -> Nat.le
+Case conversion may be inaccurate. Consider using '#align nat.le Nat.leₓ'. -/
+#print Nat.le /-
+@[reducible]
+protected def le (n m : ℕ) :=
+  Nat.le n m
+-/
+
+#print Nat.lt /-
 @[reducible]
 protected def lt (n m : ℕ) :=
   Nat.le (succ n) m
+-/
 
 instance : LT ℕ :=
   ⟨Nat.lt⟩
 
+#print Nat.pred /-
 def pred : ℕ → ℕ
   | 0 => 0
   | a + 1 => a
+-/
 
+#print Nat.sub /-
 protected def sub : ℕ → ℕ → ℕ
   | a, 0 => a
   | a, b + 1 => pred (sub a b)
+-/
 
+#print Nat.mul /-
 protected def mul : Nat → Nat → Nat
   | a, 0 => 0
   | a, b + 1 => mul a b + a
+-/
 
 instance : Sub ℕ :=
   ⟨Nat.sub⟩
@@ -60,42 +78,64 @@ def repeat'.{u} {α : Type u} (f : ℕ → α → α) : ℕ → α → α
 instance : Inhabited ℕ :=
   ⟨Nat.zero⟩
 
+#print Nat.zero_eq /-
 @[simp]
 theorem zero_eq : Nat.zero = 0 :=
   rfl
+-/
 
+#print Nat.le_refl /-
 -- properties of inequality
 @[refl]
 protected theorem le_refl (a : ℕ) : a ≤ a :=
   less_than_or_equal.refl
+-/
 
+#print Nat.le_succ /-
 theorem le_succ (n : ℕ) : n ≤ succ n :=
   le.step (Nat.le_refl n)
+-/
 
+#print Nat.succ_le_succ /-
 theorem succ_le_succ {n m : ℕ} : n ≤ m → succ n ≤ succ m := fun h =>
   le.ndrec (Nat.le_refl (succ n)) (fun a b => le.step) h
+-/
 
+#print Nat.zero_le /-
 protected theorem zero_le : ∀ n : ℕ, 0 ≤ n
   | 0 => Nat.le_refl 0
   | n + 1 => le.step (zero_le n)
+-/
 
+#print Nat.zero_lt_succ /-
 theorem zero_lt_succ (n : ℕ) : 0 < succ n :=
   succ_le_succ n.zero_le
+-/
 
+#print Nat.succ_pos /-
 theorem succ_pos (n : ℕ) : 0 < succ n :=
   zero_lt_succ n
+-/
 
+#print Nat.not_succ_le_zero /-
 theorem not_succ_le_zero : ∀ n : ℕ, succ n ≤ 0 → False :=
   fun.
+-/
 
+#print Nat.not_lt_zero /-
 protected theorem not_lt_zero (a : ℕ) : ¬a < 0 :=
   not_succ_le_zero a
+-/
 
+#print Nat.pred_le_pred /-
 theorem pred_le_pred {n m : ℕ} : n ≤ m → pred n ≤ pred m := fun h =>
   le.rec_on h (Nat.le_refl (pred n)) fun n => Nat.rec (fun a b => b) (fun a b c => le.step) n
+-/
 
+#print Nat.le_of_succ_le_succ /-
 theorem le_of_succ_le_succ {n m : ℕ} : succ n ≤ succ m → n ≤ m :=
   pred_le_pred
+-/
 
 instance decidableLe : ∀ a b : ℕ, Decidable (a ≤ b)
   | 0, b => isTrue b.zero_le
@@ -107,61 +147,100 @@ instance decidableLe : ∀ a b : ℕ, Decidable (a ≤ b)
 
 instance decidableLt : ∀ a b : ℕ, Decidable (a < b) := fun a b => Nat.decidableLe (succ a) b
 
+#print Nat.eq_or_lt_of_le /-
 protected theorem eq_or_lt_of_le {a b : ℕ} (h : a ≤ b) : a = b ∨ a < b :=
   le.cases_on h (Or.inl rfl) fun n h => Or.inr (succ_le_succ h)
+-/
 
+#print Nat.lt_succ_of_le /-
 theorem lt_succ_of_le {a b : ℕ} : a ≤ b → a < succ b :=
   succ_le_succ
+-/
 
+#print Nat.succ_sub_succ_eq_sub /-
 @[simp]
 theorem succ_sub_succ_eq_sub (a b : ℕ) : succ a - succ b = a - b :=
   Nat.recOn b (show succ a - succ zero = a - zero from Eq.refl (succ a - succ zero)) fun b => congr_arg pred
+-/
 
+#print Nat.not_succ_le_self /-
 theorem not_succ_le_self : ∀ n : ℕ, ¬succ n ≤ n := fun n =>
   Nat.rec (not_succ_le_zero 0) (fun a b c => b (le_of_succ_le_succ c)) n
+-/
 
+#print Nat.lt_irrefl /-
 protected theorem lt_irrefl (n : ℕ) : ¬n < n :=
   not_succ_le_self n
+-/
 
+#print Nat.le_trans /-
 protected theorem le_trans {n m k : ℕ} (h1 : n ≤ m) : m ≤ k → n ≤ k :=
   le.ndrec h1 fun p h2 => le.step
+-/
 
+#print Nat.pred_le /-
 theorem pred_le : ∀ n : ℕ, pred n ≤ n
   | 0 => le.refl
   | succ a => le.step le.refl
+-/
 
+#print Nat.pred_lt /-
 theorem pred_lt : ∀ {n : ℕ}, n ≠ 0 → pred n < n
   | 0, h => absurd rfl h
   | succ a, h => lt_succ_of_le le.refl
+-/
 
+#print Nat.sub_le /-
 protected theorem sub_le (a b : ℕ) : a - b ≤ a :=
   Nat.recOn b (Nat.le_refl (a - 0)) fun b₁ => Nat.le_trans (pred_le (a - b₁))
+-/
 
+#print Nat.sub_lt /-
 protected theorem sub_lt : ∀ {a b : ℕ}, 0 < a → 0 < b → a - b < a
   | 0, b, h1, h2 => absurd h1 (Nat.lt_irrefl 0)
   | a + 1, 0, h1, h2 => absurd h2 (Nat.lt_irrefl 0)
   | a + 1, b + 1, h1, h2 => Eq.symm (succ_sub_succ_eq_sub a b) ▸ show a - b < succ a from lt_succ_of_le (a.sub_le b)
+-/
 
+#print Nat.lt_of_lt_of_le /-
 protected theorem lt_of_lt_of_le {n m k : ℕ} : n < m → m ≤ k → n < k :=
   Nat.le_trans
+-/
 
+#print Nat.zero_add /-
 -- Basic nat.add lemmas
 protected theorem zero_add : ∀ n : ℕ, 0 + n = n
   | 0 => rfl
   | n + 1 => congr_arg succ (zero_add n)
+-/
 
+#print Nat.succ_add /-
 theorem succ_add : ∀ n m : ℕ, succ n + m = succ (n + m)
   | n, 0 => rfl
   | n, m + 1 => congr_arg succ (succ_add n m)
+-/
 
+#print Nat.add_succ /-
 theorem add_succ (n m : ℕ) : n + succ m = succ (n + m) :=
   rfl
+-/
 
+/- warning: nat.add_zero clashes with nat_add_zero -> Nat.add_zero
+Case conversion may be inaccurate. Consider using '#align nat.add_zero Nat.add_zeroₓ'. -/
+#print Nat.add_zero /-
+protected theorem add_zero (n : ℕ) : n + 0 = n :=
+  rfl
+-/
+
+#print Nat.add_one /-
 theorem add_one (n : ℕ) : n + 1 = succ n :=
   rfl
+-/
 
+#print Nat.succ_eq_add_one /-
 theorem succ_eq_add_one (n : ℕ) : succ n = n + 1 :=
   rfl
+-/
 
 -- Basic lemmas for comparing numerals
 protected theorem bit0_succ_eq (n : ℕ) : bit0 (succ n) = succ (succ (bit0 n)) :=

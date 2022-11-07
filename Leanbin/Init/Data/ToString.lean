@@ -17,6 +17,7 @@ open Sum Subtype Nat
 
 universe u v
 
+#print ToString /-
 /-- Convert the object into a string for tracing/display purposes.
 Similar to Haskell's `show`.
 See also `has_repr`, which is used to output a string which is a valid lean code.
@@ -24,6 +25,7 @@ See also `has_to_format` and `has_to_tactic_format`, `format` has additional sup
  -/
 class ToString (α : Type u) where
   toString : α → String
+-/
 
 def toString {α : Type u} [ToString α] : α → String :=
   ToString.toString
@@ -38,14 +40,18 @@ instance {p : Prop} : ToString (Decidable p) :=
   ⟨-- Remark: type class inference will not consider local instance `b` in the new elaborator
   fun b : Decidable p => @ite _ p b "tt" "ff"⟩
 
+#print List.toStringAux /-
 protected def List.toStringAux {α : Type u} [ToString α] : Bool → List α → String
   | b, [] => ""
   | tt, x :: xs => toString x ++ List.toStringAux false xs
   | ff, x :: xs => ", " ++ toString x ++ List.toStringAux false xs
+-/
 
+#print List.toString /-
 protected def List.toString {α : Type u} [ToString α] : List α → String
   | [] => "[]"
   | x :: xs => "[" ++ List.toStringAux true (x :: xs) ++ "]"
+-/
 
 instance {α : Type u} [ToString α] : ToString (List α) :=
   ⟨List.toString⟩

@@ -18,11 +18,13 @@ theorem is_valid_char_range_1 (n : Nat) (h : n < 55296) : IsValidChar n :=
 theorem is_valid_char_range_2 (n : Nat) (h₁ : 57343 < n) (h₂ : n < 1114112) : IsValidChar n :=
   Or.inr ⟨h₁, h₂⟩
 
+#print Char /-
 /-- The `char` type represents an unicode scalar value.
     See http://www.unicode.org/glossary/#unicode_scalar_value). -/
 structure Char where
   val : Nat
   valid : IsValidChar val
+-/
 
 instance : SizeOf Char :=
   ⟨fun c => c.val⟩
@@ -62,12 +64,16 @@ theorem zero_lt_d800 : 0 < 55296 :=
               Nat.bit0_ne_zero <|
                 Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
 
+#print Char.ofNat /-
 @[match_pattern]
 def ofNat (n : Nat) : Char :=
   if h : IsValidChar n then { val := n, valid := h } else { val := 0, valid := Or.inl zero_lt_d800 }
+-/
 
+#print Char.toNat /-
 def toNat (c : Char) : Nat :=
   c.val
+-/
 
 theorem eq_of_veq : ∀ {c d : Char}, c.val = d.val → c = d
   | ⟨v, h⟩, ⟨_, _⟩, rfl => rfl

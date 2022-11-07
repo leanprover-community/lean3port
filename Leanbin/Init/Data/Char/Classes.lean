@@ -32,9 +32,11 @@ def IsAlphanum (c : Char) : Prop :=
 def IsPunctuation (c : Char) : Prop :=
   c ∈ [' ', ',', '.', '?', '!', ';', '-', ''']
 
+#print Char.toLower /-
 def toLower (c : Char) : Char :=
   let n := toNat c
   if n ≥ 65 ∧ n ≤ 90 then ofNat (n + 32) else c
+-/
 
 instance decidableIsWhitespace : DecidablePred IsWhitespace := by
   intro c

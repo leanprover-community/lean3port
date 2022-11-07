@@ -6,6 +6,7 @@ Authors: Leonardo de Moura
 
 universe u
 
+#print RandomGen /-
 /-
 Basic random number generator support based on the one
 available on the Haskell library
@@ -24,17 +25,23 @@ class RandomGen (g : Type u) where
     generators. This is very useful in functional programs (for example, when
     passing a random number generator down to recursive calls). -/
   split : g → g × g
+-/
 
+#print StdGen /-
 -- "Standard" random number generator.
 structure StdGen where
   s1 : Nat
   s2 : Nat
+-/
 
+#print stdRange /-
 def stdRange :=
   (1, 2147483562)
+-/
 
 instance : Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
 
+#print stdNext /-
 def stdNext : StdGen → Nat × StdGen
   | ⟨s1, s2⟩ =>
     let k : Int := s1 / 53668
@@ -46,7 +53,9 @@ def stdNext : StdGen → Nat × StdGen
     let z : Int := s1'' - s2''
     let z' : Int := if z < 1 then z + 2147483562 else z % 2147483562
     (z'.toNat, ⟨s1''.toNat, s2''.toNat⟩)
+-/
 
+#print stdSplit /-
 def stdSplit : StdGen → StdGen × StdGen
   | g@⟨s1, s2⟩ =>
     let new_s1 := if s1 = 2147483562 then 1 else s1 + 1
@@ -55,18 +64,21 @@ def stdSplit : StdGen → StdGen × StdGen
     let left_g := StdGen.mk new_s1 new_g.2
     let right_g := StdGen.mk new_g.1 new_s2
     (left_g, right_g)
+-/
 
 instance : RandomGen StdGen where
   range _ := stdRange
   next := stdNext
   split := stdSplit
 
+#print mkStdGen /-
 /-- Return a standard number generator. -/
 def mkStdGen (s : Nat := 0) : StdGen :=
   let q := s / 2147483562
   let s1 := s % 2147483562
   let s2 := q % 2147483398
   ⟨s1 + 1, s2 + 1⟩
+-/
 
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.comp_val -/
 /-
@@ -98,6 +110,7 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
         
     rand_nat_aux (r' / gen_mag - 1) v' g'
 
+#print randNat /-
 /-- Generate a random natural number in the interval [lo, hi]. -/
 def randNat {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen :=
   let lo' := if lo > hi then hi else lo
@@ -116,9 +129,12 @@ def randNat {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen 
   let (v, g') := randNatAux gen_lo gen_mag (Nat.zero_lt_succ _) tgt_mag 0 g
   let v' := lo' + v % k
   (v', g')
+-/
 
+#print randBool /-
 /-- Generate a random Boolean. -/
 def randBool {gen : Type u} [RandomGen gen] (g : gen) : Bool × gen :=
   let (v, g') := randNat g 0 1
   (v = 1, g')
+-/
 

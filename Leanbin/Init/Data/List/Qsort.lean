@@ -22,15 +22,18 @@ def Qsort.f {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, 
       subst small
       constructor <;> exact Nat.succ_le_succ (length_le_of_sublist (filter_sublist _))
     exact IH small this.left ++ h :: IH large this.right
+#align list.qsort.F List.Qsort.f
 
 /- This is based on the minimalist Haskell "quicksort".
 
    Remark: this is *not* really quicksort since it doesn't partition the elements in-place -/
 def qsort {α} (lt : α → α → Bool) : List α → List α :=
   WellFounded.fix (InvImage.wf length Nat.lt_wf) (Qsort.f lt)
+#align list.qsort List.qsort
 
 @[simp]
 theorem qsort_nil {α} (lt : α → α → Bool) : qsort lt [] = [] := by rw [qsort, WellFounded.fix_eq, qsort.F]
+#align list.qsort_nil List.qsort_nil
 
 @[simp]
 theorem qsort_cons {α} (lt : α → α → Bool) (h t) :
@@ -42,6 +45,7 @@ theorem qsort_cons {α} (lt : α → α → Bool) (h t) :
   induction' e : partition (fun x => lt h x = tt) t with large small
   simp [e]
   rw [e]
+#align list.qsort_cons List.qsort_cons
 
 end List
 

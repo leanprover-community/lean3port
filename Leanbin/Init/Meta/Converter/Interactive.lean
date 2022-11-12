@@ -14,18 +14,23 @@ namespace Conv
 unsafe def save_info (p : Pos) : conv Unit := do
   let s ← tactic.read
   tactic.save_info_thunk p fun _ => s tt
+#align conv.save_info conv.save_info
 
 unsafe def step {α : Type} (c : conv α) : conv Unit :=
   c >> return ()
+#align conv.step conv.step
 
 unsafe def istep {α : Type} (line0 col0 line col ast : Nat) (c : conv α) : conv Unit :=
   tactic.istep line0 col0 line col ast c
+#align conv.istep conv.istep
 
 unsafe def execute (c : conv Unit) : tactic Unit :=
   c
+#align conv.execute conv.execute
 
 unsafe def solve1 (c : conv Unit) : conv Unit :=
   tactic.solve1 <| c >> tactic.try (tactic.any_goals tactic.reflexivity)
+#align conv.solve1 conv.solve1
 
 namespace Interactive
 
@@ -41,41 +46,53 @@ open TacticResult
 
 unsafe def itactic : Type :=
   conv Unit
+#align conv.interactive.itactic conv.interactive.itactic
 
 unsafe def skip : conv Unit :=
   conv.skip
+#align conv.interactive.skip conv.interactive.skip
 
 unsafe def whnf : conv Unit :=
   conv.whnf
+#align conv.interactive.whnf conv.interactive.whnf
 
 unsafe def dsimp (no_dflt : parse only_flag) (es : parse tactic.simp_arg_list) (attr_names : parse with_ident_list)
     (cfg : Tactic.DsimpConfig := {  }) : conv Unit := do
   let (s, u) ← tactic.mk_simp_set no_dflt attr_names es
   conv.dsimp (some s) u cfg
+#align conv.interactive.dsimp conv.interactive.dsimp
 
 unsafe def trace_lhs : conv Unit :=
   lhs >>= tactic.trace
+#align conv.interactive.trace_lhs conv.interactive.trace_lhs
 
 unsafe def change (p : parse texpr) : conv Unit :=
   tactic.i_to_expr p >>= conv.change
+#align conv.interactive.change conv.interactive.change
 
 unsafe def congr : conv Unit :=
   conv.congr
+#align conv.interactive.congr conv.interactive.congr
 
 unsafe def funext : conv Unit :=
   conv.funext
+#align conv.interactive.funext conv.interactive.funext
 
 private unsafe def is_relation : conv Unit :=
   (lhs >>= tactic.relation_lhs_rhs) >> return () <|> tactic.fail "current expression is not a relation"
+#align conv.interactive.is_relation conv.interactive.is_relation
 
 unsafe def to_lhs : conv Unit :=
   ((is_relation >> congr) >> tactic.swap) >> skip
+#align conv.interactive.to_lhs conv.interactive.to_lhs
 
 unsafe def to_rhs : conv Unit :=
   (is_relation >> congr) >> skip
+#align conv.interactive.to_rhs conv.interactive.to_rhs
 
 unsafe def done : conv Unit :=
   tactic.done
+#align conv.interactive.done conv.interactive.done
 
 unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   let (r, lhs, _) ← tactic.target_lhs_rhs
@@ -106,6 +123,7 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   let found ← tactic.unwrap found_result
   when (Not found) <| tactic.fail "find converter failed, pattern was not found"
   update_lhs new_lhs pr
+#align conv.interactive.find conv.interactive.find
 
 unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : itactic) : conv Unit := do
   let (r, lhs, _) ← tactic.target_lhs_rhs
@@ -138,6 +156,7 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
         (fun a s r p e => tactic.failed) r lhs
   tactic.unwrap found_result
   update_lhs new_lhs pr
+#align conv.interactive.for conv.interactive.for
 
 unsafe def simp (no_dflt : parse only_flag) (hs : parse tactic.simp_arg_list) (attr_names : parse with_ident_list)
     (cfg : tactic.simp_config_ext := {  }) : conv Unit := do
@@ -146,10 +165,12 @@ unsafe def simp (no_dflt : parse only_flag) (hs : parse tactic.simp_arg_list) (a
   let (new_lhs, pr, lms) ← tactic.simplify s u lhs cfg.toSimpConfig r cfg.discharger
   update_lhs new_lhs pr
   return ()
+#align conv.interactive.simp conv.interactive.simp
 
 unsafe def guard_lhs (p : parse texpr) : tactic Unit := do
   let t ← lhs
   tactic.interactive.guard_expr_eq t p
+#align conv.interactive.guard_lhs conv.interactive.guard_lhs
 
 section Rw
 
@@ -161,6 +182,7 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let l ← conv.lhs
   let (new_lhs, prf, _) ← tactic.rewrite h l cfg
   update_lhs new_lhs prf
+#align conv.interactive.rw_lhs conv.interactive.rw_lhs
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
@@ -175,12 +197,15 @@ private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
           let e ← tactic.mk_const n
           rw_lhs e { cfg with symm := r })
         (eq_lemmas eq_lemmas.empty)
+#align conv.interactive.rw_core conv.interactive.rw_core
 
 unsafe def rewrite (q : parse rw_rules) (cfg : RewriteCfg := {  }) : conv Unit :=
   rw_core q.rules cfg
+#align conv.interactive.rewrite conv.interactive.rewrite
 
 unsafe def rw (q : parse rw_rules) (cfg : RewriteCfg := {  }) : conv Unit :=
   rw_core q.rules cfg
+#align conv.interactive.rw conv.interactive.rw
 
 end Rw
 
@@ -211,6 +236,7 @@ private unsafe def conv_at (h_name : Name) (c : conv Unit) : tactic Unit := do
   let (new_h_type, pr) ← c.convert h_type
   replace_hyp h new_h_type pr `` id_tag.conv
   return ()
+#align tactic.interactive.conv_at tactic.interactive.conv_at
 
 private unsafe def conv_target (c : conv Unit) : tactic Unit := do
   let t ← target
@@ -218,6 +244,7 @@ private unsafe def conv_target (c : conv Unit) : tactic Unit := do
   replace_target new_t pr `` id_tag.conv
   try tactic.triv
   try (tactic.reflexivity reducible)
+#align tactic.interactive.conv_target tactic.interactive.conv_target
 
 unsafe def conv (loc : parse (tk "at" *> ident)?) (p : parse (tk "in" *> parser.pexpr)?)
     (c : conv.interactive.itactic) : tactic Unit := do
@@ -228,6 +255,7 @@ unsafe def conv (loc : parse (tk "at" *> ident)?) (p : parse (tk "in" *> parser.
   match loc with
     | some h => conv_at h c
     | none => conv_target c
+#align tactic.interactive.conv tactic.interactive.conv
 
 end Interactive
 

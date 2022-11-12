@@ -28,6 +28,7 @@ inductive CongrArgKind
   | cast
   | HEq
   | subsingleton_inst
+#align congr_arg_kind CongrArgKind
 
 namespace CongrArgKind
 
@@ -38,6 +39,7 @@ def toString : CongrArgKind → String
   | cast => "cast"
   | HEq => "heq"
   | subsingleton_inst => "subsingleton_inst"
+#align congr_arg_kind.to_string CongrArgKind.toString
 
 instance : Repr CongrArgKind :=
   ⟨toString⟩
@@ -56,6 +58,7 @@ unsafe structure congr_lemma where
   type : expr
   proof : expr
   arg_kinds : List CongrArgKind
+#align congr_lemma congr_lemma
 
 namespace Tactic
 
@@ -85,6 +88,7 @@ From `congr_lemma.cpp`:
 > how the resulting term looks like.
 -/
 unsafe axiom mk_congr_lemma_simp (f : expr) (nargs : Option Nat := none) (md := semireducible) : tactic congr_lemma
+#align tactic.mk_congr_lemma_simp tactic.mk_congr_lemma_simp
 
 /-- Create a specialized theorem using (a prefix of) the arguments of the given application.
 
@@ -92,6 +96,7 @@ An example of usage can be found in `tests/lean/simp_subsingleton.lean`.
 For more information on specialization see the comment in the method body for `get_specialization_prefix_size` in `src/library/fun_info.cpp`.
  -/
 unsafe axiom mk_specialized_congr_lemma_simp (h : expr) (md : Transparency := semireducible) : tactic congr_lemma
+#align tactic.mk_specialized_congr_lemma_simp tactic.mk_specialized_congr_lemma_simp
 
 /-- Similar to `mk_congr_lemma_simp`, this will make a `congr_lemma` object.
 The difference is that for each `congr_arg_kind.cast` argument, two proof arguments are generated.
@@ -110,12 +115,14 @@ From `congr_lemma.cpp`:
 > is equal to the right-hand-side of this lemma.
  -/
 unsafe axiom mk_congr_lemma (h : expr) (nargs : Option Nat := none) (md := semireducible) : tactic congr_lemma
+#align tactic.mk_congr_lemma tactic.mk_congr_lemma
 
 /-- Create a specialized theorem using (a prefix of) the arguments of the given application.
 
 For more information on specialization see the comment in the method body for `get_specialization_prefix_size` in `src/library/fun_info.cpp`.
 -/
 unsafe axiom mk_specialized_congr_lemma (h : expr) (md := semireducible) : tactic congr_lemma
+#align tactic.mk_specialized_congr_lemma tactic.mk_specialized_congr_lemma
 
 /-- Make a congruence lemma using hetrogeneous equality `heq` instead of `eq`.
 For example `mk_hcongr_lemma (f : Π (α : ℕ → Type) (n:ℕ) (b:α n), ℕ` )` will make
@@ -130,6 +137,7 @@ For example `mk_hcongr_lemma (f : Π (α : ℕ → Type) (n:ℕ) (b:α n), ℕ` 
 (Using merely `mk_congr_lemma` instead will produce `[fixed,fixed,eq]` instaed.)
 -/
 unsafe axiom mk_hcongr_lemma (h : expr) (nargs : Option Nat := none) (md := semireducible) : tactic congr_lemma
+#align tactic.mk_hcongr_lemma tactic.mk_hcongr_lemma
 
 end Tactic
 

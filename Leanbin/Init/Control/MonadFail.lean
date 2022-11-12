@@ -11,10 +11,13 @@ universe u v
 
 class MonadFail (m : Type u → Type v) where
   fail : ∀ {a}, String → m a
+#align monad_fail MonadFail
 
 def matchFailed {α : Type u} {m : Type u → Type v} [MonadFail m] : m α :=
   MonadFail.fail "match failed"
+#align match_failed matchFailed
 
 instance (priority := 100) monadFailLift (m n : Type u → Type v) [Monad n] [MonadFail m] [HasMonadLift m n] :
     MonadFail n where fail α s := monadLift (MonadFail.fail s : m α)
+#align monad_fail_lift monadFailLift
 

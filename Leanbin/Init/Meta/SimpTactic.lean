@@ -15,12 +15,15 @@ open Tactic
 
 def Tactic.IdTag.simp : Unit :=
   ()
+#align tactic.id_tag.simp Tactic.IdTag.simp
 
 def Simp.defaultMaxSteps :=
   10000000
+#align simp.default_max_steps Simp.defaultMaxSteps
 
 /-- Prefix the given `attr_name` with `"simp_attr"`. -/
 unsafe axiom mk_simp_attr_decl_name (attr_name : Name) : Name
+#align mk_simp_attr_decl_name mk_simp_attr_decl_name
 
 /-- Simp lemmas are used by the "simplifier" family of tactics.
 `simp_lemmas` is essentially a pair of tables `rb_map (expr_type × name) (priority_list simp_lemma)`.
@@ -33,21 +36,27 @@ An individual simp lemma is:
 - A priority number
 -/
 unsafe axiom simp_lemmas : Type
+#align simp_lemmas simp_lemmas
 
 /-- Make a new table of simp lemmas -/
 unsafe axiom simp_lemmas.mk : simp_lemmas
+#align simp_lemmas.mk simp_lemmas.mk
 
 /-- Merge the simp_lemma tables. -/
 unsafe axiom simp_lemmas.join : simp_lemmas → simp_lemmas → simp_lemmas
+#align simp_lemmas.join simp_lemmas.join
 
 /-- Remove the given lemmas from the table. Use the names of the lemmas. -/
 unsafe axiom simp_lemmas.erase : simp_lemmas → List Name → simp_lemmas
+#align simp_lemmas.erase simp_lemmas.erase
 
 /-- Remove all simp lemmas from the table. -/
 unsafe axiom simp_lemmas.erase_simp_lemmas : simp_lemmas → simp_lemmas
+#align simp_lemmas.erase_simp_lemmas simp_lemmas.erase_simp_lemmas
 
 /-- Makes the default simp_lemmas table which is composed of all lemmas tagged with `simp`. -/
 unsafe axiom simp_lemmas.mk_default : tactic simp_lemmas
+#align simp_lemmas.mk_default simp_lemmas.mk_default
 
 /--
 Add a simplification lemma by an expression `p`. Some conditions on `p` must hold for it to be added, see list below.
@@ -60,9 +69,11 @@ If your lemma is not being added, you can see the reasons by setting `set_option
 
  -/
 unsafe axiom simp_lemmas.add (s : simp_lemmas) (e : expr) (symm : Bool := False) : tactic simp_lemmas
+#align simp_lemmas.add simp_lemmas.add
 
 /-- Add a simplification lemma by it's declaration name. See `simp_lemmas.add` for more information.-/
 unsafe axiom simp_lemmas.add_simp (s : simp_lemmas) (id : Name) (symm : Bool := False) : tactic simp_lemmas
+#align simp_lemmas.add_simp simp_lemmas.add_simp
 
 /-- Adds a congruence simp lemma to simp_lemmas.
 A congruence simp lemma is a lemma that breaks the simplification down into separate problems.
@@ -75,6 +86,7 @@ lemma and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ∧ b) ↔ (c ∧ d) := .
 ```
 -/
 unsafe axiom simp_lemmas.add_congr : simp_lemmas → Name → tactic simp_lemmas
+#align simp_lemmas.add_congr simp_lemmas.add_congr
 
 /-- Add expressions to a set of simp lemmas using `simp_lemmas.add`.
 
@@ -83,6 +95,7 @@ unsafe axiom simp_lemmas.add_congr : simp_lemmas → Name → tactic simp_lemmas
 -/
 unsafe def simp_lemmas.append_with_symm (s : simp_lemmas) (hs : List (expr × Bool)) : tactic simp_lemmas :=
   hs.mfoldl (fun s h => simp_lemmas.add s h.fst h.snd) s
+#align simp_lemmas.append_with_symm simp_lemmas.append_with_symm
 
 /-- Add expressions to a set of simp lemmas using `simp_lemmas.add`.
 
@@ -91,6 +104,7 @@ unsafe def simp_lemmas.append_with_symm (s : simp_lemmas) (hs : List (expr × Bo
 -/
 unsafe def simp_lemmas.append (s : simp_lemmas) (hs : List expr) : tactic simp_lemmas :=
   hs.mfoldl (fun s h => simp_lemmas.add s h false) s
+#align simp_lemmas.append simp_lemmas.append
 
 /-- `simp_lemmas.rewrite s e prove R` apply a simplification lemma from 's'
 
@@ -102,18 +116,24 @@ unsafe def simp_lemmas.append (s : simp_lemmas) (hs : List expr) : tactic simp_l
    Result (new_e, pr) is the new expression 'new_e' and a proof (pr : e R new_e) -/
 unsafe axiom simp_lemmas.rewrite (s : simp_lemmas) (e : expr) (prove : tactic Unit := failed) (r : Name := `eq)
     (md := reducible) : tactic (expr × expr)
+#align simp_lemmas.rewrite simp_lemmas.rewrite
 
 unsafe axiom simp_lemmas.rewrites (s : simp_lemmas) (e : expr) (prove : tactic Unit := failed) (r : Name := `eq)
     (md := reducible) : tactic <| List (expr × expr)
+#align simp_lemmas.rewrites simp_lemmas.rewrites
 
 /-- `simp_lemmas.drewrite s e` tries to rewrite 'e' using only refl lemmas in 's' -/
 unsafe axiom simp_lemmas.drewrite (s : simp_lemmas) (e : expr) (md := reducible) : tactic expr
+#align simp_lemmas.drewrite simp_lemmas.drewrite
 
 unsafe axiom is_valid_simp_lemma_cnst : Name → tactic Bool
+#align is_valid_simp_lemma_cnst is_valid_simp_lemma_cnst
 
 unsafe axiom is_valid_simp_lemma : expr → tactic Bool
+#align is_valid_simp_lemma is_valid_simp_lemma
 
 unsafe axiom simp_lemmas.pp : simp_lemmas → tactic format
+#align simp_lemmas.pp simp_lemmas.pp
 
 unsafe instance : has_to_tactic_format simp_lemmas :=
   ⟨simp_lemmas.pp⟩
@@ -134,12 +154,14 @@ unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : 
       unsafe_change <| expr.elet n h_simp e f
     | _ => fail "reverting hypothesis created neither a pi nor an elet expr (unreachable?)"
   intron num_reverted
+#align tactic.revert_and_transform tactic.revert_and_transform
 
 /-- `get_eqn_lemmas_for deps d` returns the automatically generated equational lemmas for definition d.
    If deps is tt, then lemmas for automatically generated auxiliary declarations used to define d are also included. -/
 unsafe def get_eqn_lemmas_for (deps : Bool) (d : Name) : tactic (List Name) := do
   let env ← get_env
   pure <| if deps then env d else env d
+#align tactic.get_eqn_lemmas_for tactic.get_eqn_lemmas_for
 
 structure DsimpConfig where
   md := reducible
@@ -165,6 +187,7 @@ structure DsimpConfig where
   unfoldReducible := false
   -- if tt, definitions with `reducible` transparency will be unfolded (delta-reduced)
   memoize := true
+#align tactic.dsimp_config Tactic.DsimpConfig
 
 -- Perform caching of dsimps of subterms.
 end Tactic
@@ -175,6 +198,7 @@ end Tactic
    The list `u` contains defintions to be delta-reduced, and projections to be reduced.-/
 unsafe axiom simp_lemmas.dsimplify (s : simp_lemmas) (u : List Name := []) (e : expr)
     (cfg : Tactic.DsimpConfig := {  }) : tactic expr
+#align simp_lemmas.dsimplify simp_lemmas.dsimplify
 
 namespace Tactic
 
@@ -195,6 +219,7 @@ unsafe axiom dsimplify_core
          the new expression should be revisited or not. -/
     (post : α → expr → tactic (α × expr × Bool))
     (e : expr) (cfg : DsimpConfig := {  }) : tactic (α × expr)
+#align tactic.dsimplify_core tactic.dsimplify_core
 
 unsafe def dsimplify (pre : expr → tactic (expr × Bool)) (post : expr → tactic (expr × Bool)) : expr → tactic expr :=
   fun e => do
@@ -208,21 +233,25 @@ unsafe def dsimplify (pre : expr → tactic (expr × Bool)) (post : expr → tac
           return (u, r))
         e
   return new_e
+#align tactic.dsimplify tactic.dsimplify
 
 unsafe def get_simp_lemmas_or_default : Option simp_lemmas → tactic simp_lemmas
   | none => simp_lemmas.mk_default
   | some s => return s
+#align tactic.get_simp_lemmas_or_default tactic.get_simp_lemmas_or_default
 
 unsafe def dsimp_target (s : Option simp_lemmas := none) (u : List Name := []) (cfg : DsimpConfig := {  }) :
     tactic Unit := do
   let s ← get_simp_lemmas_or_default s
   let t ← target >>= instantiate_mvars
   s u t cfg >>= unsafe_change
+#align tactic.dsimp_target tactic.dsimp_target
 
 unsafe def dsimp_hyp (h : expr) (s : Option simp_lemmas := none) (u : List Name := []) (cfg : DsimpConfig := {  }) :
     tactic Unit := do
   let s ← get_simp_lemmas_or_default s
   revert_and_transform (fun e => s u e cfg) h
+#align tactic.dsimp_hyp tactic.dsimp_hyp
 
 /- Remark: we use transparency.instances by default to make sure that we
    can unfold projections of type classes. Example:
@@ -232,24 +261,30 @@ unsafe def dsimp_hyp (h : expr) (s : Option simp_lemmas := none) (u : List Name 
 /-- Tries to unfold `e` if it is a constant or a constant application.
     Remark: this is not a recursive procedure. -/
 unsafe axiom dunfold_head (e : expr) (md := Transparency.instances) : tactic expr
+#align tactic.dunfold_head tactic.dunfold_head
 
 structure DunfoldConfig extends DsimpConfig where
   md := Transparency.instances
+#align tactic.dunfold_config Tactic.DunfoldConfig
 
 /- Remark: in principle, dunfold can be implemented on top of dsimp. We don't do it for
    performance reasons. -/
 unsafe axiom dunfold (cs : List Name) (e : expr) (cfg : DunfoldConfig := {  }) : tactic expr
+#align tactic.dunfold tactic.dunfold
 
 unsafe def dunfold_target (cs : List Name) (cfg : DunfoldConfig := {  }) : tactic Unit := do
   let t ← target
   dunfold cs t cfg >>= unsafe_change
+#align tactic.dunfold_target tactic.dunfold_target
 
 unsafe def dunfold_hyp (cs : List Name) (h : expr) (cfg : DunfoldConfig := {  }) : tactic Unit :=
   revert_and_transform (fun e => dunfold cs e cfg) h
+#align tactic.dunfold_hyp tactic.dunfold_hyp
 
 structure DeltaConfig where
   maxSteps := Simp.defaultMaxSteps
   visitInstances := true
+#align tactic.delta_config Tactic.DeltaConfig
 
 private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
   cs.any fun c =>
@@ -260,6 +295,7 @@ private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
             f.is_constant &&
           f.const_name.is_internal &&
         f.const_name.getPrefix = c
+#align tactic.is_delta_target tactic.is_delta_target
 
 /-- Delta reduce the given constant names -/
 unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tactic expr :=
@@ -275,19 +311,24 @@ unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tacti
   let (c, new_e) ←
     dsimplify_core () (fun c e => failed) unfold e { maxSteps := cfg.maxSteps, canonizeInstances := cfg.visitInstances }
   return new_e
+#align tactic.delta tactic.delta
 
 unsafe def delta_target (cs : List Name) (cfg : DeltaConfig := {  }) : tactic Unit := do
   let t ← target
   delta cs t cfg >>= unsafe_change
+#align tactic.delta_target tactic.delta_target
 
 unsafe def delta_hyp (cs : List Name) (h : expr) (cfg : DeltaConfig := {  }) : tactic Unit :=
   revert_and_transform (fun e => delta cs e cfg) h
+#align tactic.delta_hyp tactic.delta_hyp
 
 structure UnfoldProjConfig extends DsimpConfig where
   md := Transparency.instances
+#align tactic.unfold_proj_config Tactic.UnfoldProjConfig
 
 /-- If `e` is a projection application, try to unfold it, otherwise fail. -/
 unsafe axiom unfold_proj (e : expr) (md := Transparency.instances) : tactic expr
+#align tactic.unfold_proj tactic.unfold_proj
 
 unsafe def unfold_projs (e : expr) (cfg : UnfoldProjConfig := {  }) : tactic expr :=
   let unfold (changed : Bool) (e : expr) : tactic (Bool × expr × Bool) := do
@@ -297,13 +338,16 @@ unsafe def unfold_projs (e : expr) (cfg : UnfoldProjConfig := {  }) : tactic exp
   let (tt, new_e) ← dsimplify_core false (fun c e => failed) unfold e cfg.toDsimpConfig |
     fail "no projections to unfold"
   return new_e
+#align tactic.unfold_projs tactic.unfold_projs
 
 unsafe def unfold_projs_target (cfg : UnfoldProjConfig := {  }) : tactic Unit := do
   let t ← target
   unfold_projs t cfg >>= unsafe_change
+#align tactic.unfold_projs_target tactic.unfold_projs_target
 
 unsafe def unfold_projs_hyp (h : expr) (cfg : UnfoldProjConfig := {  }) : tactic Unit :=
   revert_and_transform (fun e => unfold_projs e cfg) h
+#align tactic.unfold_projs_hyp tactic.unfold_projs_hyp
 
 structure SimpConfig where
   maxSteps : Nat := Simp.defaultMaxSteps
@@ -325,6 +369,7 @@ structure SimpConfig where
   failIfUnchanged := true
   memoize := true
   traceLemmas := false
+#align tactic.simp_config Tactic.SimpConfig
 
 /-- `simplify s e cfg r prove` simplify `e` using `s` using bottom-up traversal.
   `discharger` is a tactic for dischaging new subgoals created by the simplifier.
@@ -335,6 +380,7 @@ structure SimpConfig where
 -/
 unsafe axiom simplify (s : simp_lemmas) (to_unfold : List Name := []) (e : expr) (cfg : SimpConfig := {  })
     (r : Name := `eq) (discharger : tactic Unit := failed) : tactic (expr × expr × name_set)
+#align tactic.simplify tactic.simplify
 
 unsafe def simp_target (s : simp_lemmas) (to_unfold : List Name := []) (cfg : SimpConfig := {  })
     (discharger : tactic Unit := failed) : tactic name_set := do
@@ -342,6 +388,7 @@ unsafe def simp_target (s : simp_lemmas) (to_unfold : List Name := []) (cfg : Si
   let (new_t, pr, lms) ← simplify s to_unfold t cfg `eq discharger
   replace_target new_t pr `` id_tag.simp
   return lms
+#align tactic.simp_target tactic.simp_target
 
 unsafe def simp_hyp (s : simp_lemmas) (to_unfold : List Name := []) (h : expr) (cfg : SimpConfig := {  })
     (discharger : tactic Unit := failed) : tactic (expr × name_set) := do
@@ -350,6 +397,7 @@ unsafe def simp_hyp (s : simp_lemmas) (to_unfold : List Name := []) (h : expr) (
   let (h_new_type, pr, lms) ← simplify s to_unfold htype cfg `eq discharger
   let new_hyp ← replace_hyp h h_new_type pr `` id_tag.simp
   return (new_hyp, lms)
+#align tactic.simp_hyp tactic.simp_hyp
 
 /-- `ext_simplify_core a c s discharger pre post r e`:
 
@@ -391,6 +439,7 @@ unsafe axiom ext_simplify_core {α : Type} (a : α) (c : SimpConfig) (s : simp_l
     (pre : α → simp_lemmas → Name → Option expr → expr → tactic (α × expr × Option expr × Bool))
     (post : α → simp_lemmas → Name → Option expr → expr → tactic (α × expr × Option expr × Bool)) (r : Name) :
     expr → tactic (α × expr × expr)
+#align tactic.ext_simplify_core tactic.ext_simplify_core
 
 private unsafe def is_equation : expr → Bool
   | expr.pi n bi d b => is_equation b
@@ -398,9 +447,11 @@ private unsafe def is_equation : expr → Bool
     match expr.is_eq e with
     | some a => true
     | none => false
+#align tactic.is_equation tactic.is_equation
 
 unsafe def collect_ctx_simps : tactic (List expr) :=
   local_context
+#align tactic.collect_ctx_simps tactic.collect_ctx_simps
 
 section SimpIntros
 
@@ -408,9 +459,11 @@ unsafe def intro1_aux : Bool → List Name → tactic expr
   | ff, _ => intro1
   | tt, n :: ns => intro n
   | _, _ => failed
+#align tactic.intro1_aux tactic.intro1_aux
 
 structure SimpIntrosConfig extends SimpConfig where
   useHyps := false
+#align tactic.simp_intros_config Tactic.SimpIntrosConfig
 
 unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : List Name) :
     simp_lemmas → Bool → List Name → tactic simp_lemmas
@@ -428,7 +481,7 @@ unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : Lis
               assertv_core h_d new_d h_new_d
               clear h_d
               let h_new ← intro1
-              let new_S ← if use_hyps then mcond (is_prop new_d) (S h_new ff) (return S) else return S
+              let new_S ← if use_hyps then condM (is_prop new_d) (S h_new ff) (return S) else return S
               simp_intros_aux new_S use_ns ns) <|>-- failed to simplify... we just introduce and continue
                 intro1_aux
                 use_ns ns >>
@@ -440,12 +493,14 @@ unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : Lis
             if new_t then unsafe_change new_t >> simp_intros_aux S use_ns ns
               else
                 try (simp_target S to_unfold cfg) >>
-                  mcond (expr.is_pi <$> target) (simp_intros_aux S use_ns ns)
+                  condM (expr.is_pi <$> target) (simp_intros_aux S use_ns ns)
                     (if use_ns ∧ ¬ns then failed else return S)
+#align tactic.simp_intros_aux tactic.simp_intros_aux
 
 unsafe def simp_intros (s : simp_lemmas) (to_unfold : List Name := []) (ids : List Name := [])
     (cfg : SimpIntrosConfig := {  }) : tactic Unit :=
   step <| simp_intros_aux cfg.toSimpConfig cfg.useHyps to_unfold s (not ids.Empty) ids
+#align tactic.simp_intros tactic.simp_intros
 
 end SimpIntros
 
@@ -454,6 +509,7 @@ unsafe def mk_eq_simp_ext (simp_ext : expr → tactic (expr × expr)) : tactic U
   let (new_rhs, HEq) ← simp_ext lhs
   unify rhs new_rhs
   exact HEq
+#align tactic.mk_eq_simp_ext tactic.mk_eq_simp_ext
 
 -- Simp attribute support
 unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
@@ -461,6 +517,7 @@ unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
   | S, n :: ns => do
     let S' ← has_attribute `congr n >> S.add_congr n <|> S.add_simp n false
     to_simp_lemmas S' ns
+#align tactic.to_simp_lemmas tactic.to_simp_lemmas
 
 unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tactic := do
   let t := quote.1 (user_attribute simp_lemmas)
@@ -482,6 +539,7 @@ unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tacti
   let n := mk_simp_attr_decl_name attr_name
   add_decl (declaration.defn n [] t v ReducibilityHints.abbrev ff)
   attribute.register n
+#align tactic.mk_simp_attr tactic.mk_simp_attr
 
 /-- ### Example usage:
 ```lean
@@ -497,17 +555,20 @@ attribute [my_reduction] if_pos if_neg dif_pos dif_neg
  -/
 unsafe def get_user_simp_lemmas (attr_name : Name) : tactic simp_lemmas :=
   if attr_name = `default then simp_lemmas.mk_default else get_attribute_cache_dyn (mk_simp_attr_decl_name attr_name)
+#align tactic.get_user_simp_lemmas tactic.get_user_simp_lemmas
 
 unsafe def join_user_simp_lemmas_core : simp_lemmas → List Name → tactic simp_lemmas
   | S, [] => return S
   | S, attr_name :: R => do
     let S' ← get_user_simp_lemmas attr_name
     join_user_simp_lemmas_core (S S') R
+#align tactic.join_user_simp_lemmas_core tactic.join_user_simp_lemmas_core
 
 unsafe def join_user_simp_lemmas (no_dflt : Bool) (attrs : List Name) : tactic simp_lemmas := do
   let s ← simp_lemmas.mk_default
   let s := if no_dflt then s.erase_simp_lemmas else s
   join_user_simp_lemmas_core s attrs
+#align tactic.join_user_simp_lemmas tactic.join_user_simp_lemmas
 
 unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × expr × expr)) (e : expr)
     (cfg : SimpConfig := {  }) : tactic (α × expr × expr) :=
@@ -517,6 +578,7 @@ unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × 
       guard ¬new_e == e
       return (new_a, new_e, some pr, tt))
     (fun _ _ _ _ _ => failed) `eq e
+#align tactic.simplify_top_down tactic.simplify_top_down
 
 unsafe def simp_top_down (pre : expr → tactic (expr × expr)) (cfg : SimpConfig := {  }) : tactic Unit := do
   let t ← target
@@ -527,6 +589,7 @@ unsafe def simp_top_down (pre : expr → tactic (expr × expr)) (cfg : SimpConfi
           return ((), new_e, pr))
         t cfg
   replace_target new_target pr `` id_tag.simp
+#align tactic.simp_top_down tactic.simp_top_down
 
 unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α × expr × expr)) (e : expr)
     (cfg : SimpConfig := {  }) : tactic (α × expr × expr) :=
@@ -536,6 +599,7 @@ unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α �
       guard ¬new_e == e
       return (new_a, new_e, some pr, tt))
     `eq e
+#align tactic.simplify_bottom_up tactic.simplify_bottom_up
 
 unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpConfig := {  }) : tactic Unit := do
   let t ← target
@@ -546,9 +610,11 @@ unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpCon
           return ((), new_e, pr))
         t cfg
   replace_target new_target pr `` id_tag.simp
+#align tactic.simp_bottom_up tactic.simp_bottom_up
 
 private unsafe def remove_deps (s : name_set) (h : expr) : name_set :=
   if s.Empty then s else h.fold s fun e o s => if e.is_local_constant then s.erase e.local_uniq_name else s
+#align tactic.remove_deps tactic.remove_deps
 
 /- Return the list of hypothesis that are propositions and do not have
    forward dependencies. -/
@@ -561,11 +627,12 @@ unsafe def non_dep_prop_hyps : tactic (List expr) := do
           let s := remove_deps s h_type
           let h_val ← head_zeta h
           let s := if h_val == h then s else remove_deps s h_val
-          mcond (is_prop h_type) (return <| s h) (return s))
+          condM (is_prop h_type) (return <| s h) (return s))
         mk_name_set
   let t ← target
   let s := remove_deps s t
   return <| ctx fun h => s h
+#align tactic.non_dep_prop_hyps tactic.non_dep_prop_hyps
 
 section SimpAll
 
@@ -577,12 +644,14 @@ unsafe structure simp_all_entry where
   pr : Option expr
   -- proof that type of h is equal to new_type
   s : simp_lemmas
+#align tactic.simp_all_entry tactic.simp_all_entry
 
 -- simplification lemmas for simplifying new_type
 private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) : tactic (List simp_all_entry) :=
   es.mmap fun e => do
     let new_s ← e.s.add h false
     return { e with s := new_s }
+#align tactic.update_simp_lemmas tactic.update_simp_lemmas
 
 /- Helper tactic for `init`.
    Remark: the following tactic is quadratic on the length of list expr (the list of non dependent propositions).
@@ -594,22 +663,27 @@ private unsafe def init_aux : List expr → simp_lemmas → List simp_all_entry 
     let new_s ← s.add h false
     let h_type ← infer_type h
     init_aux hs new_s (⟨h, h_type, none, s⟩ :: new_r)
+#align tactic.init_aux tactic.init_aux
 
 private unsafe def init (s : simp_lemmas) (hs : List expr) : tactic (simp_lemmas × List simp_all_entry) :=
   init_aux hs s []
+#align tactic.init tactic.init
 
 private unsafe def add_new_hyps (es : List simp_all_entry) : tactic Unit :=
   es.mmap' fun e =>
     match e.pr with
     | none => return ()
     | some pr => assert e.h.local_pp_name e.new_type >> mk_eq_mp pr e.h >>= exact
+#align tactic.add_new_hyps tactic.add_new_hyps
 
 private unsafe def clear_old_hyps (es : List simp_all_entry) : tactic Unit :=
   es.mmap' fun e => when (e.pr ≠ none) (try (clear e.h))
+#align tactic.clear_old_hyps tactic.clear_old_hyps
 
 private unsafe def join_pr : Option expr → expr → tactic expr
   | none, pr₂ => return pr₂
   | some pr₁, pr₂ => mk_eq_trans pr₁ pr₂
+#align tactic.join_pr tactic.join_pr
 
 private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold : List Name) :
     List simp_all_entry → List simp_all_entry → simp_lemmas → Bool → tactic name_set
@@ -644,17 +718,20 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
             let new_s ← s new_fact_pr ff
             let new_lms ← loop new_es new_r new_s tt
             return (new_lms lms fun n ns => name_set.insert ns n)
+#align tactic.loop tactic.loop
 
 unsafe def simp_all (s : simp_lemmas) (to_unfold : List Name) (cfg : SimpConfig := {  })
     (discharger : tactic Unit := failed) : tactic name_set := do
   let hs ← non_dep_prop_hyps
   let (s, es) ← init s hs
   loop cfg discharger to_unfold es [] s ff
+#align tactic.simp_all tactic.simp_all
 
 end SimpAll
 
 -- debugging support for algebraic normalizer
 unsafe axiom trace_algebra_info : expr → tactic Unit
+#align tactic.trace_algebra_info tactic.trace_algebra_info
 
 end Tactic
 

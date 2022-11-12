@@ -10,6 +10,7 @@ import Leanbin.Init.Meta.RbMap
 
 def Tactic.IdTag.rsimp : Unit :=
   ()
+#align tactic.id_tag.rsimp Tactic.IdTag.rsimp
 
 open Tactic
 
@@ -18,6 +19,7 @@ private unsafe def add_lemma (m : Transparency) (h : Name) (hs : hinst_lemmas) :
       let h ← hinst_lemma.mk_from_decl_core m h true
       return <| hs h) <|>
     return hs
+#align add_lemma add_lemma
 
 private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) : List Name → hinst_lemmas → tactic hinst_lemmas
   | [], hs => return hs
@@ -29,7 +31,8 @@ private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) : List Nam
       let eqns ← tactic.get_eqn_lemmas_for true n
       match eqns with
         | [] => add n
-        | _ => mcond (is_prop_decl n) (add n) (to_hinst_lemmas eqns hs >>= to_hinst_lemmas ns)
+        | _ => condM (is_prop_decl n) (add n) (to_hinst_lemmas eqns hs >>= to_hinst_lemmas ns)
+#align to_hinst_lemmas to_hinst_lemmas
 
 /-- Create a rsimp attribute named `attr_name`, the attribute declaration is named `attr_decl_name`.
     The cached hinst_lemmas structure is built using the lemmas marked with simp attribute `simp_attr_name`,
@@ -56,6 +59,7 @@ unsafe def mk_hinst_lemma_attr_from_simp_attr (attr_decl_name attr_name : Name) 
         user_attribute hinst_lemmas)
   add_decl (declaration.defn attr_decl_name [] t v ReducibilityHints.abbrev ff)
   attribute.register attr_decl_name
+#align mk_hinst_lemma_attr_from_simp_attr mk_hinst_lemma_attr_from_simp_attr
 
 run_cmd
   mk_name_set_attr `no_rsimp
@@ -87,6 +91,7 @@ unsafe def is_value_like : expr → Bool
             else
               if fname = `` bit1 ∧ nargs = 4 then is_value_like e.app_arg
               else if fname = `` Char.ofNat ∧ nargs = 1 then is_value_like e.app_arg else false
+#align rsimp.is_value_like rsimp.is_value_like
 
 /-- Return the size of term by considering only explicit arguments. -/
 unsafe def explicit_size : expr → tactic Nat
@@ -98,6 +103,7 @@ unsafe def explicit_size : expr → tactic Nat
         fold_explicit_args e 1 fun n arg => do
           let r ← explicit_size arg
           return <| r + n
+#align rsimp.explicit_size rsimp.explicit_size
 
 /-- Choose smallest element (with respect to explicit_size) in `e`s equivalence class. -/
 unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
@@ -109,12 +115,15 @@ unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
           let sz' ← explicit_size e'
           if sz' < p.2 then return (e', sz') else return p
   return p.1
+#align rsimp.choose rsimp.choose
 
 unsafe def repr_map :=
   expr_map expr
+#align rsimp.repr_map rsimp.repr_map
 
 unsafe def mk_repr_map :=
   expr_map.mk expr
+#align rsimp.mk_repr_map rsimp.mk_repr_map
 
 unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
   ccs.roots.mfoldl
@@ -122,6 +131,7 @@ unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
       let r ← choose ccs e
       return <| S e r)
     mk_repr_map
+#align rsimp.to_repr_map rsimp.to_repr_map
 
 unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) : tactic (expr × expr) := do
   let m ←
@@ -138,15 +148,18 @@ unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) :
           return ((), new_t, prf))
         e
   return r.2
+#align rsimp.rsimplify rsimp.rsimplify
 
 structure Config where
   attrName := `rsimp_attr
   maxRounds := 8
+#align rsimp.config Rsimp.Config
 
 open SmtTactic
 
 private def tagged_proof.rsimp : Unit :=
   ()
+#align rsimp.tagged_proof.rsimp rsimp.tagged_proof.rsimp
 
 unsafe def collect_implied_eqs (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic cc_state := do
   focus1 <|
@@ -155,11 +168,13 @@ unsafe def collect_implied_eqs (cfg : Config := {  }) (extra := hinst_lemmas.mk)
         add_lemmas extra
         iterate_at_most cfg (ematch >> try smt_tactic.close)
         done >> return cc_state.mk <|> to_cc_state
+#align rsimp.collect_implied_eqs rsimp.collect_implied_eqs
 
 unsafe def rsimplify_goal (ccs : cc_state) (m : Option repr_map := none) : tactic Unit := do
   let t ← target
   let (new_t, pr) ← rsimplify ccs t m
   try (replace_target new_t pr `` id_tag.rsimp)
+#align rsimp.rsimplify_goal rsimp.rsimplify_goal
 
 unsafe def rsimplify_at (ccs : cc_state) (h : expr) (m : Option repr_map := none) : tactic Unit := do
   when (expr.is_local_constant h = ff)
@@ -170,6 +185,7 @@ unsafe def rsimplify_at (ccs : cc_state) (h : expr) (m : Option repr_map := none
       assert (expr.local_pp_name h) new_htype
       mk_eq_mp HEq h >>= exact
       try <| clear h
+#align rsimp.rsimplify_at rsimp.rsimplify_at
 
 end Rsimp
 
@@ -180,16 +196,19 @@ namespace Tactic
 unsafe def rsimp (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
   try <| rsimplify_goal ccs
+#align tactic.rsimp tactic.rsimp
 
 unsafe def rsimp_at (h : expr) (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
   try <| rsimplify_at ccs h
+#align tactic.rsimp_at tactic.rsimp_at
 
 namespace Interactive
 
 -- TODO(Leo): allow user to provide extra lemmas manually
 unsafe def rsimp : tactic Unit :=
   tactic.rsimp
+#align tactic.interactive.rsimp tactic.interactive.rsimp
 
 end Interactive
 

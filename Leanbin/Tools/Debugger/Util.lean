@@ -8,15 +8,18 @@ namespace Debugger
 
 def isSpace (c : Char) : Bool :=
   if c = ' ' ∨ c = Char.ofNat 11 ∨ c = '\n' then true else false
+#align debugger.is_space Debugger.isSpace
 
 private def split_core : List Char → Option String → List String
   | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some <| String.singleton c)
   | c :: cs, some s => if isSpace c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
+#align debugger.split_core debugger.split_core
 
 def split (s : String) : List String :=
   splitCore s.toList none
+#align debugger.split Debugger.split
 
 def toQualifiedNameCore : List Char → Name → String → Name
   | [], r, s => if s.isEmpty then r else .str r s
@@ -25,27 +28,34 @@ def toQualifiedNameCore : List Char → Name → String → Name
     else
       if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (.str r s) ""
       else to_qualified_name_core cs r (s.str c)
+#align debugger.to_qualified_name_core Debugger.toQualifiedNameCore
 
 def toQualifiedName (s : String) : Name :=
   toQualifiedNameCore s.toList Name.anonymous ""
+#align debugger.to_qualified_name Debugger.toQualifiedName
 
 def oleanToLean (s : String) :=
   s.popnBack 5 ++ "lean"
+#align debugger.olean_to_lean Debugger.oleanToLean
 
 unsafe def get_file (fn : Name) : vm String :=
   (do
       let d ← vm.get_decl fn
-      let some n ← return (vm_decl.olean d) | failure
+      let some n ← return (vm_decl.olean d) |
+        failure
       return (olean_to_lean n)) <|>
     return "[current file]"
+#align debugger.get_file debugger.get_file
 
 unsafe def pos_info (fn : Name) : vm String :=
   (do
       let d ← vm.get_decl fn
-      let some p ← return (vm_decl.pos d) | failure
+      let some p ← return (vm_decl.pos d) |
+        failure
       let file ← get_file fn
       return s! "{file }:{p }:{p}") <|>
     return "<position not available>"
+#align debugger.pos_info debugger.pos_info
 
 unsafe def show_fn (header : String) (fn : Name) (frame : Nat) : vm Unit := do
   let pos ← pos_info fn
@@ -54,11 +64,13 @@ unsafe def show_fn (header : String) (fn : Name) (frame : Nat) : vm Unit := do
   vm.put_str
       s! "{fn } at {Pos}
         "
+#align debugger.show_fn debugger.show_fn
 
 unsafe def show_curr_fn (header : String) : vm Unit := do
   let fn ← vm.curr_fn
   let sz ← vm.call_stack_size
   show_fn header fn (sz - 1)
+#align debugger.show_curr_fn debugger.show_curr_fn
 
 unsafe def is_valid_fn_prefix (p : Name) : vm Bool := do
   let env ← vm.get_env
@@ -67,11 +79,13 @@ unsafe def is_valid_fn_prefix (p : Name) : vm Bool := do
         r ||
           let n := d
           p n
+#align debugger.is_valid_fn_prefix debugger.is_valid_fn_prefix
 
 unsafe def show_frame (frame_idx : Nat) : vm Unit := do
   let sz ← vm.call_stack_size
   let fn ← if frame_idx ≥ sz then vm.curr_fn else vm.call_stack_fn frame_idx
   show_fn "" fn frame_idx
+#align debugger.show_frame debugger.show_frame
 
 unsafe def type_to_string : Option expr → Nat → vm String
   | none, i => do
@@ -95,6 +109,7 @@ unsafe def type_to_string : Option expr → Nat → vm String
     let fmt ← vm.pp_expr type
     let opts ← vm.get_options
     return <| fmt opts
+#align debugger.type_to_string debugger.type_to_string
 
 unsafe def show_vars_core : Nat → Nat → Nat → vm Unit
   | c, i, e =>
@@ -106,10 +121,12 @@ unsafe def show_vars_core : Nat → Nat → Nat → vm Unit
           s! "#{c } {n } : {type_str}
             "
       show_vars_core (c + 1) (i + 1) e
+#align debugger.show_vars_core debugger.show_vars_core
 
 unsafe def show_vars (frame : Nat) : vm Unit := do
   let (s, e) ← vm.call_stack_var_range frame
   show_vars_core 0 s e
+#align debugger.show_vars debugger.show_vars
 
 unsafe def show_stack_core : Nat → vm Unit
   | 0 => return ()
@@ -117,10 +134,12 @@ unsafe def show_stack_core : Nat → vm Unit
     let fn ← vm.call_stack_fn i
     show_fn "" fn i
     show_stack_core i
+#align debugger.show_stack_core debugger.show_stack_core
 
 unsafe def show_stack : vm Unit := do
   let sz ← vm.call_stack_size
   show_stack_core sz
+#align debugger.show_stack debugger.show_stack
 
 end Debugger
 

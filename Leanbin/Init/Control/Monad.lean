@@ -13,6 +13,7 @@ open Function
 #print Bind /-
 class Bind (m : Type u → Type v) where
   bind : ∀ {α β : Type u}, m α → (α → m β) → m β
+#align has_bind Bind
 -/
 
 export Bind (bind)
@@ -21,19 +22,23 @@ export Bind (bind)
 def Bind.andThen {α β : Type u} {m : Type u → Type v} [Bind m] (x : m α) (y : m β) : m β := do
   x
   y
+#align has_bind.and_then Bind.andThen
 
 #print Monad /-
 class Monad (m : Type u → Type v) extends Applicative m, Bind m : Type max (u + 1) v where
   map := fun α β f x => x >>= pure ∘ f
   seq := fun α β f x => f >>= (· <$> x)
+#align monad Monad
 -/
 
 @[reducible, inline]
 def return {m : Type u → Type v} [Monad m] {α : Type u} : α → m α :=
   pure
+#align return return
 
 -- Identical to has_bind.and_then, but it is not inlined.
 def Bind.seq {α β : Type u} {m : Type u → Type v} [Bind m] (x : m α) (y : m β) : m β := do
   x
   y
+#align has_bind.seq Bind.seq
 

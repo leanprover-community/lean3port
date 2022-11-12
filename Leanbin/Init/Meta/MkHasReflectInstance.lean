@@ -20,6 +20,7 @@ private unsafe def get_has_reflect_type_name : tactic Name :=
       let const I ls ← return (get_app_fn t)
       return I) <|>
     fail "mk_has_reflect_instance tactic failed, target type is expected to be of the form (has_reflect ...)"
+#align tactic.get_has_reflect_type_name tactic.get_has_reflect_type_name
 
 -- Try to synthesize constructor argument using type class resolution
 private unsafe def mk_has_reflect_instance_for (a : expr) : tactic expr := do
@@ -33,6 +34,7 @@ private unsafe def mk_has_reflect_instance_for (a : expr) : tactic expr := do
               (to_fmt "mk_has_reflect_instance failed, failed to generate instance for" ++
                 format.nest 2 (format.line ++ f))
     mk_app `reflect [a, inst]
+#align tactic.mk_has_reflect_instance_for tactic.mk_has_reflect_instance_for
 
 -- Synthesize (recursive) instances of `reflected` for all fields
 private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (List expr)
@@ -43,6 +45,7 @@ private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (
     let quote ← if rec then mk_brec_on_rec_value F_name num_rec else mk_has_reflect_instance_for field
     let quotes ← mk_reflect I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (quote :: quotes)
+#align tactic.mk_reflect tactic.mk_reflect
 
 -- Solve the subgoal for constructor `F_name`
 private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List Name) : tactic Unit := do
@@ -60,12 +63,14 @@ private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List N
           field_quotes.mfoldl
         (fun quote fquote => to_expr (pquote.1 (reflected.subst (%%ₓquote) (%%ₓfquote)))) quote
   exact quote
+#align tactic.has_reflect_case tactic.has_reflect_case
 
 private unsafe def for_each_has_reflect_goal : Name → Name → List (List Name) → tactic Unit
   | I_name, F_name, [] => done <|> fail "mk_has_reflect_instance failed, unexpected number of cases"
   | I_name, F_name, ns :: nss => do
     solve1 (has_reflect_case I_name F_name ns)
     for_each_has_reflect_goal I_name F_name nss
+#align tactic.for_each_has_reflect_goal tactic.for_each_has_reflect_goal
 
 /-- Solves a goal of the form `has_reflect α` where α is an inductive type.
     Needs to synthesize a `reflected` instance for each inductive parameter type of α
@@ -84,6 +89,7 @@ unsafe def mk_has_reflect_instance : tactic Unit := do
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p
   get_local v_name >>= fun v => cases v (join arg_names)
   for_each_has_reflect_goal I_name F_name arg_names
+#align tactic.mk_has_reflect_instance tactic.mk_has_reflect_instance
 
 end Tactic
 

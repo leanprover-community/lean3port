@@ -25,6 +25,7 @@ universe u v
 unsafe inductive interaction_monad.result (state : Type) (α : Type u)
   | success : α → state → interaction_monad.result
   | exception : Option (Unit → format) → Option Pos → state → interaction_monad.result
+#align interaction_monad.result interaction_monad.result
 
 open InteractionMonad.Result
 
@@ -38,9 +39,11 @@ unsafe def interaction_monad.result_to_string : result state α → String
   | success a s => toString a
   | exception (some t) ref s => "Exception: " ++ toString (t ())
   | exception none ref s => "[silent exception]"
+#align interaction_monad.result_to_string interaction_monad.result_to_string
 
 unsafe instance interaction_monad.result_has_string : ToString (result state α) :=
   ⟨interaction_monad.result_to_string⟩
+#align interaction_monad.result_has_string interaction_monad.result_has_string
 
 end
 
@@ -49,10 +52,12 @@ unsafe def interaction_monad.result.clamp_pos {state : Type} {α : Type u} (line
   | success a s => success a s
   | exception msg (some p) s => exception msg (some <| if p.line < line0 then ⟨line, col⟩ else p) s
   | exception msg none s => exception msg (some ⟨line, col⟩) s
+#align interaction_monad.result.clamp_pos interaction_monad.result.clamp_pos
 
 @[reducible]
 unsafe def interaction_monad (state : Type) (α : Type u) :=
   state → result state α
+#align interaction_monad interaction_monad
 
 section
 
@@ -66,38 +71,48 @@ local notation "m" => interaction_monad state
 @[inline]
 unsafe def interaction_monad_fmap (f : α → β) (t : m α) : m β := fun s =>
   interaction_monad.result.cases_on (t s) (fun a s' => success (f a) s') fun e s' => exception e s'
+#align interaction_monad_fmap interaction_monad_fmap
 
 @[inline]
 unsafe def interaction_monad_bind (t₁ : m α) (t₂ : α → m β) : m β := fun s =>
   interaction_monad.result.cases_on (t₁ s) (fun a s' => t₂ a s') fun e s' => exception e s'
+#align interaction_monad_bind interaction_monad_bind
 
 @[inline]
 unsafe def interaction_monad_return (a : α) : m α := fun s => success a s
+#align interaction_monad_return interaction_monad_return
 
 unsafe def interaction_monad_orelse {α : Type u} (t₁ t₂ : m α) : m α := fun s =>
   interaction_monad.result.cases_on (t₁ s) success fun e₁ ref₁ s' =>
     interaction_monad.result.cases_on (t₂ s) success exception
+#align interaction_monad_orelse interaction_monad_orelse
 
 @[inline]
 unsafe def interaction_monad_seq (t₁ : m α) (t₂ : m β) : m β :=
   interaction_monad_bind t₁ fun a => t₂
+#align interaction_monad_seq interaction_monad_seq
 
 unsafe instance interaction_monad.monad : Monad m where
   map := @interaction_monad_fmap
   pure := @interaction_monad_return
   bind := @interaction_monad_bind
+#align interaction_monad.monad interaction_monad.monad
 
 unsafe def interaction_monad.mk_exception {α : Type u} {β : Type v} [has_to_format β] (msg : β) (ref : Option expr)
     (s : state) : result state α :=
   exception (some fun _ => to_fmt msg) none s
+#align interaction_monad.mk_exception interaction_monad.mk_exception
 
 unsafe def interaction_monad.fail {α : Type u} {β : Type v} [has_to_format β] (msg : β) : m α := fun s =>
   interaction_monad.mk_exception msg none s
+#align interaction_monad.fail interaction_monad.fail
 
 unsafe def interaction_monad.silent_fail {α : Type u} : m α := fun s => exception none none s
+#align interaction_monad.silent_fail interaction_monad.silent_fail
 
 unsafe def interaction_monad.failed {α : Type u} : m α :=
   interaction_monad.fail "failed"
+#align interaction_monad.failed interaction_monad.failed
 
 /- Alternative orelse operator that allows to select which exception should be used.
    The default is to use the first exception since the standard `orelse` uses the second. -/
@@ -105,9 +120,11 @@ unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first
   interaction_monad.result.cases_on (t₁ s) success fun e₁ ref₁ s₁' =>
     interaction_monad.result.cases_on (t₂ s) success fun e₂ ref₂ s₂' =>
       if use_first_ex then exception e₁ ref₁ s₁' else exception e₂ ref₂ s₂'
+#align interaction_monad.orelse' interaction_monad.orelse'
 
 unsafe instance interaction_monad.monad_fail : MonadFail m :=
   { interaction_monad.monad with fail := fun α s => interaction_monad.fail (to_fmt s) }
+#align interaction_monad.monad_fail interaction_monad.monad_fail
 
 @[inline]
 unsafe def interaction_monad.bracket {α β γ} (x : m α) (inside : m β) (y : m γ) : m β :=
@@ -115,6 +132,7 @@ unsafe def interaction_monad.bracket {α β γ} (x : m α) (inside : m β) (y : 
     match inside s with
     | success r s' => (y >> success r) s'
     | exception msg p s' => (y >> exception msg p) s'
+#align interaction_monad.bracket interaction_monad.bracket
 
 -- TODO: unify `parser` and `tactic` behavior?
 -- meta instance interaction_monad.alternative : alternative m :=

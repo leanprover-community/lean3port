@@ -13,11 +13,13 @@ namespace Tactic
 private unsafe def report {α} (s : tactic_state) : Option (Unit → format) → α
   | some fmt => undefined_core <| format.to_string <| fmt () ++ format.line ++ to_fmt s
   | none => undefined_core "silent failure"
+#align tactic.report tactic.report
 
 private unsafe def run_or_fail {α} (s : tactic_state) (tac : tactic α) : α :=
   match tac s with
   | result.success a s => a
   | result.exception fmt _ s' => report s' fmt
+#align tactic.run_or_fail tactic.run_or_fail
 
 unsafe def run_async {α : Type} (tac : tactic α) : tactic (task α) := do
   let s ← read
@@ -26,6 +28,7 @@ unsafe def run_async {α : Type} (tac : tactic α) : tactic (task α) := do
         match tac s with
         | result.success a s => a
         | result.exception fmt _ s' => report s' fmt
+#align tactic.run_async tactic.run_async
 
 unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
   let ctx ← local_context
@@ -49,6 +52,7 @@ unsafe def prove_goal_async (tac : tactic Unit) : tactic Unit := do
         return proof
   add_decl <| declaration.thm lemma_name params tgt proof
   exact (expr.const lemma_name (params level.param))
+#align tactic.prove_goal_async tactic.prove_goal_async
 
 namespace Interactive
 
@@ -57,6 +61,7 @@ open Interactive.Types
 /-- Proves the first goal asynchronously as a separate lemma. -/
 unsafe def async (tac : itactic) : tactic Unit :=
   prove_goal_async tac
+#align tactic.interactive.async tactic.interactive.async
 
 end Interactive
 

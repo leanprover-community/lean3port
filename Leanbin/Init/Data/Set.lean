@@ -13,11 +13,13 @@ universe u v
 /-- A set of elements of type `α`; implemented as a predicate `α → Prop`. -/
 def Set (α : Type u) :=
   α → Prop
+#align set Set
 -/
 
 /-- The set `{x | p x}` of elements satisfying the predicate `p`. -/
 def SetOf {α : Type u} (p : α → Prop) : Set α :=
   p
+#align set_of SetOf
 
 namespace Set
 
@@ -25,10 +27,12 @@ variable {α : Type u}
 
 instance hasMem : Membership α (Set α) :=
   ⟨fun x s => s x⟩
+#align set.has_mem Set.hasMem
 
 @[simp]
 theorem mem_set_of_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
   rfl
+#align set.mem_set_of_eq Set.mem_set_of_eq
 
 instance : EmptyCollection (Set α) :=
   ⟨{ x | False }⟩
@@ -36,6 +40,7 @@ instance : EmptyCollection (Set α) :=
 /-- The set that contains all elements of a type. -/
 def Univ : Set α :=
   { x | True }
+#align set.univ Set.Univ
 
 instance : Insert α (Set α) :=
   ⟨fun a s => { b | b = a ∨ b ∈ s }⟩

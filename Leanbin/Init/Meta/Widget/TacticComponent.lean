@@ -13,6 +13,7 @@ namespace Widget
 A component that implicitly depends on tactic_state. For efficiency we always assume that the tactic_state is unchanged between component renderings. -/
 unsafe def tc (π : Type) (α : Type) :=
   component (tactic_state × π) α
+#align widget.tc widget.tc
 
 namespace Tc
 
@@ -20,12 +21,15 @@ variable {π ρ α β : Type}
 
 unsafe def of_component : component π α → tc π α :=
   component.map_props Prod.snd
+#align widget.tc.of_component widget.tc.of_component
 
 unsafe def map_action (f : α → β) : tc π α → tc π β :=
   component.map_action f
+#align widget.tc.map_action widget.tc.map_action
 
 unsafe def map_props (f : π → ρ) : tc ρ α → tc π α :=
   component.map_props (Prod.map id f)
+#align widget.tc.map_props widget.tc.map_props
 
 open InteractionMonad
 
@@ -56,15 +60,19 @@ unsafe def mk_simple [DecidableEq π] (β σ : Type) (init : π → tactic σ) (
         | success h _ => h
         | exception msg Pos s => ["rendering tactic failed "]
       | exception msg Pos s => ["state of tactic component has failed!"]
+#align widget.tc.mk_simple widget.tc.mk_simple
 
 unsafe def stateless [DecidableEq π] (view : π → tactic (List (html α))) : tc π α :=
   tc.mk_simple α Unit (fun p => pure ()) (fun _ _ b => pure ((), some b)) fun p _ => view p
+#align widget.tc.stateless widget.tc.stateless
 
 unsafe def to_html : tc π α → π → tactic (html α)
   | c, p, ts => success (html.of_component (ts, p) c) ts
+#align widget.tc.to_html widget.tc.to_html
 
 unsafe def to_component : tc Unit α → component tactic_state α
   | c => component.map_props (fun tc => (tc, ())) c
+#align widget.tc.to_component widget.tc.to_component
 
 unsafe instance : CoeFun (tc π α) fun x => π → tactic (html α) :=
   ⟨to_html⟩

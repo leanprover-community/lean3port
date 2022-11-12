@@ -23,17 +23,20 @@ open Tactic
     how to derive `cls`, in which case lower-priority handlers will be tried next. -/
 unsafe def derive_handler :=
   ∀ (cls : pexpr) (decl : Name), tactic Bool
+#align derive_handler derive_handler
 
 @[user_attribute]
 unsafe def derive_handler_attr : user_attribute where
   Name := `derive_handler
   descr := "register a definition of type `derive_handler` for use in the [derive] attribute"
+#align derive_handler_attr derive_handler_attr
 
 private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler → tactic Unit
   | [] => fail f! "failed to find a derive handler for '{p}'"
   | h :: hs => do
     let success ← h p n
     when ¬success <| try_handlers hs
+#align try_handlers try_handlers
 
 @[user_attribute]
 unsafe def derive_attr : user_attribute Unit (List pexpr) where
@@ -46,6 +49,7 @@ unsafe def derive_attr : user_attribute Unit (List pexpr) where
       let handlers ← attribute.get_instances `derive_handler
       let handlers ← handlers.mmap fun n => eval_expr derive_handler (expr.const n [])
       ps fun p => try_handlers p n handlers
+#align derive_attr derive_attr
 
 /-- Given a tactic `tac` that can solve an application of `cls` in the right context,
     `instance_derive_handler` uses it to build an instance declaration of `cls n`. -/
@@ -85,6 +89,7 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     set_basic_attribute `instance (n ++ cls) tt
     pure True
   else pure False
+#align instance_derive_handler instance_derive_handler
 
 @[derive_handler]
 unsafe def has_reflect_derive_handler :=
@@ -95,10 +100,12 @@ unsafe def has_reflect_derive_handler :=
         let param_cls ← mk_mapp `reflected [none, some param]
         pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt)
       tgt
+#align has_reflect_derive_handler has_reflect_derive_handler
 
 @[derive_handler]
 unsafe def has_sizeof_derive_handler :=
   instance_derive_handler `` SizeOf mk_has_sizeof_instance
+#align has_sizeof_derive_handler has_sizeof_derive_handler
 
 deriving instance has_reflect for Bool, Prod, Sum, Option, Interactive.Loc, Pos
 

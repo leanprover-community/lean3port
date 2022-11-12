@@ -13,6 +13,7 @@ open Nat
 structure Fin (n : ℕ) where
   val : Nat
   property : val < n
+#align fin Fin
 -/
 
 attribute [pp_using_anonymous_constructor] Fin
@@ -21,9 +22,11 @@ namespace Fin
 
 protected def Lt {n} (a b : Fin n) : Prop :=
   a.val < b.val
+#align fin.lt Fin.Lt
 
 protected def Le {n} (a b : Fin n) : Prop :=
   a.val ≤ b.val
+#align fin.le Fin.Le
 
 instance {n} : LT (Fin n) :=
   ⟨Fin.Lt⟩
@@ -33,31 +36,38 @@ instance {n} : LE (Fin n) :=
 
 instance decidableLt {n} (a b : Fin n) : Decidable (a < b) :=
   Nat.decidableLt _ _
+#align fin.decidable_lt Fin.decidableLt
 
 instance decidableLe {n} (a b : Fin n) : Decidable (a ≤ b) :=
   Nat.decidableLe _ _
+#align fin.decidable_le Fin.decidableLe
 
 def elim0.{u} {α : Fin 0 → Sort u} : ∀ x : Fin 0, α x
   | ⟨n, h⟩ => absurd h n.not_lt_zero
+#align fin.elim0 Fin.elim0ₓ
 
 variable {n : Nat}
 
 #print Fin.eq_of_veq /-
 theorem eq_of_veq : ∀ {i j : Fin n}, i.val = j.val → i = j
   | ⟨iv, ilt₁⟩, ⟨iv, ilt₂⟩, rfl => rfl
+#align fin.eq_of_veq Fin.eq_of_veq
 -/
 
 #print Fin.veq_of_eq /-
 theorem veq_of_eq : ∀ {i j : Fin n}, i = j → i.val = j.val
   | ⟨iv, ilt⟩, _, rfl => rfl
+#align fin.veq_of_eq Fin.veq_of_eq
 -/
 
 #print Fin.ne_of_vne /-
 theorem ne_of_vne {i j : Fin n} (h : i.val ≠ j.val) : i ≠ j := fun h' => absurd (veq_of_eq h') h
+#align fin.ne_of_vne Fin.ne_of_vne
 -/
 
 #print Fin.vne_of_ne /-
 theorem vne_of_ne {i j : Fin n} (h : i ≠ j) : i.val ≠ j.val := fun h' => absurd (eq_of_veq h') h
+#align fin.vne_of_ne Fin.vne_of_ne
 -/
 
 end Fin

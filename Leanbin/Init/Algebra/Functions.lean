@@ -24,6 +24,7 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.15 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (Min.min.{u} α (LinearOrder.toMin.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.15) a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.15))) a b) (instDecidableLeToLEToPreorderToPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.15 a b) a b)
 Case conversion may be inaccurate. Consider using '#align min_def min_defₓ'. -/
 theorem min_def (a b : α) : min a b = if a ≤ b then a else b := by rw [congr_fun LinearOrder.min_def a, minDefault]
+#align min_def min_def
 
 /- warning: max_def -> max_def is a dubious translation:
 lean 3 declaration is
@@ -32,6 +33,7 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.281 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281) a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281))) a b) (instDecidableLeToLEToPreorderToPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281 a b) b a)
 Case conversion may be inaccurate. Consider using '#align max_def max_defₓ'. -/
 theorem max_def (a b : α) : max a b = if b ≤ a then a else b := by rw [congr_fun LinearOrder.max_def a, maxDefault]
+#align max_def max_def
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 /- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
@@ -39,9 +41,11 @@ theorem max_def (a b : α) : max a b = if b ≤ a then a else b := by rw [congr_
 /- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def min_tac_step : tactic Unit :=
   solve1 <| (((intros >> sorry) >> try sorry) >> try sorry) >> try sorry
+#align min_tac_step min_tac_step
 
 unsafe def tactic.interactive.min_tac (a b : interactive.parse lean.parser.pexpr) : tactic Unit :=
   andthen (interactive.by_cases (none, pquote.1 ((%%ₓa) ≤ %%ₓb))) min_tac_step
+#align tactic.interactive.min_tac tactic.interactive.min_tac
 
 /- warning: min_le_left -> min_le_left is a dubious translation:
 lean 3 declaration is
@@ -51,6 +55,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align min_le_left min_le_leftₓ'. -/
 theorem min_le_left (a b : α) : min a b ≤ a :=
   minTac.1 a b
+#align min_le_left min_le_left
 
 /- warning: min_le_right -> min_le_right is a dubious translation:
 lean 3 declaration is
@@ -60,6 +65,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align min_le_right min_le_rightₓ'. -/
 theorem min_le_right (a b : α) : min a b ≤ b :=
   minTac.1 a b
+#align min_le_right min_le_right
 
 /- warning: le_min -> le_min is a dubious translation:
 lean 3 declaration is
@@ -69,6 +75,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align le_min le_minₓ'. -/
 theorem le_min {a b c : α} (h₁ : c ≤ a) (h₂ : c ≤ b) : c ≤ min a b :=
   minTac.1 a b
+#align le_min le_min
 
 /- warning: le_max_left -> le_max_left is a dubious translation:
 lean 3 declaration is
@@ -78,6 +85,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align le_max_left le_max_leftₓ'. -/
 theorem le_max_left (a b : α) : a ≤ max a b :=
   minTac.1 b a
+#align le_max_left le_max_left
 
 /- warning: le_max_right -> le_max_right is a dubious translation:
 lean 3 declaration is
@@ -87,6 +95,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align le_max_right le_max_rightₓ'. -/
 theorem le_max_right (a b : α) : b ≤ max a b :=
   minTac.1 b a
+#align le_max_right le_max_right
 
 /- warning: max_le -> max_le is a dubious translation:
 lean 3 declaration is
@@ -96,6 +105,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_le max_leₓ'. -/
 theorem max_le {a b c : α} (h₁ : a ≤ c) (h₂ : b ≤ c) : max a b ≤ c :=
   minTac.1 b a
+#align max_le max_le
 
 /- warning: eq_min -> eq_min is a dubious translation:
 lean 3 declaration is
@@ -105,6 +115,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align eq_min eq_minₓ'. -/
 theorem eq_min {a b c : α} (h₁ : c ≤ a) (h₂ : c ≤ b) (h₃ : ∀ {d}, d ≤ a → d ≤ b → d ≤ c) : c = min a b :=
   le_antisymm (le_min h₁ h₂) (h₃ (min_le_left a b) (min_le_right a b))
+#align eq_min eq_min
 
 /- warning: min_comm -> min_comm is a dubious translation:
 lean 3 declaration is
@@ -114,6 +125,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align min_comm min_commₓ'. -/
 theorem min_comm (a b : α) : min a b = min b a :=
   eq_min (min_le_right a b) (min_le_left a b) fun c h₁ h₂ => le_min h₂ h₁
+#align min_comm min_comm
 
 /- warning: min_assoc -> min_assoc is a dubious translation:
 lean 3 declaration is
@@ -141,6 +153,7 @@ theorem min_assoc (a b c : α) : min (min a b) c = min a (min b c) := by
     apply le_trans h₂
     apply min_le_right
     
+#align min_assoc min_assoc
 
 /- warning: min_left_comm -> min_left_comm is a dubious translation:
 lean 3 declaration is
@@ -150,6 +163,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align min_left_comm min_left_commₓ'. -/
 theorem min_left_comm : ∀ a b c : α, min a (min b c) = min b (min a c) :=
   left_comm (@min α _) (@min_comm α _) (@min_assoc α _)
+#align min_left_comm min_left_comm
 
 /- warning: min_self -> min_self is a dubious translation:
 lean 3 declaration is
@@ -160,6 +174,7 @@ Case conversion may be inaccurate. Consider using '#align min_self min_selfₓ'.
 @[simp]
 theorem min_self (a : α) : min a a = a :=
   minTac.1 a a
+#align min_self min_self
 
 /- warning: min_eq_left -> min_eq_left is a dubious translation:
 lean 3 declaration is
@@ -173,6 +188,7 @@ theorem min_eq_left {a b : α} (h : a ≤ b) : min a b = a := by
   apply eq_min (le_refl _) h
   intros
   assumption
+#align min_eq_left min_eq_left
 
 /- warning: min_eq_right -> min_eq_right is a dubious translation:
 lean 3 declaration is
@@ -183,6 +199,7 @@ Case conversion may be inaccurate. Consider using '#align min_eq_right min_eq_ri
 @[ematch]
 theorem min_eq_right {a b : α} (h : b ≤ a) : min a b = b :=
   Eq.subst (min_comm b a) (min_eq_left h)
+#align min_eq_right min_eq_right
 
 /- warning: eq_max -> eq_max is a dubious translation:
 lean 3 declaration is
@@ -192,6 +209,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align eq_max eq_maxₓ'. -/
 theorem eq_max {a b c : α} (h₁ : a ≤ c) (h₂ : b ≤ c) (h₃ : ∀ {d}, a ≤ d → b ≤ d → c ≤ d) : c = max a b :=
   le_antisymm (h₃ (le_max_left a b) (le_max_right a b)) (max_le h₁ h₂)
+#align eq_max eq_max
 
 /- warning: max_comm -> max_comm is a dubious translation:
 lean 3 declaration is
@@ -201,6 +219,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_comm max_commₓ'. -/
 theorem max_comm (a b : α) : max a b = max b a :=
   eq_max (le_max_right a b) (le_max_left a b) fun c h₁ h₂ => max_le h₂ h₁
+#align max_comm max_comm
 
 /- warning: max_assoc -> max_assoc is a dubious translation:
 lean 3 declaration is
@@ -226,6 +245,7 @@ theorem max_assoc (a b c : α) : max (max a b) c = max a (max b c) := by
     apply le_trans (le_max_left _ _) h₂
     apply le_trans (le_max_right _ _) h₂
     
+#align max_assoc max_assoc
 
 /- warning: max_left_comm -> max_left_comm is a dubious translation:
 lean 3 declaration is
@@ -235,6 +255,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_left_comm max_left_commₓ'. -/
 theorem max_left_comm : ∀ a b c : α, max a (max b c) = max b (max a c) :=
   left_comm (@max α _) (@max_comm α _) (@max_assoc α _)
+#align max_left_comm max_left_comm
 
 /- warning: max_self -> max_self is a dubious translation:
 lean 3 declaration is
@@ -245,6 +266,7 @@ Case conversion may be inaccurate. Consider using '#align max_self max_selfₓ'.
 @[simp]
 theorem max_self (a : α) : max a a = a :=
   minTac.1 a a
+#align max_self max_self
 
 /- warning: max_eq_left -> max_eq_left is a dubious translation:
 lean 3 declaration is
@@ -257,6 +279,7 @@ theorem max_eq_left {a b : α} (h : b ≤ a) : max a b = a := by
   apply eq_max (le_refl _) h
   intros
   assumption
+#align max_eq_left max_eq_left
 
 /- warning: max_eq_right -> max_eq_right is a dubious translation:
 lean 3 declaration is
@@ -266,6 +289,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_eq_right max_eq_rightₓ'. -/
 theorem max_eq_right {a b : α} (h : a ≤ b) : max a b = b :=
   Eq.subst (max_comm b a) (max_eq_left h)
+#align max_eq_right max_eq_right
 
 /- warning: min_eq_left_of_lt -> min_eq_left_of_lt is a dubious translation:
 lean 3 declaration is
@@ -276,6 +300,7 @@ Case conversion may be inaccurate. Consider using '#align min_eq_left_of_lt min_
 -- these rely on lt_of_lt
 theorem min_eq_left_of_lt {a b : α} (h : a < b) : min a b = a :=
   min_eq_left (le_of_lt h)
+#align min_eq_left_of_lt min_eq_left_of_lt
 
 /- warning: min_eq_right_of_lt -> min_eq_right_of_lt is a dubious translation:
 lean 3 declaration is
@@ -285,6 +310,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align min_eq_right_of_lt min_eq_right_of_ltₓ'. -/
 theorem min_eq_right_of_lt {a b : α} (h : b < a) : min a b = b :=
   min_eq_right (le_of_lt h)
+#align min_eq_right_of_lt min_eq_right_of_lt
 
 /- warning: max_eq_left_of_lt -> max_eq_left_of_lt is a dubious translation:
 lean 3 declaration is
@@ -294,6 +320,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_eq_left_of_lt max_eq_left_of_ltₓ'. -/
 theorem max_eq_left_of_lt {a b : α} (h : b < a) : max a b = a :=
   max_eq_left (le_of_lt h)
+#align max_eq_left_of_lt max_eq_left_of_lt
 
 /- warning: max_eq_right_of_lt -> max_eq_right_of_lt is a dubious translation:
 lean 3 declaration is
@@ -303,6 +330,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_eq_right_of_lt max_eq_right_of_ltₓ'. -/
 theorem max_eq_right_of_lt {a b : α} (h : a < b) : max a b = b :=
   max_eq_right (le_of_lt h)
+#align max_eq_right_of_lt max_eq_right_of_lt
 
 /- warning: lt_min -> lt_min is a dubious translation:
 lean 3 declaration is
@@ -313,6 +341,7 @@ Case conversion may be inaccurate. Consider using '#align lt_min lt_minₓ'. -/
 -- these use the fact that it is a linear ordering
 theorem lt_min {a b c : α} (h₁ : a < b) (h₂ : a < c) : a < min b c :=
   Or.elim (le_or_gt b c) (fun h : b ≤ c => minTac.1 b c) fun h : b > c => minTac.1 b c
+#align lt_min lt_min
 
 /- warning: max_lt -> max_lt is a dubious translation:
 lean 3 declaration is
@@ -322,6 +351,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align max_lt max_ltₓ'. -/
 theorem max_lt {a b c : α} (h₁ : a < c) (h₂ : b < c) : max a b < c :=
   Or.elim (le_or_gt a b) (fun h : a ≤ b => minTac.1 b a) fun h : a > b => minTac.1 b a
+#align max_lt max_lt
 
 end
 

@@ -25,6 +25,7 @@ class RandomGen (g : Type u) where
     generators. This is very useful in functional programs (for example, when
     passing a random number generator down to recursive calls). -/
   split : g → g × g
+#align random_gen RandomGen
 -/
 
 #print StdGen /-
@@ -32,11 +33,13 @@ class RandomGen (g : Type u) where
 structure StdGen where
   s1 : Nat
   s2 : Nat
+#align std_gen StdGen
 -/
 
 #print stdRange /-
 def stdRange :=
   (1, 2147483562)
+#align std_range stdRange
 -/
 
 instance : Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
@@ -53,6 +56,7 @@ def stdNext : StdGen → Nat × StdGen
     let z : Int := s1'' - s2''
     let z' : Int := if z < 1 then z + 2147483562 else z % 2147483562
     (z'.toNat, ⟨s1''.toNat, s2''.toNat⟩)
+#align std_next stdNext
 -/
 
 #print stdSplit /-
@@ -64,6 +68,7 @@ def stdSplit : StdGen → StdGen × StdGen
     let left_g := StdGen.mk new_s1 new_g.2
     let right_g := StdGen.mk new_g.1 new_s2
     (left_g, right_g)
+#align std_split stdSplit
 -/
 
 instance : RandomGen StdGen where
@@ -78,6 +83,7 @@ def mkStdGen (s : Nat := 0) : StdGen :=
   let s1 := s % 2147483562
   let s2 := q % 2147483398
   ⟨s1 + 1, s2 + 1⟩
+#align mk_std_gen mkStdGen
 -/
 
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.comp_val -/
@@ -109,6 +115,7 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
         exact lt_of_lt_of_le h₁ h₂
         
     rand_nat_aux (r' / gen_mag - 1) v' g'
+#align rand_nat_aux rand_nat_aux
 
 #print randNat /-
 /-- Generate a random natural number in the interval [lo, hi]. -/
@@ -129,6 +136,7 @@ def randNat {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen 
   let (v, g') := randNatAux gen_lo gen_mag (Nat.zero_lt_succ _) tgt_mag 0 g
   let v' := lo' + v % k
   (v', g')
+#align rand_nat randNat
 -/
 
 #print randBool /-
@@ -136,5 +144,6 @@ def randNat {gen : Type u} [RandomGen gen] (g : gen) (lo hi : Nat) : Nat × gen 
 def randBool {gen : Type u} [RandomGen gen] (g : gen) : Bool × gen :=
   let (v, g') := randNat g 0 1
   (v = 1, g')
+#align rand_bool randBool
 -/
 

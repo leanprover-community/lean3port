@@ -15,12 +15,14 @@ universe u v w
 
 structure StateT (σ : Type u) (m : Type u → Type v) (α : Type u) : Type max u v where
   run : σ → m (α × σ)
+#align state_t StateTₓ
 
 attribute [pp_using_anonymous_constructor] StateT
 
 @[reducible]
 def State (σ α : Type u) : Type u :=
   StateT σ id α
+#align state State
 
 namespace StateT
 
@@ -35,12 +37,14 @@ variable {α β : Type u}
 @[inline]
 protected def pure (a : α) : StateT σ m α :=
   ⟨fun s => pure (a, s)⟩
+#align state_t.pure StateTₓ.pure
 
 @[inline]
 protected def bind (x : StateT σ m α) (f : α → StateT σ m β) : StateT σ m β :=
   ⟨fun s => do
     let (a, s') ← x.run s
     (f a).run s'⟩
+#align state_t.bind StateTₓ.bind
 
 instance : Monad (StateT σ m) where
   pure := @StateT.pure _ _ _
@@ -48,9 +52,11 @@ instance : Monad (StateT σ m) where
 
 protected def orelse [Alternative m] {α : Type u} (x₁ x₂ : StateT σ m α) : StateT σ m α :=
   ⟨fun s => x₁.run s <|> x₂.run s⟩
+#align state_t.orelse StateTₓ.orelse
 
 protected def failure [Alternative m] {α : Type u} : StateT σ m α :=
   ⟨fun s => failure⟩
+#align state_t.failure StateTₓ.failure
 
 instance [Alternative m] : Alternative (StateT σ m) where
   failure := @StateT.failure _ _ _ _
@@ -59,19 +65,23 @@ instance [Alternative m] : Alternative (StateT σ m) where
 @[inline]
 protected def get : StateT σ m σ :=
   ⟨fun s => pure (s, s)⟩
+#align state_t.get StateTₓ.get
 
 @[inline]
 protected def put : σ → StateT σ m PUnit := fun s' => ⟨fun s => pure (PUnit.unit, s')⟩
+#align state_t.put StateTₓ.put
 
 @[inline]
 protected def modify (f : σ → σ) : StateT σ m PUnit :=
   ⟨fun s => pure (PUnit.unit, f s)⟩
+#align state_t.modify StateTₓ.modify
 
 @[inline]
 protected def lift {α : Type u} (t : m α) : StateT σ m α :=
   ⟨fun s => do
     let a ← t
     pure (a, s)⟩
+#align state_t.lift StateTₓ.lift
 
 instance : HasMonadLift m (StateT σ m) :=
   ⟨@StateT.lift σ m _⟩
@@ -79,6 +89,7 @@ instance : HasMonadLift m (StateT σ m) :=
 @[inline]
 protected def monadMap {σ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) : StateT σ m α → StateT σ m' α :=
   fun x => ⟨fun st => f (x.run st)⟩
+#align state_t.monad_map StateTₓ.monadMap
 
 instance (σ m m') [Monad m] [Monad m'] : MonadFunctor m m' (StateT σ m) (StateT σ m') :=
   ⟨@StateT.monadMap σ m m' _ _⟩
@@ -89,6 +100,7 @@ protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monad m] 
     let (st, ctx) := split st
     let (a, st') ← x.run st
     pure (a, join st' ctx)⟩
+#align state_t.adapt StateTₓ.adapt
 
 instance (ε) [MonadExcept ε m] : MonadExcept ε (StateT σ m) where
   throw α := StateT.lift ∘ throw
@@ -115,6 +127,7 @@ An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/
     -/
 class MonadState (σ : outParam (Type u)) (m : Type u → Type v) where
   lift {α : Type u} : State σ α → m α
+#align monad_state MonadState
 -/
 
 section
@@ -125,6 +138,7 @@ variable {σ : Type u} {m : Type u → Type v}
 -- will be picked first
 instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadState σ m] [HasMonadLift m n] : MonadState σ n :=
   ⟨fun α x => monadLift (MonadState.lift x : m α)⟩
+#align monad_state_trans monadStateTrans
 
 instance [Monad m] : MonadState σ (StateT σ m) :=
   ⟨fun α x => ⟨fun s => pure (x.run s)⟩⟩
@@ -135,11 +149,13 @@ variable [Monad m] [MonadState σ m]
 @[inline]
 def get : m σ :=
   MonadState.lift StateT.get
+#align get get
 
 /-- Set the top-most state of a monad stack. -/
 @[inline]
 def put (st : σ) : m PUnit :=
   MonadState.lift (StateT.put st)
+#align put put
 
 /- warning: modify -> modify is a dubious translation:
 lean 3 declaration is
@@ -154,6 +170,7 @@ Case conversion may be inaccurate. Consider using '#align modify modifyₓ'. -/
 @[inline]
 def modify (f : σ → σ) : m PUnit :=
   MonadState.lift (StateT.modify f)
+#align modify modify
 
 end
 
@@ -192,6 +209,7 @@ end
     -/
 class MonadStateAdapter (σ σ' : outParam (Type u)) (m m' : Type u → Type v) where
   adaptState {σ'' α : Type u} (split : σ' → σ × σ'') (join : σ → σ'' → σ') : m α → m' α
+#align monad_state_adapter MonadStateAdapter
 
 export MonadStateAdapter (adaptState)
 
@@ -202,6 +220,7 @@ variable {σ σ' : Type u} {m m' : Type u → Type v}
 instance (priority := 100) monadStateAdapterTrans {n n' : Type u → Type v} [MonadStateAdapter σ σ' m m']
     [MonadFunctor m m' n n'] : MonadStateAdapter σ σ' n n' :=
   ⟨fun σ'' α split join => monadMap fun α => (adaptState split join : m α → m' α)⟩
+#align monad_state_adapter_trans monadStateAdapterTrans
 
 instance [Monad m] : MonadStateAdapter σ σ' (StateT σ m) (StateT σ' m) :=
   ⟨fun σ'' α => StateT.adapt⟩

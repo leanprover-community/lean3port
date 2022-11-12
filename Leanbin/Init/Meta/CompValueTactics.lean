@@ -8,18 +8,25 @@ import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Data.Option.Basic
 
 unsafe axiom mk_nat_val_ne_proof : expr → expr → Option expr
+#align mk_nat_val_ne_proof mk_nat_val_ne_proof
 
 unsafe axiom mk_nat_val_lt_proof : expr → expr → Option expr
+#align mk_nat_val_lt_proof mk_nat_val_lt_proof
 
 unsafe axiom mk_nat_val_le_proof : expr → expr → Option expr
+#align mk_nat_val_le_proof mk_nat_val_le_proof
 
 unsafe axiom mk_fin_val_ne_proof : expr → expr → Option expr
+#align mk_fin_val_ne_proof mk_fin_val_ne_proof
 
 unsafe axiom mk_char_val_ne_proof : expr → expr → Option expr
+#align mk_char_val_ne_proof mk_char_val_ne_proof
 
 unsafe axiom mk_string_val_ne_proof : expr → expr → Option expr
+#align mk_string_val_ne_proof mk_string_val_ne_proof
 
 unsafe axiom mk_int_val_ne_proof : expr → expr → Option expr
+#align mk_int_val_ne_proof mk_int_val_ne_proof
 
 namespace Tactic
 
@@ -84,6 +91,7 @@ unsafe def comp_val : tactic Unit := do
                 let (a, b) ← is_eq t
                 unify a b
                 to_expr (pquote.1 (Eq.refl (%%ₓa))) >>= exact
+#align tactic.comp_val tactic.comp_val
 
 end Tactic
 
@@ -97,6 +105,7 @@ namespace Interactive
     If the goal is of the form `n = m`, then it tries to close it using reflexivity. -/
 unsafe def comp_val :=
   tactic.comp_val
+#align tactic.interactive.comp_val tactic.interactive.comp_val
 
 end Interactive
 

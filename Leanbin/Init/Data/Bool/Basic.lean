@@ -17,6 +17,7 @@ import Leanbin.Init.Core
 def cond.{u} {a : Type u} : Bool → a → a → a
   | tt, x, y => x
   | ff, x, y => y
+#align cond cond
 -/
 
 #print or /-
@@ -25,6 +26,7 @@ def cond.{u} {a : Type u} : Bool → a → a → a
 def or : Bool → Bool → Bool
   | tt, b => true
   | ff, b => b
+#align bor or
 -/
 
 #print and /-
@@ -33,6 +35,7 @@ def or : Bool → Bool → Bool
 def and : Bool → Bool → Bool
   | tt, b => b
   | ff, b => false
+#align band and
 -/
 
 #print not /-
@@ -41,6 +44,7 @@ def and : Bool → Bool → Bool
 def not : Bool → Bool
   | tt => false
   | ff => true
+#align bnot not
 -/
 
 #print xor /-
@@ -50,5 +54,6 @@ def xor : Bool → Bool → Bool
   | tt, ff => true
   | ff, tt => true
   | _, _ => false
+#align bxor xor
 -/
 

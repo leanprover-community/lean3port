@@ -11,6 +11,7 @@ universe u v
 
 theorem ex_of_psig {α : Type u} {p : α → Prop} : (Σ'x, p x) → ∃ x, p x
   | ⟨x, hx⟩ => ⟨x, hx⟩
+#align ex_of_psig ex_of_psig
 
 section
 
@@ -18,6 +19,7 @@ variable {α : Type u} {β : α → Type v}
 
 protected theorem Sigma.eq : ∀ {p₁ p₂ : Σa : α, β a} (h₁ : p₁.1 = p₂.1), (Eq.recOn h₁ p₁.2 : β p₂.1) = p₂.2 → p₁ = p₂
   | ⟨a, b⟩, ⟨a, b⟩, rfl, rfl => rfl
+#align sigma.eq Sigma.eq
 
 end
 
@@ -27,6 +29,7 @@ variable {α : Sort u} {β : α → Sort v}
 
 protected theorem PSigma.eq : ∀ {p₁ p₂ : PSigma β} (h₁ : p₁.1 = p₂.1), (Eq.recOn h₁ p₁.2 : β p₂.1) = p₂.2 → p₁ = p₂
   | ⟨a, b⟩, ⟨a, b⟩, rfl, rfl => rfl
+#align psigma.eq PSigma.eq
 
 end
 

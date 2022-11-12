@@ -25,6 +25,7 @@ inductive Coord : Type
   | elet_var_type
   | elet_assignment
   | elet_body
+#align expr.coord Expr.Coord
 
 namespace Coord
 
@@ -39,6 +40,7 @@ def code : Coord → ℕ
   | coord.elet_var_type => 6
   | coord.elet_assignment => 7
   | coord.elet_body => 8
+#align expr.coord.code Expr.Coord.code
 
 protected def repr : Coord → String
   | coord.app_fn => "app_fn"
@@ -50,6 +52,7 @@ protected def repr : Coord → String
   | coord.elet_var_type => "elet_var_type"
   | coord.elet_assignment => "elet_assignment"
   | coord.elet_body => "elet_body"
+#align expr.coord.repr Expr.Coord.repr
 
 instance : Repr Coord :=
   ⟨Coord.repr⟩
@@ -62,9 +65,11 @@ unsafe instance : has_to_format Coord :=
 
 unsafe instance has_dec_eq : DecidableEq Coord :=
   unchecked_cast (inferInstance : DecidableEq ℕ)
+#align expr.coord.has_dec_eq expr.coord.has_dec_eq
 
 instance hasLt : LT Coord :=
   ⟨fun x y => x.code < y.code⟩
+#align expr.coord.has_lt Expr.Coord.hasLt
 
 /-- Use this to pick the subexpression of a given expression that cooresponds
 to the given coordinate. -/
@@ -79,6 +84,7 @@ unsafe def follow : Coord → expr → Option expr
   | coord.elet_assignment, expr.elet n _ a _ => some a
   | coord.elet_body, expr.elet n _ _ b => some b
   | _, _ => none
+#align expr.coord.follow expr.coord.follow
 
 end Coord
 
@@ -86,23 +92,29 @@ end Coord
 The first coordinate in the list corresponds to the root of the expression. -/
 def Address : Type :=
   List Coord
+#align expr.address Expr.Address
 
 namespace Address
 
 unsafe instance has_dec_eq : DecidableEq Address :=
   (inferInstance : DecidableEq (List Expr.Coord))
+#align expr.address.has_dec_eq expr.address.has_dec_eq
 
 protected def toString : Address → String :=
   toString ∘ List.map Coord.repr
+#align expr.address.to_string Expr.Address.toString
 
 instance hasRepr : Repr Address :=
   ⟨Address.toString⟩
+#align expr.address.has_repr Expr.Address.hasRepr
 
 instance hasToString : ToString Address :=
   ⟨Address.toString⟩
+#align expr.address.has_to_string Expr.Address.hasToString
 
 unsafe instance has_to_format : has_to_format Address :=
   ⟨list.to_format⟩
+#align expr.address.has_to_format expr.address.has_to_format
 
 instance : Append Address :=
   ⟨List.append⟩
@@ -118,14 +130,17 @@ unsafe def as_below : Address → Address → Option Address
       h₁ ::
       t₁,
     h₂ :: t₂ => if h₁ = h₂ then as_below t₁ t₂ else none
+#align expr.address.as_below expr.address.as_below
 
 unsafe def is_below : Address → Address → Bool
   | a₁, a₂ => Option.isSome <| as_below a₁ a₂
+#align expr.address.is_below expr.address.is_below
 
 /-- `follow a e` finds the subexpression of `e` at the given address `a`. -/
 unsafe def follow : Address → expr → Option expr
   | [], e => e
   | h :: t, e => coord.follow h e >>= follow t
+#align expr.address.follow expr.address.follow
 
 end Address
 

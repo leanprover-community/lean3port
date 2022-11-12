@@ -17,10 +17,12 @@ universe u v w
 An implementation of [ReaderT](https://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Reader.html#t:ReaderT) -/
 structure ReaderT (ρ : Type u) (m : Type u → Type v) (α : Type u) : Type max u v where
   run : ρ → m α
+#align reader_t ReaderTₓ
 
 @[reducible]
 def Reader (ρ : Type u) :=
   ReaderT ρ id
+#align reader Reader
 
 attribute [pp_using_anonymous_constructor] ReaderT
 
@@ -39,16 +41,19 @@ variable {α β : Type u}
 @[inline]
 protected def read : ReaderT ρ m ρ :=
   ⟨pure⟩
+#align reader_t.read ReaderTₓ.read
 
 @[inline]
 protected def pure (a : α) : ReaderT ρ m α :=
   ⟨fun r => pure a⟩
+#align reader_t.pure ReaderTₓ.pure
 
 @[inline]
 protected def bind (x : ReaderT ρ m α) (f : α → ReaderT ρ m β) : ReaderT ρ m β :=
   ⟨fun r => do
     let a ← x.run r
     (f a).run r⟩
+#align reader_t.bind ReaderTₓ.bind
 
 instance : Monad (ReaderT ρ m) where
   pure := @ReaderT.pure _ _ _
@@ -57,6 +62,7 @@ instance : Monad (ReaderT ρ m) where
 @[inline]
 protected def lift (a : m α) : ReaderT ρ m α :=
   ⟨fun r => a⟩
+#align reader_t.lift ReaderTₓ.lift
 
 instance (m) [Monad m] : HasMonadLift m (ReaderT ρ m) :=
   ⟨@ReaderT.lift ρ m _⟩
@@ -64,6 +70,7 @@ instance (m) [Monad m] : HasMonadLift m (ReaderT ρ m) :=
 @[inline]
 protected def monadMap {ρ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) : ReaderT ρ m α → ReaderT ρ m' α :=
   fun x => ⟨fun r => f (x.run r)⟩
+#align reader_t.monad_map ReaderTₓ.monadMap
 
 instance (ρ m m') [Monad m] [Monad m'] : MonadFunctor m m' (ReaderT ρ m) (ReaderT ρ m') :=
   ⟨@ReaderT.monadMap ρ m m' _ _⟩
@@ -71,12 +78,15 @@ instance (ρ m m') [Monad m] [Monad m'] : MonadFunctor m m' (ReaderT ρ m) (Read
 @[inline]
 protected def adapt {ρ' : Type u} [Monad m] {α : Type u} (f : ρ' → ρ) : ReaderT ρ m α → ReaderT ρ' m α := fun x =>
   ⟨fun r => x.run (f r)⟩
+#align reader_t.adapt ReaderTₓ.adapt
 
 protected def orelse [Alternative m] {α : Type u} (x₁ x₂ : ReaderT ρ m α) : ReaderT ρ m α :=
   ⟨fun s => x₁.run s <|> x₂.run s⟩
+#align reader_t.orelse ReaderTₓ.orelse
 
 protected def failure [Alternative m] {α : Type u} : ReaderT ρ m α :=
   ⟨fun s => failure⟩
+#align reader_t.failure ReaderTₓ.failure
 
 instance [Alternative m] : Alternative (ReaderT ρ m) where
   failure := @ReaderT.failure _ _ _ _
@@ -104,6 +114,7 @@ An implementation of [MonadReader](https://hackage.haskell.org/package/mtl-2.2.2
     -/
 class MonadReader (ρ : outParam (Type u)) (m : Type u → Type v) where
   read : m ρ
+#align monad_reader MonadReader
 -/
 
 export MonadReader (read)
@@ -111,6 +122,7 @@ export MonadReader (read)
 instance (priority := 100) monadReaderTrans {ρ : Type u} {m : Type u → Type v} {n : Type u → Type w} [MonadReader ρ m]
     [HasMonadLift m n] : MonadReader ρ n :=
   ⟨monadLift (MonadReader.read : m ρ)⟩
+#align monad_reader_trans monadReaderTrans
 
 instance {ρ : Type u} {m : Type u → Type v} [Monad m] : MonadReader ρ (ReaderT ρ m) :=
   ⟨ReaderT.read⟩
@@ -127,6 +139,7 @@ instance {ρ : Type u} {m : Type u → Type v} [Monad m] : MonadReader ρ (Reade
     -/
 class MonadReaderAdapter (ρ ρ' : outParam (Type u)) (m m' : Type u → Type v) where
   adaptReader {α : Type u} : (ρ' → ρ) → m α → m' α
+#align monad_reader_adapter MonadReaderAdapter
 
 export MonadReaderAdapter (adaptReader)
 
@@ -137,6 +150,7 @@ variable {ρ ρ' : Type u} {m m' : Type u → Type v}
 instance (priority := 100) monadReaderAdapterTrans {n n' : Type u → Type v} [MonadReaderAdapter ρ ρ' m m']
     [MonadFunctor m m' n n'] : MonadReaderAdapter ρ ρ' n n' :=
   ⟨fun α f => monadMap fun α => (adaptReader f : m α → m' α)⟩
+#align monad_reader_adapter_trans monadReaderAdapterTrans
 
 instance [Monad m] : MonadReaderAdapter ρ ρ' (ReaderT ρ m) (ReaderT ρ' m) :=
   ⟨fun α => ReaderT.adapt⟩

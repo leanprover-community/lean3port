@@ -30,4 +30,5 @@ import Leanbin.Init.Meta.FeatureSearch
 unsafe def debugger.attr : user_attribute where
   Name := `breakpoint
   descr := "breakpoint for debugger"
+#align debugger.attr debugger.attr
 

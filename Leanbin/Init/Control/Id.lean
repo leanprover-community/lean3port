@@ -13,6 +13,7 @@ universe u
 @[inline]
 def idBind {α β : Type u} (x : α) (f : α → id β) : id β :=
   f x
+#align id_bind idBind
 
 @[inline]
 instance : Monad.{u, u} id where

@@ -16,6 +16,7 @@ open Tactic
 
 def Tactic.IdTag.conv : Unit :=
   ()
+#align tactic.id_tag.conv Tactic.IdTag.conv
 
 universe u
 
@@ -26,6 +27,7 @@ So for example, if one had the lemma `p : x = y`, then the conversion for `p` wo
 -/
 unsafe def conv (α : Type u) :=
   tactic α
+#align conv conv
 
 unsafe instance : Monad conv := by dsimp only [conv] <;> infer_instance
 
@@ -51,14 +53,17 @@ unsafe def convert (c : conv Unit) (lhs : expr) (rel : Name := `eq) : tactic (ex
   let rhs ← instantiate_mvars rhs
   let new_g ← instantiate_mvars new_g
   return (rhs, new_g)
+#align conv.convert conv.convert
 
 unsafe def lhs : conv expr := do
   let (_, lhs, rhs) ← target_lhs_rhs
   return lhs
+#align conv.lhs conv.lhs
 
 unsafe def rhs : conv expr := do
   let (_, lhs, rhs) ← target_lhs_rhs
   return rhs
+#align conv.rhs conv.rhs
 
 /-- `⊢ lhs = rhs` ~~> `⊢ lhs' = rhs` using `h : lhs = lhs'`. -/
 unsafe def update_lhs (new_lhs : expr) (h : expr) : conv Unit := do
@@ -67,20 +72,24 @@ unsafe def update_lhs (new_lhs : expr) (h : expr) : conv Unit := do
   exact h
   let t ← target >>= instantiate_mvars
   change t
+#align conv.update_lhs conv.update_lhs
 
 /-- Change `lhs` to something definitionally equal to it. -/
 unsafe def change (new_lhs : expr) : conv Unit := do
   let (r, lhs, rhs) ← target_lhs_rhs
   let new_target ← mk_app r [new_lhs, rhs]
   tactic.change new_target
+#align conv.change conv.change
 
 /-- Use reflexivity to prove. -/
 unsafe def skip : conv Unit :=
   reflexivity
+#align conv.skip conv.skip
 
 /-- Put LHS in WHNF. -/
 unsafe def whnf : conv Unit :=
   lhs >>= tactic.whnf >>= change
+#align conv.whnf conv.whnf
 
 /-- dsimp the LHS. -/
 unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : DsimpConfig := {  }) : conv Unit := do
@@ -90,6 +99,7 @@ unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : D
       | none => simp_lemmas.mk_default
   let l ← lhs
   s u l cfg >>= change
+#align conv.dsimp conv.dsimp
 
 private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List expr × List expr)
   | [], [] => return ([], [])
@@ -113,6 +123,7 @@ private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List 
       | CongrArgKind.cast => return <| (gs, a :: largs)
       | _ => fail "congr tactic failed, unsupported congruence lemma"
   | ks, as => fail "congr tactic failed, unsupported congruence lemma"
+#align conv.congr_aux conv.congr_aux
 
 /--
 Take the target equality `f x y = X` and try to apply the congruence lemma for `f` to it (namely `x = x' → y = y' → f x y = f x' y'`). -/
@@ -128,6 +139,7 @@ unsafe def congr : conv Unit := do
   unify g g_val
   set_goals <| new_gs ++ gs
   return ()
+#align conv.congr conv.congr
 
 /-- Create a conversion from the function extensionality tactic.-/
 unsafe def funext : conv Unit :=
@@ -138,6 +150,7 @@ unsafe def funext : conv Unit :=
     tactic.applyc `funext
     intro n
     return ()
+#align conv.funext conv.funext
 
 end Conv
 

@@ -15,10 +15,12 @@ variable {α : Type u} {β : Type v}
 #print Sum.inhabitedLeft /-
 instance Sum.inhabitedLeft [h : Inhabited α] : Inhabited (Sum α β) :=
   ⟨Sum.inl default⟩
+#align sum.inhabited_left Sum.inhabitedLeft
 -/
 
 #print Sum.inhabitedRight /-
 instance Sum.inhabitedRight [h : Inhabited β] : Inhabited (Sum α β) :=
   ⟨Sum.inr default⟩
+#align sum.inhabited_right Sum.inhabitedRight
 -/
 

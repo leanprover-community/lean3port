@@ -23,47 +23,58 @@ Case conversion may be inaccurate. Consider using '#align option.to_monad Option
 def toMonad {m : Type → Type} [Monad m] [Alternative m] {A} : Option A → m A
   | none => failure
   | some a => return a
+#align option.to_monad Option.toMonad
 
-def getOrElse {α : Type u} : Option α → α → α
+#print Option.getD /-
+def getD {α : Type u} : Option α → α → α
   | some x, _ => x
   | none, e => e
+#align option.get_or_else Option.getD
+-/
 
 #print Option.isSome /-
 def isSome {α : Type u} : Option α → Bool
   | some _ => true
   | none => false
+#align option.is_some Option.isSome
 -/
 
 #print Option.isNone /-
 def isNone {α : Type u} : Option α → Bool
   | some _ => false
   | none => true
+#align option.is_none Option.isNone
 -/
 
 #print Option.get /-
 def get {α : Type u} : ∀ {o : Option α}, isSome o → α
   | some x, h => x
   | none, h => False.ndrec _ <| Bool.ff_ne_tt h
+#align option.get Option.get
 -/
 
 def rhoare {α : Type u} : Bool → α → Option α
   | tt, a => none
   | ff, a => some a
+#align option.rhoare Option.rhoare
 
 def lhoare {α : Type u} : α → Option α → α
   | a, none => a
   | _, some b => b
+#align option.lhoare Option.lhoare
 
 #print Option.bind /-
 @[inline]
 protected def bind {α : Type u} {β : Type v} : Option α → (α → Option β) → Option β
   | none, b => none
   | some a, b => b a
+#align option.bind Option.bind
 -/
 
 #print Option.map /-
 protected def map {α β} (f : α → β) (o : Option α) : Option β :=
   Option.bind o (some ∘ f)
+#align option.map Option.map
 -/
 
 #print Option.map_id /-
@@ -72,6 +83,7 @@ theorem map_id {α} : (Option.map id : Option α → Option α) = id :=
     match o with
     | none => rfl
     | some x => rfl
+#align option.map_id Option.map_id
 -/
 
 instance : Monad Option where
@@ -83,6 +95,7 @@ protected def orelse {α : Type u} : Option α → Option α → Option α
   | some a, o => some a
   | none, some a => some a
   | none, none => none
+#align option.orelse Option.orelse
 
 instance : Alternative Option where
   failure := @none

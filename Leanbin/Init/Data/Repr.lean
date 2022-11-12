@@ -34,6 +34,7 @@ Reference: https://github.com/leanprover/lean/issues/1664
  -/
 class Repr (α : Type u) where
   repr : α → String
+#align has_repr Repr
 -/
 
 /- warning: repr -> repr is a dubious translation:
@@ -47,6 +48,7 @@ Case conversion may be inaccurate. Consider using '#align repr reprₓ'. -/
 Hence, `repr "hello"` has the value `"\"hello\""` not `"hello"`.  -/
 def repr {α : Type u} [Repr α] : α → String :=
   Repr.repr
+#align repr repr
 
 instance : Repr Bool :=
   ⟨fun b => cond b "tt" "ff"⟩
@@ -59,6 +61,7 @@ protected def List.reprAux {α : Type u} [Repr α] : Bool → List α → String
   | b, [] => ""
   | tt, x :: xs => repr x ++ List.reprAux false xs
   | ff, x :: xs => ", " ++ repr x ++ List.reprAux false xs
+#align list.repr_aux List.reprAux
 
 /- warning: list.repr -> List.repr is a dubious translation:
 lean 3 declaration is
@@ -69,6 +72,7 @@ Case conversion may be inaccurate. Consider using '#align list.repr List.reprₓ
 protected def List.repr {α : Type u} [Repr α] : List α → String
   | [] => "[]"
   | x :: xs => "[" ++ List.reprAux true (x :: xs) ++ "]"
+#align list.repr List.repr
 
 instance {α : Type u} [Repr α] : Repr (List α) :=
   ⟨List.repr⟩
@@ -127,19 +131,23 @@ def digitChar (n : ℕ) : Char :=
                         else
                           if n = 12 then 'c'
                           else if n = 13 then 'd' else if n = 14 then 'e' else if n = 15 then 'f' else '*'
+#align nat.digit_char Nat.digitChar
 -/
 
 def digitSucc (base : ℕ) : List ℕ → List ℕ
   | [] => [1]
   | d :: ds => if d + 1 = base then 0 :: digit_succ ds else (d + 1) :: ds
+#align nat.digit_succ Nat.digitSucc
 
 def toDigits' (base : ℕ) : ℕ → List ℕ
   | 0 => [0]
   | n + 1 => digitSucc base (to_digits n)
+#align nat.to_digits Nat.toDigits'
 
 #print Nat.repr /-
 protected def repr (n : ℕ) : String :=
   ((toDigits' 10 n).map digitChar).reverse.asString
+#align nat.repr Nat.repr
 -/
 
 end Nat
@@ -150,6 +158,7 @@ instance : Repr Nat :=
 #print hexDigitRepr /-
 def hexDigitRepr (n : Nat) : String :=
   String.singleton <| Nat.digitChar n
+#align hex_digit_repr hexDigitRepr
 -/
 
 def charToHex (c : Char) : String :=
@@ -157,6 +166,7 @@ def charToHex (c : Char) : String :=
   let d2 := n / 16
   let d1 := n % 16
   hexDigitRepr d2 ++ hexDigitRepr d1
+#align char_to_hex charToHex
 
 #print Char.quoteCore /-
 def Char.quoteCore (c : Char) : String :=
@@ -166,6 +176,7 @@ def Char.quoteCore (c : Char) : String :=
     else
       if c = '\\' then "\\\\"
       else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
+#align char.quote_core Char.quoteCore
 -/
 
 instance : Repr Char :=
@@ -174,10 +185,12 @@ instance : Repr Char :=
 def String.quoteAux : List Char → String
   | [] => ""
   | x :: xs => Char.quoteCore x ++ String.quoteAux xs
+#align string.quote_aux String.quoteAux
 
 #print String.quote /-
 def String.quote (s : String) : String :=
   if s.isEmpty = tt then "\"\"" else "\"" ++ String.quoteAux s.toList ++ "\""
+#align string.quote String.quote
 -/
 
 instance : Repr String :=
@@ -192,5 +205,6 @@ instance : Repr Unsigned :=
 #print Char.repr /-
 def Char.repr (c : Char) : String :=
   repr c
+#align char.repr Char.repr
 -/
 

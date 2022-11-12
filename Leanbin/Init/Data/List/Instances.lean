@@ -43,6 +43,7 @@ variable {α β : Type u} (p : α → Prop) [DecidablePred p]
 
 instance binTreeToList : Coe (BinTree α) (List α) :=
   ⟨BinTree.toList⟩
+#align list.bin_tree_to_list List.binTreeToList
 
 instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] => isFalse (by simp [List.not_bex_nil])
@@ -69,6 +70,7 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
             · refine' absurd _ h₂
               exact ⟨y, h, hp⟩
               )
+#align list.decidable_bex List.decidableBex
 
 instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=
   if h : ∃ x ∈ l, ¬p x then
@@ -76,6 +78,7 @@ instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=
       let ⟨x, h, np⟩ := h
       fun al => np (al x h)
   else is_true fun x hx => if h' : p x then h' else False.elim <| h ⟨x, hx, h'⟩
+#align list.decidable_ball List.decidableBall
 
 end List
 

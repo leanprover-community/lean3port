@@ -24,6 +24,7 @@ variable (s : ∀ a, β a → β a → Prop)
 inductive Lex : PSigma β → PSigma β → Prop
   | left : ∀ {a₁ : α} (b₁ : β a₁) {a₂ : α} (b₂ : β a₂), r a₁ a₂ → lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
   | right : ∀ (a : α) {b₁ b₂ : β a}, s a b₁ b₂ → lex ⟨a, b₁⟩ ⟨a, b₂⟩
+#align psigma.lex PSigma.Lex
 -/
 
 end
@@ -54,10 +55,12 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : �
             subst new_eq₃
             exact ihb b₁ h
         aux rfl (HEq.refl xb)
+#align psigma.lex_accessible PSigma.lex_accessible
 
 -- The lexicographical order of well founded relations is well-founded
 theorem lex_wf (ha : WellFounded r) (hb : ∀ x, WellFounded (s x)) : WellFounded (Lex r s) :=
   WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b
+#align psigma.lex_wf PSigma.lex_wf
 
 end
 
@@ -67,10 +70,12 @@ parameter {α : Sort u}{β : Sort v}
 
 def LexNdep (r : α → α → Prop) (s : β → β → Prop) :=
   Lex r fun a : α => s
+#align psigma.lex_ndep PSigma.LexNdep
 
 theorem lex_ndep_wf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r) (hb : WellFounded s) :
     WellFounded (lex_ndep r s) :=
   WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
+#align psigma.lex_ndep_wf PSigma.lex_ndep_wf
 
 end
 
@@ -87,6 +92,7 @@ variable (s : β → β → Prop)
 inductive RevLex : (@PSigma α fun a => β) → (@PSigma α fun a => β) → Prop
   | left : ∀ {a₁ a₂ : α} (b : β), r a₁ a₂ → rev_lex ⟨a₁, b⟩ ⟨a₂, b⟩
   | right : ∀ (a₁ : α) {b₁ : β} (a₂ : α) {b₂ : β}, s b₁ b₂ → rev_lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
+#align psigma.rev_lex PSigma.RevLex
 -/
 
 end
@@ -118,9 +124,11 @@ theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, A
               have s₁ : s b₁ xb := Eq.recOn eq₃ h
               ihb b₁ s₁ a₁
         aux rfl rfl
+#align psigma.rev_lex_accessible PSigma.rev_lex_accessible
 
 theorem rev_lex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (RevLex r s) :=
   WellFounded.intro fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
+#align psigma.rev_lex_wf PSigma.rev_lex_wf
 
 end
 
@@ -129,14 +137,17 @@ section
 #print PSigma.SkipLeft /-
 def SkipLeft (α : Type u) {β : Type v} (s : β → β → Prop) : (@PSigma α fun a => β) → (@PSigma α fun a => β) → Prop :=
   RevLex EmptyRelation s
+#align psigma.skip_left PSigma.SkipLeft
 -/
 
 theorem skip_left_wf (α : Type u) {β : Type v} {s : β → β → Prop} (hb : WellFounded s) : WellFounded (SkipLeft α s) :=
   rev_lex_wf empty_wf hb
+#align psigma.skip_left_wf PSigma.skip_left_wf
 
 theorem mk_skip_left {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β → Prop} (a₁ a₂ : α) (h : s b₁ b₂) :
     SkipLeft α s ⟨a₁, b₁⟩ ⟨a₂, b₂⟩ :=
   RevLex.right _ _ h
+#align psigma.mk_skip_left PSigma.mk_skip_left
 
 end
 
@@ -144,6 +155,7 @@ instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : HasWellFounde
     HasWellFounded (PSigma β) where
   R := Lex s₁.R fun a => (s₂ a).R
   wf := lex_wf s₁.wf fun a => (s₂ a).wf
+#align psigma.has_well_founded PSigma.hasWellFounded
 
 end PSigma
 

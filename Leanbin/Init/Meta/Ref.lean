@@ -12,15 +12,19 @@ namespace Tactic
 
 /-- A `ref` performs the role of a mutable variable within a tactic. -/
 unsafe axiom ref (α : Type u) : Type u
+#align tactic.ref tactic.ref
 
 /-- Create a new reference `r` with initial value `a`, execute `t r`, and then delete `r`. -/
 unsafe axiom using_new_ref {α : Type u} {β : Type v} (a : α) (t : ref α → tactic β) : tactic β
+#align tactic.using_new_ref tactic.using_new_ref
 
 /-- Read the value stored in the given reference. -/
 unsafe axiom read_ref {α : Type u} : ref α → tactic α
+#align tactic.read_ref tactic.read_ref
 
 /-- Update the value stored in the given reference. -/
 unsafe axiom write_ref {α : Type u} : ref α → α → tactic Unit
+#align tactic.write_ref tactic.write_ref
 
 end Tactic
 

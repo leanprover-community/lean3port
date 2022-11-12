@@ -9,17 +9,20 @@ import Leanbin.System.Random
 inductive Io.Error
   | other : String → Io.Error
   | sys : Nat → Io.Error
+#align io.error Io.Error
 
 inductive Io.Mode
   | read
   | write
   | read_write
   | append
+#align io.mode Io.Mode
 
 inductive Io.Process.Stdio
   | piped
   | inherit
   | null
+#align io.process.stdio Io.Process.Stdio
 
 structure Io.Process.SpawnArgs where
   -- Command name.
@@ -36,6 +39,7 @@ structure Io.Process.SpawnArgs where
   cwd : Option String := none
   -- Environment variables for the process.
   env : List (String × Option String) := []
+#align io.process.spawn_args Io.Process.SpawnArgs
 
 class MonadIo (m : Type → Type → Type) where
   [Monad : ∀ e, Monad (m e)]
@@ -45,11 +49,13 @@ class MonadIo (m : Type → Type → Type) where
   iterate : ∀ e α, α → (α → m e (Option α)) → m e α
   -- Primitive Types
   Handle : Type
+#align monad_io MonadIo
 
 class MonadIoTerminal (m : Type → Type → Type) where
   putStr : String → m Io.Error Unit
   getLine : m Io.Error String
   cmdlineArgs : List String
+#align monad_io_terminal MonadIoTerminal
 
 open MonadIo (Handle)
 
@@ -61,6 +67,7 @@ class MonadIoNetSystem (m : Type → Type → Type) [MonadIo m] where
   recv : socket → Nat → m Io.Error CharBuffer
   send : socket → CharBuffer → m Io.Error Unit
   close : socket → m Io.Error Unit
+#align monad_io_net_system MonadIoNetSystem
 
 class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
   -- Remark: in Haskell, they also provide  (Maybe TextEncoding) and  NewlineMode
@@ -80,16 +87,19 @@ class MonadIoFileSystem (m : Type → Type → Type) [MonadIo m] where
   rename : String → String → m Io.Error Unit
   mkdir : String → Bool → m Io.Error Bool
   rmdir : String → m Io.Error Bool
+#align monad_io_file_system MonadIoFileSystem
 
 unsafe class monad_io_serial (m : Type → Type → Type) [MonadIo m] where
   serialize : Handle m → expr → m Io.Error Unit
   deserialize : Handle m → m Io.Error expr
+#align monad_io_serial monad_io_serial
 
 class MonadIoEnvironment (m : Type → Type → Type) where
   getEnv : String → m Io.Error (Option String)
   -- we don't provide set_env as it is (thread-)unsafe (at least with glibc)
   getCwd : m Io.Error String
   setCwd : String → m Io.Error Unit
+#align monad_io_environment MonadIoEnvironment
 
 class MonadIoProcess (m : Type → Type → Type) [MonadIo m] where
   Child : Type
@@ -99,18 +109,23 @@ class MonadIoProcess (m : Type → Type → Type) [MonadIo m] where
   spawn : Io.Process.SpawnArgs → m Io.Error child
   wait : child → m Io.Error Nat
   sleep : Nat → m Io.Error Unit
+#align monad_io_process MonadIoProcess
 
 class MonadIoRandom (m : Type → Type → Type) where
   setRandGen : StdGen → m Io.Error Unit
   rand : Nat → Nat → m Io.Error Nat
+#align monad_io_random MonadIoRandom
 
 instance monadIoIsMonad (m : Type → Type → Type) (e : Type) [MonadIo m] : Monad (m e) :=
   MonadIo.monad e
+#align monad_io_is_monad monadIoIsMonad
 
 instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] :
     MonadFail (m Io.Error) where fail α s := MonadIo.fail _ _ (Io.Error.other s)
+#align monad_io_is_monad_fail monadIoIsMonadFail
 
 instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternative (m Io.Error) where
   orelse α a b := MonadIo.catch _ _ _ a fun _ => b
   failure α := MonadIo.fail _ _ (Io.Error.other "failure")
+#align monad_io_is_alternative monadIoIsAlternative
 

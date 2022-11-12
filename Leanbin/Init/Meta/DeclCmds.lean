@@ -19,6 +19,7 @@ private unsafe def apply_replacement (replacements : name_map Name) (e : expr) :
       | some new_n => some (expr.const new_n ls)
       | none => none
     | _ => none
+#align apply_replacement apply_replacement
 
 /-- Given a set of constant renamings `replacements` and a declaration name `src_decl_name`, create a new
    declaration called `new_decl_name` s.t. its type is the type of `src_decl_name` after applying the
@@ -45,6 +46,7 @@ unsafe def copy_decl_updating_type (replacements : name_map Name) (src_decl_name
   let decl := decl.update_type <| apply_replacement replacements decl.type
   let decl := decl.update_value <| expr.const src_decl_name (decl.univ_params.map level.param)
   add_decl decl
+#align copy_decl_updating_type copy_decl_updating_type
 
 unsafe def copy_decl_using (replacements : name_map Name) (src_decl_name : Name) (new_decl_name : Name) : Tactic := do
   let env ← get_env
@@ -53,4 +55,5 @@ unsafe def copy_decl_using (replacements : name_map Name) (src_decl_name : Name)
   let decl := decl.update_type <| apply_replacement replacements decl.type
   let decl := decl.map_value <| apply_replacement replacements
   add_decl decl
+#align copy_decl_using copy_decl_using
 

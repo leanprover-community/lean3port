@@ -125,6 +125,7 @@ namespace Interactive
 inductive CaseTag
   | pi (names : List Name) (num_arguments : ℕ)
   | hyps (names : List Name) (arguments : List Name)
+#align tactic.interactive.case_tag Tactic.Interactive.CaseTag
 
 open CaseTag
 
@@ -137,16 +138,19 @@ protected unsafe def case_tag.to_format : CaseTag → format
     join ["(pi ", group <| nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
   | hyps names arguments =>
     join ["(hyps ", group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format], ")"]
+#align tactic.interactive.case_tag.to_format tactic.interactive.case_tag.to_format
 
 end
 
 protected def CaseTag.repr : CaseTag → String
   | pi names num_arguments => "(pi " ++ names.repr ++ " " ++ num_arguments.repr ++ ")"
   | hyps names arguments => "(hyps " ++ names.repr ++ " " ++ arguments.repr ++ ")"
+#align tactic.interactive.case_tag.repr Tactic.Interactive.CaseTag.repr
 
 protected def CaseTag.toString : CaseTag → String
   | pi names num_arguments => "(pi " ++ names.toString ++ " " ++ toString num_arguments ++ ")"
   | hyps names arguments => "(hyps " ++ names.toString ++ " " ++ arguments.toString ++ ")"
+#align tactic.interactive.case_tag.to_string Tactic.Interactive.CaseTag.toString
 
 namespace CaseTag
 
@@ -166,9 +170,11 @@ instance : ToString CaseTag :=
 unsafe def case_names : CaseTag → List Name
   | pi ns _ => ns
   | hyps ns _ => ns
+#align tactic.interactive.case_tag.case_names tactic.interactive.case_tag.case_names
 
 private unsafe def render_arguments (args : List Name) : List Name :=
   args.map (Name.mk_string "_arg")
+#align tactic.interactive.case_tag.render_arguments tactic.interactive.case_tag.render_arguments
 
 /-- Renders a case tag to a goal tag (i.e. a list of names), according to the
 following schema:
@@ -186,6 +192,7 @@ following schema:
 unsafe def render : CaseTag → List Name
   | pi names num_arguments => mk_numeral (Unsigned.ofNat' num_arguments) `_case.pi :: names
   | hyps names arguments => `_case.hyps :: render_arguments arguments ++ names
+#align tactic.interactive.case_tag.render tactic.interactive.case_tag.render
 
 /-- Creates a `pi` case tag from an input tag `in_tag`. The `names` of the resulting
 tag are the non-internal names in `in_tag` (in the order in which they appear in
@@ -193,6 +200,7 @@ tag are the non-internal names in `in_tag` (in the order in which they appear in
 -/
 unsafe def from_tag_pi (in_tag : Tag) (num_arguments : ℕ) : CaseTag :=
   pi (in_tag.filter fun n => ¬n.is_internal) num_arguments
+#align tactic.interactive.case_tag.from_tag_pi tactic.interactive.case_tag.from_tag_pi
 
 /-- Creates a `hyps` case tag from an input tag `in_tag`. The `names` of the
 resulting tag are the non-internal names in `in_tag` (in the order in which they
@@ -201,11 +209,13 @@ resulting tag.
 -/
 unsafe def from_tag_hyps (in_tag : Tag) (arguments : List Name) : CaseTag :=
   hyps (in_tag.filter fun n => ¬n.is_internal) arguments
+#align tactic.interactive.case_tag.from_tag_hyps tactic.interactive.case_tag.from_tag_hyps
 
 private unsafe def parse_marker : Name → Option (Option Nat)
   | mk_numeral n `_case.pi => some (some n.toNat)
   | `_case.hyps => some none
   | _ => none
+#align tactic.interactive.case_tag.parse_marker tactic.interactive.case_tag.parse_marker
 
 private unsafe def parse_arguments : List Name → List Name × List Name
   | [] => ⟨[], []⟩
@@ -213,6 +223,7 @@ private unsafe def parse_arguments : List Name → List Name × List Name
     let ⟨args, rest⟩ := parse_arguments ns
     ⟨n :: args, rest⟩
   | ns => ⟨[], ns⟩
+#align tactic.interactive.case_tag.parse_arguments tactic.interactive.case_tag.parse_arguments
 
 /-- Parses a case tag from the list of names produced by `render`.
 -/
@@ -226,6 +237,7 @@ unsafe def parse : List Name → Option CaseTag
     guard <| ns fun n => ¬n
     some <| hyps ns args
   | _ => none
+#align tactic.interactive.case_tag.parse tactic.interactive.case_tag.parse
 
 /-- Indicates the result of matching a list of names against the names of a case
 tag. See `match_tag`.
@@ -234,6 +246,7 @@ inductive MatchResult
   | exact_match
   | fuzzy_match
   | no_match
+#align tactic.interactive.case_tag.match_result Tactic.Interactive.CaseTag.MatchResult
 
 open MatchResult
 
@@ -252,17 +265,20 @@ def combine : MatchResult → MatchResult → MatchResult
   | fuzzy_match, no_match => no_match
   | fuzzy_match, _ => fuzzy_match
   | no_match, _ => no_match
+#align tactic.interactive.case_tag.match_result.combine Tactic.Interactive.CaseTag.MatchResult.combine
 
 end MatchResult
 
 private unsafe def name_match (suffix : Name) (n : Name) : MatchResult :=
   if suffix = n then exact_match else if suffix.isSuffixOf n then fuzzy_match else no_match
+#align tactic.interactive.case_tag.name_match tactic.interactive.case_tag.name_match
 
 private unsafe def names_match : List Name → List Name → MatchResult
   | [], [] => exact_match
   | [], _ => fuzzy_match
   | _ :: _, [] => no_match
   | n :: ns, n' :: ns' => (name_match n n').combine (names_match ns ns')
+#align tactic.interactive.case_tag.names_match tactic.interactive.case_tag.names_match
 
 /-- Match the `names` of a case tag against a user-supplied list of names `ns`. For
 this purpose, we consider the `names` in reverse order, i.e. in the order in
@@ -289,6 +305,7 @@ nil                (fuzzy match)
 -/
 unsafe def match_tag (ns : List Name) (t : CaseTag) : MatchResult :=
   names_match ns.reverse t.case_names
+#align tactic.interactive.case_tag.match_tag tactic.interactive.case_tag.match_tag
 
 end CaseTag
 

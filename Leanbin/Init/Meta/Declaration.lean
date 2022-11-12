@@ -43,6 +43,7 @@ inductive ReducibilityHints
   | opaque : ReducibilityHints
   | abbrev : ReducibilityHints
   | regular : Nat → Bool → ReducibilityHints
+#align reducibility_hints ReducibilityHints
 
 /-- Reflect a C++ declaration object. The VM replaces it with the C++ implementation. -/
 unsafe inductive declaration-- definition: name, list universe parameters, type, value, is_trusted
@@ -69,11 +70,13 @@ unsafe inductive declaration-- definition: name, list universe parameters, type,
         expr → Bool → declaration-- axiom : name → list universe parameters, type (remark: axioms are always trusted)
 
   | ax : Name → List Name → expr → declaration
+#align declaration declaration
 
 open Declaration
 
 unsafe def mk_definition (n : Name) (ls : List Name) (v : expr) (e : expr) : declaration :=
   defn n ls v e (ReducibilityHints.regular 1 true) true
+#align mk_definition mk_definition
 
 namespace Declaration
 
@@ -82,75 +85,90 @@ unsafe def to_name : declaration → Name
   | thm n _ _ _ => n
   | cnst n _ _ _ => n
   | ax n _ _ => n
+#align declaration.to_name declaration.to_name
 
 unsafe def univ_params : declaration → List Name
   | defn _ ls _ _ _ _ => ls
   | thm _ ls _ _ => ls
   | cnst _ ls _ _ => ls
   | ax _ ls _ => ls
+#align declaration.univ_params declaration.univ_params
 
 unsafe def type : declaration → expr
   | defn _ _ t _ _ _ => t
   | thm _ _ t _ => t
   | cnst _ _ t _ => t
   | ax _ _ t => t
+#align declaration.type declaration.type
 
 unsafe def value : declaration → expr
   | defn _ _ _ v _ _ => v
   | thm _ _ _ v => v.get
   | _ => default
+#align declaration.value declaration.value
 
 unsafe def value_task : declaration → task expr
   | defn _ _ _ v _ _ => task.pure v
   | thm _ _ _ v => v
   | _ => task.pure default
+#align declaration.value_task declaration.value_task
 
 unsafe def is_trusted : declaration → Bool
   | defn _ _ _ _ _ t => t
   | cnst _ _ _ t => t
   | _ => true
+#align declaration.is_trusted declaration.is_trusted
 
 unsafe def update_type : declaration → expr → declaration
   | defn n ls t v h tr, new_t => defn n ls new_t v h tr
   | thm n ls t v, new_t => thm n ls new_t v
   | cnst n ls t tr, new_t => cnst n ls new_t tr
   | ax n ls t, new_t => ax n ls new_t
+#align declaration.update_type declaration.update_type
 
 unsafe def update_name : declaration → Name → declaration
   | defn n ls t v h tr, new_n => defn new_n ls t v h tr
   | thm n ls t v, new_n => thm new_n ls t v
   | cnst n ls t tr, new_n => cnst new_n ls t tr
   | ax n ls t, new_n => ax new_n ls t
+#align declaration.update_name declaration.update_name
 
 unsafe def update_value : declaration → expr → declaration
   | defn n ls t v h tr, new_v => defn n ls t new_v h tr
   | thm n ls t v, new_v => thm n ls t (task.pure new_v)
   | d, new_v => d
+#align declaration.update_value declaration.update_value
 
 unsafe def update_value_task : declaration → task expr → declaration
   | defn n ls t v h tr, new_v => defn n ls t new_v.get h tr
   | thm n ls t v, new_v => thm n ls t new_v
   | d, new_v => d
+#align declaration.update_value_task declaration.update_value_task
 
 unsafe def map_value : declaration → (expr → expr) → declaration
   | defn n ls t v h tr, f => defn n ls t (f v) h tr
   | thm n ls t v, f => thm n ls t (task.map f v)
   | d, f => d
+#align declaration.map_value declaration.map_value
 
 unsafe def to_definition : declaration → declaration
   | cnst n ls t tr => defn n ls t default ReducibilityHints.abbrev tr
   | ax n ls t => thm n ls t (task.pure default)
   | d => d
+#align declaration.to_definition declaration.to_definition
 
 unsafe def is_definition : declaration → Bool
   | defn _ _ _ _ _ _ => true
   | _ => false
+#align declaration.is_definition declaration.is_definition
 
 /-- Instantiate a universe polymorphic declaration type with the given universes. -/
 unsafe axiom instantiate_type_univ_params : declaration → List level → Option expr
+#align declaration.instantiate_type_univ_params declaration.instantiate_type_univ_params
 
 /-- Instantiate a universe polymorphic declaration value with the given universes. -/
 unsafe axiom instantiate_value_univ_params : declaration → List level → Option expr
+#align declaration.instantiate_value_univ_params declaration.instantiate_value_univ_params
 
 end Declaration
 

@@ -27,16 +27,19 @@ namespace Interactive
 @[reducible]
 unsafe def parse {α : Type} (p : parser α) [lean.parser.reflectable p] : Type :=
   α
+#align interactive.parse interactive.parse
 
 /--
 A `loc` is either a 'wildcard', which means "everywhere", or a list of `option name`s. `none` means `target` and `some n` means `n` in the local context.-/
 inductive Loc : Type
   | wildcard : loc
   | ns : List (Option Name) → loc
+#align interactive.loc Interactive.Loc
 
 unsafe def loc.include_goal : Loc → Bool
   | loc.wildcard => true
   | loc.ns ls => (ls.map Option.isNone).bor
+#align interactive.loc.include_goal interactive.loc.include_goal
 
 unsafe def loc.get_locals : Loc → tactic (List expr)
   | loc.wildcard => tactic.local_context
@@ -49,24 +52,29 @@ unsafe def loc.get_locals : Loc → tactic (List expr)
           let l ← tactic.get_local n
           pure <| l :: ls)
       []
+#align interactive.loc.get_locals interactive.loc.get_locals
 
 unsafe def loc.apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
   let hs ← l.get_locals
   hs hyp_tac
   if l then goal_tac else pure ()
+#align interactive.loc.apply interactive.loc.apply
 
 unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
   let hs ← l.get_locals
   let hts := hs.map hyp_tac
   tactic.try_lst <| if l then hts ++ [goal_tac] else hts
+#align interactive.loc.try_apply interactive.loc.try_apply
 
 /-- Use `desc` as the interactive description of `p`. -/
 unsafe def with_desc {α : Type} (desc : format) (p : parser α) : parser α :=
   p
+#align interactive.with_desc interactive.with_desc
 
 unsafe instance with_desc.reflectable {α : Type} (p : parser α) [h : lean.parser.reflectable p] (f : format) :
     reflectable (with_desc f p) :=
   h
+#align interactive.with_desc.reflectable interactive.with_desc.reflectable
 
 namespace Types
 
@@ -75,74 +83,91 @@ variable {α β : Type}
 -- optimized pretty printer
 unsafe def brackets (l r : String) (p : parser α) :=
   tk l *> p <* tk r
+#align interactive.types.brackets interactive.types.brackets
 
 unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
+#align interactive.types.list_of interactive.types.list_of
 
-/- ./././Mathport/Syntax/Translate/Command.lean:648:29: warning: unsupported: precedence command -/
-/- ./././Mathport/Syntax/Translate/Command.lean:648:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:650:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:650:29: warning: unsupported: precedence command -/
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
 unsafe def tac_rbp :=
   2
+#align interactive.types.tac_rbp interactive.types.tac_rbp
 
 /-- A 'tactic expression', which uses right-binding power 2 so that it is terminated by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
 unsafe def texpr :=
   parser.pexpr tac_rbp
+#align interactive.types.texpr interactive.types.texpr
 
 /-- Parse an identifier or a '_' -/
 unsafe def ident_ : parser Name :=
   ident <|> tk "_" *> return `_
+#align interactive.types.ident_ interactive.types.ident_
 
 unsafe def using_ident :=
   (tk "using" *> ident)?
+#align interactive.types.using_ident interactive.types.using_ident
 
 unsafe def with_ident_list :=
   tk "with" *> ident_* <|> return []
+#align interactive.types.with_ident_list interactive.types.with_ident_list
 
 unsafe def without_ident_list :=
   tk "without" *> ident* <|> return []
+#align interactive.types.without_ident_list interactive.types.without_ident_list
 
 unsafe def location :=
   tk "at" *>
       (tk "*" *> return Loc.wildcard <|>
         loc.ns <$> ((with_desc "⊢" <| tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
     return (Loc.ns [none])
+#align interactive.types.location interactive.types.location
 
 unsafe def pexpr_list :=
   list_of (parser.pexpr 0)
+#align interactive.types.pexpr_list interactive.types.pexpr_list
 
 unsafe def opt_pexpr_list :=
   pexpr_list <|> return []
+#align interactive.types.opt_pexpr_list interactive.types.opt_pexpr_list
 
 unsafe def pexpr_list_or_texpr :=
   pexpr_list <|> List.ret <$> texpr
+#align interactive.types.pexpr_list_or_texpr interactive.types.pexpr_list_or_texpr
 
 unsafe def only_flag : parser Bool :=
   tk "only" *> return true <|> return false
+#align interactive.types.only_flag interactive.types.only_flag
 
 end Types
 
-/- ./././Mathport/Syntax/Translate/Command.lean:648:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:650:29: warning: unsupported: precedence command -/
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format
   | [] => ""
   | [f] => f
   | fs => paren (join fs)
+#align interactive.maybe_paren interactive.maybe_paren
 
 private unsafe def unfold (e : expr) : tactic expr := do
-  let expr.const f_name f_lvls ← return e.get_app_fn | failed
+  let expr.const f_name f_lvls ← return e.get_app_fn |
+    failed
   let env ← get_env
   let decl ← env.get f_name
   let new_f ← decl.instantiate_value_univ_params f_lvls
   head_beta (expr.mk_app new_f e)
+#align interactive.unfold interactive.unfold
 
 private unsafe def concat (f₁ f₂ : List format) :=
   if f₁.Empty then f₂ else if f₂.Empty then f₁ else f₁ ++ [" "] ++ f₂
+#align interactive.concat interactive.concat
 
 private unsafe def parser_desc_aux : expr → tactic (List format)
   | quote.1 ident => return ["id"]
@@ -206,26 +231,33 @@ private unsafe def parser_desc_aux : expr → tactic (List format)
           let f ← pp e
           fail <| to_fmt "don't know how to pretty print " ++ f
     parser_desc_aux e'
+#align interactive.parser_desc_aux interactive.parser_desc_aux
 
 unsafe def param_desc : expr → tactic format
   | quote.1 (parse (%%ₓp)) => join <$> parser_desc_aux p
   | quote.1 (optParam (%%ₓt) _) => (· ++ "?") <$> pp t
   | e =>
     if is_constant e ∧ (const_name e).components.ilast = `itactic then return <| to_fmt "{ tactic }" else paren <$> pp e
+#align interactive.param_desc interactive.param_desc
 
 private unsafe axiom parse_binders_core (rbp : ℕ) : parser (List pexpr)
+#align interactive.parse_binders_core interactive.parse_binders_core
 
 unsafe def parse_binders (rbp := Std.Prec.max) :=
   with_desc "<binders>" (parse_binders_core rbp)
+#align interactive.parse_binders interactive.parse_binders
 
 unsafe axiom decl_attributes : Type
+#align interactive.decl_attributes interactive.decl_attributes
 
 unsafe axiom decl_attributes.apply : decl_attributes → Name → parser Unit
+#align interactive.decl_attributes.apply interactive.decl_attributes.apply
 
 unsafe inductive noncomputable_modifier
   | computable
   | noncomputable
   | force_noncomputable
+#align interactive.noncomputable_modifier interactive.noncomputable_modifier
 
 unsafe structure decl_modifiers where
   is_private : Bool
@@ -233,28 +265,34 @@ unsafe structure decl_modifiers where
   is_meta : Bool
   is_mutual : Bool
   is_noncomputable : noncomputable_modifier
+#align interactive.decl_modifiers interactive.decl_modifiers
 
 unsafe structure decl_meta_info where
   attrs : decl_attributes
   modifiers : decl_modifiers
   doc_string : Option String
+#align interactive.decl_meta_info interactive.decl_meta_info
 
 unsafe structure single_inductive_decl where
   attrs : decl_attributes
   sig : expr
   intros : List expr
+#align interactive.single_inductive_decl interactive.single_inductive_decl
 
 unsafe def single_inductive_decl.name (d : single_inductive_decl) : Name :=
   d.sig.app_fn.const_name
+#align interactive.single_inductive_decl.name interactive.single_inductive_decl.name
 
 unsafe structure inductive_decl where
   u_names : List Name
   params : List expr
   decls : List single_inductive_decl
+#align interactive.inductive_decl interactive.inductive_decl
 
 /--
 Parses and elaborates a single or multiple mutual inductive declarations (without the `inductive` keyword), depending on `is_mutual` -/
 unsafe axiom inductive_decl.parse : decl_meta_info → parser inductive_decl
+#align interactive.inductive_decl.parse interactive.inductive_decl.parse
 
 end Interactive
 
@@ -272,32 +310,38 @@ private unsafe def parse_format : String → List Char → parser pexpr
   | Acc, '{' :: '{' :: s => parse_format (Acc ++ "{") s
   | Acc, '{' :: s => do
     let (e, s) ← with_input (lean.parser.pexpr 0) s.asString
-    let '}' :: s ← return s.toList | fail "'}' expected"
+    let '}' :: s ← return s.toList |
+      fail "'}' expected"
     let f ← parse_format "" s
     pure (pquote.1 (to_fmt (%%ₓreflect Acc) ++ to_fmt (%%ₓe) ++ %%ₓf))
   | Acc, '}' :: '}' :: s => parse_format (Acc ++ "}") s
   | Acc, '}' :: s => fail "'}}' expected"
   | Acc, c :: s => parse_format (Acc.str c) s
+#align parse_format parse_format
 
 @[user_notation]
 unsafe def format_macro (_ : parse <| tk "format!") (s : String) : parser pexpr :=
   parse_format "" s.toList
+#align format_macro format_macro
 
 private unsafe def parse_sformat : String → List Char → parser pexpr
   | Acc, [] => pure <| pexpr.of_expr (reflect Acc)
   | Acc, '{' :: '{' :: s => parse_sformat (Acc ++ "{") s
   | Acc, '{' :: s => do
     let (e, s) ← with_input (lean.parser.pexpr 0) s.asString
-    let '}' :: s ← return s.toList | fail "'}' expected"
+    let '}' :: s ← return s.toList |
+      fail "'}' expected"
     let f ← parse_sformat "" s
     pure (pquote.1 ((%%ₓreflect Acc) ++ toString (%%ₓe) ++ %%ₓf))
   | Acc, '}' :: '}' :: s => parse_sformat (Acc ++ "}") s
   | Acc, '}' :: s => fail "'}}' expected"
   | Acc, c :: s => parse_sformat (Acc.str c) s
+#align parse_sformat parse_sformat
 
 @[user_notation]
 unsafe def sformat_macro (_ : parse <| tk "sformat!") (s : String) : parser pexpr :=
   parse_sformat "" s.toList
+#align sformat_macro sformat_macro
 
 end Macros
 

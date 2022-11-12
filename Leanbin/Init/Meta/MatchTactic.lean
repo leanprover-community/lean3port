@@ -41,6 +41,7 @@ unsafe structure pattern where
   moutput : List expr
   nuvars : Nat
   nmvars : Nat
+#align tactic.pattern tactic.pattern
 
 /-- `mk_pattern umetas emetas target uoutput eoutput` creates a new pattern. The arguments are
 - `umetas` a list of level params to be replaced with temporary universe metavariables.
@@ -62,11 +63,13 @@ Then `mk_pattern [] [α,h,t] `(@list.cons α h t) [] [h,t]` would `match_pattern
 -/
 unsafe axiom mk_pattern (umetas : List level) (emetas : List expr) (target : expr) (uoutput : List level)
     (eoutput : List expr) : tactic pattern
+#align tactic.mk_pattern tactic.mk_pattern
 
 /-- `mk_pattern p e m` matches (pattern.target p) and e using transparency m.
    If the matching is successful, then return the instantiation of `pattern.output p`.
    The tactic fails if not all (temporary) meta-variables are assigned. -/
 unsafe axiom match_pattern (p : pattern) (e : expr) (m : Transparency := reducible) : tactic (List level × List expr)
+#align tactic.match_pattern tactic.match_pattern
 
 open Expr
 
@@ -78,6 +81,7 @@ private unsafe def to_pattern_core : expr → tactic (expr × List expr)
     let (p, xs) ← to_pattern_core new_b
     return (p, x :: xs)
   | e => return (e, [])
+#align tactic.to_pattern_core tactic.to_pattern_core
 
 /-- Given a pre-term of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, converts it
    into the pattern `t[?x₁, ..., ?xₙ]` with outputs `[?x₁, ..., ?xₙ]` -/
@@ -89,6 +93,7 @@ unsafe def pexpr_to_pattern (p : pexpr) : tactic pattern := do
         p true false
   let (new_p, xs) ← to_pattern_core e
   mk_pattern [] xs new_p [] xs
+#align tactic.pexpr_to_pattern tactic.pexpr_to_pattern
 
 /-- Convert pre-term into a pattern and try to match e.
    Given p of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, a successful
@@ -96,28 +101,33 @@ unsafe def pexpr_to_pattern (p : pexpr) : tactic pattern := do
 unsafe def match_expr (p : pexpr) (e : expr) (m := reducible) : tactic (List expr) := do
   let new_p ← pexpr_to_pattern p
   Prod.snd <$> match_pattern new_p e m
+#align tactic.match_expr tactic.match_expr
 
 private unsafe def match_subexpr_core (m : Transparency) : pattern → List expr → tactic (List expr)
   | p, [] => failed
   | p, e :: es =>
     Prod.snd <$> match_pattern p e m <|>
       match_subexpr_core p es <|> if is_app e then match_subexpr_core p (get_app_args e) else failed
+#align tactic.match_subexpr_core tactic.match_subexpr_core
 
 /-- Similar to match_expr, but it tries to match a subexpression of e.
    Remark: the procedure does not go inside binders. -/
 unsafe def match_subexpr (p : pexpr) (e : expr) (m := reducible) : tactic (List expr) := do
   let new_p ← pexpr_to_pattern p
   match_subexpr_core m new_p [e]
+#align tactic.match_subexpr tactic.match_subexpr
 
 /-- Match the main goal target. -/
 unsafe def match_target (p : pexpr) (m := reducible) : tactic (List expr) := do
   let t ← target
   match_expr p t m
+#align tactic.match_target tactic.match_target
 
 /-- Match a subterm in the main goal target. -/
 unsafe def match_target_subexpr (p : pexpr) (m := reducible) : tactic (List expr) := do
   let t ← target
   match_subexpr p t m
+#align tactic.match_target_subexpr tactic.match_target_subexpr
 
 private unsafe def match_hypothesis_core (m : Transparency) : pattern → List expr → tactic (expr × List expr)
   | p, [] => failed
@@ -127,6 +137,7 @@ private unsafe def match_hypothesis_core (m : Transparency) : pattern → List e
           let r ← match_pattern p h_type m
           return (h, r)) <|>
         match_hypothesis_core p hs
+#align tactic.match_hypothesis_core tactic.match_hypothesis_core
 
 /-- Match hypothesis in the main goal target.
    The result is pair (hypothesis, substitution). -/
@@ -134,6 +145,7 @@ unsafe def match_hypothesis (p : pexpr) (m := reducible) : tactic (expr × List 
   let ctx ← local_context
   let new_p ← pexpr_to_pattern p
   match_hypothesis_core m new_p ctx
+#align tactic.match_hypothesis tactic.match_hypothesis
 
 unsafe instance : has_to_tactic_format pattern :=
   ⟨fun p => do

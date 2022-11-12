@@ -14,19 +14,23 @@ universe u v
 @[reducible]
 unsafe def has_reflect (α : Sort u) :=
   ∀ a : α, reflected _ a
+#align has_reflect has_reflect
 
 unsafe structure reflected_value (α : Type u) where
   val : α
   [reflect : reflected _ val]
+#align reflected_value reflected_value
 
 namespace ReflectedValue
 
 unsafe def expr {α : Type u} (v : reflected_value α) : expr :=
   v.reflect
+#align reflected_value.expr reflected_value.expr
 
 unsafe def subst {α : Type u} {β : Type v} (f : α → β) [rf : reflected _ f] (a : reflected_value α) :
     reflected_value β :=
   @mk _ (f a.val) (rf.subst a.reflect)
+#align reflected_value.subst reflected_value.subst
 
 end ReflectedValue
 
@@ -41,9 +45,11 @@ unsafe instance nat.reflect : has_reflect ℕ
       if n = 1 then quote.1 (1 : ℕ)
       else
         if n % 2 = 0 then quote.1 (bit0 (%%ₓnat.reflect (n / 2)) : ℕ) else quote.1 (bit1 (%%ₓnat.reflect (n / 2)) : ℕ)
+#align nat.reflect nat.reflect
 
 unsafe instance unsigned.reflect : has_reflect Unsigned
   | ⟨n, pr⟩ => quote.1 (Unsigned.ofNat' n)
+#align unsigned.reflect unsigned.reflect
 
 end
 
@@ -53,11 +59,14 @@ unsafe instance name.reflect : has_reflect Name
   | Name.anonymous => quote.1 Name.anonymous
   | Name.mk_string s n => (quote.1 fun n => Name.mk_string s n).subst (name.reflect n)
   | Name.mk_numeral i n => (quote.1 fun n => Name.mk_numeral i n).subst (name.reflect n)
+#align name.reflect name.reflect
 
 unsafe instance list.reflect {α : Type} [has_reflect α] [reflected _ α] : has_reflect (List α)
   | [] => quote.1 []
   | h :: t => (quote.1 fun t => h :: t).subst (list.reflect t)
+#align list.reflect list.reflect
 
 unsafe instance punit.reflect : has_reflect PUnit
   | () => quote.1 _
+#align punit.reflect punit.reflect
 

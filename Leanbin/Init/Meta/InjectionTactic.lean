@@ -70,6 +70,7 @@ unsafe def injection_with (h : expr) (ns : List Name) (base := `h) (offset := so
       let pr ← mk_app (.str inductive_name "no_confusion") [tgt, lhs, rhs, h]
       exact pr
       return ([], ns)
+#align tactic.injection_with tactic.injection_with
 
 /-- Simplify the equation `h` using injectivity of constructors. See
 `injection_with`. Returns the hypotheses that were added to the context, or an
@@ -77,6 +78,7 @@ empty list if the goal was solved by contradiction.
 -/
 unsafe def injection (h : expr) (base := `h) (offset := some 1) : tactic (List expr) :=
   Prod.fst <$> injection_with h [] base offset
+#align tactic.injection tactic.injection
 
 private unsafe def injections_with_inner (base : Name) (offset : Option ℕ) : ℕ → List expr → List Name → tactic Unit
   | 0, lc, ns => fail "recursion depth exceeded"
@@ -90,6 +92,7 @@ private unsafe def injections_with_inner (base : Name) (offset : Option ℕ) : �
           some
           (t, ns') =>
         injections_with_inner n (t ++ lc) ns'
+#align tactic.injections_with_inner tactic.injections_with_inner
 
 /-- Simplifies equations in the context using injectivity of constructors. For
 each equation `h : C x₁ ... xₙ = D y₁ ... yₘ` in the context, where `C` and `D`
@@ -107,6 +110,7 @@ recurse more than five times, it fails.
 unsafe def injections_with (ns : List Name) (base := `h) (offset := some 1) : tactic Unit := do
   let lc ← local_context
   injections_with_inner base offset 5 lc ns
+#align tactic.injections_with tactic.injections_with
 
 end Tactic
 

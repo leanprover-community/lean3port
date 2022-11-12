@@ -20,6 +20,7 @@ Motivation: the formatting object may be big, and we may create it on demand.
 unsafe inductive exceptional (α : Type)
   | success : α → exceptional
   | exception : (options → format) → exceptional
+#align exceptional exceptional
 
 section
 
@@ -32,6 +33,7 @@ variable [ToString α]
 protected unsafe def exceptional.to_string : exceptional α → String
   | success a => toString a
   | exception e => "Exception: " ++ toString (e options.mk)
+#align exceptional.to_string exceptional.to_string
 
 unsafe instance : ToString (exceptional α) :=
   ToString.mk exceptional.to_string
@@ -45,22 +47,27 @@ variable {α β : Type}
 protected unsafe def to_bool : exceptional α → Bool
   | success _ => true
   | exception _ => false
+#align exceptional.to_bool exceptional.to_bool
 
 protected unsafe def to_option : exceptional α → Option α
   | success a => some a
   | exception _ => none
+#align exceptional.to_option exceptional.to_option
 
 @[inline]
 protected unsafe def bind (e₁ : exceptional α) (e₂ : α → exceptional β) : exceptional β :=
   exceptional.cases_on e₁ (fun a => e₂ a) fun f => exception f
+#align exceptional.bind exceptional.bind
 
 @[inline]
 protected unsafe def return (a : α) : exceptional α :=
   success a
+#align exceptional.return exceptional.return
 
 @[inline]
 unsafe def fail (f : format) : exceptional α :=
   exception fun u => f
+#align exceptional.fail exceptional.fail
 
 end Exceptional
 

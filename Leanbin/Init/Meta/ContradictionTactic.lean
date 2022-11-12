@@ -22,6 +22,7 @@ private unsafe def contra_p_not_p : List expr → List expr → tactic Unit
           let pr ← mk_app `absurd [tgt, H2, H1]
           exact pr) <|>
         contra_p_not_p Rs Hs
+#align tactic.contra_p_not_p tactic.contra_p_not_p
 
 private unsafe def contra_false : List expr → tactic Unit
   | [] => failed
@@ -32,6 +33,7 @@ private unsafe def contra_false : List expr → tactic Unit
         let pr ← mk_app `false.rec [tgt, H]
         exact pr
       else contra_false Hs
+#align tactic.contra_false tactic.contra_false
 
 private unsafe def contra_not_a_refl_rel_a : List expr → tactic Unit
   | [] => failed
@@ -51,6 +53,7 @@ private unsafe def contra_not_a_refl_rel_a : List expr → tactic Unit
             let refl_pr ← mk_app refl_lemma [lhs]
             mk_app `absurd [tgt, refl_pr, H] >>= exact) <|>
           contra_not_a_refl_rel_a Hs
+#align tactic.contra_not_a_refl_rel_a tactic.contra_not_a_refl_rel_a
 
 private unsafe def contra_constructor_eq : List expr → tactic Unit
   | [] => failed
@@ -71,6 +74,7 @@ private unsafe def contra_constructor_eq : List expr → tactic Unit
             exact pr
           else contra_constructor_eq Hs
       | _ => contra_constructor_eq Hs
+#align tactic.contra_constructor_eq tactic.contra_constructor_eq
 
 unsafe def contradiction : tactic Unit := do
   try intro1
@@ -78,12 +82,14 @@ unsafe def contradiction : tactic Unit := do
   contra_false ctx <|>
       contra_not_a_refl_rel_a ctx <|>
         contra_p_not_p ctx ctx <|> contra_constructor_eq ctx <|> fail "contradiction tactic failed"
+#align tactic.contradiction tactic.contradiction
 
 unsafe def exfalso : tactic Unit := do
   fail_if_no_goals
   assert `Hfalse (expr.const `false [])
   swap
   contradiction
+#align tactic.exfalso tactic.exfalso
 
 end Tactic
 

@@ -19,6 +19,7 @@ unsafe inductive tagged_format (α : Type u)
   | nest : Nat → tagged_format → tagged_format
   | highlight : Format.Color → tagged_format → tagged_format
   | of_format : format → tagged_format
+#align tagged_format tagged_format
 
 namespace TaggedFormat
 
@@ -31,8 +32,10 @@ protected unsafe def map (f : α → β) : tagged_format α → tagged_format β
   | highlight c x => highlight c <| map x
   | of_format x => of_format x
   | tag a x => tag (f a) (map x)
+#align tagged_format.map tagged_format.map
 
 unsafe instance is_functor : Functor tagged_format where map := @tagged_format.map
+#align tagged_format.is_functor tagged_format.is_functor
 
 unsafe def m_untag {t : Type → Type} [Monad t] (f : α → format → t format) : tagged_format α → t format
   | compose x y => pure format.compose <*> m_untag x <*> m_untag y
@@ -41,18 +44,22 @@ unsafe def m_untag {t : Type → Type} [Monad t] (f : α → format → t format
   | highlight c x => pure format.highlight <*> m_untag x <*> pure c
   | of_format x => pure <| x
   | tag a x => m_untag x >>= f a
+#align tagged_format.m_untag tagged_format.m_untag
 
 unsafe def untag (f : α → format → format) : tagged_format α → format :=
   @m_untag _ id _ f
+#align tagged_format.untag tagged_format.untag
 
 unsafe instance has_to_fmt : has_to_format (tagged_format α) :=
   ⟨tagged_format.untag fun a f => f⟩
+#align tagged_format.has_to_fmt tagged_format.has_to_fmt
 
 end TaggedFormat
 
 /-- tagged_format with information about subexpressions. -/
 unsafe def eformat :=
   tagged_format (Expr.Address × expr)
+#align eformat eformat
 
 /-- A special version of pp which also preserves expression boundary information.
 
@@ -61,7 +68,9 @@ expression that `tactic_state.pp_tagged` was called with. For example if the sub
 under a binder then all of the `expr.var 0`s will be replaced with a local constant not in
 the local context with the name and type set to that of the binder.-/
 unsafe axiom tactic_state.pp_tagged : tactic_state → expr → eformat
+#align tactic_state.pp_tagged tactic_state.pp_tagged
 
 unsafe def tactic.pp_tagged : expr → tactic eformat
   | e => tactic.read >>= fun ts => pure <| tactic_state.pp_tagged ts e
+#align tactic.pp_tagged tactic.pp_tagged
 

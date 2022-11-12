@@ -15,6 +15,7 @@ inductive Ordering
   | lt
   | Eq
   | GT.gt
+#align ordering Ordering
 -/
 
 instance : Repr Ordering :=
@@ -31,28 +32,39 @@ def swap : Ordering → Ordering
   | lt => gt
   | Eq => eq
   | GT.gt => lt
+#align ordering.swap Ordering.swap
 -/
 
+#print Ordering.orElse /-
 @[inline]
 def orElse : Ordering → Ordering → Ordering
   | lt, _ => lt
   | Eq, o => o
   | GT.gt, _ => gt
+#align ordering.or_else Ordering.orElse
+-/
 
 #print Ordering.swap_swap /-
 theorem swap_swap : ∀ o : Ordering, o.swap.swap = o
   | lt => rfl
   | Eq => rfl
   | GT.gt => rfl
+#align ordering.swap_swap Ordering.swap_swap
 -/
 
 end Ordering
 
-def cmpUsing {α : Type u} (lt : α → α → Prop) [DecidableRel lt] (a b : α) : Ordering :=
+#print CmpUsing /-
+def CmpUsing {α : Type u} (lt : α → α → Prop) [DecidableRel lt] (a b : α) : Ordering :=
   if lt a b then Ordering.lt else if lt b a then Ordering.gt else Ordering.eq
+#align cmp_using CmpUsing
+-/
 
-def cmp {α : Type u} [LT α] [DecidableRel ((· < ·) : α → α → Prop)] (a b : α) : Ordering :=
-  cmpUsing (· < ·) a b
+#print Cmp /-
+def Cmp {α : Type u} [LT α] [DecidableRel ((· < ·) : α → α → Prop)] (a b : α) : Ordering :=
+  CmpUsing (· < ·) a b
+#align cmp Cmp
+-/
 
 instance : DecidableEq Ordering := fun a b =>
   match a with

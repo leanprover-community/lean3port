@@ -16,30 +16,38 @@ unsafe inductive json : Type
   | null : json
   | object : List (String × json) → json
   | Array' : List json → json
+#align json json
 
 namespace Json
 
 unsafe instance string_coe : Coe String json :=
   ⟨json.of_string⟩
+#align json.string_coe json.string_coe
 
 unsafe instance int_coe : Coe Int json :=
   ⟨json.of_int⟩
+#align json.int_coe json.int_coe
 
 unsafe instance float_coe : Coe native.float json :=
   ⟨json.of_float⟩
+#align json.float_coe json.float_coe
 
 unsafe instance bool_coe : Coe Bool json :=
   ⟨json.of_bool⟩
+#align json.bool_coe json.bool_coe
 
 unsafe instance array_coe : Coe (List json) json :=
   ⟨json.array⟩
+#align json.array_coe json.array_coe
 
 unsafe instance : Inhabited json :=
   ⟨json.null⟩
 
 protected unsafe axiom parse : String → Option json
+#align json.parse json.parse
 
 protected unsafe axiom unparse : json → String
+#align json.unparse json.unparse
 
 unsafe def to_format : json → format
   | of_string s => String.quote s
@@ -56,6 +64,7 @@ unsafe def to_format : json → format
               List.intersperse (", " ++ format.line) <| kvs.map fun ⟨k, v⟩ => String.quote k ++ ":" ++ to_format v) ++
       "}"
   | Array' js => list.to_format <| js.map to_format
+#align json.to_format json.to_format
 
 unsafe instance : has_to_format json :=
   ⟨to_format⟩

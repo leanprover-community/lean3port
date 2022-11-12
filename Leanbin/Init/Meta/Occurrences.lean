@@ -26,6 +26,7 @@ inductive Occurrences
   | all
   | Pos : List Nat → Occurrences
   | neg : List Nat → Occurrences
+#align occurrences Occurrences
 
 open Occurrences
 
@@ -33,6 +34,7 @@ def Occurrences.contains : Occurrences → Nat → Bool
   | all, p => true
   | Occurrences.pos ps, p => p ∈ ps
   | Occurrences.neg ps, p => p ∉ ps
+#align occurrences.contains Occurrences.contains
 
 instance : Inhabited Occurrences :=
   ⟨all⟩
@@ -41,6 +43,7 @@ def occurrencesRepr : Occurrences → String
   | Occurrences.all => "*"
   | Occurrences.pos l => repr l
   | Occurrences.neg l => "-" ++ repr l
+#align occurrences_repr occurrencesRepr
 
 instance : Repr Occurrences :=
   ⟨occurrencesRepr⟩
@@ -49,6 +52,7 @@ unsafe def occurrences_to_format : Occurrences → format
   | Occurrences.all => to_fmt "*"
   | Occurrences.pos l => to_fmt l
   | Occurrences.neg l => to_fmt "-" ++ to_fmt l
+#align occurrences_to_format occurrences_to_format
 
 unsafe instance : has_to_format Occurrences :=
   ⟨occurrences_to_format⟩

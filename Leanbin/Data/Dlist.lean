@@ -15,6 +15,7 @@ useful for append-heavy uses such as logging and pretty printing.
 structure Dlist (α : Type u) where
   apply : List α → List α
   invariant : ∀ l, apply l = apply [] ++ l
+#align dlist Dlist
 
 namespace Dlist
 
@@ -30,18 +31,22 @@ local notation:arg "♯" => by abstract
 /-- Convert a list to a dlist -/
 def ofList (l : List α) : Dlist α :=
   ⟨append l, ♯⟩
+#align dlist.of_list Dlist.ofList
 
 /-- Convert a lazily-evaluated list to a dlist -/
 def lazyOfList (l : Thunk' (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
+#align dlist.lazy_of_list Dlist.lazyOfList
 
 /-- Convert a dlist to a list -/
 def toList : Dlist α → List α
   | ⟨xs, _⟩ => xs []
+#align dlist.to_list Dlist.toList
 
 /-- Create a dlist containing no elements -/
 def empty : Dlist α :=
   ⟨id, ♯⟩
+#align dlist.empty Dlist.empty
 
 -- mathport name: «expr ::_»
 local notation:arg a "::_" => List.cons a
@@ -49,6 +54,7 @@ local notation:arg a "::_" => List.cons a
 /-- Create dlist with a single element -/
 def singleton (x : α) : Dlist α :=
   ⟨x::_, ♯⟩
+#align dlist.singleton Dlist.singleton
 
 attribute [local simp] Function.comp
 
@@ -59,6 +65,7 @@ def cons (x : α) : Dlist α → Dlist α
       intros
       simp
       rw [← h]⟩
+#align dlist.cons Dlist.cons
 
 /-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α
@@ -68,6 +75,7 @@ def concat (x : α) : Dlist α → Dlist α
       simp
       rw [h, h [x]]
       simp⟩
+#align dlist.concat Dlist.concat
 
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
@@ -77,6 +85,7 @@ protected def append : Dlist α → Dlist α → Dlist α
       simp
       rw [h₂, h₁, h₁ (ys List.nil)]
       simp⟩
+#align dlist.append Dlist.append
 
 instance : Append (Dlist α) :=
   ⟨Dlist.append⟩
@@ -84,6 +93,7 @@ instance : Append (Dlist α) :=
 attribute [local simp] of_list to_list Empty singleton cons concat Dlist.append
 
 theorem to_list_of_list (l : List α) : toList (ofList l) = l := by cases l <;> simp
+#align dlist.to_list_of_list Dlist.to_list_of_list
 
 theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
   cases' l with xs
@@ -92,18 +102,24 @@ theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
     funext x
     simp [l_invariant x]
   simp [h]
+#align dlist.of_list_to_list Dlist.of_list_to_list
 
 theorem to_list_empty : toList (@empty α) = [] := by simp
+#align dlist.to_list_empty Dlist.to_list_empty
 
 theorem to_list_singleton (x : α) : toList (singleton x) = [x] := by simp
+#align dlist.to_list_singleton Dlist.to_list_singleton
 
 theorem to_list_append (l₁ l₂ : Dlist α) : toList (l₁ ++ l₂) = toList l₁ ++ toList l₂ :=
   show toList (Dlist.append l₁ l₂) = toList l₁ ++ toList l₂ by cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
+#align dlist.to_list_append Dlist.to_list_append
 
 theorem to_list_cons (x : α) (l : Dlist α) : toList (cons x l) = x :: toList l := by cases l <;> simp
+#align dlist.to_list_cons Dlist.to_list_cons
 
 theorem to_list_concat (x : α) (l : Dlist α) : toList (concat x l) = toList l ++ [x] := by
   cases l <;> simp <;> rw [l_invariant]
+#align dlist.to_list_concat Dlist.to_list_concat
 
 end Dlist
 

@@ -172,6 +172,7 @@ inductive MouseEventKind
   | on_click
   | on_mouse_enter
   | on_mouse_leave
+#align widget.mouse_event_kind Widget.MouseEventKind
 
 /-- An effect is some change that the widget makes outside of its own state.
 Usually, giving instructions to the editor to perform some task.
@@ -191,9 +192,11 @@ unsafe inductive effect : Type
   | clear_highlighting
   | copy_text (text : String)
   | custom (key : String) (value : String)
+#align widget.effect widget.effect
 
 unsafe def effects :=
   List effect
+#align widget.effects widget.effects
 
 mutual
   unsafe inductive component : Type → Type → Type
@@ -223,6 +226,9 @@ mutual
     | tooltip {α : Type} : html α → attr α
     | text_change_event {α : Type} (handler : String → α) : attr α
 end
+#align widget.component widget.component
+#align widget.html widget.html
+#align widget.attr widget.attr
 
 variable {α β : Type} {π : Type}
 
@@ -230,13 +236,16 @@ namespace Component
 
 unsafe def map_action (f : α → β) : component π α → component π β
   | c => filter_map_action (fun p a => some <| f a) c
+#align widget.component.map_action widget.component.map_action
 
 /-- Returns a component that will never trigger an action. -/
 unsafe def ignore_action : component π α → component π β
   | c => component.filter_map_action (fun p a => none) c
+#align widget.component.ignore_action widget.component.ignore_action
 
 unsafe def ignore_props : component Unit α → component π α
   | c => (with_should_update fun a b => false) <| component.map_props (fun p => ()) c
+#align widget.component.ignore_props widget.component.ignore_props
 
 unsafe instance : Coe (component π Empty) (component π α) :=
   ⟨component.filter_map_action fun p x => none⟩
@@ -247,13 +256,16 @@ unsafe instance : CoeFun (component π α) fun c => π → html α :=
 unsafe def stateful {π α : Type} (β σ : Type) (init : π → Option σ → σ) (update : π → σ → β → σ × Option α)
     (view : π → σ → List (html β)) : component π α :=
   with_state β σ (fun p => init p none) (fun _ p s => init p <| some s) update (component.pure fun ⟨s, p⟩ => view p s)
+#align widget.component.stateful widget.component.stateful
 
 unsafe def stateless {π α : Type} [DecidableEq π] (view : π → List (html α)) : component π α :=
   (component.with_should_update fun p1 p2 => p1 ≠ p2) <| component.pure view
+#align widget.component.stateless widget.component.stateless
 
 /-- Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
 unsafe def with_props_eq (test : π → π → Bool) : component π α → component π α
   | c => component.with_should_update (fun x y => not <| test x y) c
+#align widget.component.with_props_eq widget.component.with_props_eq
 
 end Component
 
@@ -269,62 +281,79 @@ mutual
     | html.of_string s => html.of_string s
     | html.of_component p c => html.of_component p <| component.map_action f c
 end
+#align widget.attr.map_action widget.attr.map_action
+#align widget.html.map_action widget.html.map_action
 
 unsafe instance attr.is_functor : Functor attr where map := @attr.map_action
+#align widget.attr.is_functor widget.attr.is_functor
 
 unsafe instance html.is_functor : Functor html where map _ _ := html.map_action
+#align widget.html.is_functor widget.html.is_functor
 
 namespace Html
 
 /-- See Note [use has_coe_t]. -/
 unsafe instance to_string_coe [ToString β] : CoeTC β (html α) :=
   ⟨html.of_string ∘ toString⟩
+#align widget.html.to_string_coe widget.html.to_string_coe
 
 unsafe instance : EmptyCollection (html α) :=
   ⟨of_string ""⟩
 
 unsafe instance list_coe : Coe (html α) (List (html α)) :=
   ⟨fun x => [x]⟩
+#align widget.html.list_coe widget.html.list_coe
 
 end Html
 
 unsafe def as_element : html α → Option (String × List (attr α) × List (html α))
   | html.element t a c => some ⟨t, a, c⟩
   | _ => none
+#align widget.as_element widget.as_element
 
 unsafe def key [ToString β] : β → attr α
   | s => attr.val "key" <| toString s
+#align widget.key widget.key
 
 unsafe def className : String → attr α
   | s => attr.val "className" <| s
+#align widget.className widget.className
 
 unsafe def on_click : (Unit → α) → attr α
   | a => attr.mouse_event MouseEventKind.on_click a
+#align widget.on_click widget.on_click
 
 unsafe def on_mouse_enter : (Unit → α) → attr α
   | a => attr.mouse_event MouseEventKind.on_mouse_enter a
+#align widget.on_mouse_enter widget.on_mouse_enter
 
 unsafe def on_mouse_leave : (Unit → α) → attr α
   | a => attr.mouse_event MouseEventKind.on_mouse_leave a
+#align widget.on_mouse_leave widget.on_mouse_leave
 
 /-- Alias for `html.element`. -/
 unsafe def h : String → List (attr α) → List (html α) → html α :=
   html.element
+#align widget.h widget.h
 
 /-- Alias for className. -/
 unsafe def cn : String → attr α :=
   className
+#align widget.cn widget.cn
 
 unsafe def button : String → Thunk' α → html α
   | s, t => h "button" [on_click t] [s]
+#align widget.button widget.button
 
 unsafe def textbox : String → (String → α) → html α
   | s, t => h "input" [attr.val "type" "text", attr.val "value" s, attr.text_change_event t] []
+#align widget.textbox widget.textbox
 
 unsafe structure select_item (α : Type) where
   result : α
   key : String
   view : List (html α)
+#align widget.select_item widget.select_item
 
 /-- Choose from a dropdown selection list. -/
 unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html α
@@ -340,6 +369,7 @@ unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html 
             | [] => undefined
             | h :: _ => h.result] <|
       items.map fun i => h "option" [attr.val "value" i.key] <| select_item.view i
+#align widget.select widget.select
 
 /-- If the html is not an of_element it will wrap it in a div. -/
 unsafe def with_attrs : List (attr α) → html α → html α
@@ -347,22 +377,28 @@ unsafe def with_attrs : List (attr α) → html α → html α
     match as_element x with
     | some ⟨t, as, c⟩ => html.element t (a ++ as) c
     | none => html.element "div" a [x]
+#align widget.with_attrs widget.with_attrs
 
 /-- If the html is not an of_element it will wrap it in a div. -/
 unsafe def with_attr : attr α → html α → html α
   | a, x => with_attrs [a] x
+#align widget.with_attr widget.with_attr
 
 unsafe def with_style : String → String → html α → html α
   | k, v, h => with_attr (attr.style [(k, v)]) h
+#align widget.with_style widget.with_style
 
 unsafe def with_cn : String → html α → html α
   | s, h => with_attr (className s) h
+#align widget.with_cn widget.with_cn
 
 unsafe def with_key {β} [ToString β] : β → html α → html α
   | s, h => with_attr (key s) h
+#align widget.with_key widget.with_key
 
 unsafe def effect.insert_text : String → effect :=
   effect.insert_text_relative 0
+#align widget.effect.insert_text widget.effect.insert_text
 
 end Widget
 
@@ -370,14 +406,17 @@ namespace Tactic
 
 /-- Same as `tactic.save_info_thunk` except saves a widget to be displayed by a compatible infoviewer. -/
 unsafe axiom save_widget : Pos → widget.component tactic_state Empty → tactic Unit
+#align tactic.save_widget tactic.save_widget
 
 /-- Outputs a widget trace position at the given position. -/
 unsafe axiom trace_widget_at (p : Pos) (w : widget.component tactic_state Empty) (text := "(widget)") : tactic Unit
+#align tactic.trace_widget_at tactic.trace_widget_at
 
 /-- Outputs a widget trace position at the current default trace position. -/
 unsafe def trace_widget (w : widget.component tactic_state Empty) (text := "(widget)") : tactic Unit := do
   let p ← get_trace_msg_pos
   trace_widget_at p w text
+#align tactic.trace_widget tactic.trace_widget
 
 end Tactic
 

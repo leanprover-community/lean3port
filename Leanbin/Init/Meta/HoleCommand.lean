@@ -22,6 +22,7 @@ unsafe structure hole_command where
   Name : String
   descr : String
   action : List pexpr → tactic (List (String × String))
+#align hole_command hole_command
 
 open Tactic
 
@@ -30,11 +31,13 @@ unsafe def infer_type_cmd : hole_command where
   Name := "Infer"
   descr := "Infer type of the expression in the hole"
   action ps := do
-    let [p] ← return ps | fail "Infer command failed, the hole must contain a single term"
+    let [p] ← return ps |
+      fail "Infer command failed, the hole must contain a single term"
     let e ← to_expr p
     let t ← infer_type e
     trace t
     return []
+#align infer_type_cmd infer_type_cmd
 
 @[hole_command]
 unsafe def show_goal_cmd : hole_command where
@@ -43,13 +46,15 @@ unsafe def show_goal_cmd : hole_command where
   action _ := do
     trace_state
     return []
+#align show_goal_cmd show_goal_cmd
 
 @[hole_command]
 unsafe def use_cmd : hole_command where
   Name := "Use"
   descr := "Try to fill the hole using the given argument"
   action ps := do
-    let [p] ← return ps | fail "Use command failed, the hole must contain a single term"
+    let [p] ← return ps |
+      fail "Use command failed, the hole must contain a single term"
     let t ← target
     let e ← to_expr (pquote.1 (%%ₓp : %%ₓt))
     let ty ← infer_type e
@@ -58,4 +63,5 @@ unsafe def use_cmd : hole_command where
     let o ← get_options
     let s := fmt.toString o
     return [(s, "")]
+#align use_cmd use_cmd
 

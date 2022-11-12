@@ -36,6 +36,7 @@ unsafe def show_widget_cmd (x : parse <| tk "#html") : parser Unit := do
           pure <| component.ignore_props <| component.ignore_action <| c)
   save_widget ⟨l, c - "#html".length - 1⟩ comp
   trace "successfully rendered widget" pure ()
+#align show_widget_cmd show_widget_cmd
 
 run_cmd
   skip

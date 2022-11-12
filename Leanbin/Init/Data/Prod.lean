@@ -12,15 +12,12 @@ section
 
 variable {α : Type u} {β : Type v}
 
-/- warning: prod.mk.eta -> Prod.mk.eta is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} {p : Prod.{u v} α β}, Eq.{(max (succ u) (succ v))} (Prod.{u v} α β) (Prod.mk.{u v} α β (Prod.fst.{u v} α β p) (Prod.snd.{u v} α β p)) p
-but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} {p : Prod.{u_1 u_2} α β}, Eq.{(max (succ u_1) (succ u_2))} (Prod.{u_1 u_2} α β) (Prod.mk.{u_1 u_2} α β (Prod.fst.{u_1 u_2} α β p) (Prod.snd.{u_1 u_2} α β p)) p
-Case conversion may be inaccurate. Consider using '#align prod.mk.eta Prod.mk.etaₓ'. -/
+#print Prod.mk.eta /-
 @[simp]
 theorem Prod.mk.eta : ∀ {p : α × β}, (p.1, p.2) = p
   | (a, b) => rfl
+#align prod.mk.eta Prod.mk.eta
+-/
 
 instance [Inhabited α] [Inhabited β] : Inhabited (Prod α β) :=
   ⟨(default, default)⟩
@@ -40,5 +37,6 @@ end
 def Prod.map.{u₁, u₂, v₁, v₂} {α₁ : Type u₁} {α₂ : Type u₂} {β₁ : Type v₁} {β₂ : Type v₂} (f : α₁ → α₂) (g : β₁ → β₂)
     (x : α₁ × β₁) : α₂ × β₂ :=
   (f x.1, g x.2)
+#align prod.map Prod.map
 -/
 

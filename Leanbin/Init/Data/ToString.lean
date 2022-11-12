@@ -25,10 +25,12 @@ See also `has_to_format` and `has_to_tactic_format`, `format` has additional sup
  -/
 class ToString (α : Type u) where
   toString : α → String
+#align has_to_string ToString
 -/
 
 def toString {α : Type u} [ToString α] : α → String :=
   ToString.toString
+#align to_string toString
 
 instance : ToString String :=
   ⟨fun s => s⟩
@@ -45,12 +47,14 @@ protected def List.toStringAux {α : Type u} [ToString α] : Bool → List α �
   | b, [] => ""
   | tt, x :: xs => toString x ++ List.toStringAux false xs
   | ff, x :: xs => ", " ++ toString x ++ List.toStringAux false xs
+#align list.to_string_aux List.toStringAux
 -/
 
 #print List.toString /-
 protected def List.toString {α : Type u} [ToString α] : List α → String
   | [] => "[]"
   | x :: xs => "[" ++ List.toStringAux true (x :: xs) ++ "]"
+#align list.to_string List.toString
 -/
 
 instance {α : Type u} [ToString α] : ToString (List α) :=

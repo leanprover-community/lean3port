@@ -11,6 +11,7 @@ namespace Unsigned
 
 def ofNat (n : Nat) : Unsigned :=
   Fin.ofNat n
+#align unsigned.of_nat Unsigned.ofNat
 
 instance : Zero Unsigned :=
   ⟨Fin.ofNat 0⟩

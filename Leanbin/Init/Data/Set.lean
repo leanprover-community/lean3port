@@ -16,10 +16,12 @@ def Set (α : Type u) :=
 #align set Set
 -/
 
+#print setOf /-
 /-- The set `{x | p x}` of elements satisfying the predicate `p`. -/
-def SetOf {α : Type u} (p : α → Prop) : Set α :=
+def setOf {α : Type u} (p : α → Prop) : Set α :=
   p
-#align set_of SetOf
+#align set_of setOf
+-/
 
 namespace Set
 
@@ -37,10 +39,12 @@ theorem mem_set_of_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
 instance : EmptyCollection (Set α) :=
   ⟨{ x | False }⟩
 
+#print Set.univ /-
 /-- The set that contains all elements of a type. -/
-def Univ : Set α :=
+def univ : Set α :=
   { x | True }
-#align set.univ Set.Univ
+#align set.univ Set.univ
+-/
 
 instance : Insert α (Set α) :=
   ⟨fun a s => { b | b = a ∨ b ∈ s }⟩

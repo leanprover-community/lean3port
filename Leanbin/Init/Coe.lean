@@ -143,13 +143,13 @@ instance coeBase {a : Sort u} {b : Sort v} [Coe a b] : CoeTC a b :=
 
    Suppose coe_option had type `(has_coe a (option a))`.
    Then, we can loop when searching a coercion from `α` to `β` `(has_coe_t α β)`
-   1- `coe_trans at (has_coe_t α β)`
+   1. `coe_trans at (has_coe_t α β)`
           `(has_coe α ?b₁) and (has_coe_t ?b₁ c)`
-   2- `coe_option at (has_coe α ?b₁)`
+   2. `coe_option at (has_coe α ?b₁)`
           `?b₁ := option α`
-   3- `coe_trans at (has_coe_t (option α) β)`
+   3. `coe_trans at (has_coe_t (option α) β)`
           `(has_coe (option α) ?b₂) and (has_coe_t ?b₂ β)`
-   4- `coe_option at (has_coe (option α) ?b₂)`
+   4. `coe_option at (has_coe (option α) ?b₂)`
           `?b₂ := option (option α))`
    ... -/
 instance coeOption {a : Type u} : CoeTC a (Option a) :=

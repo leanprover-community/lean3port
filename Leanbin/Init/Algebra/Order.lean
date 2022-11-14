@@ -295,7 +295,7 @@ section LinearOrder
 
 /-- Default definition of `max`. -/
 def maxDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
-  if b ≤ a then a else b
+  if a ≤ b then b else a
 #align max_default maxDefault
 
 /-- Default definition of `min`. -/

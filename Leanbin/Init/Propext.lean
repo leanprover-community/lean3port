@@ -56,13 +56,3 @@ theorem iff_eq_eq {a b : Prop} : (a ↔ b) = (a = b) :=
 #align iff_eq_eq iff_eq_eq
 -/
 
-theorem eq_false_eq {a : Prop} : (a = False) = ¬a :=
-  have : (a ↔ False) = ¬a := propext (iff_false_iff a)
-  Eq.subst (@iff_eq_eq a False) this
-#align eq_false eq_false_eq
-
-theorem eq_true_eq {a : Prop} : (a = True) = a :=
-  have : (a ↔ True) = a := propext (iff_true_iff a)
-  Eq.subst (@iff_eq_eq a True) this
-#align eq_true eq_true_eq
-

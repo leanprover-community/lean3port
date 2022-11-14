@@ -28,11 +28,11 @@ theorem min_def (a b : α) : min a b = if a ≤ b then a else b := by rw [congr_
 
 /- warning: max_def -> max_def is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} [_inst_1 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (LinearOrder.max.{u} α _inst_1 a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α _inst_1))) b a) (LE.le.decidable.{u} α _inst_1 b a) a b)
+  forall {α : Type.{u}} [_inst_1 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (LinearOrder.max.{u} α _inst_1 a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α _inst_1))) a b) (LE.le.decidable.{u} α _inst_1 a b) b a)
 but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.281 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281) a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281))) a b) (instDecidableLeToLEToPreorderToPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281 a b) b a)
 Case conversion may be inaccurate. Consider using '#align max_def max_defₓ'. -/
-theorem max_def (a b : α) : max a b = if b ≤ a then a else b := by rw [congr_fun LinearOrder.max_def a, maxDefault]
+theorem max_def (a b : α) : max a b = if a ≤ b then b else a := by rw [congr_fun LinearOrder.max_def a, maxDefault]
 #align max_def max_def
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
@@ -84,7 +84,7 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.311 : LinearOrder.{u} α] (a : α) (b : α), LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.311))) a (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.311) a b)
 Case conversion may be inaccurate. Consider using '#align le_max_left le_max_leftₓ'. -/
 theorem le_max_left (a b : α) : a ≤ max a b :=
-  minTac.1 b a
+  minTac.1 a b
 #align le_max_left le_max_left
 
 /- warning: le_max_right -> le_max_right is a dubious translation:
@@ -94,7 +94,7 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.385 : LinearOrder.{u} α] (a : α) (b : α), LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.385))) b (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.385) a b)
 Case conversion may be inaccurate. Consider using '#align le_max_right le_max_rightₓ'. -/
 theorem le_max_right (a b : α) : b ≤ max a b :=
-  minTac.1 b a
+  minTac.1 a b
 #align le_max_right le_max_right
 
 /- warning: max_le -> max_le is a dubious translation:
@@ -104,7 +104,7 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.460 : LinearOrder.{u} α] {a : α} {b : α} {c : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.460))) a c) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.460))) b c) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.460))) (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.460) a b) c)
 Case conversion may be inaccurate. Consider using '#align max_le max_leₓ'. -/
 theorem max_le {a b c : α} (h₁ : a ≤ c) (h₂ : b ≤ c) : max a b ≤ c :=
-  minTac.1 b a
+  minTac.1 a b
 #align max_le max_le
 
 /- warning: eq_min -> eq_min is a dubious translation:
@@ -350,7 +350,7 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.1532 : LinearOrder.{u} α] {a : α} {b : α} {c : α}, (LT.lt.{u} α (Preorder.toLT.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.1532))) a c) -> (LT.lt.{u} α (Preorder.toLT.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.1532))) b c) -> (LT.lt.{u} α (Preorder.toLT.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.1532))) (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.1532) a b) c)
 Case conversion may be inaccurate. Consider using '#align max_lt max_ltₓ'. -/
 theorem max_lt {a b c : α} (h₁ : a < c) (h₂ : b < c) : max a b < c :=
-  Or.elim (le_or_gt a b) (fun h : a ≤ b => minTac.1 b a) fun h : a > b => minTac.1 b a
+  Or.elim (le_or_gt a b) (fun h : a ≤ b => minTac.1 b a) fun h : a > b => minTac.1 a b
 #align max_lt max_lt
 
 end

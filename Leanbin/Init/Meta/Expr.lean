@@ -94,12 +94,12 @@ unsafe axiom macro_def : Type
     The VM replaces instances of this datatype with the C++ implementation. -/
 unsafe inductive expr (elaborated : Bool := true)-- A bound variable with a de-Bruijn index.
 
-  | var : Nat → expr-- A type universe: `Sort u`
+  | var (i : Nat) : expr-- A type universe: `Sort u`
 
-  | sort : level → expr/- A global constant. These include definitions, constants and inductive type stuff present
+  | sort (l : level) : expr/- A global constant. These include definitions, constants and inductive type stuff present
 in the environment as well as hard-coded definitions. -/
 
-  | const : Name → List level → expr/- [WARNING] Do not trust the types for `mvar` and `local_const`,
+  | const (name : Name) (ls : List level) : expr/- [WARNING] Do not trust the types for `mvar` and `local_const`,
 they are sometimes dummy values. Use `tactic.infer_type` instead. -/
 -- An `mvar` is a 'hole' yet to be filled in by the elaborator or tactic state.
 
@@ -109,7 +109,7 @@ they are sometimes dummy values. Use `tactic.infer_type` instead. -/
 
   | local_const (unique : Name) (pretty : Name) (bi : BinderInfo) (type : expr) : expr-- Function application.
 
-  | app : expr → expr → expr-- Lambda abstraction. eg ```(λ a : α, x)``
+  | app (f : expr) (x : expr) : expr-- Lambda abstraction. eg ```(λ a : α, x)``
 
   |
   lam (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) :
@@ -123,7 +123,7 @@ they are sometimes dummy values. Use `tactic.infer_type` instead. -/
   The list of expressions are local constants and metavariables that the macro depends on.
   -/
 
-  | macro : macro_def → List expr → expr
+  | macro (m : macro_def) (args : List expr) : expr
 #align expr expr
 
 variable {elab : Bool}

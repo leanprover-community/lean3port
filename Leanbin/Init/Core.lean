@@ -546,8 +546,8 @@ class HasSSubset (α : Type u) where
 
 /-! Type classes `has_emptyc` and `has_insert` are
    used to implement polymorphic notation for collections.
-   Example: `{a, b, c} = insert a (insert b (singleton c))`.    
-   
+   Example: `{a, b, c} = insert a (insert b (singleton c))`.
+
    Note that we use `pair` in the name of lemmas about `{x, y} = insert x (singleton y)`. -/
 
 
@@ -852,43 +852,6 @@ theorem Nat.add_zero (n : Nat) : n + 0 = n :=
   rfl
 #align nat_add_zero Nat.add_zero
 -/
-
--- Combinator calculus
-namespace Combinator
-
-universe u₁ u₂ u₃
-
-/- warning: combinator.I -> Combinator.I is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u₁}}, α -> α
-but is expected to have type
-  forall {α : Sort.{u_1}}, α -> α
-Case conversion may be inaccurate. Consider using '#align combinator.I Combinator.Iₓ'. -/
-def I {α : Type u₁} (a : α) :=
-  a
-#align combinator.I Combinator.I
-
-/- warning: combinator.K -> Combinator.K is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u₁}} {β : Type.{u₂}}, α -> β -> α
-but is expected to have type
-  forall {α : Sort.{u_1}} {β : Sort.{u_2}}, α -> β -> α
-Case conversion may be inaccurate. Consider using '#align combinator.K Combinator.Kₓ'. -/
-def K {α : Type u₁} {β : Type u₂} (a : α) (b : β) :=
-  a
-#align combinator.K Combinator.K
-
-/- warning: combinator.S -> Combinator.S is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u₁}} {β : Type.{u₂}} {γ : Type.{u₃}}, (α -> β -> γ) -> (α -> β) -> α -> γ
-but is expected to have type
-  forall {α : Sort.{u_1}} {β : Sort.{u_2}} {γ : Sort.{u_3}}, (α -> β -> γ) -> (α -> β) -> α -> γ
-Case conversion may be inaccurate. Consider using '#align combinator.S Combinator.Sₓ'. -/
-def S {α : Type u₁} {β : Type u₂} {γ : Type u₃} (x : α → β → γ) (y : α → β) (z : α) :=
-  x z (y z)
-#align combinator.S Combinator.S
-
-end Combinator
 
 #print BinTree /-
 /-- Auxiliary datatype for #[ ... ] notation.

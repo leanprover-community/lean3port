@@ -33,4 +33,4 @@ curl -qsSL https://github.com/leanprover-community/mathport/releases/download/$t
   | tar xz
 
 git add Leanbin
-git commit -am "bump to $tag"
+git commit -am "bump to $tag" || true that

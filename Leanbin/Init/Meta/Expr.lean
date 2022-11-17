@@ -166,6 +166,9 @@ attribute [instance] expr.has_decidable_eq
 unsafe axiom expr.alpha_eqv : expr → expr → Bool
 #align expr.alpha_eqv expr.alpha_eqv
 
+-- mathport name: «expr =ₐ »
+notation:50 a " =ₐ " b:50 => expr.alpha_eqv a b = Bool.true
+
 protected unsafe axiom expr.to_string : expr elab → String
 #align expr.to_string expr.to_string
 
@@ -553,38 +556,36 @@ unsafe def is_napp_of (e : expr) (c : Name) (n : Nat) : Bool :=
 #align expr.is_napp_of expr.is_napp_of
 
 unsafe def is_false : expr → Bool
-  | quote.1 False => true
+  | q(False) => true
   | _ => false
 #align expr.is_false expr.is_false
 
-unsafe def is_not : expr → Option expr
-  | quote.1 (Not (%%ₓa)) => some a
-  | quote.1 ((%%ₓa) → False) => some a
-  | e => none
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+unsafe def is_not : expr → Option expr | q( Not $ ( a ) ) => some a | q( $ ( a ) → False ) => some a | e => none
 #align expr.is_not expr.is_not
 
 unsafe def is_and : expr → Option (expr × expr)
-  | quote.1 (And (%%ₓα) (%%ₓβ)) => some (α, β)
+  | q(And $(α) $(β)) => some (α, β)
   | _ => none
 #align expr.is_and expr.is_and
 
 unsafe def is_or : expr → Option (expr × expr)
-  | quote.1 (Or (%%ₓα) (%%ₓβ)) => some (α, β)
+  | q(Or $(α) $(β)) => some (α, β)
   | _ => none
 #align expr.is_or expr.is_or
 
 unsafe def is_iff : expr → Option (expr × expr)
-  | quote.1 ((%%ₓa : Prop) ↔ %%ₓb) => some (a, b)
+  | q(($(a) : Prop) ↔ $(b)) => some (a, b)
   | _ => none
 #align expr.is_iff expr.is_iff
 
 unsafe def is_eq : expr → Option (expr × expr)
-  | quote.1 ((%%ₓa : %%ₓ_) = %%ₓb) => some (a, b)
+  | q(($(a) : $(_)) = $(b)) => some (a, b)
   | _ => none
 #align expr.is_eq expr.is_eq
 
 unsafe def is_ne : expr → Option (expr × expr)
-  | quote.1 ((%%ₓa : %%ₓ_) ≠ %%ₓb) => some (a, b)
+  | q(($(a) : $(_)) ≠ $(b)) => some (a, b)
   | _ => none
 #align expr.is_ne expr.is_ne
 
@@ -609,7 +610,7 @@ unsafe def is_ge (e : expr) : Option (expr × expr) :=
 #align expr.is_ge expr.is_ge
 
 unsafe def is_heq : expr → Option (expr × expr × expr × expr)
-  | quote.1 (@HEq (%%ₓα) (%%ₓa) (%%ₓβ) (%%ₓb)) => some (α, a, β, b)
+  | q(@HEq $(α) $(a) $(β) $(b)) => some (α, a, β, b)
   | _ => none
 #align expr.is_heq expr.is_heq
 
@@ -680,10 +681,10 @@ unsafe def is_macro : expr → Bool
 #align expr.is_macro expr.is_macro
 
 unsafe def is_numeral : expr → Bool
-  | quote.1 (@Zero.zero (%%ₓα) (%%ₓs)) => true
-  | quote.1 (@One.one (%%ₓα) (%%ₓs)) => true
-  | quote.1 (@bit0 (%%ₓα) (%%ₓs) (%%ₓv)) => is_numeral v
-  | quote.1 (@bit1 (%%ₓα) (%%ₓs₁) (%%ₓs₂) (%%ₓv)) => is_numeral v
+  | q(@Zero.zero $(α) $(s)) => true
+  | q(@One.one $(α) $(s)) => true
+  | q(@bit0 $(α) $(s) $(v)) => is_numeral v
+  | q(@bit1 $(α) $(s₁) $(s₂) $(v)) => is_numeral v
   | _ => false
 #align expr.is_numeral expr.is_numeral
 
@@ -714,8 +715,8 @@ unsafe def pis : List expr → expr → expr
 #align expr.pis expr.pis
 
 unsafe def extract_opt_auto_param : expr → expr
-  | quote.1 (@optParam (%%ₓt) _) => extract_opt_auto_param t
-  | quote.1 (@autoParam' (%%ₓt) _) => extract_opt_auto_param t
+  | q(@optParam $(t) _) => extract_opt_auto_param t
+  | q(@autoParam' $(t) _) => extract_opt_auto_param t
   | e => e
 #align expr.extract_opt_auto_param expr.extract_opt_auto_param
 

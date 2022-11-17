@@ -29,7 +29,7 @@ protected theorem eq : ∀ {a1 a2 : { x // p x }}, val a1 = val a2 → a1 = a2
 -/
 
 theorem ne_of_val_ne {a1 a2 : { x // p x }} : val a1 ≠ val a2 → a1 ≠ a2 :=
-  mt <| congr_arg _
+  mt $ congr_arg _
 #align subtype.ne_of_val_ne Subtype.ne_of_val_ne
 
 #print Subtype.eta /-

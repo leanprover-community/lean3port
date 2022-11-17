@@ -119,7 +119,7 @@ unsafe axiom simp_lemmas.rewrite (s : simp_lemmas) (e : expr) (prove : tactic Un
 #align simp_lemmas.rewrite simp_lemmas.rewrite
 
 unsafe axiom simp_lemmas.rewrites (s : simp_lemmas) (e : expr) (prove : tactic Unit := failed) (r : Name := `eq)
-    (md := reducible) : tactic <| List (expr × expr)
+    (md := reducible) : tactic $ List (expr × expr)
 #align simp_lemmas.rewrites simp_lemmas.rewrites
 
 /-- `simp_lemmas.drewrite s e` tries to rewrite 'e' using only refl lemmas in 's' -/
@@ -148,10 +148,10 @@ unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : 
   match t with
     | expr.pi n bi d b => do
       let h_simp ← transform d
-      unsafe_change <| expr.pi n bi h_simp b
+      unsafe_change $ expr.pi n bi h_simp b
     | expr.elet n g e f => do
       let h_simp ← transform g
-      unsafe_change <| expr.elet n h_simp e f
+      unsafe_change $ expr.elet n h_simp e f
     | _ => fail "reverting hypothesis created neither a pi nor an elet expr (unreachable?)"
   intron num_reverted
 #align tactic.revert_and_transform tactic.revert_and_transform
@@ -160,7 +160,7 @@ unsafe def revert_and_transform (transform : expr → tactic expr) (h : expr) : 
    If deps is tt, then lemmas for automatically generated auxiliary declarations used to define d are also included. -/
 unsafe def get_eqn_lemmas_for (deps : Bool) (d : Name) : tactic (List Name) := do
   let env ← get_env
-  pure <| if deps then env d else env d
+  pure $ if deps then env d else env d
 #align tactic.get_eqn_lemmas_for tactic.get_eqn_lemmas_for
 
 structure DsimpConfig where
@@ -294,7 +294,7 @@ private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
       -- f is an auxiliary constant generated when compiling c
             f.is_constant &&
           f.const_name.is_internal &&
-        f.const_name.getPrefix = c
+        (f.const_name.getPrefix = c)
 #align tactic.is_delta_target tactic.is_delta_target
 
 /-- Delta reduce the given constant names -/
@@ -499,7 +499,7 @@ unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : Lis
 
 unsafe def simp_intros (s : simp_lemmas) (to_unfold : List Name := []) (ids : List Name := [])
     (cfg : SimpIntrosConfig := {  }) : tactic Unit :=
-  step <| simp_intros_aux cfg.toSimpConfig cfg.useHyps to_unfold s (not ids.Empty) ids
+  step $ simp_intros_aux cfg.toSimpConfig cfg.useHyps to_unfold s (not ids.Empty) ids
 #align tactic.simp_intros tactic.simp_intros
 
 end SimpIntros
@@ -519,23 +519,22 @@ unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
     to_simp_lemmas S' ns
 #align tactic.to_simp_lemmas tactic.to_simp_lemmas
 
-unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tactic := do
-  let t := quote.1 (user_attribute simp_lemmas)
+unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : command := do
+  let t := q(user_attribute simp_lemmas)
   let v :=
-    quote.1
-      ({ Name := attr_name, descr := "simplifier attribute",
-        cache_cfg :=
-          { mk_cache := fun ns => do
-              let s ← tactic.to_simp_lemmas simp_lemmas.mk ns
-              let s ←
-                attr_deps.mfoldl
-                    (fun s attr_name => do
-                      let ns ← attribute.get_instances attr_name
-                      to_simp_lemmas s ns)
-                    s
-              return s,
-            dependencies := `reducibility :: attr_deps } } :
-        user_attribute simp_lemmas)
+    q(({ Name := attr_name, descr := "simplifier attribute",
+          cache_cfg :=
+            { mk_cache := fun ns => do
+                let s ← tactic.to_simp_lemmas simp_lemmas.mk ns
+                let s ←
+                  attr_deps.mfoldl
+                      (fun s attr_name => do
+                        let ns ← attribute.get_instances attr_name
+                        to_simp_lemmas s ns)
+                      s
+                return s,
+              dependencies := `reducibility :: attr_deps } } :
+        user_attribute simp_lemmas))
   let n := mk_simp_attr_decl_name attr_name
   add_decl (declaration.defn n [] t v ReducibilityHints.abbrev ff)
   attribute.register n
@@ -575,7 +574,7 @@ unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × 
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← pre a e
-      guard ¬new_e == e
+      guard (¬new_e =ₐ e)
       return (new_a, new_e, some pr, tt))
     (fun _ _ _ _ _ => failed) `eq e
 #align tactic.simplify_top_down tactic.simplify_top_down
@@ -596,7 +595,7 @@ unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α �
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed) (fun _ _ _ _ _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← post a e
-      guard ¬new_e == e
+      guard (¬new_e =ₐ e)
       return (new_a, new_e, some pr, tt))
     `eq e
 #align tactic.simplify_bottom_up tactic.simplify_bottom_up
@@ -626,12 +625,12 @@ unsafe def non_dep_prop_hyps : tactic (List expr) := do
           let h_type ← infer_type h
           let s := remove_deps s h_type
           let h_val ← head_zeta h
-          let s := if h_val == h then s else remove_deps s h_val
-          condM (is_prop h_type) (return <| s h) (return s))
+          let s := if h_val =ₐ h then s else remove_deps s h_val
+          condM (is_prop h_type) (return $ s h) (return s))
         mk_name_set
   let t ← target
   let s := remove_deps s t
-  return <| ctx fun h => s h
+  return $ ctx fun h => s h
 #align tactic.non_dep_prop_hyps tactic.non_dep_prop_hyps
 
 section SimpAll
@@ -648,7 +647,7 @@ unsafe structure simp_all_entry where
 
 -- simplification lemmas for simplifying new_type
 private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) : tactic (List simp_all_entry) :=
-  es.mmap fun e => do
+  es.mmap $ fun e => do
     let new_s ← e.s.add h false
     return { e with s := new_s }
 #align tactic.update_simp_lemmas tactic.update_simp_lemmas
@@ -670,14 +669,14 @@ private unsafe def init (s : simp_lemmas) (hs : List expr) : tactic (simp_lemmas
 #align tactic.init tactic.init
 
 private unsafe def add_new_hyps (es : List simp_all_entry) : tactic Unit :=
-  es.mmap' fun e =>
+  es.mmap' $ fun e =>
     match e.pr with
     | none => return ()
     | some pr => assert e.h.local_pp_name e.new_type >> mk_eq_mp pr e.h >>= exact
 #align tactic.add_new_hyps tactic.add_new_hyps
 
 private unsafe def clear_old_hyps (es : List simp_all_entry) : tactic Unit :=
-  es.mmap' fun e => when (e.pr ≠ none) (try (clear e.h))
+  es.mmap' $ fun e => when (e.pr ≠ none) (try (clear e.h))
 #align tactic.clear_old_hyps tactic.clear_old_hyps
 
 private unsafe def join_pr : Option expr → expr → tactic expr
@@ -699,15 +698,15 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
   | e :: es, r, s, m => do
     let ⟨h, h_type, h_pr, s'⟩ := e
     let (new_h_type, new_pr, lms) ← simplify s' to_unfold h_type { cfg with failIfUnchanged := false } `eq discharger
-    if h_type == new_h_type then do
+    if h_type =ₐ new_h_type then do
         let new_lms ← loop es (e :: r) s m
         return (new_lms lms fun n ns => name_set.insert ns n)
       else do
         let new_pr ← join_pr h_pr new_pr
         let new_fact_pr ← mk_eq_mp new_pr h
-        if new_h_type = quote.1 False then do
+        if new_h_type = q(False) then do
             let tgt ← target
-            to_expr (pquote.1 (@False.ndrec (%%ₓtgt) (%%ₓnew_fact_pr))) >>= exact
+            to_expr ``(@False.ndrec $(tgt) $(new_fact_pr)) >>= exact
             return mk_name_set
           else do
             let h0_type ← infer_type h

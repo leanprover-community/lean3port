@@ -24,17 +24,26 @@ class Seq (f : Type u → Type v) : Type max (u + 1) v where
 #align has_seq Seq
 -/
 
+-- mathport name: «expr <*> »
+infixl:60 " <*> " => Seq.seq
+
 #print SeqLeft /-
 class SeqLeft (f : Type u → Type v) : Type max (u + 1) v where
   seqLeft : ∀ {α β : Type u}, f α → f β → f α
 #align has_seq_left SeqLeft
 -/
 
+-- mathport name: «expr <* »
+infixl:60 " <* " => SeqLeft.seqLeft
+
 #print SeqRight /-
 class SeqRight (f : Type u → Type v) : Type max (u + 1) v where
   seqRight : ∀ {α β : Type u}, f α → f β → f β
 #align has_seq_right SeqRight
 -/
+
+-- mathport name: «expr *> »
+infixl:60 " *> " => SeqRight.seqRight
 
 #print Applicative /-
 class Applicative (f : Type u → Type v) extends Functor f, Pure f, Seq f, SeqLeft f, SeqRight f where

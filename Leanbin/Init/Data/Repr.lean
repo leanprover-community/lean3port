@@ -86,7 +86,7 @@ instance {α : Type u} [Repr α] : Repr (Option α) :=
     | none => "none"
     | some a => "(some " ++ repr a ++ ")"⟩
 
-instance {α : Type u} {β : Type v} [Repr α] [Repr β] : Repr (Sum α β) :=
+instance {α : Type u} {β : Type v} [Repr α] [Repr β] : Repr (α ⊕ β) :=
   ⟨fun s =>
     match s with
     | inl a => "(inl " ++ repr a ++ ")"
@@ -157,7 +157,7 @@ instance : Repr Nat :=
 
 #print hexDigitRepr /-
 def hexDigitRepr (n : Nat) : String :=
-  String.singleton <| Nat.digitChar n
+  String.singleton $ Nat.digitChar n
 #align hex_digit_repr hexDigitRepr
 -/
 
@@ -175,7 +175,7 @@ def Char.quoteCore (c : Char) : String :=
     if c = '\t' then "\\t"
     else
       if c = '\\' then "\\\\"
-      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
+      else if c = '\"' then "\\\"" else if c.toNat <= 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
 #align char.quote_core Char.quoteCore
 -/
 

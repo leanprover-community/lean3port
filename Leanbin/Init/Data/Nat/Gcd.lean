@@ -18,7 +18,7 @@ namespace Nat
 def gcd : Nat → Nat → Nat
   | 0, y => y
   | succ x, y =>
-    have : y % succ x < succ x := mod_lt _ <| succ_pos _
+    have : y % succ x < succ x := mod_lt _ $ succ_pos _
     gcd (y % succ x) (succ x)
 #align nat.gcd Nat.gcd
 -/

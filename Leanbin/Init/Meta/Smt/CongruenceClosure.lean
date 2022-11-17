@@ -157,7 +157,7 @@ unsafe def fold_eqc_core {α} (s : cc_state) (f : α → expr → α) (first : e
   | c, a =>
     let new_a := f a c
     let next := s.next c
-    if next == first then new_a else fold_eqc_core next new_a
+    if next =ₐ first then new_a else fold_eqc_core next new_a
 #align cc_state.fold_eqc_core cc_state.fold_eqc_core
 
 unsafe def fold_eqc {α} (s : cc_state) (e : expr) (a : α) (f : α → expr → α) : α :=
@@ -183,7 +183,7 @@ unsafe def tactic.cc_core (cfg : CcConfig) : tactic Unit := do
       let pr ← s
       mk_app `false.elim [t, pr] >>= exact
     else do
-      let tr ← return <| expr.const `true []
+      let tr ← return $ expr.const `true []
       let b ← s t tr
       if b then do
           let pr ← s t tr
@@ -204,7 +204,7 @@ unsafe def tactic.cc : tactic Unit :=
 #align tactic.cc tactic.cc
 
 unsafe def tactic.cc_dbg_core (cfg : CcConfig) : tactic Unit :=
-  save_options <| set_bool_option `trace.cc.failure true >> tactic.cc_core cfg
+  save_options $ set_bool_option `trace.cc.failure true >> tactic.cc_core cfg
 #align tactic.cc_dbg_core tactic.cc_dbg_core
 
 unsafe def tactic.cc_dbg : tactic Unit :=
@@ -213,7 +213,7 @@ unsafe def tactic.cc_dbg : tactic Unit :=
 
 unsafe def tactic.ac_refl : tactic Unit := do
   let (lhs, rhs) ← target >>= match_eq
-  let s ← return <| cc_state.mk
+  let s ← return $ cc_state.mk
   let s ← s.internalize lhs
   let s ← s.internalize rhs
   let b ← s.is_eqv lhs rhs

@@ -54,16 +54,16 @@ theorem swap_swap : ∀ o : Ordering, o.swap.swap = o
 
 end Ordering
 
-#print CmpUsing /-
-def CmpUsing {α : Type u} (lt : α → α → Prop) [DecidableRel lt] (a b : α) : Ordering :=
+#print cmpUsing /-
+def cmpUsing {α : Type u} (lt : α → α → Prop) [DecidableRel lt] (a b : α) : Ordering :=
   if lt a b then Ordering.lt else if lt b a then Ordering.gt else Ordering.eq
-#align cmp_using CmpUsing
+#align cmp_using cmpUsing
 -/
 
-#print Cmp /-
-def Cmp {α : Type u} [LT α] [DecidableRel ((· < ·) : α → α → Prop)] (a b : α) : Ordering :=
-  CmpUsing (· < ·) a b
-#align cmp Cmp
+#print cmp /-
+def cmp {α : Type u} [LT α] [DecidableRel ((· < ·) : α → α → Prop)] (a b : α) : Ordering :=
+  cmpUsing (· < ·) a b
+#align cmp cmp
 -/
 
 instance : DecidableEq Ordering := fun a b =>

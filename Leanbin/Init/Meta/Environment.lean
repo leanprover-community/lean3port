@@ -91,7 +91,7 @@ unsafe axiom mk_protected : environment → Name → environment
 /-- add declaration `d` and make it protected -/
 unsafe def add_protected (env : environment) (d : declaration) : exceptional environment := do
   let env ← env.add d
-  pure <| env d
+  pure $ env d
 #align environment.add_protected environment.add_protected
 
 /-- check if `n` is the name of a protected declaration -/
@@ -294,7 +294,7 @@ unsafe def is_refl_app (env : environment) (e : expr) : Option (Name × expr × 
 
 /-- Return true if 'n' has been declared in the current file -/
 unsafe def in_current_file (env : environment) (n : Name) : Bool :=
-  (env.decl_olean n).isNone && env.contains n && n ∉ [`` Quot, `` Quot.mk, `` Quot.lift, `` Quot.ind]
+  (env.decl_olean n).isNone && env.contains n && (n ∉ [`` Quot, `` Quot.mk, `` Quot.lift, `` Quot.ind])
 #align environment.in_current_file environment.in_current_file
 
 unsafe def is_definition (env : environment) (n : Name) : Bool :=

@@ -42,7 +42,7 @@ def IsPunctuation (c : Char) : Prop :=
 #print Char.toLower /-
 def toLower (c : Char) : Char :=
   let n := toNat c
-  if n ≥ 65 ∧ n ≤ 90 then ofNat (n + 32) else c
+  if n >= 65 ∧ n <= 90 then ofNat (n + 32) else c
 #align char.to_lower Char.toLower
 -/
 

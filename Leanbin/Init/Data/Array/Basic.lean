@@ -137,7 +137,7 @@ theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.be
 theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = ff →
-        ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
+        ∃ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
   | 0, h₁, h₂ => by
     simp [DArray.beqAux] at h₂
     contradiction
@@ -151,7 +151,7 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact h
       
     · have h₁' : i ≤ n := le_of_lt h₁
-      have ih : ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
+      have ih : ∃ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
         of_beq_aux_eq_ff i h₁' h
       cases' ih with j ih
       cases' ih with h' ih
@@ -164,7 +164,7 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
 theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b := by
   unfold DArray.beq
   intro h hne
-  have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ := of_beq_aux_eq_ff n (le_refl _) h
+  have : ∃ (j : Nat) (h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ := of_beq_aux_eq_ff n (le_refl _) h
   cases' this with j this
   cases' this with h' this
   subst hne
@@ -265,7 +265,7 @@ def mmapCore {β : Type v} {m : Type v → Type w} [Monad m] (a : Array' n α) (
   | i + 1, h => do
     let bs ← mmap_core i (le_of_lt h)
     let b ← f (a.read ⟨i, h⟩)
-    pure <| bs b
+    pure $ bs b
 #align array.mmap_core Array'.mmapCore
 
 /-- Monadically map a function over the array. -/

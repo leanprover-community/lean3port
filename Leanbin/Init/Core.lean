@@ -7,6 +7,12 @@ notation, basic datatypes and type classes
 -/
 prelude
 
+-- mathport name: exprProp
+notation "Prop" => Sort 0
+
+-- mathport name: «expr $ »
+notation:1 f " $ " a:0 => f a
+
 universe u v w
 
 /-- The kernel definitional equality test (t =?= s) has special support for id_delta applications.
@@ -118,6 +124,9 @@ def Not (a : Prop) :=
 #align not Not
 -/
 
+-- mathport name: «expr¬ »
+prefix:40 "¬" => Not
+
 /- ./././Mathport/Syntax/Translate/Command.lean:330:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print Eq /-
 inductive Eq {α : Sort u} (a : α) : α → Prop
@@ -214,7 +223,11 @@ theorem And.right {a b : Prop} (h : And a b) : b :=
 #align and.elim_right And.right
 -/
 
--- eq basic support
+-- mathport name: «expr = »
+infixl:50
+  " = " =>-- eq basic support
+  Eq
+
 attribute [refl] Eq.refl
 
 #print rfl /-
@@ -232,6 +245,9 @@ theorem Eq.subst {α : Sort u} {P : α → Prop} {a b : α} (h₁ : a = b) (h₂
 #align eq.subst Eq.subst
 -/
 
+-- mathport name: «expr ▸ »
+infixr:75 " ▸ " => Eq.subst
+
 #print Eq.trans /-
 @[trans]
 theorem Eq.trans {α : Sort u} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c :=
@@ -246,16 +262,19 @@ theorem Eq.symm {α : Sort u} {a b : α} (h : a = b) : b = a :=
 #align eq.symm Eq.symm
 -/
 
+-- mathport name: «expr == »
+infixl:50 " == " => HEq
+
 #print HEq.rfl /-
 -- This is a `def`, so that it can be used as pattern in the equation compiler.
 @[match_pattern]
-def HEq.rfl {α : Sort u} {a : α} : HEq a a :=
+def HEq.rfl {α : Sort u} {a : α} : a == a :=
   HEq.refl a
 #align heq.rfl HEq.rfl
 -/
 
 #print eq_of_heq /-
-theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
+theorem eq_of_heq {α : Sort u} {a a' : α} (h : a == a') : a = a' :=
   have : ∀ (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') (h₂ : α = α'), (Eq.recOn h₂ a : α') = a' :=
     fun (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') => HEq.recOn h₁ fun h₂ : α = α => rfl
   show (Eq.recOn (Eq.refl α) a : α) = a' from this α a' h (Eq.refl α)
@@ -409,6 +428,12 @@ inductive List (T : Type u)
 #align list List
 -/
 
+-- mathport name: «expr :: »
+infixr:67 " :: " => List.cons
+
+-- mathport name: «expr[ ,]»
+notation3"["(l", "* => foldr (h t => List.cons h t) List.nil)"]" => l
+
 #print Nat /-
 inductive Nat
   | zero : Nat
@@ -421,6 +446,12 @@ structure UnificationConstraint where
   lhs : α
   rhs : α
 #align unification_constraint UnificationConstraint
+
+-- mathport name: «expr ≟ »
+infixl:50 " ≟ " => UnificationConstraint.mk
+
+-- mathport name: «expr =?= »
+infixl:50 " =?= " => UnificationConstraint.mk
 
 structure UnificationHint where
   pattern : UnificationConstraint
@@ -507,7 +538,7 @@ class Append (α : Type u) where
 -/
 
 #print AndThen' /-
-class AndThen' (α : Type u) (β : Type v) (σ : outParam <| Type w) where
+class AndThen' (α : Type u) (β : Type v) (σ : outParam $ Type w) where
   andthen : α → β → σ
 #align has_andthen AndThen'
 -/
@@ -524,9 +555,11 @@ class Inter (α : Type u) where
 #align has_inter Inter
 -/
 
-class Sdiff (α : Type u) where
+#print SDiff /-
+class SDiff (α : Type u) where
   sdiff : α → α → α
-#align has_sdiff Sdiff
+#align has_sdiff SDiff
+-/
 
 class HasEquiv (α : Sort u) where
   Equiv : α → α → Prop
@@ -558,27 +591,27 @@ class EmptyCollection (α : Type u) where
 -/
 
 #print Insert /-
-class Insert (α : outParam <| Type u) (γ : Type v) where
+class Insert (α : outParam $ Type u) (γ : Type v) where
   insert : α → γ → γ
 #align has_insert Insert
 -/
 
 #print Singleton /-
-class Singleton (α : outParam <| Type u) (β : Type v) where
+class Singleton (α : outParam $ Type u) (β : Type v) where
   singleton : α → β
 #align has_singleton Singleton
 -/
 
 #print Sep /-
 -- Type class used to implement the notation { a ∈ c | p a }
-class Sep (α : outParam <| Type u) (γ : Type v) where
+class Sep (α : outParam $ Type u) (γ : Type v) where
   sep : (α → Prop) → γ → γ
 #align has_sep Sep
 -/
 
 #print Membership /-
 -- Type class for set-like membership
-class Membership (α : outParam <| Type u) (γ : Type v) where
+class Membership (α : outParam $ Type u) (γ : Type v) where
   Mem : α → γ → Prop
 #align has_mem Membership
 -/
@@ -593,10 +626,73 @@ export AndThen' (andthen)
 
 export Pow (pow)
 
+-- mathport name: «expr ∈ »
+infixl:50 " ∈ " => Membership.Mem
+
+-- mathport name: «expr ∉ »
+notation:50 a " ∉ " s:50 => ¬Membership.Mem a s
+
+-- mathport name: «expr + »
+infixl:65 " + " => Add.add
+
+-- mathport name: «expr * »
+infixl:70 " * " => Mul.mul
+
+-- mathport name: «expr - »
+infixl:65 " - " => Sub.sub
+
+-- mathport name: «expr / »
+infixl:70 " / " => Div.div
+
+-- mathport name: «expr ∣ »
+infixl:50 " ∣ " => Dvd.Dvd
+
+-- mathport name: «expr % »
+infixl:70
+  " % " =>-- Note this is different to `|`.
+  Mod.mod
+
+-- mathport name: «expr- »
+prefix:75 "-" => Neg.neg
+
+-- mathport name: «expr <= »
+infixl:50 " <= " => LE.le
+
+-- mathport name: «expr ≤ »
+infixl:50 " ≤ " => LE.le
+
+-- mathport name: «expr < »
+infixl:50 " < " => LT.lt
+
+-- mathport name: «expr ++ »
+infixl:65 " ++ " => Append.append
+
+-- mathport name: «expr ; »
+infixl:1 "; " => andthen
+
+-- mathport name: «expr∅»
+notation "∅" => EmptyCollection.emptyCollection
+
+-- mathport name: «expr ∪ »
+infixl:65 " ∪ " => Union.union
+
+-- mathport name: «expr ∩ »
+infixl:70 " ∩ " => Inter.inter
+
+-- mathport name: «expr ⊆ »
+infixl:50 " ⊆ " => HasSubset.Subset
+
 -- mathport name: «expr ⊂ »
-infixl:50
-  " ⊂ " =>-- Note this is different to `|`.
-  HasSSubset.SSubset
+infixl:50 " ⊂ " => HasSSubset.SSubset
+
+-- mathport name: «expr \ »
+infixl:70 " \\ " => SDiff.sdiff
+
+-- mathport name: «expr ≈ »
+infixl:50 " ≈ " => HasEquiv.Equiv
+
+-- mathport name: «expr ^ »
+infixr:80 " ^ " => Pow.pow
 
 export Append (append)
 
@@ -613,6 +709,15 @@ def GT.gt {α : Type u} [LT α] (a b : α) : Prop :=
   LT.lt b a
 #align gt GT.gt
 -/
+
+-- mathport name: «expr >= »
+infixl:50 " >= " => GE.ge
+
+-- mathport name: «expr ≥ »
+infixl:50 " ≥ " => GE.ge
+
+-- mathport name: «expr > »
+infixl:50 " > " => GT.gt
 
 #print Superset /-
 @[reducible]
@@ -736,8 +841,15 @@ def Std.Prec.maxPlus : Nat :=
 #align std.prec.max_plus Std.Prec.maxPlus
 -/
 
+-- mathport name: «expr ⁻¹»
+postfix:max "⁻¹" => Inv.inv
+
+-- mathport name: «expr × »
+infixr:35
+  " × " =>-- input with \sy or \-1 or \inv
+  Prod
+
 #print SizeOf /-
--- input with \sy or \-1 or \inv
 -- notation for n-ary tuples
 -- sizeof
 class SizeOf (α : Sort u) where

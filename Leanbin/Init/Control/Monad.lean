@@ -24,6 +24,12 @@ def Bind.andThen {α β : Type u} {m : Type u → Type v} [Bind m] (x : m α) (y
   y
 #align has_bind.and_then Bind.andThen
 
+-- mathport name: «expr >>= »
+infixl:55 " >>= " => bind
+
+-- mathport name: «expr >> »
+infixl:55 " >> " => Bind.andThen
+
 #print Monad /-
 class Monad (m : Type u → Type v) extends Applicative m, Bind m : Type max (u + 1) v where
   map := fun α β f x => x >>= pure ∘ f

@@ -51,9 +51,8 @@ private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (
 private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List Name) : tactic Unit := do
   let field_quotes ← mk_reflect I_name F_name field_names 0
   let-- fn should be of the form `F_name ps fs`, where ps are the inductive parameter arguments,
-      -- and `fs.length = field_names.length`
-      quote.1
-      (reflected _ (%%ₓfn))
+    -- and `fs.length = field_names.length`
+    q(reflected _ $(fn))
     ← target
   let-- `reflected _ (F_name ps)` should be synthesizable directly, using instances from the context
   fn := field_names.foldl (fun fn _ => expr.app_fn fn) fn
@@ -61,7 +60,7 @@ private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List N
   let quote
     ←-- now extend to an instance of `reflected _ (F_name ps fs)`
           field_quotes.mfoldl
-        (fun quote fquote => to_expr (pquote.1 (reflected.subst (%%ₓquote) (%%ₓfquote)))) quote
+        (fun quote fquote => to_expr ``(reflected.subst $(quote) $(fquote))) quote
   exact quote
 #align tactic.has_reflect_case tactic.has_reflect_case
 
@@ -84,7 +83,7 @@ unsafe def mk_has_reflect_instance : tactic Unit := do
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then
-      intro `_v >>= fun x => induction x [v_name, F_name] (some <| .str I_name "brec_on") >> return ()
+      intro `_v >>= fun x => induction x [v_name, F_name] (some $ I_name <.> "brec_on") >> return ()
     else intro v_name >> return ()
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p
   get_local v_name >>= fun v => cases v (join arg_names)

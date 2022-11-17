@@ -165,7 +165,7 @@ unsafe instance : has_to_format Char :=
 
 unsafe def list.to_format {α : Type u} [has_to_format α] : List α → format
   | [] => to_fmt "[]"
-  | xs => to_fmt "[" ++ group (nest 1 <| format.join <| List.intersperse ("," ++ line) <| xs.map to_fmt) ++ to_fmt "]"
+  | xs => to_fmt "[" ++ group (nest 1 $ format.join $ List.intersperse ("," ++ line) $ xs.map to_fmt) ++ to_fmt "]"
 #align list.to_format list.to_format
 
 unsafe instance {α : Type u} [has_to_format α] : has_to_format (List α) :=

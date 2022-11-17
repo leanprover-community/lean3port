@@ -63,14 +63,14 @@ We also do not use `zero_lt_succ _` as a proof term because this proof may not b
 external type checkers. See discussion at: https://github.com/leanprover/tc/issues/8
 -/
 theorem zero_lt_d800 : 0 < 55296 :=
-  Nat.zero_lt_bit0 <|
-    Nat.bit0_ne_zero <|
-      Nat.bit0_ne_zero <|
-        Nat.bit0_ne_zero <|
-          Nat.bit0_ne_zero <|
-            Nat.bit0_ne_zero <|
-              Nat.bit0_ne_zero <|
-                Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
+  Nat.zero_lt_bit0 $
+    Nat.bit0_ne_zero $
+      Nat.bit0_ne_zero $
+        Nat.bit0_ne_zero $
+          Nat.bit0_ne_zero $
+            Nat.bit0_ne_zero $
+              Nat.bit0_ne_zero $
+                Nat.bit0_ne_zero $ Nat.bit0_ne_zero $ Nat.bit0_ne_zero $ Nat.bit0_ne_zero $ Nat.bit1_ne_zero 13
 #align char.zero_lt_d800 Char.zero_lt_d800
 
 #print Char.ofNat /-

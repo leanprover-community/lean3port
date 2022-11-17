@@ -82,7 +82,7 @@ unsafe axiom fold_mvars {α : Type} (f : α → expr → type_context α) : α �
 #align tactic.unsafe.type_context.fold_mvars tactic.unsafe.type_context.fold_mvars
 
 unsafe def list_mvars : type_context (List expr) :=
-  fold_mvars (fun l x => pure <| x :: l) []
+  fold_mvars (fun l x => pure $ x :: l) []
 #align tactic.unsafe.type_context.list_mvars tactic.unsafe.type_context.list_mvars
 
 /-- Set the mvar to the following assignments.
@@ -203,13 +203,13 @@ unsafe axiom run (inner : type_context α) (tr := Tactic.Transparency.semireduci
 #align tactic.unsafe.type_context.run tactic.unsafe.type_context.run
 
 unsafe def trace {α} [has_to_format α] : α → type_context Unit
-  | a => pure <| _root_.trace_fmt (to_fmt a) fun u => ()
+  | a => pure $ _root_.trace_fmt (to_fmt a) fun u => ()
 #align tactic.unsafe.type_context.trace tactic.unsafe.type_context.trace
 
 unsafe def print_mvars : type_context Unit := do
   let mvs ← list_mvars
   let mvs ←
-    pure <|
+    pure $
         mvs.map fun x =>
           match x with
           | expr.mvar _ pp _ => to_fmt pp

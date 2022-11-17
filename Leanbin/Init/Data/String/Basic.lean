@@ -327,7 +327,7 @@ private theorem nil_ne_append_singleton : ∀ (c : Char) (l : List Char), [] ≠
 
 theorem empty_ne_str : ∀ (c : Char) (s : String), Empty ≠ str s c
   | c, ⟨l⟩ => fun h : StringImp.mk [] = StringImp.mk (l ++ [c]) =>
-    (StringImp.noConfusion h) fun h => nil_ne_append_singleton _ _ h
+    StringImp.noConfusion h $ fun h => nil_ne_append_singleton _ _ h
 #align string.empty_ne_str String.empty_ne_str
 
 theorem str_ne_empty (c : Char) (s : String) : str s c ≠ Empty :=

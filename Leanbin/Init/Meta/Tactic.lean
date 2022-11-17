@@ -240,7 +240,7 @@ unsafe def iterate_at_most : Nat → tactic α → tactic (List α)
     let some a ← try_core t |
       pure []
     let as ← iterate_at_most n t
-    pure <| a :: as
+    pure $ a :: as
 #align tactic.iterate_at_most tactic.iterate_at_most
 
 /-- `iterate_at_most' n t` repeats `t` `n` times or until `t` fails.
@@ -261,7 +261,7 @@ unsafe def iterate_exactly : Nat → tactic α → tactic (List α)
   | n + 1, t => do
     let a ← t
     let as ← iterate_exactly n t
-    pure <| a :: as
+    pure $ a :: as
 #align tactic.iterate_exactly tactic.iterate_exactly
 
 /-- `iterate_exactly' n t` executes `t` `n` times. If any iteration fails, the whole
@@ -428,7 +428,7 @@ open TacticState
 
 unsafe def get_env : tactic environment := do
   let s ← read
-  return <| env s
+  return $ env s
 #align tactic.get_env tactic.get_env
 
 unsafe def get_decl (n : Name) : tactic declaration := do
@@ -441,7 +441,7 @@ unsafe axiom get_trace_msg_pos : tactic Pos
 
 unsafe def trace {α : Type u} [has_to_tactic_format α] (a : α) : tactic Unit := do
   let fmt ← pp a
-  return <| _root_.trace_fmt fmt fun u => ()
+  return $ _root_.trace_fmt fmt fun u => ()
 #align tactic.trace tactic.trace
 
 unsafe def trace_call_stack : tactic Unit := fun state => traceCallStack (success () state)
@@ -452,7 +452,7 @@ unsafe def timetac {α : Type u} (desc : String) (t : Thunk' (tactic α)) : tact
 
 unsafe def trace_state : tactic Unit := do
   let s ← read
-  trace <| to_fmt s
+  trace $ to_fmt s
 #align tactic.trace_state tactic.trace_state
 
 /--
@@ -890,7 +890,7 @@ unsafe def module_doc_strings : tactic (List (Option Name × String)) := do
   let decls
     ←-- Map declarations to those which have docstrings.
           decls.mfoldl
-        (fun a n => (doc_string n >>= fun doc => pure <| (some n, doc) :: a) <|> pure a) []
+        (fun a n => (doc_string n >>= fun doc => pure $ (some n, doc) :: a) <|> pure a) []
   pure (mod_docs ++ decls)
 #align tactic.module_doc_strings tactic.module_doc_strings
 
@@ -914,7 +914,7 @@ unsafe axiom has_attribute : Name → Name → tactic (Bool × Nat)
    `src` to `tgt` if it is defined for `src`; make it persistent if `p` is `tt`;
    if `p` is `none`, the copied attribute is made persistent iff it is persistent on `src`  -/
 unsafe def copy_attribute (attr_name : Name) (src : Name) (tgt : Name) (p : Option Bool := none) : tactic Unit :=
-  try <| do
+  try $ do
     let (p', prio) ← has_attribute attr_name src
     let p := p.getOrElse p'
     set_basic_attribute attr_name tgt p (some prio)
@@ -1040,14 +1040,14 @@ unsafe def istep {α : Type u} (line0 col0 line col ast : ℕ) (t : tactic α) :
 
 unsafe def is_prop (e : expr) : tactic Bool := do
   let t ← infer_type e
-  return (t = quote.1 Prop)
+  return (t = q(Prop))
 #align tactic.is_prop tactic.is_prop
 
 /-- Return true iff n is the name of declaration that is a proposition. -/
 unsafe def is_prop_decl (n : Name) : tactic Bool := do
   let env ← get_env
   let d ← env.get n
-  let t ← return <| d.type
+  let t ← return $ d.type
   is_prop t
 #align tactic.is_prop_decl tactic.is_prop_decl
 
@@ -1204,7 +1204,7 @@ unsafe def resolve_constant (n : Name) : tactic Name := do
     | expr.const n _ => pure n
     | _ => do
       let e ← to_expr e tt ff
-      let expr.const n _ ← pure <| e
+      let expr.const n _ ← pure $ e
       pure n
 #align tactic.resolve_constant tactic.resolve_constant
 
@@ -1231,7 +1231,7 @@ unsafe def revert_all : tactic Nat := do
     |-- `hi` is the last local instance. We shoul truncate `lctx` at `hi`.
         some
         (hi :: his) =>
-      revert_lst <| lctx (fun r h => if h = hi then [] else h :: r) []
+      revert_lst $ lctx (fun r h => if h = hi then [] else h :: r) []
 #align tactic.revert_all tactic.revert_all
 
 unsafe def clear_lst : List Name → tactic Unit
@@ -1343,6 +1343,14 @@ unsafe def save_info (p : Pos) : tactic Unit := do
   tactic.save_info_thunk p fun _ => tactic_state.to_format s
 #align tactic.save_info tactic.save_info
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.assumption -/
+-- mathport name: «expr‹ ›»
+notation "‹" p "›" =>
+  (by
+    run_tac
+      assumption :
+    p)
+
 /-- Swap first two goals, do nothing if tactic state does not have at least two goals. -/
 unsafe def swap : tactic Unit := do
   let gs ← get_goals
@@ -1453,21 +1461,21 @@ unsafe def solve1 {α} (tac : tactic α) : tactic α := do
 
 /-- `solve [t_1, ... t_n]` applies the first tactic that solves the main goal. -/
 unsafe def solve {α} (ts : List (tactic α)) : tactic α :=
-  first <| map solve1 ts
+  first $ map solve1 ts
 #align tactic.solve tactic.solve
 
 private unsafe def focus_aux {α} : List (tactic α) → List expr → List expr → tactic (List α)
   | [], [], rs => set_goals rs *> pure []
   | t :: ts, [], rs => fail "focus tactic failed, insufficient number of goals"
   | tts, g :: gs, rs =>
-    condM (is_assigned g) (focus_aux tts gs rs) <| do
+    condM (is_assigned g) (focus_aux tts gs rs) $ do
       set_goals [g]
       let t :: ts ← pure tts |
         fail "focus tactic failed, insufficient number of tactics"
       let a ← t
       let rs' ← get_goals
       let as ← focus_aux ts gs (rs ++ rs')
-      pure <| a :: as
+      pure $ a :: as
 #align tactic.focus_aux tactic.focus_aux
 
 /-- `focus [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of
@@ -1482,7 +1490,7 @@ private unsafe def focus'_aux : List (tactic Unit) → List expr → List expr �
   | [], [], rs => set_goals rs
   | t :: ts, [], rs => fail "focus' tactic failed, insufficient number of goals"
   | tts, g :: gs, rs =>
-    condM (is_assigned g) (focus'_aux tts gs rs) <| do
+    condM (is_assigned g) (focus'_aux tts gs rs) $ do
       set_goals [g]
       let t :: ts ← pure tts |
         fail "focus' tactic failed, insufficient number of tactics"
@@ -1512,12 +1520,12 @@ unsafe def focus1 {α} (tac : tactic α) : tactic α := do
 private unsafe def all_goals_core {α} (tac : tactic α) : List expr → List expr → tactic (List α)
   | [], ac => set_goals ac *> pure []
   | g :: gs, ac =>
-    condM (is_assigned g) (all_goals_core gs ac) <| do
+    condM (is_assigned g) (all_goals_core gs ac) $ do
       set_goals [g]
       let a ← tac
       let new_gs ← get_goals
       let as ← all_goals_core gs (ac ++ new_gs)
-      pure <| a :: as
+      pure $ a :: as
 #align tactic.all_goals_core tactic.all_goals_core
 
 /-- Apply the given tactic to all goals. Return one result per goal.
@@ -1530,7 +1538,7 @@ unsafe def all_goals {α} (tac : tactic α) : tactic (List α) := do
 private unsafe def all_goals'_core (tac : tactic Unit) : List expr → List expr → tactic Unit
   | [], ac => set_goals ac
   | g :: gs, ac =>
-    condM (is_assigned g) (all_goals'_core gs ac) <| do
+    condM (is_assigned g) (all_goals'_core gs ac) $ do
       set_goals [g]
       tac
       let new_gs ← get_goals
@@ -1546,12 +1554,12 @@ unsafe def all_goals' (tac : tactic Unit) : tactic Unit := do
 private unsafe def any_goals_core {α} (tac : tactic α) : List expr → List expr → Bool → tactic (List (Option α))
   | [], ac, progress => guard progress *> set_goals ac *> pure []
   | g :: gs, ac, progress =>
-    condM (is_assigned g) (any_goals_core gs ac progress) <| do
+    condM (is_assigned g) (any_goals_core gs ac progress) $ do
       set_goals [g]
       let res ← try_core tac
       let new_gs ← get_goals
       let ress ← any_goals_core gs (ac ++ new_gs) (res.isSome || progress)
-      pure <| res :: ress
+      pure $ res :: ress
 #align tactic.any_goals_core tactic.any_goals_core
 
 /-- Apply `tac` to any goal where it succeeds. The tactic succeeds if `tac`
@@ -1566,7 +1574,7 @@ unsafe def any_goals {α} (tac : tactic α) : tactic (List (Option α)) := do
 private unsafe def any_goals'_core (tac : tactic Unit) : List expr → List expr → Bool → tactic Unit
   | [], ac, progress => guard progress >> set_goals ac
   | g :: gs, ac, progress =>
-    condM (is_assigned g) (any_goals'_core gs ac progress) <| do
+    condM (is_assigned g) (any_goals'_core gs ac progress) $ do
       set_goals [g]
       let succeeded ← try_core tac
       let new_gs ← get_goals
@@ -1587,7 +1595,7 @@ unsafe def seq {α β} (tac1 : tactic α) (tac2 : α → tactic β) : tactic (Li
   let g :: gs ← get_goals
   set_goals [g]
   let a ← tac1
-  let bs ← all_goals <| tac2 a
+  let bs ← all_goals $ tac2 a
   let gs' ← get_goals
   set_goals (gs' ++ gs)
   pure bs
@@ -1610,7 +1618,7 @@ unsafe def seq_focus {α β} (tac1 : tactic α) (tacs2 : α → List (tactic β)
   let g :: gs ← get_goals
   set_goals [g]
   let a ← tac1
-  let bs ← focus <| tacs2 a
+  let bs ← focus $ tacs2 a
   let gs' ← get_goals
   set_goals (gs' ++ gs)
   pure bs
@@ -1657,12 +1665,12 @@ unsafe def done : tactic Unit := do
 #align tactic.done tactic.done
 
 unsafe def apply_opt_param : tactic Unit := do
-  let quote.1 (optParam (%%ₓt) (%%ₓv)) ← target
+  let q(optParam $(t) $(v)) ← target
   exact v
 #align tactic.apply_opt_param tactic.apply_opt_param
 
 unsafe def apply_auto_param : tactic Unit := do
-  let quote.1 (autoParam' (%%ₓtype) (%%ₓtac_name_expr)) ← target
+  let q(autoParam' $(type) $(tac_name_expr)) ← target
   change type
   let tac_name ← eval_expr Name tac_name_expr
   let tac ← eval_expr (tactic Unit) (expr.const tac_name [])
@@ -1673,17 +1681,17 @@ unsafe def has_opt_auto_param (ms : List expr) : tactic Bool :=
   ms.mfoldl
     (fun r m => do
       let type ← infer_type m
-      return <| r || type `opt_param 2 || type `auto_param 2)
+      return $ r || type `opt_param 2 || type `auto_param 2)
     false
 #align tactic.has_opt_auto_param tactic.has_opt_auto_param
 
 unsafe def try_apply_opt_auto_param (cfg : ApplyCfg) (ms : List expr) : tactic Unit :=
-  when (cfg.autoParam || cfg.optParam) <|
-    whenM (has_opt_auto_param ms) <| do
+  when (cfg.autoParam || cfg.optParam) $
+    whenM (has_opt_auto_param ms) $ do
       let gs ← get_goals
       ms fun m =>
-          whenM (not <$> is_assigned m) <|
-            (set_goals [m] >> when cfg (try apply_opt_param)) >> when cfg (try apply_auto_param)
+          whenM (not <$> is_assigned m) $
+            set_goals [m] >> when cfg (try apply_opt_param) >> when cfg (try apply_auto_param)
       set_goals gs
 #align tactic.try_apply_opt_auto_param tactic.try_apply_opt_auto_param
 
@@ -1691,16 +1699,16 @@ unsafe def has_opt_auto_param_for_apply (ms : List (Name × expr)) : tactic Bool
   ms.mfoldl
     (fun r m => do
       let type ← infer_type m.2
-      return <| r || type `opt_param 2 || type `auto_param 2)
+      return $ r || type `opt_param 2 || type `auto_param 2)
     false
 #align tactic.has_opt_auto_param_for_apply tactic.has_opt_auto_param_for_apply
 
 unsafe def try_apply_opt_auto_param_for_apply (cfg : ApplyCfg) (ms : List (Name × expr)) : tactic Unit :=
-  whenM (has_opt_auto_param_for_apply ms) <| do
+  whenM (has_opt_auto_param_for_apply ms) $ do
     let gs ← get_goals
     ms fun m =>
-        whenM (not <$> is_assigned m.2) <|
-          (set_goals [m.2] >> when cfg (try apply_opt_param)) >> when cfg (try apply_auto_param)
+        whenM (not <$> is_assigned m.2) $
+          set_goals [m.2] >> when cfg (try apply_opt_param) >> when cfg (try apply_auto_param)
     set_goals gs
 #align tactic.try_apply_opt_auto_param_for_apply tactic.try_apply_opt_auto_param_for_apply
 
@@ -1778,7 +1786,7 @@ unsafe def mk_mvar : tactic expr := do
 unsafe def mk_sorry : tactic expr := do
   let u ← mk_meta_univ
   let t ← mk_meta_var (expr.sort u)
-  return <| expr.mk_sorry t
+  return $ expr.mk_sorry t
 #align tactic.mk_sorry tactic.mk_sorry
 
 /-- Closes the main goal using sorry. -/
@@ -1788,7 +1796,7 @@ unsafe def admit : tactic Unit :=
 
 unsafe def mk_local' (pp_name : Name) (bi : BinderInfo) (type : expr) : tactic expr := do
   let uniq_name ← mk_fresh_name
-  return <| expr.local_const uniq_name pp_name bi type
+  return $ expr.local_const uniq_name pp_name bi type
 #align tactic.mk_local' tactic.mk_local'
 
 unsafe def mk_local_def (pp_name : Name) (type : expr) : tactic expr :=
@@ -1827,6 +1835,14 @@ unsafe def triv : tactic Unit :=
   mk_const `trivial >>= exact
 #align tactic.triv tactic.triv
 
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.triv -/
+-- mathport name: exprdec_trivial
+notation "dec_trivial" =>
+  AsTrue.get
+    (by
+      run_tac
+        tactic.triv)
+
 unsafe def by_contradiction (H : Name) : tactic expr := do
   let tgt ← target
   let tgt_wh ← whnf tgt reducible
@@ -1834,8 +1850,8 @@ unsafe def by_contradiction (H : Name) : tactic expr := do
           match_not
           tgt_wh $>
         () <|>
-      (mk_mapp `decidable.by_contradiction [some tgt, none] >>= eapply) >> skip <|>
-        (mk_mapp `classical.by_contradiction [some tgt] >>= eapply) >> skip <|>
+      mk_mapp `decidable.by_contradiction [some tgt, none] >>= eapply >> skip <|>
+        mk_mapp `classical.by_contradiction [some tgt] >>= eapply >> skip <|>
           fail "tactic by_contradiction failed, target is not a proposition"
   intro H
 #align tactic.by_contradiction tactic.by_contradiction
@@ -1882,7 +1898,7 @@ unsafe def revert_kdeps (e : expr) (md := reducible) :=
   the renaming functionality of `case`, so we want to keep only those
   "new hypotheses" that are, in fact, local constants. -/
 private unsafe def cases_postprocess (hs : List (Name × List expr × List (Name × expr))) : List (Name × List expr) :=
-  hs.map fun ⟨n, hs, _⟩ => (n, hs.filter fun h => h.is_local_constant)
+  hs.map $ fun ⟨n, hs, _⟩ => (n, hs.filter fun h => h.is_local_constant)
 #align tactic.cases_postprocess tactic.cases_postprocess
 
 /-- Similar to `cases_core`, but `e` doesn't need to be a hypothesis.
@@ -1900,7 +1916,7 @@ unsafe def cases (e : expr) (ids : List Name := []) (md := semireducible) (dmd :
     tactic (List (Name × List expr)) :=
   if e.is_local_constant then do
     let r ← cases_core e ids md
-    return <| cases_postprocess r
+    return $ cases_postprocess r
   else do
     let n ← revert_kdependencies e dmd
     let x ← get_unused_name
@@ -1910,16 +1926,16 @@ unsafe def cases (e : expr) (ids : List Name := []) (md := semireducible) (dmd :
         get_local x >>= tactic.revert
         return ()
     let h ← tactic.intro1
-    focus1 <| do
+    focus1 $ do
         let r ← cases_core h ids md
         let hs' ← all_goals (intron' n)
-        return <| cases_postprocess <| r (fun ⟨n, hs, x⟩ hs' => (n, hs ++ hs', x)) hs'
+        return $ cases_postprocess $ r (fun ⟨n, hs, x⟩ hs' => (n, hs ++ hs', x)) hs'
 #align tactic.cases tactic.cases
 
 /-- The same as `exact` except you can add proof holes. -/
 unsafe def refine (e : pexpr) : tactic Unit := do
   let tgt : expr ← target
-  to_expr (pquote.1 (%%ₓe : %%ₓtgt)) tt >>= exact
+  to_expr ``(($(e) : $(tgt))) tt >>= exact
 #align tactic.refine tactic.refine
 
 /-- `by_cases p h` splits the main goal into two cases, assuming `h : p` in the
@@ -1930,21 +1946,21 @@ The produced proof term is `dite p ?m_1 ?m_2`.
 -/
 unsafe def by_cases (e : expr) (h : Name) : tactic Unit := do
   let dec_e ← mk_app `` Decidable [e] <|> fail "by_cases tactic failed, type is not a proposition"
-  let inst ← mk_instance dec_e <|> pure (quote.1 (Classical.propDecidable (%%ₓe)))
+  let inst ← mk_instance dec_e <|> pure q(Classical.propDecidable $(e))
   let tgt ← target
   let expr.sort tgt_u ← infer_type tgt >>= whnf
   let g1 ← mk_meta_var (e.imp tgt)
-  let g2 ← mk_meta_var ((quote.1 ¬%%ₓe).imp tgt)
-  focus1 <| do
-      exact <| expr.const `` dite [tgt_u] tgt e inst g1 g2
+  let g2 ← mk_meta_var (q(¬$(e)).imp tgt)
+  focus1 $ do
+      exact $ expr.const `` dite [tgt_u] tgt e inst g1 g2
       set_goals [g1, g2]
-      all_goals' <| intro h >> skip
+      all_goals' $ intro h >> skip
 #align tactic.by_cases tactic.by_cases
 
 unsafe def funext_core : List Name → Bool → tactic Unit
   | [], tt => return ()
   | ids, only_ids =>
-    try <| do
+    try $ do
       let some (lhs, rhs) ← expr.is_eq <$> (target >>= whnf)
       applyc `funext
       let id ←
@@ -1967,21 +1983,21 @@ unsafe def funext_lst (ids : List Name) : tactic Unit :=
 
 private unsafe def get_undeclared_const (env : environment) (base : Name) : ℕ → Name
   | i =>
-    let n := .str base ("_aux_" ++ repr i)
+    let n := base <.> ("_aux_" ++ repr i)
     if ¬env.contains n then n else get_undeclared_const (i + 1)
 #align tactic.get_undeclared_const tactic.get_undeclared_const
 
 unsafe def new_aux_decl_name : tactic Name := do
   let env ← get_env
   let n ← decl_name
-  return <| get_undeclared_const env n 1
+  return $ get_undeclared_const env n 1
 #align tactic.new_aux_decl_name tactic.new_aux_decl_name
 
 private unsafe def mk_aux_decl_name : Option Name → tactic Name
   | none => new_aux_decl_name
   | some suffix => do
     let p ← decl_name
-    return <| p ++ suffix
+    return $ p ++ suffix
 #align tactic.mk_aux_decl_name tactic.mk_aux_decl_name
 
 unsafe def abstract (tac : tactic Unit) (suffix : Option Name := none) (zeta_reduce := true) : tactic Unit := do
@@ -2016,7 +2032,7 @@ unsafe def solve_aux {α : Type} (type : expr) (tac : tactic α) : tactic (α ×
 unsafe def in_open_namespaces (d : Name) : tactic Bool := do
   let ns ← open_namespaces
   let env ← get_env
-  return <| (ns fun n => n d) && env d
+  return $ (ns fun n => n d) && env d
 #align tactic.in_open_namespaces tactic.in_open_namespaces
 
 /-- Execute tac for 'max' "heartbeats". The heartbeat is approx. the maximum number of
@@ -2038,7 +2054,7 @@ unsafe def try_for_time {α} (max : Nat) (tac : tactic α) : tactic α := fun s 
 
 unsafe def updateex_env (f : environment → exceptional environment) : tactic Unit := do
   let env ← get_env
-  let env ← returnex <| f env
+  let env ← returnex $ f env
   set_env env
 #align tactic.updateex_env tactic.updateex_env
 
@@ -2046,7 +2062,7 @@ unsafe def updateex_env (f : environment → exceptional environment) : tactic U
    name, universe parameters, number of parameters, type, constructors (name and type), is_meta -/
 unsafe def add_inductive (n : Name) (ls : List Name) (p : Nat) (ty : expr) (is : List (Name × expr))
     (is_meta : Bool := false) : tactic Unit :=
-  updateex_env fun e => e.add_inductive n ls p ty is is_meta
+  updateex_env $ fun e => e.add_inductive n ls p ty is is_meta
 #align tactic.add_inductive tactic.add_inductive
 
 unsafe def add_meta_definition (n : Name) (lvls : List Name) (type value : expr) : tactic Unit :=
@@ -2055,13 +2071,13 @@ unsafe def add_meta_definition (n : Name) (lvls : List Name) (type value : expr)
 
 /-- add declaration `d` as a protected declaration -/
 unsafe def add_protected_decl (d : declaration) : tactic Unit :=
-  updateex_env fun e => e.add_protected d
+  updateex_env $ fun e => e.add_protected d
 #align tactic.add_protected_decl tactic.add_protected_decl
 
 /-- check if `n` is the name of a protected declaration -/
 unsafe def is_protected_decl (n : Name) : tactic Bool := do
   let env ← get_env
-  return <| env n
+  return $ env n
 #align tactic.is_protected_decl tactic.is_protected_decl
 
 /-- `add_defn_equations` adds a definition specified by a list of equations.
@@ -2096,7 +2112,7 @@ unsafe def is_protected_decl (n : Name) : tactic Bool := do
 unsafe def add_defn_equations (lp : List Name) (params : List expr) (fn : expr) (eqns : List (List pexpr × expr))
     (is_meta : Bool) : tactic Unit := do
   let opt ← get_options
-  updateex_env fun e => e opt lp params fn eqns is_meta
+  updateex_env $ fun e => e opt lp params fn eqns is_meta
 #align tactic.add_defn_equations tactic.add_defn_equations
 
 /-- Get the revertible part of the local context. These are the hypotheses that
@@ -2106,7 +2122,7 @@ before a frozen instance. -/
 unsafe def revertible_local_context : tactic (List expr) := do
   let ctx ← local_context
   let frozen ← frozen_local_instances
-  pure <|
+  pure $
       match frozen with
       | none => ctx
       | some [] => ctx
@@ -2139,19 +2155,19 @@ unsafe def rename_many (renames : name_map Name) (strict := true) (use_unique_na
   let ctx ← revertible_local_context
   let-- The part of the context after (but including) the first hypthesis that
   -- must be renamed.
-  ctx_suffix := ctx.dropWhile fun h => (renames.find <| hyp_name h).isNone
-  when strict <| do
+  ctx_suffix := ctx.dropWhile fun h => (renames.find $ hyp_name h).isNone
+  when strict $ do
       let ctx_names := rb_map.set_of_list (ctx_suffix hyp_name)
       let invalid_renames := (renames Prod.fst).filter fun h => ¬ctx_names h
-      when ¬invalid_renames <|
-          fail <|
+      when (¬invalid_renames) $
+          fail $
             format.join
-              ["Cannot rename these hypotheses:\n", format.join <| (invalid_renames to_fmt).intersperse ", ",
+              ["Cannot rename these hypotheses:\n", format.join $ (invalid_renames to_fmt).intersperse ", ",
                 format.line, "This is because these hypotheses either do not occur in the\n",
                 "context or they occur before a frozen local instance.\n",
                 "In the latter case, try `unfreezingI { ... }`."]
   let-- The new names for all hypotheses in ctx_suffix.
-  new_names := ctx_suffix.map fun h => (renames.find <| hyp_name h).getOrElse h.local_pp_name
+  new_names := ctx_suffix.map $ fun h => (renames.find $ hyp_name h).getOrElse h.local_pp_name
   revert_lst ctx_suffix
   intro_lst new_names
   pure ()
@@ -2186,7 +2202,7 @@ unsafe def replace_hyp (h : expr) (new_type : expr) (eq_pr : expr) (tag : Name :
   let eq_pr_type ← mk_app `eq [h_type, new_type]
   let eq_pr := mk_tagged_proof eq_pr_type eq_pr tag
   mk_eq_mp eq_pr h >>= exact
-  try <| clear h
+  try $ clear h
   return new_h
 #align tactic.replace_hyp tactic.replace_hyp
 
@@ -2228,6 +2244,9 @@ unsafe def subst (h : expr) : tactic Unit :=
 
 end Tactic
 
+-- mathport name: exprcommand
+notation:arg "command" => tactic Unit
+
 open Tactic
 
 namespace List
@@ -2253,7 +2272,7 @@ end List
 -- Install monad laws tactic and use it to prove some instances.
 /-- Try to prove with `iff.refl`.-/
 unsafe def order_laws_tac :=
-  (whnf_target >> intros) >> to_expr (pquote.1 (Iff.refl _)) >>= exact
+  whnf_target >> intros >> to_expr ``(Iff.refl _) >>= exact
 #align order_laws_tac order_laws_tac
 
 unsafe def monad_from_pure_bind {m : Type u → Type v} (pure : ∀ {α : Type u}, α → m α)
@@ -2280,7 +2299,7 @@ unsafe def replace_target (new_target : expr) (pr : expr) (tag : Name := `unit.s
 #align tactic.replace_target tactic.replace_target
 
 unsafe def eval_pexpr (α) [reflected _ α] (e : pexpr) : tactic α :=
-  to_expr (pquote.1 (%%ₓe : %%ₓreflect α)) false false >>= eval_expr α
+  to_expr ``(($(e) : $(reflect α))) false false >>= eval_expr α
 #align tactic.eval_pexpr tactic.eval_pexpr
 
 unsafe def run_simple {α} : tactic_state → tactic α → Option α

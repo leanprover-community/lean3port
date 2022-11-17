@@ -12,12 +12,12 @@ namespace Int
 
 -- Auxiliary lemmas for proving that to int numerals are different 
 -- 1. Lemmas for reducing the problem to the case where the numerals are positive
-protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_inj h₂) h₁
+protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_eq_neg h₂) h₁
 #align int.ne_neg_of_ne Int.ne_neg_of_ne
 
 protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ => by
   have : -a = -0 := by rwa [Int.neg_zero]
-  have : a = 0 := Int.neg_inj this
+  have : a = 0 := Int.neg_eq_neg this
   contradiction
 #align int.neg_ne_zero_of_ne Int.neg_ne_zero_of_ne
 
@@ -69,7 +69,7 @@ protected theorem nonneg_of_pos {a : ℤ} : 0 < a → 0 ≤ a :=
 theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
   @lt.intro _ _ n
     (by
-      simp [neg_succ_of_nat_coe, Int.coe_nat_succ, Int.coe_nat_add, Int.coe_nat_one, Int.add_comm, Int.add_left_comm,
+      simp [neg_succ_of_nat_coe, Int.ofNat_succ, Int.ofNat_add, Int.ofNat_one, Int.add_comm, Int.add_left_comm,
         Int.neg_add, Int.add_right_neg, Int.zero_add])
 #align int.neg_succ_of_nat_lt_zero Int.neg_succ_of_nat_lt_zero
 
@@ -115,7 +115,7 @@ protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → 
 
 protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
   | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ => by
-    have : -[n+1] + -[m+1] = -[Nat.succ (n + m)+1] := rfl
+    have : -[1+ n] + -[1+ m] = -[1+ Nat.succ (n + m)] := rfl
     simp [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
 #align int.nat_abs_add_neg Int.nat_abs_add_neg
 

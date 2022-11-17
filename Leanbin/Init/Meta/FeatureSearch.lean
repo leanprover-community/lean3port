@@ -79,13 +79,13 @@ unsafe instance : Inter feature_vec :=
 unsafe def of_proof (prf : expr) (cfg : FeatureCfg := {  }) : tactic feature_vec := do
   let ty ← infer_type prf
   let env ← get_env
-  pure <| of_expr env ty cfg
+  pure $ of_expr env ty cfg
 #align feature_search.feature_vec.of_proof feature_search.feature_vec.of_proof
 
 unsafe def of_thm (n : Name) (cfg : FeatureCfg := {  }) : tactic feature_vec := do
   let decl ← get_decl n
   let env ← get_env
-  pure <| of_expr env decl cfg
+  pure $ of_expr env decl cfg
 #align feature_search.feature_vec.of_thm feature_search.feature_vec.of_thm
 
 protected unsafe axiom to_list (fv : feature_vec) : List feature

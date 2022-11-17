@@ -75,22 +75,22 @@ unsafe def comp_val : tactic Unit := do
               exact pr) <|>
             (do
                 let type ← whnf type
-                guard (type = quote.1 (@Subtype Nat))
+                guard (type = q(@Subtype Nat))
                 applyc `subtype.ne_of_val_ne
-                let (quote.1 (Subtype.mk (%%ₓa) (%%ₓha)), quote.1 (Subtype.mk (%%ₓb) (%%ₓhb))) ← is_ne t
+                let (q(Subtype.mk $(a) $(ha)), q(Subtype.mk $(b) $(hb))) ← is_ne t
                 let pr ← mk_nat_val_ne_proof a b
                 exact pr) <|>
               (do
                   let type ← whnf type
-                  guard (type = quote.1 @Fin)
+                  guard (type = q(@Fin))
                   applyc `` Fin.ne_of_vne
-                  let (quote.1 (Fin.mk (%%ₓa) (%%ₓha)), quote.1 (Fin.mk (%%ₓb) (%%ₓhb))) ← is_ne t
+                  let (q(Fin.mk $(a) $(ha)), q(Fin.mk $(b) $(hb))) ← is_ne t
                   let pr ← mk_nat_val_ne_proof a b
                   exact pr) <|>
                 do
                 let (a, b) ← is_eq t
                 unify a b
-                to_expr (pquote.1 (Eq.refl (%%ₓa))) >>= exact
+                to_expr ``(Eq.refl $(a)) >>= exact
 #align tactic.comp_val tactic.comp_val
 
 end Tactic

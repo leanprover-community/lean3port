@@ -33,6 +33,9 @@ def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : �
     ∀ x, φ (g x) := fun x => f (g x)
 #align function.dcomp Function.dcomp
 
+-- mathport name: «expr ∘ »
+infixr:90 " ∘ " => Function.comp
+
 -- mathport name: «expr ∘' »
 infixr:80 " ∘' " => Function.dcomp
 
@@ -184,10 +187,12 @@ def LeftInverse (g : β → α) (f : α → β) : Prop :=
 #align function.left_inverse Function.LeftInverse
 -/
 
+#print Function.HasLeftInverse /-
 /-- `has_left_inverse f` means that `f` has an unspecified left inverse. -/
 def HasLeftInverse (f : α → β) : Prop :=
   ∃ finv : β → α, LeftInverse finv f
 #align function.has_left_inverse Function.HasLeftInverse
+-/
 
 #print Function.RightInverse /-
 /-- `right_inverse g f` means that g is a right inverse to f. That is, `f ∘ g = id`. -/
@@ -196,10 +201,12 @@ def RightInverse (g : β → α) (f : α → β) : Prop :=
 #align function.right_inverse Function.RightInverse
 -/
 
+#print Function.HasRightInverse /-
 /-- `has_right_inverse f` means that `f` has an unspecified right inverse. -/
 def HasRightInverse (f : α → β) : Prop :=
   ∃ finv : β → α, RightInverse finv f
 #align function.has_right_inverse Function.HasRightInverse
+-/
 
 #print Function.LeftInverse.injective /-
 theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f := fun h a b faeqfb =>
@@ -211,26 +218,33 @@ theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f 
 #align function.left_inverse.injective Function.LeftInverse.injective
 -/
 
+#print Function.HasLeftInverse.injective /-
 theorem HasLeftInverse.injective {f : α → β} : HasLeftInverse f → Injective f := fun h =>
   Exists.elim h fun finv inv => inv.Injective
 #align function.has_left_inverse.injective Function.HasLeftInverse.injective
+-/
 
-theorem right_inverse_of_injective_of_left_inverse {f : α → β} {g : β → α} (injf : Injective f)
-    (lfg : LeftInverse f g) : RightInverse f g := fun x =>
+#print Function.rightInverse_of_injective_of_leftInverse /-
+theorem rightInverse_of_injective_of_leftInverse {f : α → β} {g : β → α} (injf : Injective f) (lfg : LeftInverse f g) :
+    RightInverse f g := fun x =>
   have h : f (g (f x)) = f x := lfg (f x)
   injf h
-#align function.right_inverse_of_injective_of_left_inverse Function.right_inverse_of_injective_of_left_inverse
+#align function.right_inverse_of_injective_of_left_inverse Function.rightInverse_of_injective_of_leftInverse
+-/
 
 #print Function.RightInverse.surjective /-
 theorem RightInverse.surjective {f : α → β} {g : β → α} (h : RightInverse g f) : Surjective f := fun y => ⟨g y, h y⟩
 #align function.right_inverse.surjective Function.RightInverse.surjective
 -/
 
+#print Function.HasRightInverse.surjective /-
 theorem HasRightInverse.surjective {f : α → β} : HasRightInverse f → Surjective f
   | ⟨finv, inv⟩ => inv.Surjective
 #align function.has_right_inverse.surjective Function.HasRightInverse.surjective
+-/
 
-theorem left_inverse_of_surjective_of_right_inverse {f : α → β} {g : β → α} (surjf : Surjective f)
+#print Function.leftInverse_of_surjective_of_rightInverse /-
+theorem leftInverse_of_surjective_of_rightInverse {f : α → β} {g : β → α} (surjf : Surjective f)
     (rfg : RightInverse f g) : LeftInverse f g := fun y =>
   Exists.elim (surjf y) fun x hx =>
     calc
@@ -238,7 +252,8 @@ theorem left_inverse_of_surjective_of_right_inverse {f : α → β} {g : β → 
       _ = f x := Eq.symm (rfg x) ▸ rfl
       _ = y := hx
       
-#align function.left_inverse_of_surjective_of_right_inverse Function.left_inverse_of_surjective_of_right_inverse
+#align function.left_inverse_of_surjective_of_right_inverse Function.leftInverse_of_surjective_of_rightInverse
+-/
 
 #print Function.injective_id /-
 theorem injective_id : Injective (@id α) := fun a₁ a₂ h => h

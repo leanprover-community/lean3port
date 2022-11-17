@@ -56,7 +56,7 @@ unsafe def use_cmd : hole_command where
     let [p] ← return ps |
       fail "Use command failed, the hole must contain a single term"
     let t ← target
-    let e ← to_expr (pquote.1 (%%ₓp : %%ₓt))
+    let e ← to_expr ``(($(p) : $(t)))
     let ty ← infer_type e
     is_def_eq t ty
     let fmt ← tactic_format_expr e

@@ -75,7 +75,7 @@ def iterate {e α} (a : α) (f : α → IoCore e (Option α)) : IoCore e α :=
 #align io.iterate Io.iterate
 
 def forever {e} (a : IoCore e Unit) : IoCore e Unit :=
-  (iterate ()) fun _ => a >> return (some ())
+  iterate () $ fun _ => a >> return (some ())
 #align io.forever Io.forever
 
 -- TODO(Leo): delete after we merge #1881
@@ -112,7 +112,7 @@ def cmdlineArgs : Io (List String) :=
 #align io.cmdline_args Io.cmdlineArgs
 
 def print {α} [ToString α] (s : α) : Io Unit :=
-  put_str ∘ toString <| s
+  put_str ∘ toString $ s
 #align io.print Io.print
 
 def printLn {α} [ToString α] (s : α) : Io Unit :=
@@ -221,7 +221,7 @@ def write : Handle → CharBuffer → Io Unit :=
 
 def getChar (h : Handle) : Io Char := do
   let b ← read h 1
-  if h : b = 1 then return <| b ⟨0, h ▸ Nat.zero_lt_one⟩ else Io.fail "get_char failed"
+  if h : b = 1 then return $ b ⟨0, h ▸ Nat.zero_lt_one⟩ else Io.fail "get_char failed"
 #align io.fs.get_char Io.Fs.getChar
 
 def getLine : Handle → Io CharBuffer :=
@@ -241,12 +241,12 @@ def putStrLn (h : Handle) (s : String) : Io Unit :=
 #align io.fs.put_str_ln Io.Fs.putStrLn
 
 def readToEnd (h : Handle) : Io CharBuffer :=
-  (iterate mkBuffer) fun r => do
+  iterate mkBuffer $ fun r => do
     let done ← isEof h
     if done then return none
       else do
         let c ← read h 1024
-        return <| some (r ++ c)
+        return $ some (r ++ c)
 #align io.fs.read_to_end Io.Fs.readToEnd
 
 def readFile (s : String) (bin := false) : Io CharBuffer := do
@@ -346,7 +346,7 @@ def Io.cmd (args : Io.Process.SpawnArgs) : Io String := do
   let buf ← Io.Fs.readToEnd child.stdout
   Io.Fs.close child
   let exitv ← Io.Proc.wait child
-  when (exitv ≠ 0) <| Io.fail <| "process exited with status " ++ repr exitv
+  when (exitv ≠ 0) $ Io.fail $ "process exited with status " ++ repr exitv
   return buf
 #align io.cmd Io.cmd
 

@@ -63,9 +63,9 @@ unsafe def mk_alt_sizeof : expr → expr
 unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do
   let tgt ← target
   let rel ← mk_instance tgt
-  exact <|
+  exact $
       match e, rel with
-      | expr.local_const _ (Name.mk_string "_mutual" _) _ _, expr.app (e@(quote.1 (@hasWellFoundedOfHasSizeof _))) sz =>
+      | expr.local_const _ (Name.mk_string "_mutual" _) _ _, expr.app (e@q(@hasWellFoundedOfHasSizeof _)) sz =>
         e (mk_alt_sizeof sz)
       | _, _ => rel
 #align well_founded_tactics.default_rel_tac well_founded_tactics.default_rel_tac
@@ -84,12 +84,12 @@ unsafe def unfold_wf_rel : tactic Unit :=
 #align well_founded_tactics.unfold_wf_rel well_founded_tactics.unfold_wf_rel
 
 unsafe def is_psigma_mk : expr → tactic (expr × expr)
-  | quote.1 (PSigma.mk (%%ₓa) (%%ₓb)) => return (a, b)
+  | q(PSigma.mk $(a) $(b)) => return (a, b)
   | _ => failed
 #align well_founded_tactics.is_psigma_mk well_founded_tactics.is_psigma_mk
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -99,7 +99,7 @@ unsafe def process_lex : tactic Unit → tactic Unit
         do
         let (a₁, a₂) ← is_psigma_mk a
         let (b₁, b₂) ← is_psigma_mk b
-        (is_def_eq a₁ b₁ >> sorry) >> process_lex tac <|> sorry >> tac
+        is_def_eq a₁ b₁ >> sorry >> process_lex tac <|> sorry >> tac
       else tac
 #align well_founded_tactics.process_lex well_founded_tactics.process_lex
 
@@ -115,7 +115,7 @@ private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
 #align well_founded_tactics.add_simps well_founded_tactics.add_simps
 
 private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
-  (e.mfold simp_lemmas.mk) fun c d s =>
+  e.mfold simp_lemmas.mk $ fun c d s =>
     if c.is_constant then
       match c.const_name with
       | Name.mk_string "sizeof" p => do
@@ -125,7 +125,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
     else return s
 #align well_founded_tactics.collect_sizeof_lemmas well_founded_tactics.collect_sizeof_lemmas
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` SizeOf.sizeOf, `` SizeOf.sizeOf] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -142,26 +142,32 @@ section SimpleDecTac
 
 open Tactic Expr
 
-private unsafe def collect_add_args : expr → List expr
-  | quote.1 ((%%ₓa) + %%ₓb) => collect_add_args a ++ collect_add_args b
-  | e => [e]
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+private unsafe
+  def
+    collect_add_args
+    : expr → List expr
+    | q( $ ( a ) + $ ( b ) ) => collect_add_args a ++ collect_add_args b | e => [ e ]
 #align well_founded_tactics.collect_add_args well_founded_tactics.collect_add_args
 
-private unsafe def mk_nat_add : List expr → tactic expr
-  | [] => to_expr (pquote.1 0)
-  | [a] => return a
-  | a :: as => do
-    let rs ← mk_nat_add as
-    to_expr (pquote.1 ((%%ₓa) + %%ₓrs))
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+private unsafe
+  def
+    mk_nat_add
+    : List expr → tactic expr
+    | [ ] => to_expr ` `( 0 )
+      | [ a ] => return a
+      | a :: as => do let rs ← mk_nat_add as to_expr ` `( $ ( a ) + $ ( rs ) )
 #align well_founded_tactics.mk_nat_add well_founded_tactics.mk_nat_add
 
-private unsafe def mk_nat_add_add : List expr → List expr → tactic expr
-  | [], b => mk_nat_add b
-  | a, [] => mk_nat_add a
-  | a, b => do
-    let t ← mk_nat_add a
-    let s ← mk_nat_add b
-    to_expr (pquote.1 ((%%ₓt) + %%ₓs))
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+private unsafe
+  def
+    mk_nat_add_add
+    : List expr → List expr → tactic expr
+    | [ ] , b => mk_nat_add b
+      | a , [ ] => mk_nat_add a
+      | a , b => do let t ← mk_nat_add a let s ← mk_nat_add b to_expr ` `( $ ( t ) + $ ( s ) )
 #align well_founded_tactics.mk_nat_add_add well_founded_tactics.mk_nat_add_add
 
 private unsafe def get_add_fn (e : expr) : expr :=
@@ -169,8 +175,7 @@ private unsafe def get_add_fn (e : expr) : expr :=
 #align well_founded_tactics.get_add_fn well_founded_tactics.get_add_fn
 
 private unsafe def prove_eq_by_perm (a b : expr) : tactic expr :=
-  is_def_eq a b >> to_expr (pquote.1 (Eq.refl (%%ₓa))) <|>
-    perm_ac (get_add_fn a) (quote.1 Nat.add_assoc) (quote.1 Nat.add_comm) a b
+  is_def_eq a b >> to_expr ``(Eq.refl $(a)) <|> perm_ac (get_add_fn a) q(Nat.add_assoc) q(Nat.add_comm) a b
 #align well_founded_tactics.prove_eq_by_perm well_founded_tactics.prove_eq_by_perm
 
 private unsafe def num_small_lt (a b : expr) : Bool :=
@@ -186,38 +191,47 @@ private def tagged_proof.wf : Unit :=
   ()
 #align well_founded_tactics.tagged_proof.wf well_founded_tactics.tagged_proof.wf
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-unsafe def cancel_nat_add_lt : tactic Unit := do
-  let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
-  let ty ← infer_type lhs >>= whnf
-  guard (ty = quote.1 Nat)
-  let lhs_args := collect_add_args lhs
-  let rhs_args := collect_add_args rhs
-  let common := lhs_args.bagInter rhs_args
-  if common = [] then return ()
-    else do
-      let lhs_rest := lhs_args common
-      let rhs_rest := rhs_args common
-      let new_lhs ← mk_nat_add_add common (sort_args lhs_rest)
-      let new_rhs ← mk_nat_add_add common (sort_args rhs_rest)
-      let lhs_pr ← prove_eq_by_perm lhs new_lhs
-      let rhs_pr ← prove_eq_by_perm rhs new_rhs
-      let target_pr ← to_expr (pquote.1 (congr (congr_arg (· < ·) (%%ₓlhs_pr)) (%%ₓrhs_pr)))
-      let new_target ← to_expr (pquote.1 ((%%ₓnew_lhs) < %%ₓnew_rhs))
-      replace_target new_target target_pr `` id_tag.wf
-      sorry <|> sorry
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+unsafe
+  def
+    cancel_nat_add_lt
+    : tactic Unit
+    :=
+      do
+        let q( $ ( lhs ) < $ ( rhs ) ) ← target
+          let ty ← infer_type lhs >>= whnf
+          guard ( ty = q( Nat ) )
+          let lhs_args := collect_add_args lhs
+          let rhs_args := collect_add_args rhs
+          let common := lhs_args . bagInter rhs_args
+          if
+            common = [ ]
+            then
+            return ( )
+            else
+            do
+              let lhs_rest := lhs_args common
+                let rhs_rest := rhs_args common
+                let new_lhs ← mk_nat_add_add common ( sort_args lhs_rest )
+                let new_rhs ← mk_nat_add_add common ( sort_args rhs_rest )
+                let lhs_pr ← prove_eq_by_perm lhs new_lhs
+                let rhs_pr ← prove_eq_by_perm rhs new_rhs
+                let target_pr ← to_expr ` `( congr ( congr_arg ( · < · ) $ ( lhs_pr ) ) $ ( rhs_pr ) )
+                let new_target ← to_expr ` `( $ ( new_lhs ) < $ ( new_rhs ) )
+                replace_target new_target target_pr ` ` id_tag.wf
+                sorry <|> sorry
 #align well_founded_tactics.cancel_nat_add_lt well_founded_tactics.cancel_nat_add_lt
 
-unsafe def check_target_is_value_lt : tactic Unit := do
-  let quote.1 ((%%ₓlhs) < %%ₓrhs) ← target
-  guard lhs
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+unsafe def check_target_is_value_lt : tactic Unit := do let q( $ ( lhs ) < $ ( rhs ) ) ← target guard lhs
 #align well_founded_tactics.check_target_is_value_lt well_founded_tactics.check_target_is_value_lt
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>
@@ -232,7 +246,7 @@ unsafe def trivial_nat_lt : tactic Unit :=
 end SimpleDecTac
 
 unsafe def default_dec_tac : tactic Unit :=
-  abstract <| do
+  abstract $ do
     clear_internals
     unfold_wf_rel
     -- The next line was adapted from code in mathlib by Scott Morrison.

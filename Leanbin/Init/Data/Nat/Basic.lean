@@ -6,6 +6,9 @@ Authors: Floris van Doorn, Leonardo de Moura
 prelude
 import Leanbin.Init.Logic
 
+-- mathport name: exprℕ
+notation "ℕ" => Nat
+
 namespace Nat
 
 #print Nat.le /-

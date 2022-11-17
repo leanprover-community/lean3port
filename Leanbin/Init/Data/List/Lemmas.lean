@@ -206,7 +206,7 @@ theorem mem_cons_iff (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈
 #align list.mem_cons_iff List.mem_cons_iff
 
 @[rsimp]
-theorem mem_cons_eq (a y : α) (l : List α) : (a ∈ y :: l) = (a = y ∨ a ∈ l) :=
+theorem mem_cons_eq (a y : α) (l : List α) : a ∈ y :: l = (a = y ∨ a ∈ l) :=
   rfl
 #align list.mem_cons_eq List.mem_cons_eq
 
@@ -228,7 +228,7 @@ theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈
 
 #print List.mem_append_eq /-
 @[rsimp]
-theorem mem_append_eq (a : α) (s t : List α) : (a ∈ s ++ t) = (a ∈ s ∨ a ∈ t) :=
+theorem mem_append_eq (a : α) (s t : List α) : a ∈ s ++ t = (a ∈ s ∨ a ∈ t) :=
   propext mem_append
 #align list.mem_append_eq List.mem_append_eq
 -/

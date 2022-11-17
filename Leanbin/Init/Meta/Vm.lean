@@ -246,8 +246,8 @@ unsafe axiom get_attribute : Name → vm (List Name)
 #align vm.get_attribute vm.get_attribute
 
 unsafe def trace {α : Type} [has_to_format α] (a : α) : vm Unit := do
-  let fmt ← return <| to_fmt a
-  return <| _root_.trace_fmt fmt fun u => ()
+  let fmt ← return $ to_fmt a
+  return $ _root_.trace_fmt fmt fun u => ()
 #align vm.trace vm.trace
 
 end Vm

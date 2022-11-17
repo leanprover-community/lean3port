@@ -50,7 +50,7 @@ unsafe def loc.get_locals : Loc → tactic (List expr)
         | none => pure ls
         | some n => do
           let l ← tactic.get_local n
-          pure <| l :: ls)
+          pure $ l :: ls)
       []
 #align interactive.loc.get_locals interactive.loc.get_locals
 
@@ -63,7 +63,7 @@ unsafe def loc.apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (
 unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
   let hs ← l.get_locals
   let hts := hs.map hyp_tac
-  tactic.try_lst <| if l then hts ++ [goal_tac] else hts
+  tactic.try_lst $ if l then hts ++ [goal_tac] else hts
 #align interactive.loc.try_apply interactive.loc.try_apply
 
 /-- Use `desc` as the interactive description of `p`. -/
@@ -86,11 +86,11 @@ unsafe def brackets (l r : String) (p : parser α) :=
 #align interactive.types.brackets interactive.types.brackets
 
 unsafe def list_of (p : parser α) :=
-  brackets "[" "]" <| sep_by (skip_info (tk ",")) p
+  brackets "[" "]" $ sep_by (skip_info (tk ",")) p
 #align interactive.types.list_of interactive.types.list_of
 
-/- ./././Mathport/Syntax/Translate/Command.lean:650:29: warning: unsupported: precedence command -/
-/- ./././Mathport/Syntax/Translate/Command.lean:650:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:654:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:654:29: warning: unsupported: precedence command -/
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -125,7 +125,7 @@ unsafe def without_ident_list :=
 unsafe def location :=
   tk "at" *>
       (tk "*" *> return Loc.wildcard <|>
-        loc.ns <$> ((with_desc "⊢" <| tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
+        loc.ns <$> ((with_desc "⊢" $ tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
     return (Loc.ns [none])
 #align interactive.types.location interactive.types.location
 
@@ -147,7 +147,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
-/- ./././Mathport/Syntax/Translate/Command.lean:650:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:654:29: warning: unsupported: precedence command -/
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format
@@ -169,75 +169,73 @@ private unsafe def concat (f₁ f₂ : List format) :=
   if f₁.Empty then f₂ else if f₂.Empty then f₁ else f₁ ++ [" "] ++ f₂
 #align interactive.concat interactive.concat
 
-private unsafe def parser_desc_aux : expr → tactic (List format)
-  | quote.1 ident => return ["id"]
-  | quote.1 ident_ => return ["id"]
-  | quote.1 (parser.pexpr (%%ₓv)) => return ["expr"]
-  | quote.1 small_nat => return ["n"]
-  | quote.1 (tk (%%ₓc)) => List.ret <$> to_fmt <$> eval_expr String c
-  | quote.1 cur_pos => return []
-  | quote.1 (pure _) => return []
-  | quote.1 (_ <$> %%ₓp) => parser_desc_aux p
-  | quote.1 (skip_info (%%ₓp)) => parser_desc_aux p
-  | quote.1 (_ <$ %%ₓp) => parser_desc_aux p
-  | quote.1 (set_goal_info_pos (%%ₓp)) => parser_desc_aux p
-  | quote.1 (with_desc (%%ₓdesc) (%%ₓp)) => List.ret <$> eval_expr format desc
-  | quote.1 ((%%ₓp₁) <*> %%ₓp₂) => do
-    let f₁ ← parser_desc_aux p₁
-    let f₂ ← parser_desc_aux p₂
-    return <| concat f₁ f₂
-  | quote.1 ((%%ₓp₁) <* %%ₓp₂) => do
-    let f₁ ← parser_desc_aux p₁
-    let f₂ ← parser_desc_aux p₂
-    return <| concat f₁ f₂
-  | quote.1 ((%%ₓp₁) *> %%ₓp₂) => do
-    let f₁ ← parser_desc_aux p₁
-    let f₂ ← parser_desc_aux p₂
-    return <| concat f₁ f₂
-  | quote.1 ((%%ₓp₁) >> %%ₓp₂) => do
-    let f₁ ← parser_desc_aux p₁
-    let f₂ ← parser_desc_aux p₂
-    return <| concat f₁ f₂
-  | quote.1 (many (%%ₓp)) => do
-    let f ← parser_desc_aux p
-    return [maybe_paren f ++ "*"]
-  | quote.1 (optional (%%ₓp)) => do
-    let f ← parser_desc_aux p
-    return [maybe_paren f ++ "?"]
-  | quote.1 (sep_by (%%ₓsep) (%%ₓp)) => do
-    let f₁ ← parser_desc_aux sep
-    let f₂ ← parser_desc_aux p
-    return [maybe_paren f₂ ++ join f₁, " ..."]
-  | quote.1 ((%%ₓp₁) <|> %%ₓp₂) => do
-    let f₁ ← parser_desc_aux p₁
-    let f₂ ← parser_desc_aux p₂
-    return <|
-        if f₁ then [maybe_paren f₂ ++ "?"]
-        else if f₂ then [maybe_paren f₁ ++ "?"] else [paren <| join <| f₁ ++ [to_fmt " | "] ++ f₂]
-  | quote.1 (brackets (%%ₓl) (%%ₓr) (%%ₓp)) => do
-    let f ← parser_desc_aux p
-    let l ← eval_expr String l
-    let r ← eval_expr String r
-    -- much better than the naive [l, " ", f, " ", r]
-        return
-        [to_fmt l ++ join f ++ to_fmt r]
-  | e => do
-    let e' ←
-      (do
-            let e' ← unfold e
-            guard <| e' ≠ e
-            return e') <|>
-          do
-          let f ← pp e
-          fail <| to_fmt "don't know how to pretty print " ++ f
-    parser_desc_aux e'
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+private unsafe
+  def
+    parser_desc_aux
+    : expr → tactic ( List format )
+    | q( ident ) => return [ "id" ]
+      | q( ident_ ) => return [ "id" ]
+      | q( parser.pexpr $ ( v ) ) => return [ "expr" ]
+      | q( small_nat ) => return [ "n" ]
+      | q( tk $ ( c ) ) => List.ret <$> to_fmt <$> eval_expr String c
+      | q( cur_pos ) => return [ ]
+      | q( pure _ ) => return [ ]
+      | q( _ <$> $ ( p ) ) => parser_desc_aux p
+      | q( skip_info $ ( p ) ) => parser_desc_aux p
+      | q( _ <$ $ ( p ) ) => parser_desc_aux p
+      | q( set_goal_info_pos $ ( p ) ) => parser_desc_aux p
+      | q( with_desc $ ( desc ) $ ( p ) ) => List.ret <$> eval_expr format desc
+      | q( $ ( p₁ ) <*> $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return $ concat f₁ f₂
+      | q( $ ( p₁ ) <* $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return $ concat f₁ f₂
+      | q( $ ( p₁ ) *> $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return $ concat f₁ f₂
+      | q( $ ( p₁ ) >> $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return $ concat f₁ f₂
+      | q( many $ ( p ) ) => do let f ← parser_desc_aux p return [ maybe_paren f ++ "*" ]
+      | q( optional $ ( p ) ) => do let f ← parser_desc_aux p return [ maybe_paren f ++ "?" ]
+      |
+        q( sep_by $ ( sep ) $ ( p ) )
+        =>
+        do let f₁ ← parser_desc_aux sep let f₂ ← parser_desc_aux p return [ maybe_paren f₂ ++ join f₁ , " ..." ]
+      |
+        q( $ ( p₁ ) <|> $ ( p₂ ) )
+        =>
+        do
+          let f₁ ← parser_desc_aux p₁
+            let f₂ ← parser_desc_aux p₂
+            return
+              $
+              if
+                f₁
+                then
+                [ maybe_paren f₂ ++ "?" ]
+                else
+                if f₂ then [ maybe_paren f₁ ++ "?" ] else [ paren $ join $ f₁ ++ [ to_fmt " | " ] ++ f₂ ]
+      |
+        q( brackets $ ( l ) $ ( r ) $ ( p ) )
+        =>
+        do
+          let f ← parser_desc_aux p
+            let l ← eval_expr String l
+            let r ← eval_expr String r
+            return [ to_fmt l ++ join f ++ to_fmt r ]
+      |
+        e
+        =>
+        do
+          let
+              e'
+                ←
+                ( do let e' ← unfold e guard $ e' ≠ e return e' )
+                  <|>
+                  do let f ← pp e fail $ to_fmt "don't know how to pretty print " ++ f
+            parser_desc_aux e'
 #align interactive.parser_desc_aux interactive.parser_desc_aux
 
 unsafe def param_desc : expr → tactic format
-  | quote.1 (parse (%%ₓp)) => join <$> parser_desc_aux p
-  | quote.1 (optParam (%%ₓt) _) => (· ++ "?") <$> pp t
+  | q(parse $(p)) => join <$> parser_desc_aux p
+  | q(optParam $(t) _) => (· ++ "?") <$> pp t
   | e =>
-    if is_constant e ∧ (const_name e).components.ilast = `itactic then return <| to_fmt "{ tactic }" else paren <$> pp e
+    if is_constant e ∧ (const_name e).components.ilast = `itactic then return $ to_fmt "{ tactic }" else paren <$> pp e
 #align interactive.param_desc interactive.param_desc
 
 private unsafe axiom parse_binders_core (rbp : ℕ) : parser (List pexpr)
@@ -303,43 +301,49 @@ open InteractionMonad
 open Interactive
 
 private unsafe def parse_format : String → List Char → parser pexpr
-  | Acc, [] => pure (pquote.1 (to_fmt (%%ₓreflect Acc)))
+  | Acc, [] => pure ``(to_fmt $(reflect Acc))
   | Acc, '\n' :: s => do
     let f ← parse_format "" s
-    pure (pquote.1 (to_fmt (%%ₓreflect Acc) ++ format.line ++ %%ₓf))
+    pure ``(to_fmt $(reflect Acc) ++ format.line ++ $(f))
   | Acc, '{' :: '{' :: s => parse_format (Acc ++ "{") s
   | Acc, '{' :: s => do
     let (e, s) ← with_input (lean.parser.pexpr 0) s.asString
     let '}' :: s ← return s.toList |
       fail "'}' expected"
     let f ← parse_format "" s
-    pure (pquote.1 (to_fmt (%%ₓreflect Acc) ++ to_fmt (%%ₓe) ++ %%ₓf))
+    pure ``(to_fmt $(reflect Acc) ++ to_fmt $(e) ++ $(f))
   | Acc, '}' :: '}' :: s => parse_format (Acc ++ "}") s
   | Acc, '}' :: s => fail "'}}' expected"
   | Acc, c :: s => parse_format (Acc.str c) s
 #align parse_format parse_format
 
 @[user_notation]
-unsafe def format_macro (_ : parse <| tk "format!") (s : String) : parser pexpr :=
+unsafe def format_macro (_ : parse $ tk "format!") (s : String) : parser pexpr :=
   parse_format "" s.toList
 #align format_macro format_macro
 
-private unsafe def parse_sformat : String → List Char → parser pexpr
-  | Acc, [] => pure <| pexpr.of_expr (reflect Acc)
-  | Acc, '{' :: '{' :: s => parse_sformat (Acc ++ "{") s
-  | Acc, '{' :: s => do
-    let (e, s) ← with_input (lean.parser.pexpr 0) s.asString
-    let '}' :: s ← return s.toList |
-      fail "'}' expected"
-    let f ← parse_sformat "" s
-    pure (pquote.1 ((%%ₓreflect Acc) ++ toString (%%ₓe) ++ %%ₓf))
-  | Acc, '}' :: '}' :: s => parse_sformat (Acc ++ "}") s
-  | Acc, '}' :: s => fail "'}}' expected"
-  | Acc, c :: s => parse_sformat (Acc.str c) s
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+private unsafe
+  def
+    parse_sformat
+    : String → List Char → parser pexpr
+    | Acc , [ ] => pure $ pexpr.of_expr ( reflect Acc )
+      | Acc , '{' :: '{' :: s => parse_sformat ( Acc ++ "{" ) s
+      |
+        Acc , '{' :: s
+        =>
+        do
+          let ( e , s ) ← with_input ( lean.parser.pexpr 0 ) s . asString
+            let '}' :: s ← return s . toList | fail "'}' expected"
+            let f ← parse_sformat "" s
+            pure ` `( $ ( reflect Acc ) ++ toString $ ( e ) ++ $ ( f ) )
+      | Acc , '}' :: '}' :: s => parse_sformat ( Acc ++ "}" ) s
+      | Acc , '}' :: s => fail "'}}' expected"
+      | Acc , c :: s => parse_sformat ( Acc . str c ) s
 #align parse_sformat parse_sformat
 
 @[user_notation]
-unsafe def sformat_macro (_ : parse <| tk "sformat!") (s : String) : parser pexpr :=
+unsafe def sformat_macro (_ : parse $ tk "sformat!") (s : String) : parser pexpr :=
   parse_sformat "" s.toList
 #align sformat_macro sformat_macro
 

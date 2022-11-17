@@ -44,7 +44,6 @@ def stdRange :=
 
 instance : Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
 
-#print stdNext /-
 def stdNext : StdGen → Nat × StdGen
   | ⟨s1, s2⟩ =>
     let k : Int := s1 / 53668
@@ -56,10 +55,8 @@ def stdNext : StdGen → Nat × StdGen
     let z : Int := s1'' - s2''
     let z' : Int := if z < 1 then z + 2147483562 else z % 2147483562
     (z'.toNat, ⟨s1''.toNat, s2''.toNat⟩)
-#align std_next stdNext
--/
+#align std_next stdNextₓ
 
-#print stdSplit /-
 def stdSplit : StdGen → StdGen × StdGen
   | g@⟨s1, s2⟩ =>
     let new_s1 := if s1 = 2147483562 then 1 else s1 + 1
@@ -68,8 +65,7 @@ def stdSplit : StdGen → StdGen × StdGen
     let left_g := StdGen.mk new_s1 new_g.2
     let right_g := StdGen.mk new_g.1 new_s2
     (left_g, right_g)
-#align std_split stdSplit
--/
+#align std_split stdSplitₓ
 
 instance : RandomGen StdGen where
   range _ := stdRange

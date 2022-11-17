@@ -31,11 +31,11 @@ unsafe structure user_attribute_cache_cfg (cache_ty : Type) where
 
 /-- Close the current goal by filling it with the trivial `user_attribute_cache_cfg unit`. -/
 unsafe def user_attribute.dflt_cache_cfg : tactic Unit :=
-  tactic.exact (quote.1 (⟨fun _ => pure (), []⟩ : user_attribute_cache_cfg Unit))
+  tactic.exact q((⟨fun _ => pure (), []⟩ : user_attribute_cache_cfg Unit))
 #align user_attribute.dflt_cache_cfg user_attribute.dflt_cache_cfg
 
 unsafe def user_attribute.dflt_parser : tactic Unit :=
-  tactic.exact (quote.1 (pure () : lean.parser Unit))
+  tactic.exact q((pure () : lean.parser Unit))
 #align user_attribute.dflt_parser user_attribute.dflt_parser
 
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic user_attribute.dflt_cache_cfg -/
@@ -65,8 +65,8 @@ and stored and can be retrieved with `user_attribute.get_param`.
 unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Unit) where
   Name : Name
   descr : String
-  after_set : Option (∀ (decl : Name) (prio : Nat) (persistent : Bool), Tactic) := none
-  before_unset : Option (∀ (decl : Name) (persistent : Bool), Tactic) := none
+  after_set : Option (∀ (decl : Name) (prio : Nat) (persistent : Bool), command) := none
+  before_unset : Option (∀ (decl : Name) (persistent : Bool), command) := none
   cache_cfg : user_attribute_cache_cfg cache_ty := by
     run_tac
       user_attribute.dflt_cache_cfg
@@ -78,7 +78,7 @@ unsafe structure user_attribute (cache_ty : Type := Unit) (param_ty : Type := Un
 
 /-- Registers a new user-defined attribute. The argument must be the name of a definition of type
    `user_attribute α β`. Once registered, you may tag declarations with this attribute. -/
-unsafe def attribute.register (decl : Name) : Tactic :=
+unsafe def attribute.register (decl : Name) : command :=
   tactic.set_basic_attribute `` user_attribute decl true
 #align attribute.register attribute.register
 
@@ -118,18 +118,17 @@ unsafe def register_attribute :=
 unsafe def get_attribute_cache_dyn {α : Type} [reflected _ α] (attr_decl_name : Name) : tactic α :=
   let attr : pexpr := expr.const attr_decl_name []
   do
-  let e ← to_expr (pquote.1 (user_attribute.get_cache (%%ₓattr)))
+  let e ← to_expr ``(user_attribute.get_cache $(attr))
   let t ← eval_expr (tactic α) e
   t
 #align get_attribute_cache_dyn get_attribute_cache_dyn
 
-unsafe def mk_name_set_attr (attr_name : Name) : Tactic := do
-  let t := quote.1 (user_attribute name_set)
+unsafe def mk_name_set_attr (attr_name : Name) : command := do
+  let t := q(user_attribute name_set)
   let v :=
-    quote.1
-      ({ Name := attr_name, descr := "name_set attribute",
-        cache_cfg := { mk_cache := fun ns => return (name_set.of_list ns), dependencies := [] } } :
-        user_attribute name_set)
+    q(({ Name := attr_name, descr := "name_set attribute",
+          cache_cfg := { mk_cache := fun ns => return (name_set.of_list ns), dependencies := [] } } :
+        user_attribute name_set))
   add_meta_definition attr_name [] t v
   register_attribute attr_name
 #align mk_name_set_attr mk_name_set_attr

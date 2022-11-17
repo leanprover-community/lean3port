@@ -49,7 +49,7 @@ def isNone {α : Type u} : Option α → Bool
 #print Option.get /-
 def get {α : Type u} : ∀ {o : Option α}, isSome o → α
   | some x, h => x
-  | none, h => False.ndrec _ <| Bool.ff_ne_tt h
+  | none, h => False.ndrec _ $ Bool.ff_ne_tt h
 #align option.get Option.get
 -/
 
@@ -62,6 +62,12 @@ def lhoare {α : Type u} : α → Option α → α
   | a, none => a
   | _, some b => b
 #align option.lhoare Option.lhoare
+
+-- mathport name: «expr |> »
+infixr:1 "|>" => rhoare
+
+-- mathport name: «expr <| »
+infixr:1 "<|" => lhoare
 
 #print Option.bind /-
 @[inline]

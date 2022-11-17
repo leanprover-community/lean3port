@@ -52,7 +52,7 @@ unsafe def show_help : vm Unit := do
 unsafe def add_breakpoint (s : State) (args : List String) : vm State :=
   match args with
   | [arg] => do
-    let fn ← return <| toQualifiedName arg
+    let fn ← return $ toQualifiedName arg
     let ok ← is_valid_fn_prefix fn
     if ok then return { s with fnBps := fn :: List.filter' (fun fn' => fn ≠ fn') s }
       else vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >> return s
@@ -62,7 +62,7 @@ unsafe def add_breakpoint (s : State) (args : List String) : vm State :=
 unsafe def remove_breakpoint (s : State) (args : List String) : vm State :=
   match args with
   | [arg] => do
-    let fn ← return <| toQualifiedName arg
+    let fn ← return $ toQualifiedName arg
     return { s with fnBps := List.filter' (fun fn' => fn ≠ fn') s }
   | _ => vm.put_str "invalid 'rbreak <fn>' command, incorrect number of arguments\n" >> return s
 #align debugger.remove_breakpoint debugger.remove_breakpoint
@@ -82,22 +82,22 @@ unsafe def up_cmd (frame : Nat) : vm Nat :=
 
 unsafe def down_cmd (frame : Nat) : vm Nat := do
   let sz ← vm.call_stack_size
-  if frame ≥ sz - 1 then return frame else show_frame (frame + 1) >> return (frame + 1)
+  if frame >= sz - 1 then return frame else show_frame (frame + 1) >> return (frame + 1)
 #align debugger.down_cmd debugger.down_cmd
 
 unsafe def pidx_cmd : Nat → List String → vm Unit
   | frame, [arg] => do
-    let idx ← return <| arg.toNat
+    let idx ← return $ arg.toNat
     let sz ← vm.stack_size
     let (bp, ep) ← vm.call_stack_var_range frame
-    if bp + idx ≥ ep then vm.put_str "invalid 'pidx <idx>' command, index out of bounds\n"
+    if bp + idx >= ep then vm.put_str "invalid 'pidx <idx>' command, index out of bounds\n"
       else do
         let v ← vm.pp_stack_obj (bp + idx)
         let (n, t) ← vm.stack_obj_info (bp + idx)
         let opts ← vm.get_options
         vm.put_str n
         vm.put_str " := "
-        vm.put_str <| v opts
+        vm.put_str $ v opts
         vm.put_str "\n"
   | _, _ => vm.put_str "invalid 'pidx <idx>' command, incorrect number of arguments\n"
 #align debugger.pidx_cmd debugger.pidx_cmd
@@ -112,7 +112,7 @@ unsafe def print_var : Nat → Nat → Name → vm Unit
             let opts ← vm.get_options
             vm.put_str n
             vm.put_str " := "
-            vm.put_str <| v opts
+            vm.put_str $ v opts
             vm.put_str "\n"
           else print_var (i + 1) ep v
 #align debugger.print_var debugger.print_var
@@ -133,8 +133,8 @@ unsafe def cmd_loop_core : State → Nat → List String → vm State
       else do
         vm.put_str "% "
         let l ← vm.get_line
-        let tks ← return <| split l
-        let tks ← return <| if tks = [] then default_cmd else tks
+        let tks ← return $ split l
+        let tks ← return $ if tks = [] then default_cmd else tks
         match tks with
           | [] => cmd_loop_core s frame default_cmd
           | cmd :: args =>
@@ -232,7 +232,7 @@ unsafe def step_transition (s : State) : vm State := do
 unsafe def bp_reached (s : State) : vm Bool :=
   (do
       let fn ← vm.curr_fn
-      return <| s fun p => p fn) <|>
+      return $ s fun p => p fn) <|>
     return false
 #align debugger.bp_reached debugger.bp_reached
 
@@ -251,7 +251,7 @@ unsafe def run_transition (s : State) : vm State := do
       show_curr_fn "breakpoint"
       let fn ← vm.curr_fn
       let sz ← vm.call_stack_size
-      let new_s ← return <| { s with activeBps := (sz, fn) :: s }
+      let new_s ← return $ { s with activeBps := (sz, fn) :: s }
       cmd_loop new_s ["r"]
 #align debugger.run_transition debugger.run_transition
 

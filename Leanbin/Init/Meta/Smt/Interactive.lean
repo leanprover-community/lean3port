@@ -114,13 +114,13 @@ unsafe def assume :=
   tactic.interactive.assume
 #align smt_tactic.interactive.assume smt_tactic.interactive.assume
 
-unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
+unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse $ (tk ":=" *> texpr)?) :
     smt_tactic Unit :=
   let h := h.getOrElse `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← tactic.to_expr e
-      let v ← tactic.to_expr (pquote.1 (%%ₓp : %%ₓt))
+      let v ← tactic.to_expr ``(($(p) : $(t)))
       smt_tactic.assertv h t v
     | none, some p => do
       let p ← tactic.to_expr p
@@ -133,13 +133,13 @@ unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : pa
     return ()
 #align smt_tactic.interactive.have smt_tactic.interactive.have
 
-unsafe def let (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) :
+unsafe def let (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse $ (tk ":=" *> texpr)?) :
     smt_tactic Unit :=
   let h := h.getOrElse `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← tactic.to_expr e
-      let v ← tactic.to_expr (pquote.1 (%%ₓp : %%ₓt))
+      let v ← tactic.to_expr ``(($(p) : $(t)))
       smt_tactic.definev h t v
     | none, some p => do
       let p ← tactic.to_expr p
@@ -250,18 +250,18 @@ private unsafe def add_hinst_lemma_from_name (md : Transparency) (lhs_lemma : Bo
       (do
           let h ← hinst_lemma.mk_from_decl_core md n lhs_lemma
           tactic.save_const_type_info n ref
-          return <| hs h) <|>
+          return $ hs h) <|>
         (do
             let hs₁ ← mk_ematch_eqn_lemmas_for_core md n
             tactic.save_const_type_info n ref
-            return <| hs hs₁) <|>
+            return $ hs hs₁) <|>
           report_invalid_em_lemma n
     | _ =>
       (do
           let e ← to_expr p
           let h ← hinst_lemma.mk_core md e lhs_lemma
           try (tactic.save_type_info e ref)
-          return <| hs h) <|>
+          return $ hs h) <|>
         report_invalid_em_lemma n
 #align smt_tactic.interactive.add_hinst_lemma_from_name smt_tactic.interactive.add_hinst_lemma_from_name
 
@@ -273,7 +273,7 @@ private unsafe def add_hinst_lemma_from_pexpr (md : Transparency) (lhs_lemma : B
   | _ => do
     let new_e ← to_expr p
     let h ← hinst_lemma.mk_core md new_e lhs_lemma
-    return <| hs h
+    return $ hs h
 #align smt_tactic.interactive.add_hinst_lemma_from_pexpr smt_tactic.interactive.add_hinst_lemma_from_pexpr
 
 private unsafe def add_hinst_lemmas_from_pexprs (md : Transparency) (lhs_lemma : Bool) :
@@ -305,14 +305,14 @@ unsafe def all_goals (t : itactic) : smt_tactic Unit :=
 #align smt_tactic.interactive.all_goals smt_tactic.interactive.all_goals
 
 unsafe def induction (p : parse tactic.interactive.cases_arg_p) (rec_name : parse using_ident)
-    (ids : parse with_ident_list) (revert : parse <| (tk "generalizing" *> ident*)?) : smt_tactic Unit :=
+    (ids : parse with_ident_list) (revert : parse $ (tk "generalizing" *> ident*)?) : smt_tactic Unit :=
   slift (tactic.interactive.induction p rec_name ids revert)
 #align smt_tactic.interactive.induction smt_tactic.interactive.induction
 
 open Tactic
 
 /-- Simplify the target type of the main goal. -/
-unsafe def simp (use_iota_eqn : parse <| (tk "!")?) (no_dflt : parse only_flag) (hs : parse simp_arg_list)
+unsafe def simp (use_iota_eqn : parse $ (tk "!")?) (no_dflt : parse only_flag) (hs : parse simp_arg_list)
     (attr_names : parse with_ident_list) (cfg : simp_config_ext := {  }) : smt_tactic Unit :=
   tactic.interactive.simp use_iota_eqn none no_dflt hs attr_names (Loc.ns [none]) cfg
 #align smt_tactic.interactive.simp smt_tactic.interactive.simp
@@ -342,7 +342,7 @@ unsafe def eblast_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
   smt_tactic.iterate (smt_tactic.ematch_using hs >> smt_tactic.try smt_tactic.close)
 #align smt_tactic.interactive.eblast_using smt_tactic.interactive.eblast_using
 
-unsafe def guard_expr_eq (t : expr) (p : parse <| tk ":=" *> texpr) : smt_tactic Unit := do
+unsafe def guard_expr_eq (t : expr) (p : parse $ tk ":=" *> texpr) : smt_tactic Unit := do
   let e ← to_expr p
   guard (expr.alpha_eqv t e)
 #align smt_tactic.interactive.guard_expr_eq smt_tactic.interactive.guard_expr_eq

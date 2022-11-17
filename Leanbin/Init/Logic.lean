@@ -196,9 +196,12 @@ def Ne {α : Sort u} (a b : α) :=
 #align ne Ne
 -/
 
+-- mathport name: «expr ≠ »
+infixl:50 " ≠ " => Ne
+
 #print Ne.def /-
 @[simp]
-theorem Ne.def {α : Sort u} (a b : α) : (a ≠ b) = ¬a = b :=
+theorem Ne.def {α : Sort u} (a b : α) : a ≠ b = (¬a = b) :=
   rfl
 #align ne.def Ne.def
 -/
@@ -269,53 +272,53 @@ section
 variable {α β φ : Sort u} {a a' : α} {b b' : β} {c : φ}
 
 #print HEq.elim /-
-def HEq.elim {α : Sort u} {a : α} {p : α → Sort v} {b : α} (h₁ : HEq a b) : p a → p b :=
+def HEq.elim {α : Sort u} {a : α} {p : α → Sort v} {b : α} (h₁ : a == b) : p a → p b :=
   Eq.recOn (eq_of_heq h₁)
 #align heq.elim HEq.elim
 -/
 
 #print HEq.subst /-
-theorem HEq.subst {p : ∀ T : Sort u, T → Prop} : HEq a b → p α a → p β b :=
+theorem HEq.subst {p : ∀ T : Sort u, T → Prop} : a == b → p α a → p β b :=
   HEq.recOn
 #align heq.subst HEq.subst
 -/
 
 #print HEq.symm /-
 @[symm]
-theorem HEq.symm (h : HEq a b) : HEq b a :=
+theorem HEq.symm (h : a == b) : b == a :=
   HEq.recOn h (HEq.refl a)
 #align heq.symm HEq.symm
 -/
 
 #print heq_of_eq /-
-theorem heq_of_eq (h : a = a') : HEq a a' :=
+theorem heq_of_eq (h : a = a') : a == a' :=
   Eq.subst h (HEq.refl a)
 #align heq_of_eq heq_of_eq
 -/
 
 #print HEq.trans /-
 @[trans]
-theorem HEq.trans (h₁ : HEq a b) (h₂ : HEq b c) : HEq a c :=
+theorem HEq.trans (h₁ : a == b) (h₂ : b == c) : a == c :=
   HEq.subst h₂ h₁
 #align heq.trans HEq.trans
 -/
 
 #print heq_of_heq_of_eq /-
 @[trans]
-theorem heq_of_heq_of_eq (h₁ : HEq a b) (h₂ : b = b') : HEq a b' :=
+theorem heq_of_heq_of_eq (h₁ : a == b) (h₂ : b = b') : a == b' :=
   HEq.trans h₁ (heq_of_eq h₂)
 #align heq_of_heq_of_eq heq_of_heq_of_eq
 -/
 
 #print heq_of_eq_of_heq /-
 @[trans]
-theorem heq_of_eq_of_heq (h₁ : a = a') (h₂ : HEq a' b) : HEq a b :=
+theorem heq_of_eq_of_heq (h₁ : a = a') (h₂ : a' == b) : a == b :=
   HEq.trans (heq_of_eq h₁) h₂
 #align heq_of_eq_of_heq heq_of_eq_of_heq
 -/
 
 #print type_eq_of_heq /-
-theorem type_eq_of_heq (h : HEq a b) : α = β :=
+theorem type_eq_of_heq (h : a == b) : α = β :=
   HEq.recOn h (Eq.refl α)
 #align type_eq_of_heq type_eq_of_heq
 -/
@@ -323,21 +326,21 @@ theorem type_eq_of_heq (h : HEq a b) : α = β :=
 end
 
 #print eq_rec_heq /-
-theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOn h p : φ a') p
+theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} : ∀ {a a' : α} (h : a = a') (p : φ a), (Eq.recOn h p : φ a') == p
   | a, _, rfl, p => HEq.refl p
 #align eq_rec_heq eq_rec_heq
 -/
 
 #print heq_of_eq_rec_left /-
 theorem heq_of_eq_rec_left {α : Sort u} {φ : α → Sort v} :
-    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a = a') (h₂ : (Eq.recOn e p₁ : φ a') = p₂), HEq p₁ p₂
+    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a = a') (h₂ : (Eq.recOn e p₁ : φ a') = p₂), p₁ == p₂
   | a, _, p₁, p₂, rfl, h => Eq.recOn h (HEq.refl p₁)
 #align heq_of_eq_rec_left heq_of_eq_rec_left
 -/
 
 #print heq_of_eq_rec_right /-
 theorem heq_of_eq_rec_right {α : Sort u} {φ : α → Sort v} :
-    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a' = a) (h₂ : p₁ = Eq.recOn e p₂), HEq p₁ p₂
+    ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a' = a) (h₂ : p₁ = Eq.recOn e p₂), p₁ == p₂
   | a, _, p₁, p₂, rfl, h =>
     have : p₁ = p₂ := h
     this ▸ HEq.refl p₁
@@ -345,7 +348,7 @@ theorem heq_of_eq_rec_right {α : Sort u} {φ : α → Sort v} :
 -/
 
 #print of_heq_true /-
-theorem of_heq_true {a : Prop} (h : HEq a True) : a :=
+theorem of_heq_true {a : Prop} (h : a == True) : a :=
   of_eq_true (eq_of_heq h)
 #align of_heq_true of_heq_true
 -/
@@ -359,12 +362,19 @@ theorem eq_rec_compose :
 -/
 
 #print cast_heq /-
-theorem cast_heq : ∀ {α β : Sort u} (h : α = β) (a : α), HEq (cast h a) a
+theorem cast_heq : ∀ {α β : Sort u} (h : α = β) (a : α), cast h a == a
   | α, _, rfl, a => HEq.refl a
 #align cast_heq cast_heq
 -/
 
--- and
+-- mathport name: «expr /\ »
+infixr:35
+  " /\\ " =>-- and
+  And
+
+-- mathport name: «expr ∧ »
+infixr:35 " ∧ " => And
+
 variable {a b c d : Prop}
 
 theorem And.elim (h₁ : a ∧ b) (h₂ : a → b → c) : c :=
@@ -384,7 +394,14 @@ theorem And.symm : a ∧ b → b ∧ a :=
 #align and.symm And.symm
 -/
 
--- or
+-- mathport name: «expr \/ »
+infixr:30
+  " \\/ " =>-- or
+  Or
+
+-- mathport name: «expr ∨ »
+infixr:30 " ∨ " => Or
+
 namespace Or
 
 #print Or.elim /-
@@ -433,6 +450,12 @@ structure Iff (a b : Prop) : Prop where intro ::
 #align iff Iff
 -/
 
+-- mathport name: «expr <-> »
+infixl:20 " <-> " => Iff
+
+-- mathport name: «expr ↔ »
+infixl:20 " ↔ " => Iff
+
 theorem Iff.elim : ((a → b) → (b → a) → c) → (a ↔ b) → c :=
   Iff.ndrec
 #align iff.elim Iff.elimₓ
@@ -456,7 +479,7 @@ theorem Iff.mpr : (a ↔ b) → b → a :=
 -/
 
 #print iff_iff_implies_and_implies /-
-theorem iff_iff_implies_and_implies (a b : Prop) : (a ↔ b) ↔ (a → b) ∧ (b → a) :=
+theorem iff_iff_implies_and_implies (a b : Prop) : a ↔ b ↔ (a → b) ∧ (b → a) :=
   Iff.intro (fun h => And.intro h.mp h.mpr) fun h => Iff.intro h.left h.right
 #align iff_iff_implies_and_implies iff_iff_implies_and_implies
 -/
@@ -489,7 +512,7 @@ theorem Iff.symm (h : a ↔ b) : b ↔ a :=
 -/
 
 #print Iff.comm /-
-theorem Iff.comm : (a ↔ b) ↔ (b ↔ a) :=
+theorem Iff.comm : a ↔ b ↔ (b ↔ a) :=
   Iff.intro Iff.symm Iff.symm
 #align iff.comm Iff.comm
 -/
@@ -612,7 +635,7 @@ theorem eq_self_iff_true {α : Sort u} (a : α) : a = a ↔ True :=
 -/
 
 #print heq_self_iff_true /-
-theorem heq_self_iff_true {α : Sort u} (a : α) : HEq a a ↔ True :=
+theorem heq_self_iff_true {α : Sort u} (a : α) : a == a ↔ True :=
   iff_true_intro (HEq.refl a)
 #align heq_self_iff_true heq_self_iff_true
 -/
@@ -624,7 +647,7 @@ but is expected to have type
   forall {a : Prop}, Not (Iff a (Not a))
 Case conversion may be inaccurate. Consider using '#align iff_not_self iff_not_selfₓ'. -/
 @[simp]
-theorem iff_not_self (a : Prop) : (a ↔ ¬a) ↔ False :=
+theorem iff_not_self (a : Prop) : a ↔ ¬a ↔ False :=
   iff_false_intro fun h =>
     have h' : ¬a := fun ha => (Iff.mp h ha) ha
     h' (Iff.mpr h h')
@@ -637,20 +660,20 @@ but is expected to have type
   forall {a : Prop}, Not (Iff (Not a) a)
 Case conversion may be inaccurate. Consider using '#align not_iff_self not_iff_selfₓ'. -/
 @[simp]
-theorem not_iff_self (a : Prop) : (¬a ↔ a) ↔ False :=
+theorem not_iff_self (a : Prop) : ¬a ↔ a ↔ False :=
   iff_false_intro fun h =>
     have h' : ¬a := fun ha => (Iff.mpr h ha) ha
     h' (Iff.mp h h')
 #align not_iff_self not_iff_self
 
 #print true_iff_false /-
-theorem true_iff_false : (True ↔ False) ↔ False :=
+theorem true_iff_false : True ↔ False ↔ False :=
   iff_false_intro fun h => Iff.mp h trivial
 #align true_iff_false true_iff_false
 -/
 
 #print false_iff_true /-
-theorem false_iff_true : (False ↔ True) ↔ False :=
+theorem false_iff_true : False ↔ True ↔ False :=
   iff_false_intro fun h => Iff.mpr h trivial
 #align false_iff_true false_iff_true
 -/
@@ -938,41 +961,41 @@ theorem Or.neg_resolve_right {a b : Prop} (h : a ∨ ¬b) (hb : b) : a :=
 #print iff_true_iff /-
 -- iff simp rules
 @[simp]
-theorem iff_true_iff (a : Prop) : (a ↔ True) ↔ a :=
+theorem iff_true_iff (a : Prop) : a ↔ True ↔ a :=
   Iff.intro (fun h => Iff.mpr h trivial) iff_true_intro
 #align iff_true iff_true_iff
 -/
 
 #print true_iff_iff /-
 @[simp]
-theorem true_iff_iff (a : Prop) : (True ↔ a) ↔ a :=
+theorem true_iff_iff (a : Prop) : True ↔ a ↔ a :=
   Iff.trans Iff.comm (iff_true_iff a)
 #align true_iff true_iff_iff
 -/
 
 #print iff_false_iff /-
 @[simp]
-theorem iff_false_iff (a : Prop) : (a ↔ False) ↔ ¬a :=
+theorem iff_false_iff (a : Prop) : a ↔ False ↔ ¬a :=
   Iff.intro Iff.mp iff_false_intro
 #align iff_false iff_false_iff
 -/
 
 #print false_iff_iff /-
 @[simp]
-theorem false_iff_iff (a : Prop) : (False ↔ a) ↔ ¬a :=
+theorem false_iff_iff (a : Prop) : False ↔ a ↔ ¬a :=
   Iff.trans Iff.comm (iff_false_iff a)
 #align false_iff false_iff_iff
 -/
 
 #print iff_self_iff /-
 @[simp]
-theorem iff_self_iff (a : Prop) : (a ↔ a) ↔ True :=
+theorem iff_self_iff (a : Prop) : a ↔ a ↔ True :=
   iff_true_intro Iff.rfl
 #align iff_self iff_self_iff
 -/
 
 @[congr]
-theorem iff_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ↔ b) ↔ (c ↔ d) :=
+theorem iff_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ↔ b ↔ (c ↔ d) :=
   (iff_iff_implies_and_implies a b).trans
     ((and_congr (imp_congr h₁ h₂) (imp_congr h₂ h₁)).trans (iff_iff_implies_and_implies c d).symm)
 #align iff_congr iff_congrₓ
@@ -1015,6 +1038,12 @@ inductive Exists {α : Sort u} (p : α → Prop) : Prop
 
 attribute [intro] Exists.intro
 
+-- mathport name: «exprexists , »
+notation3"exists "(...)", "r:(scoped P => Exists P) => r
+
+-- mathport name: «expr∃ , »
+notation3"∃ "(...)", "r:(scoped P => Exists P) => r
+
 /- warning: exists.intro clashes with Exists.intro -> Exists.intro
 Case conversion may be inaccurate. Consider using '#align exists.intro Exists.introₓ'. -/
 #print Exists.intro /-
@@ -1037,6 +1066,9 @@ def ExistsUnique {α : Sort u} (p : α → Prop) :=
   ∃ x, p x ∧ ∀ y, p y → y = x
 #align exists_unique ExistsUnique
 -/
+
+-- mathport name: «expr∃! , »
+notation3"∃! "(...)", "r:(scoped P => ExistsUnique P) => r
 
 #print ExistsUnique.intro /-
 @[intro]
@@ -1224,10 +1256,10 @@ theorem not_or_iff_and_not (p q) [d₁ : Decidable p] [d₂ : Decidable q] : ¬(
   Iff.intro
     (fun h =>
       match d₁ with
-      | is_true h₁ => False.elim <| h (Or.inl h₁)
+      | is_true h₁ => False.elim $ h (Or.inl h₁)
       | is_false h₁ =>
         match d₂ with
-        | is_true h₂ => False.elim <| h (Or.inr h₂)
+        | is_true h₂ => False.elim $ h (Or.inr h₂)
         | is_false h₂ => ⟨h₁, h₂⟩)
     fun ⟨np, nq⟩ h => Or.elim h np nq
 #align decidable.not_or_iff_and_not Decidable.not_or_iff_and_not
@@ -1271,7 +1303,7 @@ instance [Decidable p] [Decidable q] : Decidable (p ∧ q) :=
 instance [Decidable p] [Decidable q] : Decidable (p ∨ q) :=
   if hp : p then isTrue (Or.inl hp) else if hq : q then isTrue (Or.inr hq) else isFalse (Or.ndrec hp hq)
 
-instance [Decidable p] : Decidable ¬p :=
+instance [Decidable p] : Decidable (¬p) :=
   if hp : p then isFalse (absurd hp) else isTrue hp
 
 instance Implies.decidable [Decidable p] [Decidable q] : Decidable (p → q) :=
@@ -1280,15 +1312,15 @@ instance Implies.decidable [Decidable p] [Decidable q] : Decidable (p → q) :=
 #align implies.decidable Implies.decidable
 
 instance [Decidable p] [Decidable q] : Decidable (p ↔ q) :=
-  if hp : p then if hq : q then isTrue ⟨fun _ => hq, fun _ => hp⟩ else is_false fun h => hq (h.1 hp)
-  else if hq : q then is_false fun h => hp (h.2 hq) else is_true <| ⟨fun h => absurd h hp, fun h => absurd h hq⟩
+  if hp : p then if hq : q then isTrue ⟨fun _ => hq, fun _ => hp⟩ else is_false $ fun h => hq (h.1 hp)
+  else if hq : q then is_false $ fun h => hp (h.2 hq) else is_true $ ⟨fun h => absurd h hp, fun h => absurd h hq⟩
 
 instance [Decidable p] [Decidable q] : Decidable (Xor' p q) :=
   if hp : p then
     if hq : q then isFalse (Or.ndrec (fun ⟨_, h⟩ => h hq : ¬(p ∧ ¬q)) (fun ⟨_, h⟩ => h hp : ¬(q ∧ ¬p)))
-    else is_true <| Or.inl ⟨hp, hq⟩
+    else is_true $ Or.inl ⟨hp, hq⟩
   else
-    if hq : q then is_true <| Or.inr ⟨hq, hp⟩
+    if hq : q then is_true $ Or.inr ⟨hq, hp⟩
     else isFalse (Or.ndrec (fun ⟨h, _⟩ => hp h : ¬(p ∧ ¬q)) (fun ⟨h, _⟩ => hq h : ¬(q ∧ ¬p)))
 
 instance existsPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] : Decidable (∃ h, P h) :=
@@ -1425,7 +1457,7 @@ protected theorem Subsingleton.elim {α : Sort u} [h : Subsingleton α] : ∀ a 
 -/
 
 #print Subsingleton.helim /-
-protected theorem Subsingleton.helim {α β : Sort u} [h : Subsingleton α] (h : α = β) : ∀ (a : α) (b : β), HEq a b :=
+protected theorem Subsingleton.helim {α β : Sort u} [h : Subsingleton α] (h : α = β) : ∀ (a : α) (b : β), a == b :=
   Eq.recOn h fun a b : α => heq_of_eq (Subsingleton.elim a b)
 #align subsingleton.helim Subsingleton.helim
 -/
@@ -1707,11 +1739,10 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align let_value_heq let_value_heqₓ'. -/
 theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : ∀ x : α, β x) :
     a₁ = a₂ →
-      HEq
-        (let x : α := a₁
-        b x)
-        (let x : α := a₂
-        b x) :=
+      (let x : α := a₁
+        b x) ==
+        let x : α := a₂
+        b x :=
   fun h => Eq.recOn h (HEq.refl (b a₁))
 #align let_value_heq let_value_heq
 

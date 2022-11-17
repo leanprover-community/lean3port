@@ -32,8 +32,8 @@ unsafe inductive sf : Type
 
 unsafe def sf.repr : sf → format
   | sf.tag_expr addr e a =>
-    format.group <|
-      format.nest 2 <|
+    format.group $
+      format.nest 2 $
         "(tag_expr " ++ to_fmt addr ++ format.line ++ "`(" ++ to_fmt e ++ ")" ++ format.line ++ a.repr ++ ")"
   | sf.compose a b => a.repr ++ format.line ++ b.repr
   | sf.of_string s => repr s
@@ -49,16 +49,16 @@ unsafe instance : Repr sf :=
   ⟨fun s => s.repr.toString⟩
 
 unsafe def sf.of_eformat : eformat → sf
-  | tag ⟨ea, e⟩ m => sf.tag_expr ea e <| sf.of_eformat m
+  | tag ⟨ea, e⟩ m => sf.tag_expr ea e $ sf.of_eformat m
   | group m => sf.of_eformat m
   | nest i m => sf.of_eformat m
   | highlight i m => sf.of_eformat m
-  | of_format f => sf.of_string <| format.to_string f
+  | of_format f => sf.of_string $ format.to_string f
   | compose x y => sf.compose (sf.of_eformat x) (sf.of_eformat y)
 #align widget.interactive_expression.sf.of_eformat widget.interactive_expression.sf.of_eformat
 
 unsafe def sf.flatten : sf → sf
-  | sf.tag_expr e ea m => sf.tag_expr e ea <| sf.flatten m
+  | sf.tag_expr e ea m => sf.tag_expr e ea $ sf.flatten m
   | sf.compose x y =>
     match sf.flatten x, sf.flatten y with
     | sf.of_string sx, sf.of_string sy => sf.of_string (sx ++ sy)
@@ -88,7 +88,7 @@ unsafe def view {γ} (tooltip_component : tc subexpr (action γ)) (click_address
       if some new_address = click_address then do
           let content ← tc.to_html tooltip_component (e, new_address)
           pure
-              [tooltip <|
+              [tooltip $
                   h "div" []
                     [h "button" [cn "fr pointer ba br3", on_click fun _ => action.on_close_tooltip] ["x"], content]]
         else pure []
@@ -105,11 +105,11 @@ unsafe def view {γ} (tooltip_component : tc subexpr (action γ)) (click_address
 /-- Make an interactive expression. -/
 unsafe def mk {γ} (tooltip : tc subexpr γ) : tc expr γ :=
   let tooltip_comp :=
-    (component.with_should_update fun x y : tactic_state × expr × Expr.Address => x.2.2 ≠ y.2.2) <|
+    (component.with_should_update fun x y : tactic_state × expr × Expr.Address => x.2.2 ≠ y.2.2) $
       component.map_action action.on_tooltip_action tooltip
-  tc.mk_simple (action γ) (Option subexpr × Option subexpr) (fun e => pure <| (none, none))
+  tc.mk_simple (action γ) (Option subexpr × Option subexpr) (fun e => pure $ (none, none))
     (fun e ⟨ca, sa⟩ act =>
-      pure <|
+      pure $
         match act with
         | action.on_mouse_enter ⟨e, ea⟩ => ((ca, some (e, ea)), none)
         | action.on_mouse_leave_all => ((ca, none), none)
@@ -118,20 +118,20 @@ unsafe def mk {γ} (tooltip : tc subexpr γ) : tc expr γ :=
         | action.on_close_tooltip => ((none, sa), none))
     fun e ⟨ca, sa⟩ => do
     let ts ← tactic.read
-    let m : sf := sf.flatten <| sf.of_eformat <| tactic_state.pp_tagged ts e
+    let m : sf := sf.flatten $ sf.of_eformat $ tactic_state.pp_tagged ts e
     let m : sf := sf.tag_expr [] e m
     let v
       ←-- [hack] in pp.cpp I forgot to add an expr-boundary for the root expression.
           view
           tooltip_comp (Prod.snd <$> ca) (Prod.snd <$> sa) ⟨e, []⟩ m
-    pure <| [h "span" [className "expr", key e, on_mouse_leave fun _ => action.on_mouse_leave_all] <| v]
+    pure $ [h "span" [className "expr", key e, on_mouse_leave fun _ => action.on_mouse_leave_all] $ v]
 #align widget.interactive_expression.mk widget.interactive_expression.mk
 
 /-- Render the implicit arguments for an expression in fancy, little pills. -/
-unsafe def implicit_arg_list (tooltip : tc subexpr Empty) (e : expr) : tactic <| html Empty := do
-  let fn ← mk tooltip <| expr.get_app_fn e
-  let args ← List.mapM (mk tooltip) <| expr.get_app_args e
-  pure <|
+unsafe def implicit_arg_list (tooltip : tc subexpr Empty) (e : expr) : tactic $ html Empty := do
+  let fn ← mk tooltip $ expr.get_app_fn e
+  let args ← List.mapM (mk tooltip) $ expr.get_app_args e
+  pure $
       h "div" []
         (h "span" [className "bg-blue br3 ma1 ph2 white"] [fn] ::
           List.map (fun a => h "span" [className "bg-gray br3 ma1 ph2 white"] [a]) args)
@@ -174,7 +174,7 @@ unsafe def filter_component : component filter_type filter_type :=
 #align widget.filter_component widget.filter_component
 
 unsafe def html.of_name {α : Type} : Name → html α
-  | n => html.of_string <| Name.toString n
+  | n => html.of_string $ Name.toString n
 #align widget.html.of_name widget.html.of_name
 
 open Tactic
@@ -182,7 +182,7 @@ open Tactic
 unsafe def show_type_component : tc expr Empty :=
   tc.stateless fun x => do
     let y ← infer_type x
-    let y_comp ← interactive_expression.mk interactive_expression.type_tooltip <| y
+    let y_comp ← interactive_expression.mk interactive_expression.type_tooltip $ y
     pure y_comp
 #align widget.show_type_component widget.show_type_component
 
@@ -197,25 +197,25 @@ unsafe structure local_collection where
 /-- Group consecutive locals according to whether they have the same type -/
 unsafe def to_local_collection : List local_collection → List expr → tactic (List local_collection)
   | Acc, [] =>
-    pure <| (List.map fun lc : local_collection => { lc with locals := lc.locals.reverse }) <| List.reverse <| Acc
+    pure $ (List.map fun lc : local_collection => { lc with locals := lc.locals.reverse }) $ List.reverse $ Acc
   | Acc, l :: ls => do
     let l_type ← infer_type l
     (do
           let ⟨k, ns, t⟩ :: Acc ← pure Acc
           is_def_eq t l_type
           to_local_collection (⟨k, l :: ns, t⟩ :: Acc) ls) <|>
-        to_local_collection (⟨toString <| expr.local_uniq_name <| l, [l], l_type⟩ :: Acc) ls
+        to_local_collection (⟨toString $ expr.local_uniq_name $ l, [l], l_type⟩ :: Acc) ls
 #align widget.to_local_collection widget.to_local_collection
 
 /-- Component that displays the main (first) goal. -/
 unsafe def tactic_view_goal {γ} (local_c : tc local_collection γ) (target_c : tc expr γ) : tc filter_type γ :=
-  tc.stateless fun ft => do
+  tc.stateless $ fun ft => do
     let g@(expr.mvar u_n pp_n y) ← main_goal
     let t ← get_tag g
     let case_tag : List (html γ) :=
       match interactive.case_tag.parse t with
       | some t =>
-        [h "li" [key "_case"] <| [h "span" [cn "goal-case b"] ["case"]] ++ t.case_names.bind fun n => [" ", n]]
+        [h "li" [key "_case"] $ [h "span" [cn "goal-case b"] ["case"]] ++ (t.case_names.bind $ fun n => [" ", n])]
       | none => []
     let lcs ← local_context
     let lcs ← List.filterM (filter_local ft) lcs
@@ -223,11 +223,11 @@ unsafe def tactic_view_goal {γ} (local_c : tc local_collection γ) (target_c : 
     let lchs ←
       lcs.mmap fun lc => do
           let lh ← local_c lc
-          let ns ← pure <| lc.locals.map fun n => h "span" [cn "goal-hyp b pr2"] [html.of_name <| expr.local_pp_name n]
-          pure <| h "li" [key lc] (ns ++ [": ", h "span" [cn "goal-hyp-type"] [lh]])
+          let ns ← pure $ lc.locals.map fun n => h "span" [cn "goal-hyp b pr2"] [html.of_name $ expr.local_pp_name n]
+          pure $ h "li" [key lc] (ns ++ [": ", h "span" [cn "goal-hyp-type"] [lh]])
     let t_comp ← target_c g
-    pure <|
-        h "ul" [key g, className "list pl0 font-code"] <|
+    pure $
+        h "ul" [key g, className "list pl0 font-code"] $
           case_tag ++ lchs ++ [h "li" [key u_n] [h "span" [cn "goal-vdash b"] ["⊢ "], t_comp]]
 #align widget.tactic_view_goal widget.tactic_view_goal
 
@@ -238,7 +238,7 @@ unsafe inductive tactic_view_action (γ : Type)
 
 /-- Component that displays all goals, together with the `$n goals` message. -/
 unsafe def tactic_view_component {γ} (local_c : tc local_collection γ) (target_c : tc expr γ) : tc Unit γ :=
-  tc.mk_simple (tactic_view_action γ) filter_type (fun _ => pure <| filter_type.none)
+  tc.mk_simple (tactic_view_action γ) filter_type (fun _ => pure $ filter_type.none)
     (fun ⟨⟩ ft a =>
       match a with
       | tactic_view_action.out a => pure (ft, some a)
@@ -248,24 +248,24 @@ unsafe def tactic_view_component {γ} (local_c : tc local_collection γ) (target
     let hs ←
       gs.mmap fun g => do
           set_goals [g]
-          flip tc.to_html ft <| tactic_view_goal local_c target_c
+          flip tc.to_html ft $ tactic_view_goal local_c target_c
     set_goals gs
     let goal_message :=
       if gs.length = 0 then "goals accomplished" else if gs.length = 1 then "1 goal" else toString gs.length ++ " goals"
     let goal_message : html γ := h "strong" [cn "goal-goals"] [goal_message]
     let goals : html γ :=
-      h "ul" [className "list pl0"] <|
-        (List.mapWithIndex fun i x => h "li" [className <| "lh-copy mt2", key i] [x]) <| goal_message :: hs
+      h "ul" [className "list pl0"] $
+        (List.mapWithIndex fun i x => h "li" [className $ "lh-copy mt2", key i] [x]) $ goal_message :: hs
     pure
         [h "div" [className "fr"]
-            [html.of_component ft <| component.map_action tactic_view_action.filter filter_component],
+            [html.of_component ft $ component.map_action tactic_view_action.filter filter_component],
           html.map_action tactic_view_action.out goals]
 #align widget.tactic_view_component widget.tactic_view_component
 
 /-- Component that displays the term-mode goal. -/
 unsafe def tactic_view_term_goal {γ} (local_c : tc local_collection γ) (target_c : tc expr γ) : tc Unit γ :=
-  tc.stateless fun _ => do
-    let goal ← flip tc.to_html filter_type.none <| tactic_view_goal local_c target_c
+  tc.stateless $ fun _ => do
+    let goal ← flip tc.to_html filter_type.none $ tactic_view_goal local_c target_c
     pure
         [h "ul" [className "list pl0"]
             [h "li" [className "lh-copy"] [h "strong" [cn "goal-goals"] ["expected type:"]],
@@ -280,7 +280,7 @@ unsafe def show_local_collection_component : tc local_collection Empty :=
 #align widget.show_local_collection_component widget.show_local_collection_component
 
 unsafe def tactic_render : tc Unit Empty :=
-  component.ignore_action <| tactic_view_component show_local_collection_component show_type_component
+  component.ignore_action $ tactic_view_component show_local_collection_component show_type_component
 #align widget.tactic_render widget.tactic_render
 
 unsafe def tactic_state_widget : component tactic_state Empty :=

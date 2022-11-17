@@ -165,7 +165,7 @@ unsafe def many.{u, v} {f : Type u → Type v} [Monad f] [Alternative f] {a : Ty
     (do
         let y ← x
         let ys ← many x
-        return <| y :: ys) <|>
+        return $ y :: ys) <|>
       pure List.nil
 #align lean.parser.many lean.parser.many
 

@@ -29,7 +29,7 @@ unsafe def execute (c : conv Unit) : tactic Unit :=
 #align conv.execute conv.execute
 
 unsafe def solve1 (c : conv Unit) : conv Unit :=
-  tactic.solve1 <| c >> tactic.try (tactic.any_goals tactic.reflexivity)
+  tactic.solve1 $ c >> tactic.try (tactic.any_goals tactic.reflexivity)
 #align conv.solve1 conv.solve1
 
 namespace Interactive
@@ -79,15 +79,15 @@ unsafe def funext : conv Unit :=
 #align conv.interactive.funext conv.interactive.funext
 
 private unsafe def is_relation : conv Unit :=
-  (lhs >>= tactic.relation_lhs_rhs) >> return () <|> tactic.fail "current expression is not a relation"
+  lhs >>= tactic.relation_lhs_rhs >> return () <|> tactic.fail "current expression is not a relation"
 #align conv.interactive.is_relation conv.interactive.is_relation
 
 unsafe def to_lhs : conv Unit :=
-  ((is_relation >> congr) >> tactic.swap) >> skip
+  is_relation >> congr >> tactic.swap >> skip
 #align conv.interactive.to_lhs conv.interactive.to_lhs
 
 unsafe def to_rhs : conv Unit :=
-  (is_relation >> congr) >> skip
+  is_relation >> congr >> skip
 #align conv.interactive.to_rhs conv.interactive.to_rhs
 
 unsafe def done : conv Unit :=
@@ -121,7 +121,7 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
             | exception f p s' => return (exception f p s', e, none, ff))
         (fun a s r p e => tactic.failed) r lhs
   let found ← tactic.unwrap found_result
-  when (Not found) <| tactic.fail "find converter failed, pattern was not found"
+  when (Not found) $ tactic.fail "find converter failed, pattern was not found"
   update_lhs new_lhs pr
 #align conv.interactive.find conv.interactive.find
 
@@ -186,14 +186,14 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
-  rs.mmap' fun r => do
+  rs.mmap' $ fun r => do
     save_info r
     let eq_lemmas ← get_rule_eqn_lemmas r
     orelse'
         (do
           let h ← to_expr' r
           rw_lhs h { cfg with symm := r })
-        (eq_lemmas fun n => do
+        (eq_lemmas $ fun n => do
           let e ← tactic.mk_const n
           rw_lhs e { cfg with symm := r })
         (eq_lemmas eq_lemmas.empty)

@@ -37,7 +37,7 @@ unsafe def reset_instance_cache : tactic Unit := do
 
 /-- Unfreeze the local instances while executing `tac` on the main goal. -/
 unsafe def unfreezing {α} (tac : tactic α) : tactic α :=
-  focus1 <| unfreeze_local_instances *> tac <* all_goals freeze_local_instances
+  focus1 $ unfreeze_local_instances *> tac <* all_goals freeze_local_instances
 #align tactic.unfreezing tactic.unfreezing
 
 /-- Unfreeze local instances while executing `tac`,
@@ -99,13 +99,13 @@ unsafe def haveI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : p
       | some a => return a
   have (some h) q₁ q₂
   match q₂ with
-    | none => (swap >> reset_instance_cache) >> swap
+    | none => swap >> reset_instance_cache >> swap
     | some p₂ => reset_instance_cache
 #align tactic.interactive.haveI tactic.interactive.haveI
 
 /-- Used to add typeclasses to the context so that they can
 be used in typeclass inference. The syntax is the same as `let`. -/
-unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) : tactic Unit :=
+unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse $ (tk ":=" *> texpr)?) : tactic Unit :=
   do
   let h ←
     match h with
@@ -113,7 +113,7 @@ unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : pa
       | some a => return a
   let (some h) q₁ q₂
   match q₂ with
-    | none => (swap >> reset_instance_cache) >> swap
+    | none => swap >> reset_instance_cache >> swap
     | some p₂ => reset_instance_cache
 #align tactic.interactive.letI tactic.interactive.letI
 

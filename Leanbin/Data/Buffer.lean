@@ -7,7 +7,7 @@ Authors: Leonardo de Moura
 universe u w
 
 def Buffer (α : Type u) :=
-  Σn, Array' n α
+  Σ n, Array' n α
 #align buffer Buffer
 
 def mkBuffer {α : Type u} : Buffer α :=
@@ -94,7 +94,7 @@ theorem lt_aux_2 {n : Nat} (h : 0 < n) : n - 1 < n :=
 
 theorem lt_aux_3 {n i} (h : i + 1 < n) : n - 2 - i < n :=
   have : n > 0 := lt_trans (Nat.zero_lt_succ i) h
-  have : n - 2 < n := Nat.sub_lt this (by decide)
+  have : n - 2 < n := Nat.sub_lt this dec_trivial
   lt_of_le_of_lt (Nat.sub_le _ _) this
 #align buffer.lt_aux_3 Buffer.lt_aux_3
 

@@ -57,3 +57,9 @@ def xor : Bool → Bool → Bool
 #align bxor xor
 -/
 
+-- mathport name: «expr || »
+infixl:65 " || " => or
+
+-- mathport name: «expr && »
+infixl:70 " && " => and
+

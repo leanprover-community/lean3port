@@ -17,7 +17,7 @@ open Tactic
 private unsafe def add_lemma (m : Transparency) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
   (do
       let h ← hinst_lemma.mk_from_decl_core m h true
-      return <| hs h) <|>
+      return $ hs h) <|>
     return hs
 #align add_lemma add_lemma
 
@@ -41,22 +41,21 @@ private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) : List Nam
     We say `ex_attr_name` is the "exception set". It is useful for excluding lemmas in `simp_attr_name`
     which are not good or redundant for ematching. -/
 unsafe def mk_hinst_lemma_attr_from_simp_attr (attr_decl_name attr_name : Name) (simp_attr_name : Name)
-    (ex_attr_name : Name) : Tactic := do
-  let t := quote.1 (user_attribute hinst_lemmas)
+    (ex_attr_name : Name) : command := do
+  let t := q(user_attribute hinst_lemmas)
   let v :=
-    quote.1
-      ({ Name := attr_name, descr := s! "hinst_lemma attribute derived from '{simp_attr_name}'",
-        cache_cfg :=
-          { mk_cache := fun ns =>
-              let aux := simp_attr_name
-              let ex_attr := ex_attr_name
-              do
-              let hs ← to_hinst_lemmas reducible mk_name_set ns hinst_lemmas.mk
-              let ss ← attribute.get_instances aux
-              let ex ← get_name_set_for_attr ex_attr
-              to_hinst_lemmas reducible ex ss hs,
-            dependencies := [`reducibility, simp_attr_name] } } :
-        user_attribute hinst_lemmas)
+    q(({ Name := attr_name, descr := s! "hinst_lemma attribute derived from '{simp_attr_name}'",
+          cache_cfg :=
+            { mk_cache := fun ns =>
+                let aux := simp_attr_name
+                let ex_attr := ex_attr_name
+                do
+                let hs ← to_hinst_lemmas reducible mk_name_set ns hinst_lemmas.mk
+                let ss ← attribute.get_instances aux
+                let ex ← get_name_set_for_attr ex_attr
+                to_hinst_lemmas reducible ex ss hs,
+              dependencies := [`reducibility, simp_attr_name] } } :
+        user_attribute hinst_lemmas))
   add_decl (declaration.defn attr_decl_name [] t v ReducibilityHints.abbrev ff)
   attribute.register attr_decl_name
 #align mk_hinst_lemma_attr_from_simp_attr mk_hinst_lemma_attr_from_simp_attr
@@ -102,14 +101,14 @@ unsafe def explicit_size : expr → tactic Nat
       else
         fold_explicit_args e 1 fun n arg => do
           let r ← explicit_size arg
-          return <| r + n
+          return $ r + n
 #align rsimp.explicit_size rsimp.explicit_size
 
 /-- Choose smallest element (with respect to explicit_size) in `e`s equivalence class. -/
 unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
   let sz ← explicit_size e
   let p ←
-    (ccs.mfold_eqc e (e, sz)) fun p e' =>
+    ccs.mfold_eqc e (e, sz) $ fun p e' =>
         if p.2 = 1 then return p
         else do
           let sz' ← explicit_size e'
@@ -129,7 +128,7 @@ unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
   ccs.roots.mfoldl
     (fun S e => do
       let r ← choose ccs e
-      return <| S e r)
+      return $ S e r)
     mk_repr_map
 #align rsimp.to_repr_map rsimp.to_repr_map
 
@@ -141,9 +140,9 @@ unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) :
   let r ←
     simplify_top_down ()
         (fun _ t => do
-          let root ← return <| ccs.root t
+          let root ← return $ ccs.root t
           let new_t ← m.find root
-          guard ¬new_t == t
+          guard (¬new_t =ₐ t)
           let prf ← ccs.eqv_proof t new_t
           return ((), new_t, prf))
         e
@@ -162,8 +161,8 @@ private def tagged_proof.rsimp : Unit :=
 #align rsimp.tagged_proof.rsimp rsimp.tagged_proof.rsimp
 
 unsafe def collect_implied_eqs (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic cc_state := do
-  focus1 <|
-      using_smt_with { emAttr := cfg } <| do
+  focus1 $
+      using_smt_with { emAttr := cfg } $ do
         add_lemmas_from_facts
         add_lemmas extra
         iterate_at_most cfg (ematch >> try smt_tactic.close)
@@ -181,10 +180,10 @@ unsafe def rsimplify_at (ccs : cc_state) (h : expr) (m : Option repr_map := none
       (tactic.fail "tactic rsimplify_at failed, the given expression is not a hypothesis")
   let htype ← infer_type h
   let (new_htype, HEq) ← rsimplify ccs htype m
-  try <| do
+  try $ do
       assert (expr.local_pp_name h) new_htype
       mk_eq_mp HEq h >>= exact
-      try <| clear h
+      try $ clear h
 #align rsimp.rsimplify_at rsimp.rsimplify_at
 
 end Rsimp
@@ -195,12 +194,12 @@ namespace Tactic
 
 unsafe def rsimp (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
-  try <| rsimplify_goal ccs
+  try $ rsimplify_goal ccs
 #align tactic.rsimp tactic.rsimp
 
 unsafe def rsimp_at (h : expr) (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
-  try <| rsimplify_at ccs h
+  try $ rsimplify_at ccs h
 #align tactic.rsimp_at tactic.rsimp_at
 
 namespace Interactive

@@ -35,16 +35,20 @@ Case conversion may be inaccurate. Consider using '#align max_def max_defₓ'. -
 theorem max_def (a b : α) : max a b = if a ≤ b then b else a := by rw [congr_fun LinearOrder.max_def a, maxDefault]
 #align max_def max_def
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:332:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def min_tac_step : tactic Unit :=
-  solve1 <| (((intros >> sorry) >> try sorry) >> try sorry) >> try sorry
+  solve1 $ intros >> sorry >> try sorry >> try sorry >> try sorry
 #align min_tac_step min_tac_step
 
-unsafe def tactic.interactive.min_tac (a b : interactive.parse lean.parser.pexpr) : tactic Unit :=
-  andthen (interactive.by_cases (none, pquote.1 ((%%ₓa) ≤ %%ₓb))) min_tac_step
+-- failed to format: unknown constant 'term.pseudo.antiquot'
+unsafe
+  def
+    tactic.interactive.min_tac
+    ( a b : interactive.parse lean.parser.pexpr ) : tactic Unit
+    := interactive.by_cases ( none , ` `( $ ( a ) ≤ $ ( b ) ) ) ; min_tac_step
 #align tactic.interactive.min_tac tactic.interactive.min_tac
 
 /- warning: min_le_left -> min_le_left is a dubious translation:

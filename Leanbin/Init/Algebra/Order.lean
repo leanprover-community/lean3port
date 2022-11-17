@@ -145,7 +145,7 @@ theorem le_of_lt : ∀ {a b : α}, a < b → a ≤ b
 theorem lt_of_lt_of_le : ∀ {a b c : α}, a < b → b ≤ c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hab, hba⟩ := le_not_le_of_lt hab
-    (lt_of_le_not_le (le_trans hab hbc)) fun hca => hba (le_trans hbc hca)
+    lt_of_le_not_le (le_trans hab hbc) $ fun hca => hba (le_trans hbc hca)
 #align lt_of_lt_of_le lt_of_lt_of_le
 -/
 
@@ -154,7 +154,7 @@ theorem lt_of_lt_of_le : ∀ {a b c : α}, a < b → b ≤ c → a < c
 theorem lt_of_le_of_lt : ∀ {a b c : α}, a ≤ b → b < c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hbc, hcb⟩ := le_not_le_of_lt hbc
-    (lt_of_le_not_le (le_trans hab hbc)) fun hca => hcb (le_trans hca hab)
+    lt_of_le_not_le (le_trans hab hbc) $ fun hca => hcb (le_trans hca hab)
 #align lt_of_le_of_lt lt_of_le_of_lt
 -/
 
@@ -200,8 +200,8 @@ theorem le_of_eq_or_lt {a b : α} (h : a = b ∨ a < b) : a ≤ b :=
 def decidableLtOfDecidableLe [@DecidableRel α (· ≤ ·)] : @DecidableRel α (· < ·)
   | a, b =>
     if hab : a ≤ b then
-      if hba : b ≤ a then is_false fun hab' => not_le_of_gt hab' hba else is_true <| lt_of_le_not_le hab hba
-    else is_false fun hab' => hab (le_of_lt hab')
+      if hba : b ≤ a then is_false $ fun hab' => not_le_of_gt hab' hba else is_true $ lt_of_le_not_le hab hba
+    else is_false $ fun hab' => hab (le_of_lt hab')
 #align decidable_lt_of_decidable_le decidableLtOfDecidableLe
 
 end Preorder
@@ -235,7 +235,7 @@ theorem le_antisymm_iff {a b : α} : a = b ↔ a ≤ b ∧ b ≤ a :=
 -/
 
 #print lt_of_le_of_ne /-
-theorem lt_of_le_of_ne {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_le h₁ <| mt (le_antisymm h₁) h₂
+theorem lt_of_le_of_ne {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_le h₁ $ mt (le_antisymm h₁) h₂
 #align lt_of_le_of_ne lt_of_le_of_ne
 -/
 
@@ -385,7 +385,7 @@ theorem lt_of_not_ge {a b : α} (h : ¬a ≥ b) : a < b :=
 
 #print lt_or_le /-
 theorem lt_or_le (a b : α) : a < b ∨ b ≤ a :=
-  if hba : b ≤ a then Or.inr hba else Or.inl <| lt_of_not_ge hba
+  if hba : b ≤ a then Or.inr hba else Or.inl $ lt_of_not_ge hba
 #align lt_or_le lt_or_le
 -/
 
@@ -483,7 +483,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align le_imp_le_of_lt_imp_lt le_imp_le_of_lt_imp_ltₓ'. -/
 theorem le_imp_le_of_lt_imp_lt {β} [Preorder α] [LinearOrder β] {a b : α} {c d : β} (H : d < c → b < a) (h : a ≤ b) :
     c ≤ d :=
-  le_of_not_lt fun h' => not_le_of_gt (H h') h
+  le_of_not_lt $ fun h' => not_le_of_gt (H h') h
 #align le_imp_le_of_lt_imp_lt le_imp_le_of_lt_imp_lt
 
 end LinearOrder

@@ -32,7 +32,7 @@ instance hasMem : Membership α (Set α) :=
 #align set.has_mem Set.hasMem
 
 @[simp]
-theorem mem_set_of_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
+theorem mem_set_of_eq {x : α} {p : α → Prop} : x ∈ { y | p y } = p x :=
   rfl
 #align set.mem_set_of_eq Set.mem_set_of_eq
 
@@ -56,7 +56,7 @@ instance : Sep α (Set α) :=
   ⟨fun p s => { x | x ∈ s ∧ p x }⟩
 
 instance : LawfulSingleton α (Set α) :=
-  ⟨fun a => funext fun b => propext <| or_false_iff _⟩
+  ⟨fun a => funext $ fun b => propext $ or_false_iff _⟩
 
 end Set
 

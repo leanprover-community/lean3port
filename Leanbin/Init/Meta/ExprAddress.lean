@@ -133,7 +133,7 @@ unsafe def as_below : Address → Address → Option Address
 #align expr.address.as_below expr.address.as_below
 
 unsafe def is_below : Address → Address → Bool
-  | a₁, a₂ => Option.isSome <| as_below a₁ a₂
+  | a₁, a₂ => Option.isSome $ as_below a₁ a₂
 #align expr.address.is_below expr.address.is_below
 
 /-- `follow a e` finds the subexpression of `e` at the given address `a`. -/

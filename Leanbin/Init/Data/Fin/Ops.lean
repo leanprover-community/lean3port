@@ -149,11 +149,11 @@ theorem div_def (a b : Fin n) : (a / b).val = a.val / b.val :=
   show (Fin.div a b).val = a.val / b.val by cases a <;> cases b <;> simp [Fin.div]
 #align fin.div_def Fin.div_def
 
-theorem lt_def (a b : Fin n) : (a < b) = (a.val < b.val) :=
+theorem lt_def (a b : Fin n) : a < b = (a.val < b.val) :=
   show Fin.Lt a b = (a.val < b.val) by cases a <;> cases b <;> simp [Fin.Lt]
 #align fin.lt_def Fin.lt_def
 
-theorem le_def (a b : Fin n) : (a ≤ b) = (a.val ≤ b.val) :=
+theorem le_def (a b : Fin n) : a ≤ b = (a.val ≤ b.val) :=
   show Fin.Le a b = (a.val ≤ b.val) by cases a <;> cases b <;> simp [Fin.Le]
 #align fin.le_def Fin.le_def
 

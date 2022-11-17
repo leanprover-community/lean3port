@@ -35,7 +35,7 @@ private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler →
   | [] => fail f! "failed to find a derive handler for '{p}'"
   | h :: hs => do
     let success ← h p n
-    when ¬success <| try_handlers hs
+    when (¬success) $ try_handlers hs
 #align try_handlers try_handlers
 
 @[user_attribute]
@@ -60,7 +60,7 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     let cls_decl ← get_decl cls
     let env ← get_env
     guard (env n) <|> fail f! "failed to derive '{cls }', '{n}' is not an inductive type"
-    let ls := decl.univ_params.map fun n => if univ_poly then level.param n else level.zero
+    let ls := decl.univ_params.map $ fun n => if univ_poly then level.param n else level.zero
     let-- incrementally build up target expression `Π (hp : p) [cls hp] ..., cls (n.{ls} hp ...)`
     -- where `p ...` are the inductive parameter types of `n`
     tgt : expr := expr.const n ls
@@ -75,11 +75,11 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
               (-- add typeclass hypothesis for each inductive parameter
                   -- TODO(sullrich): omit some typeclass parameters based on usage of `param`?
                   do
-                    guard <| i < env n
+                    guard $ i < env n
                     let param_cls ← mk_app cls [param]
-                    pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt) <|>
+                    pure $ expr.pi `a BinderInfo.inst_implicit param_cls tgt) <|>
                   pure tgt
-            pure <| tgt param)
+            pure $ tgt param)
           tgt
     let (_, val) ← tactic.solve_aux tgt (intros >> tac)
     let val ← instantiate_mvars val
@@ -98,7 +98,7 @@ unsafe def has_reflect_derive_handler :=
         params.mfoldr
       (fun param tgt => do
         let param_cls ← mk_mapp `reflected [none, some param]
-        pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt)
+        pure $ expr.pi `a BinderInfo.inst_implicit param_cls tgt)
       tgt
 #align has_reflect_derive_handler has_reflect_derive_handler
 

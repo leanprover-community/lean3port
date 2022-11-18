@@ -206,7 +206,7 @@ theorem mem_cons_iff (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈
 #align list.mem_cons_iff List.mem_cons_iff
 
 @[rsimp]
-theorem mem_cons_eq (a y : α) (l : List α) : a ∈ y :: l = (a = y ∨ a ∈ l) :=
+theorem mem_cons_eq (a y : α) (l : List α) : (a ∈ y :: l) = (a = y ∨ a ∈ l) :=
   rfl
 #align list.mem_cons_eq List.mem_cons_eq
 
@@ -228,7 +228,7 @@ theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈
 
 #print List.mem_append_eq /-
 @[rsimp]
-theorem mem_append_eq (a : α) (s t : List α) : a ∈ s ++ t = (a ∈ s ∨ a ∈ t) :=
+theorem mem_append_eq (a : α) (s t : List α) : (a ∈ s ++ t) = (a ∈ s ∨ a ∈ t) :=
   propext mem_append
 #align list.mem_append_eq List.mem_append_eq
 -/
@@ -387,7 +387,7 @@ Case conversion may be inaccurate. Consider using '#align list.partition_eq_filt
 theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
     ∀ l : List α, partition' p l = (filter' p l, filter' (Not ∘ p) l)
   | [] => rfl
-  | a :: l => by by_cases pa:p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
+  | a :: l => by by_cases pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
 #align list.partition_eq_filter_filter List.partition_eq_filter_filter
 
 #print List.Sublist /-
@@ -428,7 +428,7 @@ theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
     ∀ l₁ l₂ : List α, filter' p (l₁ ++ l₂) = filter' p l₁ ++ filter' p l₂
   | [], l₂ => rfl
-  | a :: l₁, l₂ => by by_cases pa:p a <;> simp [pa, filter_append]
+  | a :: l₁, l₂ => by by_cases pa : p a <;> simp [pa, filter_append]
 #align list.filter_append List.filter_append
 
 @[simp]

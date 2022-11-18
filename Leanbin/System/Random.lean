@@ -96,7 +96,7 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
     let (x, g') := RandomGen.next g
     let v' := v * gen_mag + (x - gen_lo)
     have : r' / gen_mag - 1 < r' := by
-      by_cases h:(r + 1) / gen_mag = 0
+      by_cases h : (r + 1) / gen_mag = 0
       · rw [h]
         simp
         apply Nat.zero_lt_succ

@@ -18,7 +18,7 @@ unsafe def get_constructors_for (e : expr) : tactic (List Name) := do
   let env ← get_env
   let I ← return e.extract_opt_auto_param.get_app_fn.const_name
   when (¬env I) (fail "constructor tactic failed, target is not an inductive datatype")
-  return $ env I
+  return <| env I
 #align tactic.get_constructors_for tactic.get_constructors_for
 
 private unsafe def try_constructors (cfg : ApplyCfg) : List Name → tactic (List (Name × expr))
@@ -54,7 +54,7 @@ unsafe def right : tactic (List (Name × expr)) := do
 
 unsafe def constructor_idx (idx : Nat) : tactic (List (Name × expr)) := do
   let cs ← target' >>= get_constructors_for
-  let some c ← return $ cs.nth (idx - 1) |
+  let some c ← return <| cs.nth (idx - 1) |
     fail "constructor_idx tactic failed, target is an inductive datatype, but it does not have sufficient constructors"
   mk_const c >>= apply
 #align tactic.constructor_idx tactic.constructor_idx
@@ -72,8 +72,8 @@ private unsafe def apply_num_metavars : expr → expr → Nat → tactic expr
   | f, ftype, n + 1 => do
     let pi m bi d b ← whnf ftype
     let a ← mk_meta_var d
-    let new_f ← return $ f a
-    let new_ftype ← return $ b.instantiate_var a
+    let new_f ← return <| f a
+    let new_ftype ← return <| b.instantiate_var a
     apply_num_metavars new_f new_ftype n
 #align tactic.apply_num_metavars tactic.apply_num_metavars
 

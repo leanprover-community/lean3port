@@ -30,11 +30,11 @@ protected def return {α : Type v} (a : α) : Except ε α :=
 
 protected def map {α β : Type v} (f : α → β) : Except ε α → Except ε β
   | Except.error err => Except.error err
-  | Except.ok v => Except.ok $ f v
+  | Except.ok v => Except.ok <| f v
 #align except.map Except.mapₓ
 
 protected def mapError {ε' : Type u} {α : Type v} (f : ε → ε') : Except ε α → Except ε' α
-  | Except.error err => Except.error $ f err
+  | Except.error err => Except.error <| f err
   | Except.ok v => Except.ok v
 #align except.map_error Except.mapErrorₓ
 
@@ -80,7 +80,7 @@ parameter {ε : Type u}{m : Type u → Type v}[Monad m]
 
 @[inline]
 protected def return {α : Type u} (a : α) : ExceptT ε m α :=
-  ⟨pure $ Except.ok a⟩
+  ⟨pure <| Except.ok a⟩
 #align except_t.return ExceptTₓ.return
 
 @[inline]
@@ -143,13 +143,13 @@ namespace MonadExcept
 variable {ε : Type u} {m : Type v → Type w}
 
 protected def orelse [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) : m α :=
-  catch t₁ $ fun _ => t₂
+  (catch t₁) fun _ => t₂
 #align monad_except.orelse MonadExcept.orelse
 
 /-- Alternative orelse operator that allows to select which exception should be used.
     The default is to use the first exception since the standard `orelse` uses the second. -/
 unsafe def orelse' [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) (use_first_ex := true) : m α :=
-  catch t₁ $ fun e₁ => catch t₂ $ fun e₂ => throw (if use_first_ex then e₁ else e₂)
+  (catch t₁) fun e₁ => (catch t₂) fun e₂ => throw (if use_first_ex then e₁ else e₂)
 #align monad_except.orelse' monad_except.orelse'
 
 end MonadExcept

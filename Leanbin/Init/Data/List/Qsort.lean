@@ -28,7 +28,7 @@ def Qsort.f {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, 
 
    Remark: this is *not* really quicksort since it doesn't partition the elements in-place -/
 def qsort {α} (lt : α → α → Bool) : List α → List α :=
-  WellFounded.fix (InvImage.wf length Nat.lt_wf) (Qsort.f lt)
+  WellFounded.fix (InvImage.wf length Nat.lt_wfRel.wf) (Qsort.f lt)
 #align list.qsort List.qsort
 
 @[simp]

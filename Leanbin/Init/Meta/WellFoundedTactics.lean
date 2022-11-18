@@ -63,7 +63,7 @@ unsafe def mk_alt_sizeof : expr → expr
 unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do
   let tgt ← target
   let rel ← mk_instance tgt
-  exact $
+  exact <|
       match e, rel with
       | expr.local_const _ (Name.mk_string "_mutual" _) _ _, expr.app (e@q(@hasWellFoundedOfHasSizeof _)) sz =>
         e (mk_alt_sizeof sz)
@@ -80,7 +80,7 @@ unsafe def clear_internals : tactic Unit :=
 #align well_founded_tactics.clear_internals well_founded_tactics.clear_internals
 
 unsafe def unfold_wf_rel : tactic Unit :=
-  dunfold_target [`` HasWellFounded.R] { failIfUnchanged := false }
+  dunfold_target [`` WellFoundedRelation.R] { failIfUnchanged := false }
 #align well_founded_tactics.unfold_wf_rel well_founded_tactics.unfold_wf_rel
 
 unsafe def is_psigma_mk : expr → tactic (expr × expr)
@@ -99,7 +99,7 @@ unsafe def process_lex : tactic Unit → tactic Unit
         do
         let (a₁, a₂) ← is_psigma_mk a
         let (b₁, b₂) ← is_psigma_mk b
-        is_def_eq a₁ b₁ >> sorry >> process_lex tac <|> sorry >> tac
+        (is_def_eq a₁ b₁ >> sorry) >> process_lex tac <|> sorry >> tac
       else tac
 #align well_founded_tactics.process_lex well_founded_tactics.process_lex
 
@@ -115,7 +115,7 @@ private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
 #align well_founded_tactics.add_simps well_founded_tactics.add_simps
 
 private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
-  e.mfold simp_lemmas.mk $ fun c d s =>
+  (e.mfold simp_lemmas.mk) fun c d s =>
     if c.is_constant then
       match c.const_name with
       | Name.mk_string "sizeof" p => do
@@ -246,7 +246,7 @@ unsafe def trivial_nat_lt : tactic Unit :=
 end SimpleDecTac
 
 unsafe def default_dec_tac : tactic Unit :=
-  abstract $ do
+  abstract <| do
     clear_internals
     unfold_wf_rel
     -- The next line was adapted from code in mathlib by Scott Morrison.

@@ -44,10 +44,16 @@ structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro 
 #align well_founded WellFounded
 -/
 
-class HasWellFounded (α : Sort u) : Type u where
+/- warning: has_well_founded -> WellFoundedRelation is a dubious translation:
+lean 3 declaration is
+  Sort.{u} -> Type.{u}
+but is expected to have type
+  Sort.{u} -> Sort.{max 1 u}
+Case conversion may be inaccurate. Consider using '#align has_well_founded WellFoundedRelationₓ'. -/
+class WellFoundedRelation (α : Sort u) : Type u where
   R : α → α → Prop
   wf : WellFounded r
-#align has_well_founded HasWellFounded
+#align has_well_founded WellFoundedRelation
 
 namespace WellFounded
 
@@ -169,11 +175,11 @@ end
 end InvImage
 
 /-- less-than is well-founded -/
-theorem Nat.lt_wf : WellFounded Nat.lt :=
+theorem Nat.lt_wfRel.wf : WellFounded Nat.lt :=
   ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zero n)) fun n ih =>
       Acc.intro (Nat.succ n) fun m h =>
         Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih) (Acc.inv ih)⟩
-#align nat.lt_wf Nat.lt_wf
+#align nat.lt_wf Nat.lt_wfRel.wf
 
 #print Measure /-
 def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
@@ -182,7 +188,7 @@ def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
 -/
 
 theorem measure_wf {α : Sort u} (f : α → ℕ) : WellFounded (Measure f) :=
-  InvImage.wf f Nat.lt_wf
+  InvImage.wf f Nat.lt_wfRel.wf
 #align measure_wf measure_wf
 
 def SizeofMeasure (α : Sort u) [SizeOf α] : α → α → Prop :=
@@ -193,7 +199,7 @@ theorem sizeof_measure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure
   measure_wf SizeOf.sizeOf
 #align sizeof_measure_wf sizeof_measure_wf
 
-instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : HasWellFounded α where
+instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : WellFoundedRelation α where
   R := SizeofMeasure α
   wf := sizeof_measure_wf α
 #align has_well_founded_of_has_sizeof hasWellFoundedOfHasSizeof
@@ -262,8 +268,8 @@ theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Rpro
 
 end
 
-instance hasWellFounded {α : Type u} {β : Type v} [s₁ : HasWellFounded α] [s₂ : HasWellFounded β] :
-    HasWellFounded (α × β) where
+instance hasWellFounded {α : Type u} {β : Type v} [s₁ : WellFoundedRelation α] [s₂ : WellFoundedRelation β] :
+    WellFoundedRelation (α × β) where
   R := Lex s₁.R s₂.R
   wf := lex_wf s₁.wf s₂.wf
 #align prod.has_well_founded Prod.hasWellFounded

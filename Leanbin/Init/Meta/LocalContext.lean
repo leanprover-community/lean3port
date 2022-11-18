@@ -76,7 +76,7 @@ unsafe instance : Inhabited local_context :=
   ⟨empty⟩
 
 unsafe instance : Membership expr local_context :=
-  ⟨fun e lc => Option.isSome $ get_local (expr.local_uniq_name e) lc⟩
+  ⟨fun e lc => Option.isSome <| get_local (expr.local_uniq_name e) lc⟩
 
 unsafe instance {e : expr} {lc : local_context} : Decidable (e ∈ lc) :=
   inferInstance

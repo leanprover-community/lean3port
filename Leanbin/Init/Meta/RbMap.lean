@@ -106,7 +106,7 @@ unsafe def for (m : rb_map key data) (f : data → data') : rb_map key data' :=
 #align native.rb_map.for native.rb_map.for
 
 unsafe def filter (m : rb_map key data) (f : data → Prop) [DecidablePred f] :=
-  fold m (mk _ _) $ fun a b m' => if f b then insert m' a b else m'
+  (fold m (mk _ _)) fun a b m' => if f b then insert m' a b else m'
 #align native.rb_map.filter native.rb_map.filter
 
 end
@@ -149,7 +149,7 @@ private unsafe def format_key_data (k : key) (d : data) (first : Bool) : format 
 
 unsafe instance : has_to_format (rb_map key data) :=
   ⟨fun m =>
-    group $
+    group <|
       to_fmt "⟨" ++
           nest 1 (fst (fold m (to_fmt "", true) fun k d p => (fst p ++ format_key_data k d (snd p), false))) ++
         to_fmt "⟩"⟩
@@ -248,7 +248,7 @@ unsafe def to_list {key : Type} (s : rb_set key) : List key :=
 
 unsafe instance {key} [has_to_format key] : has_to_format (rb_set key) :=
   ⟨fun m =>
-    group $
+    group <|
       to_fmt "{" ++ nest 1 (fst (fold m (to_fmt "", true) fun k p => (fst p ++ format_key k (snd p), false))) ++
         to_fmt "}"⟩
 
@@ -315,7 +315,8 @@ unsafe def to_list (s : name_set) : List Name :=
 
 unsafe instance : has_to_format name_set :=
   ⟨fun m =>
-    group $ to_fmt "{" ++ nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++ to_fmt "}"⟩
+    group <|
+      to_fmt "{" ++ nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++ to_fmt "}"⟩
 
 unsafe def of_list (l : List Name) : name_set :=
   List.foldl name_set.insert mk_name_set l

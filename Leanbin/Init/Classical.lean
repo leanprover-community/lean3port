@@ -19,7 +19,7 @@ axiom choice {α : Sort u} : Nonempty α → α
 
 #print Classical.indefiniteDescription /-
 noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
-  choice $
+  choice <|
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
 #align classical.indefinite_description Classical.indefiniteDescription
@@ -121,7 +121,7 @@ noncomputable def inhabitedOfExists {α : Sort u} {p : α → Prop} (h : ∃ x, 
 #print Classical.propDecidable /-
 -- all propositions are decidable
 noncomputable def propDecidable (a : Prop) : Decidable a :=
-  choice $ Or.elim (em a) (fun ha => ⟨isTrue ha⟩) fun hna => ⟨isFalse hna⟩
+  choice <| Or.elim (em a) (fun ha => ⟨isTrue ha⟩) fun hna => ⟨isFalse hna⟩
 #align classical.prop_decidable Classical.propDecidable
 -/
 

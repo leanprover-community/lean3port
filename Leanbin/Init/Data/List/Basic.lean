@@ -484,11 +484,11 @@ instance hasDecidableLe [LT α] [h : DecidableRel ((· < ·) : α → α → Pro
   fun a b => Not.decidable
 #align list.has_decidable_le List.hasDecidableLe
 
-theorem le_eq_not_gt [LT α] : ∀ l₁ l₂ : List α, l₁ ≤ l₂ = (¬l₂ < l₁) := fun l₁ l₂ => rfl
+theorem le_eq_not_gt [LT α] : ∀ l₁ l₂ : List α, (l₁ ≤ l₂) = ¬l₂ < l₁ := fun l₁ l₂ => rfl
 #align list.le_eq_not_gt List.le_eq_not_gt
 
-theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, l₁ < l₂ = (¬l₂ ≤ l₁) :=
-  fun l₁ l₂ => show l₁ < l₂ = (¬¬l₁ < l₂) from Eq.subst (propext (not_not_iff (l₁ < l₂))).symm rfl
+theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, (l₁ < l₂) = ¬l₂ ≤ l₁ :=
+  fun l₁ l₂ => show (l₁ < l₂) = ¬¬l₁ < l₂ from Eq.subst (propext (not_not_iff (l₁ < l₂))).symm rfl
 #align list.lt_eq_not_ge List.lt_eq_not_ge
 
 /-- `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/

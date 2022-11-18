@@ -37,7 +37,7 @@ private def split_core (p : Char → Bool) : Iterator → Iterator → List Stri
     if h : stop.hasNext then
       -- wf hint
       have : stop.nextToString.length - 1 < stop.nextToString.length :=
-        Nat.sub_lt (Iterator.zero_lt_length_next_to_string_of_has_next h) dec_trivial
+        Nat.sub_lt (Iterator.zero_lt_length_next_to_string_of_has_next h) (by decide)
       if p stop.curr then
         let rest := stop.next.nextToString
         (start.extract stop).getOrElse "" :: split_core stop.next stop.next

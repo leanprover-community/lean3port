@@ -44,12 +44,12 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : �
   Acc.recOn aca fun xa aca (iha : ∀ y, r y xa → ∀ b : β y, Acc (Lex r s) ⟨y, b⟩) => fun b : β xa =>
     Acc.recOn (WellFounded.apply (acb xa) b) fun xb acb (ihb : ∀ y : β xa, s xa y xb → Acc (Lex r s) ⟨xa, y⟩) =>
       Acc.intro ⟨xa, xb⟩ fun p (lt : p≺⟨xa, xb⟩) =>
-        have aux : xa = xa → xb == xb → Acc (Lex r s) p :=
-          @PSigma.Lex.rec_on α β r s (fun p₁ p₂ => p₂.1 = xa → p₂.2 == xb → Acc (Lex r s) p₁) p ⟨xa, xb⟩ lt
-            (fun (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) (h : r a₁ a₂) (eq₂ : a₂ = xa) (eq₃ : b₂ == xb) => by
+        have aux : xa = xa → HEq xb xb → Acc (Lex r s) p :=
+          @PSigma.Lex.rec_on α β r s (fun p₁ p₂ => p₂.1 = xa → HEq p₂.2 xb → Acc (Lex r s) p₁) p ⟨xa, xb⟩ lt
+            (fun (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) (h : r a₁ a₂) (eq₂ : a₂ = xa) (eq₃ : HEq b₂ xb) => by
               subst eq₂
               exact iha a₁ h b₁)
-            fun (a : α) (b₁ b₂ : β a) (h : s a b₁ b₂) (eq₂ : a = xa) (eq₃ : b₂ == xb) => by
+            fun (a : α) (b₁ b₂ : β a) (h : s a b₁ b₂) (eq₂ : a = xa) (eq₃ : HEq b₂ xb) => by
             subst eq₂
             have new_eq₃ := eq_of_heq eq₃
             subst new_eq₃
@@ -59,7 +59,7 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) : �
 
 -- The lexicographical order of well founded relations is well-founded
 theorem lex_wf (ha : WellFounded r) (hb : ∀ x, WellFounded (s x)) : WellFounded (Lex r s) :=
-  WellFounded.intro $ fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b
+  WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b
 #align psigma.lex_wf PSigma.lex_wf
 
 end
@@ -74,7 +74,7 @@ def LexNdep (r : α → α → Prop) (s : β → β → Prop) :=
 
 theorem lex_ndep_wf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r) (hb : WellFounded s) :
     WellFounded (lex_ndep r s) :=
-  WellFounded.intro $ fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
+  WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
 #align psigma.lex_ndep_wf PSigma.lex_ndep_wf
 
 end
@@ -127,7 +127,7 @@ theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, A
 #align psigma.rev_lex_accessible PSigma.rev_lex_accessible
 
 theorem rev_lex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (RevLex r s) :=
-  WellFounded.intro $ fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
+  WellFounded.intro fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
 #align psigma.rev_lex_wf PSigma.rev_lex_wf
 
 end
@@ -151,8 +151,8 @@ theorem mk_skip_left {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β
 
 end
 
-instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : HasWellFounded α] [s₂ : ∀ a, HasWellFounded (β a)] :
-    HasWellFounded (PSigma β) where
+instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : WellFoundedRelation α]
+    [s₂ : ∀ a, WellFoundedRelation (β a)] : WellFoundedRelation (PSigma β) where
   R := Lex s₁.R fun a => (s₂ a).R
   wf := lex_wf s₁.wf fun a => (s₂ a).wf
 #align psigma.has_well_founded PSigma.hasWellFounded

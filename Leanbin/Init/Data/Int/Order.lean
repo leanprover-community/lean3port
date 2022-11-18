@@ -385,17 +385,17 @@ theorem le_natAbs {a : ℤ} : a ≤ natAbs a :=
 -/
 
 #print Int.negSucc_lt_zero /-
-theorem negSucc_lt_zero (n : ℕ) : -[1+ n] < 0 :=
-  lt_of_not_ge $ fun h => by
+theorem negSucc_lt_zero (n : ℕ) : -[n+1] < 0 :=
+  lt_of_not_ge fun h => by
     let ⟨m, h⟩ := eq_ofNat_of_zero_le h
     contradiction
 #align int.neg_succ_lt_zero Int.negSucc_lt_zero
 -/
 
 #print Int.eq_negSucc_of_lt_zero /-
-theorem eq_negSucc_of_lt_zero : ∀ {a : ℤ}, a < 0 → ∃ n : ℕ, a = -[1+ n]
+theorem eq_negSucc_of_lt_zero : ∀ {a : ℤ}, a < 0 → ∃ n : ℕ, a = -[n+1]
   | (n : ℕ), h => absurd h (not_lt_of_ge (ofNat_zero_le _))
-  | -[1+ n], h => ⟨n, rfl⟩
+  | -[n+1], h => ⟨n, rfl⟩
 #align int.eq_neg_succ_of_lt_zero Int.eq_negSucc_of_lt_zero
 -/
 
@@ -1247,10 +1247,10 @@ protected theorem mul_lt_mul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ : 0
 
 #print Int.mul_le_mul_of_nonneg_left /-
 protected theorem mul_le_mul_of_nonneg_left {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : c * a ≤ c * b := by
-  by_cases hba:b ≤ a
+  by_cases hba : b ≤ a
   · simp [le_antisymm hba h₁]
     
-  by_cases hc0:c ≤ 0
+  by_cases hc0 : c ≤ 0
   · simp [le_antisymm hc0 h₂, Int.zero_mul]
     
   exact (le_not_le_of_lt (Int.mul_lt_mul_of_pos_left (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
@@ -1259,10 +1259,10 @@ protected theorem mul_le_mul_of_nonneg_left {a b c : ℤ} (h₁ : a ≤ b) (h₂
 
 #print Int.mul_le_mul_of_nonneg_right /-
 protected theorem mul_le_mul_of_nonneg_right {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : a * c ≤ b * c := by
-  by_cases hba:b ≤ a
+  by_cases hba : b ≤ a
   · simp [le_antisymm hba h₁]
     
-  by_cases hc0:c ≤ 0
+  by_cases hc0 : c ≤ 0
   · simp [le_antisymm hc0 h₂, Int.mul_zero]
     
   exact (le_not_le_of_lt (Int.mul_lt_mul_of_pos_right (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
@@ -1437,13 +1437,13 @@ theorem le_of_lt_add_one {a b : ℤ} (H : a < b + 1) : a ≤ b :=
 
 #print Int.sub_one_lt_of_le /-
 theorem sub_one_lt_of_le {a b : ℤ} (H : a ≤ b) : a - 1 < b :=
-  Int.sub_right_lt_of_lt_add $ lt_add_one_of_le H
+  Int.sub_right_lt_of_lt_add <| lt_add_one_of_le H
 #align int.sub_one_lt_of_le Int.sub_one_lt_of_le
 -/
 
 #print Int.le_of_sub_one_lt /-
 theorem le_of_sub_one_lt {a b : ℤ} (H : a - 1 < b) : a ≤ b :=
-  le_of_lt_add_one $ Int.lt_add_of_sub_right_lt H
+  le_of_lt_add_one <| Int.lt_add_of_sub_right_lt H
 #align int.le_of_sub_one_lt Int.le_of_sub_one_lt
 -/
 
@@ -1495,7 +1495,7 @@ theorem pos_of_sign_eq_one : ∀ {a : ℤ}, sign a = 1 → 0 < a
 theorem neg_of_sign_eq_neg_one : ∀ {a : ℤ}, sign a = -1 → a < 0
   | (n + 1 : ℕ), h => nomatch h
   | 0, h => nomatch h
-  | -[1+ n], _ => negSucc_lt_zero _
+  | -[n+1], _ => negSucc_lt_zero _
 #align int.neg_of_sign_eq_neg_one Int.neg_of_sign_eq_neg_one
 -/
 

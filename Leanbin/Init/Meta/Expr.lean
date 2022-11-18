@@ -166,9 +166,6 @@ attribute [instance] expr.has_decidable_eq
 unsafe axiom expr.alpha_eqv : expr → expr → Bool
 #align expr.alpha_eqv expr.alpha_eqv
 
--- mathport name: «expr =ₐ »
-notation:50 a " =ₐ " b:50 => expr.alpha_eqv a b = Bool.true
-
 protected unsafe axiom expr.to_string : expr elab → String
 #align expr.to_string expr.to_string
 

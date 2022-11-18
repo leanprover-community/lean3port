@@ -13,9 +13,6 @@ class HasOrelse (f : Type u → Type v) : Type max (u + 1) v where
   orelse : ∀ {α : Type u}, f α → f α → f α
 #align has_orelse HasOrelse
 
--- mathport name: «expr <|> »
-infixr:2 " <|> " => HasOrelse.orelse
-
 #print Alternative /-
 class Alternative (f : Type u → Type v) extends Applicative f, HasOrelse f : Type max (u + 1) v where
   failure : ∀ {α : Type u}, f α

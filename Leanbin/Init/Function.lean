@@ -33,9 +33,6 @@ def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : �
     ∀ x, φ (g x) := fun x => f (g x)
 #align function.dcomp Function.dcomp
 
--- mathport name: «expr ∘ »
-infixr:90 " ∘ " => Function.comp
-
 -- mathport name: «expr ∘' »
 infixr:80 " ∘' " => Function.dcomp
 

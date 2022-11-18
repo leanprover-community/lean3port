@@ -20,7 +20,7 @@ private unsafe def relation_tactic (md : Transparency) (op_for : environment →
     | some refl => do
       let r ← mk_const refl
       apply_core r { md, NewGoals := new_goals.non_dep_only } >> return ()
-    | none => fail $ tac_name ++ " tactic failed, target is not a relation application with the expected property."
+    | none => fail <| tac_name ++ " tactic failed, target is not a relation application with the expected property."
 #align tactic.relation_tactic tactic.relation_tactic
 
 unsafe def reflexivity (md := semireducible) : tactic Unit :=
@@ -38,11 +38,11 @@ unsafe def transitivity (md := semireducible) : tactic Unit :=
 unsafe def relation_lhs_rhs (e : expr) : tactic (Name × expr × expr) := do
   let const c _ ← return e.get_app_fn
   let env ← get_env
-  let some (arity, lhs_pos, rhs_pos) ← return $ env.relation_info c
-  let args ← return $ get_app_args e
+  let some (arity, lhs_pos, rhs_pos) ← return <| env.relation_info c
+  let args ← return <| get_app_args e
   guard (args = arity)
-  let some lhs ← return $ args.nth lhs_pos
-  let some rhs ← return $ args.nth rhs_pos
+  let some lhs ← return <| args.nth lhs_pos
+  let some rhs ← return <| args.nth rhs_pos
   return (c, lhs, rhs)
 #align tactic.relation_lhs_rhs tactic.relation_lhs_rhs
 
@@ -53,7 +53,7 @@ unsafe def target_lhs_rhs : tactic (Name × expr × expr) :=
 
 /-- Try to apply subst exhaustively -/
 unsafe def subst_vars : tactic Unit :=
-  focus1 $ iterate (any_hyp subst) >> try (reflexivity reducible)
+  focus1 <| iterate (any_hyp subst) >> try (reflexivity reducible)
 #align tactic.subst_vars tactic.subst_vars
 
 end Tactic

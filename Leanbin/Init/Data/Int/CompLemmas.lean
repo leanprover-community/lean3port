@@ -115,7 +115,7 @@ protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → 
 
 protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
   | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ => by
-    have : -[1+ n] + -[1+ m] = -[1+ Nat.succ (n + m)] := rfl
+    have : -[n+1] + -[m+1] = -[Nat.succ (n + m)+1] := rfl
     simp [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
 #align int.nat_abs_add_neg Int.nat_abs_add_neg
 

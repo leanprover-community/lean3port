@@ -11,7 +11,7 @@ def isSpace (c : Char) : Bool :=
 #align debugger.is_space Debugger.isSpace
 
 private def split_core : List Char → Option String → List String
-  | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some $ String.singleton c)
+  | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some <| String.singleton c)
   | c :: cs, some s => if isSpace c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
@@ -22,11 +22,11 @@ def split (s : String) : List String :=
 #align debugger.split Debugger.split
 
 def toQualifiedNameCore : List Char → Name → String → Name
-  | [], r, s => if s.isEmpty then r else r <.> s
+  | [], r, s => if s.isEmpty then r else .str r s
   | c :: cs, r, s =>
     if isSpace c then to_qualified_name_core cs r s
     else
-      if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (r <.> s) ""
+      if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (.str r s) ""
       else to_qualified_name_core cs r (s.str c)
 #align debugger.to_qualified_name_core Debugger.toQualifiedNameCore
 
@@ -74,7 +74,7 @@ unsafe def show_curr_fn (header : String) : vm Unit := do
 
 unsafe def is_valid_fn_prefix (p : Name) : vm Bool := do
   let env ← vm.get_env
-  return $
+  return <|
       env ff fun d r =>
         r ||
           let n := d
@@ -83,7 +83,7 @@ unsafe def is_valid_fn_prefix (p : Name) : vm Bool := do
 
 unsafe def show_frame (frame_idx : Nat) : vm Unit := do
   let sz ← vm.call_stack_size
-  let fn ← if frame_idx >= sz then vm.curr_fn else vm.call_stack_fn frame_idx
+  let fn ← if frame_idx ≥ sz then vm.curr_fn else vm.call_stack_fn frame_idx
   show_fn "" fn frame_idx
 #align debugger.show_frame debugger.show_frame
 
@@ -108,7 +108,7 @@ unsafe def type_to_string : Option expr → Nat → vm String
   | some type, i => do
     let fmt ← vm.pp_expr type
     let opts ← vm.get_options
-    return $ fmt opts
+    return <| fmt opts
 #align debugger.type_to_string debugger.type_to_string
 
 unsafe def show_vars_core : Nat → Nat → Nat → vm Unit

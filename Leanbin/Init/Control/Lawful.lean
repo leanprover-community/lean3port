@@ -18,7 +18,7 @@ open Function
 open Tactic
 
 unsafe def control_laws_tac :=
-  whnf_target >> intros >> to_expr ``(rfl) >>= exact
+  (whnf_target >> intros) >> to_expr ``(rfl) >>= exact
 #align control_laws_tac control_laws_tac
 
 class IsLawfulFunctor (f : Type u → Type v) [Functor f] : Prop where

@@ -8,21 +8,18 @@ The sum type, aka disjoint union.
 prelude
 import Leanbin.Init.Logic
 
--- mathport name: «expr ⊕ »
-infixr:30 " ⊕ " => Sum
-
 universe u v
 
 variable {α : Type u} {β : Type v}
 
 #print Sum.inhabitedLeft /-
-instance Sum.inhabitedLeft [h : Inhabited α] : Inhabited (α ⊕ β) :=
+instance Sum.inhabitedLeft [h : Inhabited α] : Inhabited (Sum α β) :=
   ⟨Sum.inl default⟩
 #align sum.inhabited_left Sum.inhabitedLeft
 -/
 
 #print Sum.inhabitedRight /-
-instance Sum.inhabitedRight [h : Inhabited β] : Inhabited (α ⊕ β) :=
+instance Sum.inhabitedRight [h : Inhabited β] : Inhabited (Sum α β) :=
   ⟨Sum.inr default⟩
 #align sum.inhabited_right Sum.inhabitedRight
 -/

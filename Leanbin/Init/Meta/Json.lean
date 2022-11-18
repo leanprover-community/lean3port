@@ -58,12 +58,12 @@ unsafe def to_format : json → format
   | null => "null"
   | object kvs =>
     "{ " ++
-        (format.group $
-          format.nest 2 $
-            format.join $
-              List.intersperse (", " ++ format.line) $ kvs.map $ fun ⟨k, v⟩ => String.quote k ++ ":" ++ to_format v) ++
+        (format.group <|
+          format.nest 2 <|
+            format.join <|
+              List.intersperse (", " ++ format.line) <| kvs.map fun ⟨k, v⟩ => String.quote k ++ ":" ++ to_format v) ++
       "}"
-  | Array' js => list.to_format $ js.map to_format
+  | Array' js => list.to_format <| js.map to_format
 #align json.to_format json.to_format
 
 unsafe instance : has_to_format json :=

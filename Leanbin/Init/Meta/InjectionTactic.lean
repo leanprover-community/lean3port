@@ -36,9 +36,9 @@ unsafe def injection_with (h : expr) (ns : List Name) (base := `h) (offset := so
           let lhs ← whnf_ginductive lhs
           let rhs ← whnf_ginductive rhs
           let env ← get_env
-          let const constructor_left _ ← pure $ get_app_fn lhs
-          let const constructor_right _ ← pure $ get_app_fn rhs
-          let inj_name ← resolve_constant $ constructor_left ++ "inj_arrow"
+          let const constructor_left _ ← pure <| get_app_fn lhs
+          let const constructor_right _ ← pure <| get_app_fn rhs
+          let inj_name ← resolve_constant <| constructor_left ++ "inj_arrow"
           pure (lhs, rhs, constructor_left, constructor_right, inj_name)) <|>
         fail
           "injection tactic failed, argument must be an equality proof where lhs and rhs are of the form (c ...), where c is a constructor"
@@ -67,7 +67,7 @@ unsafe def injection_with (h : expr) (ns : List Name) (base := `h) (offset := so
     else do
       let tgt ← target
       let inductive_name := constructor_left
-      let pr ← mk_app (inductive_name <.> "no_confusion") [tgt, lhs, rhs, h]
+      let pr ← mk_app (.str inductive_name "no_confusion") [tgt, lhs, rhs, h]
       exact pr
       return ([], ns)
 #align tactic.injection_with tactic.injection_with

@@ -57,7 +57,7 @@ theorem bodd_add (m n : ℕ) : bodd (m + n) = xor (bodd m) (bodd n) := by
 #align nat.bodd_add Nat.bodd_add
 
 @[simp]
-theorem bodd_mul (m n : ℕ) : bodd (m * n) = bodd m && bodd n := by
+theorem bodd_mul (m n : ℕ) : bodd (m * n) = (bodd m && bodd n) := by
   induction' n with n IH
   · simp
     cases bodd m <;> rfl
@@ -70,7 +70,7 @@ theorem bodd_mul (m n : ℕ) : bodd (m * n) = bodd m && bodd n := by
 theorem mod_two_of_bodd (n : ℕ) : n % 2 = cond (bodd n) 1 0 := by
   have := congr_arg bodd (mod_add_div n 2)
   simp [not] at this
-  rw [show ∀ b, ff && b = ff by intros <;> cases b <;> rfl, show ∀ b, xor b ff = b by intros <;> cases b <;> rfl] at
+  rw [show ∀ b, (ff && b) = ff by intros <;> cases b <;> rfl, show ∀ b, xor b ff = b by intros <;> cases b <;> rfl] at
     this
   rw [← this]
   cases' mod_two_eq_zero_or_one n with h h <;> rw [h] <;> rfl
@@ -109,7 +109,7 @@ theorem bodd_add_div2 : ∀ n, cond (bodd n) 1 0 + 2 * div2 n = n
 #align nat.bodd_add_div2 Nat.bodd_add_div2
 
 theorem div2_val (n) : div2 n = n / 2 := by
-  refine' Nat.eq_of_mul_eq_mul_left dec_trivial (Nat.add_left_cancel (Eq.trans _ (Nat.mod_add_div n 2).symm))
+  refine' Nat.eq_of_mul_eq_mul_left (by decide) (Nat.add_left_cancel (Eq.trans _ (Nat.mod_add_div n 2).symm))
   rw [mod_two_of_bodd, bodd_add_div2]
 #align nat.div2_val Nat.div2_val
 
@@ -136,7 +136,7 @@ theorem bit_val (b n) : bit b n = 2 * n + cond b 1 0 := by
 #align nat.bit_val Nat.bit_val
 
 theorem bit_decomp (n : Nat) : bit (bodd n) (div2 n) = n :=
-  (bit_val _ _).trans $ (Nat.add_comm _ _).trans $ bodd_add_div2 _
+  (bit_val _ _).trans <| (Nat.add_comm _ _).trans <| bodd_add_div2 _
 #align nat.bit_decomp Nat.bit_decomp
 
 def bitCasesOn {C : Nat → Sort u} (n) (h : ∀ b n, C (bit b n)) : C n := by rw [← bit_decomp n] <;> apply h
@@ -182,7 +182,7 @@ def binaryRec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) 
       have : n' < n := by
         change div2 n < n
         rw [div2_val]
-        apply (div_lt_iff_lt_mul $ succ_pos 1).2
+        apply (div_lt_iff_lt_mul <| succ_pos 1).2
         have := Nat.mul_lt_mul_of_pos_left (lt_succ_self 1) (lt_of_le_of_ne n.zero_le (Ne.symm n0))
         rwa [Nat.mul_one] at this
       rw [← show bit (bodd n) n' = n from bit_decomp n] <;> exact f (bodd n) n' (binary_rec n')
@@ -234,7 +234,7 @@ theorem bodd_bit (b n) : bodd (bit b n) = b := by rw [bit_val] <;> simp <;> case
 #align nat.bodd_bit Nat.bodd_bit
 
 theorem div2_bit (b n) : div2 (bit b n) = n := by
-  rw [bit_val, div2_val, Nat.add_comm, add_mul_div_left, div_eq_of_lt, Nat.zero_add] <;> cases b <;> exact dec_trivial
+  rw [bit_val, div2_val, Nat.add_comm, add_mul_div_left, div_eq_of_lt, Nat.zero_add] <;> cases b <;> exact by decide
 #align nat.div2_bit Nat.div2_bit
 
 theorem shiftl'_add (b m n) : ∀ k, shiftl' b m (n + k) = shiftl' b (shiftl' b m n) k
@@ -400,17 +400,17 @@ theorem test_bit_bitwise {f : Bool → Bool → Bool} (h : f false false = ff) (
 #align nat.test_bit_bitwise Nat.test_bit_bitwise
 
 @[simp]
-theorem test_bit_lor : ∀ m n k, testBit (lor m n) k = testBit m k || testBit n k :=
+theorem test_bit_lor : ∀ m n k, testBit (lor m n) k = (testBit m k || testBit n k) :=
   test_bit_bitwise rfl
 #align nat.test_bit_lor Nat.test_bit_lor
 
 @[simp]
-theorem test_bit_land : ∀ m n k, testBit (land m n) k = testBit m k && testBit n k :=
+theorem test_bit_land : ∀ m n k, testBit (land m n) k = (testBit m k && testBit n k) :=
   test_bit_bitwise rfl
 #align nat.test_bit_land Nat.test_bit_land
 
 @[simp]
-theorem test_bit_ldiff : ∀ m n k, testBit (ldiff m n) k = testBit m k && not (testBit n k) :=
+theorem test_bit_ldiff : ∀ m n k, testBit (ldiff m n) k = (testBit m k && not (testBit n k)) :=
   test_bit_bitwise rfl
 #align nat.test_bit_ldiff Nat.test_bit_ldiff
 

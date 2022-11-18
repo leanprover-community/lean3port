@@ -81,7 +81,7 @@ instance {α : Type u} [ToString α] : ToString (Option α) :=
     | none => "none"
     | some a => "(some " ++ toString a ++ ")"⟩
 
-instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (α ⊕ β) :=
+instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (Sum α β) :=
   ⟨fun s =>
     match s with
     | inl a => "(inl " ++ toString a ++ ")"

@@ -48,9 +48,6 @@ instance stringToName : Coe String Name :=
   ⟨mkSimpleName⟩
 #align string_to_name stringToName
 
--- mathport name: «expr <.> »
-infixl:65 " <.> " => mkStrName
-
 open Name
 
 def Name.getPrefix : Name → Name
@@ -143,8 +140,8 @@ unsafe def name.is_prefix_of : Name → Name → Bool
 
 unsafe def name.is_suffix_of : Name → Name → Bool
   | anonymous, _ => true
-  | mk_string s n, mk_string s' n' => (s = s') && name.is_suffix_of n n'
-  | mk_numeral v n, mk_numeral v' n' => (v = v') && name.is_suffix_of n n'
+  | mk_string s n, mk_string s' n' => s = s' && name.is_suffix_of n n'
+  | mk_numeral v n, mk_numeral v' n' => v = v' && name.is_suffix_of n n'
   | _, _ => false
 #align name.is_suffix_of name.is_suffix_of
 

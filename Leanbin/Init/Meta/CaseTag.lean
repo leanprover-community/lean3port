@@ -135,9 +135,9 @@ open Format
 
 protected unsafe def case_tag.to_format : CaseTag → format
   | pi names num_arguments =>
-    join ["(pi ", group $ nest 4 $ join $ List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
+    join ["(pi ", group <| nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
   | hyps names arguments =>
-    join ["(hyps ", group $ nest 6 $ join $ List.intersperse line [names.to_format, arguments.to_format], ")"]
+    join ["(hyps ", group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format], ")"]
 #align tactic.interactive.case_tag.to_format tactic.interactive.case_tag.to_format
 
 end
@@ -230,12 +230,12 @@ private unsafe def parse_arguments : List Name → List Name × List Name
 unsafe def parse : List Name → Option CaseTag
   | [] => none
   | mk_numeral n `_case.pi :: ns => do
-    guard $ ns fun n => ¬n
-    some $ pi ns n
+    guard <| ns fun n => ¬n
+    some <| pi ns n
   | `_case.hyps :: ns => do
     let ⟨args, ns⟩ := parse_arguments ns
-    guard $ ns fun n => ¬n
-    some $ hyps ns args
+    guard <| ns fun n => ¬n
+    some <| hyps ns args
   | _ => none
 #align tactic.interactive.case_tag.parse tactic.interactive.case_tag.parse
 

@@ -46,10 +46,10 @@ private unsafe def mk_dec_eq_for (lhs : expr) (rhs : expr) : tactic expr := do
   let dec_type ← mk_app `decidable_eq [lhs_type] >>= whnf
   (do
         let inst ← mk_instance dec_type
-        return $ inst lhs rhs) <|>
+        return <| inst lhs rhs) <|>
       do
       let f ← pp dec_type
-      fail $ to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++ format.nest 2 (format.line ++ f)
+      fail <| to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++ format.nest 2 (format.line ++ f)
 #align tactic.mk_dec_eq_for tactic.mk_dec_eq_for
 
 private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
@@ -63,10 +63,10 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
     let (lhs, rhs) ← get_lhs_rhs
-    -- Try easy case first, where the proof is just reflexivity
+    (-- Try easy case first, where the proof is just reflexivity
               unify
               lhs rhs >>
-            right >>
+            right) >>
           reflexivity <|>
         do
         let lhs_list := get_app_args lhs
@@ -78,13 +78,13 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         let inst ←
           if rec then do
               let inst_fn ← mk_brec_on_rec_value F_name num_rec
-              return $ app inst_fn rhs_arg
+              return <| app inst_fn rhs_arg
             else do
               mk_dec_eq_for lhs_arg rhs_arg
         sorry
-        -- discharge first (positive) case by recursion
+        (-- discharge first (positive) case by recursion
               intro1 >>=
-              subst >>
+              subst) >>
             dec_eq_same_constructor I_name F_name (if rec then num_rec + 1 else num_rec)
         -- discharge second (negative) case by contradiction
           intro1
@@ -102,7 +102,7 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
 
 -- Easy case: target is of the form (decidable (C_1 ... = C_2 ...)) where C_1 and C_2 are distinct constructors
 private unsafe def dec_eq_diff_constructor : tactic Unit :=
-  left >> intron 1 >> contradiction
+  (left >> intron 1) >> contradiction
 #align tactic.dec_eq_diff_constructor tactic.dec_eq_diff_constructor
 
 /- This tactic is invoked for each case of decidable_eq. There n^2 cases, where n is the number
@@ -115,7 +115,7 @@ private unsafe def dec_eq_case_2 (I_name : Name) (F_name : Name) : tactic Unit :
 #align tactic.dec_eq_case_2 tactic.dec_eq_case_2
 
 private unsafe def dec_eq_case_1 (I_name : Name) (F_name : Name) : tactic Unit :=
-  intro `w >>= cases >> all_goals' (dec_eq_case_2 I_name F_name)
+  (intro `w >>= cases) >> all_goals' (dec_eq_case_2 I_name F_name)
 #align tactic.dec_eq_case_1 tactic.dec_eq_case_1
 
 unsafe def mk_dec_eq_instance_core : tactic Unit := do
@@ -130,7 +130,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then
-      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some $ I_name <.> "brec_on") >> return ()
+      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| .str I_name "brec_on") >> return ()
     else intro v_name >> return ()
   -- Apply cases to first element of type (I ...)
         get_local
@@ -151,7 +151,7 @@ unsafe
           let pi x1 i1 d1 ( pi x2 i2 d2 b ) ← target >>= whnf
           let const I_name ls ← return ( get_app_fn d1 )
           when ( is_ginductive env I_name ∧ ¬ is_inductive env I_name )
-            $
+            <|
             do
               let d1' ← whnf d1
                 let app I_basic_const I_idx ← return d1'

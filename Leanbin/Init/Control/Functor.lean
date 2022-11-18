@@ -19,9 +19,6 @@ class Functor (f : Type u → Type v) : Type max (u + 1) v where
 #align functor Functor
 -/
 
--- mathport name: «expr <$> »
-infixr:100 " <$> " => Functor.map
-
 -- mathport name: «expr <$ »
 infixr:100 " <$ " => Functor.mapConst
 

@@ -18,7 +18,7 @@ namespace Nat
 def gcd : Nat → Nat → Nat
   | 0, y => y
   | succ x, y =>
-    have : y % succ x < succ x := mod_lt _ $ succ_pos _
+    have : y % succ x < succ x := mod_lt _ <| succ_pos _
     gcd (y % succ x) (succ x)
 #align nat.gcd Nat.gcd
 -/
@@ -65,7 +65,7 @@ theorem gcd_rec (m n : ℕ) : gcd m n = gcd (n % m) m := by cases m <;> simp [gc
 @[elab_as_elim]
 theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n) (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) :
     P m n :=
-  @induction _ _ lt_wf (fun m => ∀ n, P m n) m
+  @induction _ _ Nat.lt_wfRel.wf (fun m => ∀ n, P m n) m
     (fun k IH => by
       induction' k with k ih
       exact H0

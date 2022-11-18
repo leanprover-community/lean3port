@@ -127,19 +127,19 @@ def eps : Parser Unit :=
 
 /-- Matches the given character. -/
 def ch (c : Char) : Parser Unit :=
-  decorateError c.toString $ sat (· = c) >> eps
+  decorateError c.toString <| sat (· = c) >> eps
 #align parser.ch Parser.ch
 
 /-- Matches a whole char_buffer.  Does not consume input in case of failure. -/
 def charBuf (s : CharBuffer) : Parser Unit :=
-  decorateError s.toString $ s.toList.mmap' ch
+  decorateError s.toString <| s.toList.mmap' ch
 #align parser.char_buf Parser.charBuf
 
 /-- Matches one out of a list of characters. -/
 def oneOf (cs : List Char) : Parser Char :=
   (decorateErrors do
       let c ← cs
-      return c) $
+      return c) <|
     sat (· ∈ cs)
 #align parser.one_of Parser.oneOf
 
@@ -149,7 +149,7 @@ def oneOf' (cs : List Char) : Parser Unit :=
 
 /-- Matches a string.  Does not consume input in case of failure. -/
 def str (s : String) : Parser Unit :=
-  decorateError s $ s.toList.mmap' ch
+  decorateError s <| s.toList.mmap' ch
 #align parser.str Parser.str
 
 /-- Number of remaining input characters. -/
@@ -158,9 +158,9 @@ def remaining : Parser ℕ := fun input pos => ParseResult.done Pos (input.size 
 
 /-- Matches the end of the input. -/
 def eof : Parser Unit :=
-  decorateError "<end-of-file>" $ do
+  decorateError "<end-of-file>" <| do
     let rem ← remaining
-    guard $ rem = 0
+    guard <| rem = 0
 #align parser.eof Parser.eof
 
 def foldrCore (f : α → β → β) (p : Parser α) (b : β) : ∀ reps : ℕ, Parser β
@@ -233,17 +233,17 @@ def fixCore (F : Parser α → Parser α) : ∀ max_depth : ℕ, Parser α
 
 /-- Matches a digit (0-9). -/
 def digit : Parser Nat :=
-  decorateError "<digit>" $ do
+  decorateError "<digit>" <| do
     let c ← sat fun c => '0' ≤ c ∧ c ≤ '9'
-    pure $ c - '0'.toNat
+    pure <| c - '0'.toNat
 #align parser.digit Parser.digit
 
 /-- Matches a natural number. Large numbers may cause performance issues, so
 don't run this parser on untrusted input. -/
 def nat : Parser Nat :=
-  decorateError "<natural>" $ do
+  decorateError "<natural>" <| do
     let digits ← many1 digit
-    pure $ Prod.fst $ digits (fun digit ⟨Sum, magnitude⟩ => ⟨Sum + digit * magnitude, magnitude * 10⟩) ⟨0, 1⟩
+    pure <| Prod.fst <| digits (fun digit ⟨Sum, magnitude⟩ => ⟨Sum + digit * magnitude, magnitude * 10⟩) ⟨0, 1⟩
 #align parser.nat Parser.nat
 
 /-- Fixpoint combinator satisfying `fix F = F (fix F)`. -/
@@ -272,7 +272,7 @@ def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Dlist String) : Char
 def run (p : Parser α) (input : CharBuffer) : Sum String α :=
   match (p <* eof) input 0 with
   | ParseResult.done Pos res => Sum.inr res
-  | ParseResult.fail Pos expected => Sum.inl $ Buffer.toString $ mkErrorMsg input Pos expected
+  | ParseResult.fail Pos expected => Sum.inl <| Buffer.toString <| mkErrorMsg input Pos expected
 #align parser.run Parser.run
 
 /-- Runs a parser on the given input.  The parser needs to match the complete input. -/

@@ -114,7 +114,7 @@ unsafe def interaction_monad.failed {α : Type u} : m α :=
   interaction_monad.fail "failed"
 #align interaction_monad.failed interaction_monad.failed
 
-/- Alternative orelse operator that allows to select which exception should be used.
+/-- Alternative orelse operator that allows to select which exception should be used.
    The default is to use the first exception since the standard `orelse` uses the second. -/
 unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first_ex := true) : m α := fun s =>
   interaction_monad.result.cases_on (t₁ s) success fun e₁ ref₁ s₁' =>

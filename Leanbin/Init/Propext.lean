@@ -11,7 +11,9 @@ axiom propext {a b : Prop} : (a ↔ b) → a = b
 #align propext propext
 -/
 
--- Additional congruence lemmas.
+/-! # Additional congruence lemmas. -/
+
+
 universe u v
 
 #print forall_congr /-

@@ -6,18 +6,14 @@ Authors: Leonardo de Moura
 prelude
 import Leanbin.Init.Data.Bool.Default
 
-/-
-Simplification lemmas for ite.
+/-!
+# Simplification lemmas for ite.
 
 We don't prove them at logic.lean because it is easier to prove them using
 the tactic framework.
 -/
-/-
-Simplification lemmas for ite.
 
-We don't prove them at logic.lean because it is easier to prove them using
-the tactic framework.
--/
+
 @[simp]
 theorem if_true_right_eq_or (p : Prop) [h : Decidable p] (q : Prop) : (if p then q else True) = (¬p ∨ q) := by
   by_cases p <;> simp [h]

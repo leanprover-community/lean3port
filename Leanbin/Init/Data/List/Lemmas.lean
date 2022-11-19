@@ -19,8 +19,10 @@ namespace List
 
 open Nat
 
+/-! append -/
+
+
 #print List.nil_append /-
--- append
 @[simp]
 theorem nil_append (s : List α) : [] ++ s = s :=
   rfl
@@ -46,8 +48,10 @@ theorem append_assoc (s t u : List α) : s ++ t ++ u = s ++ (t ++ u) := by induc
 #align list.append_assoc List.append_assoc
 -/
 
+/-! length -/
+
+
 #print List.length_cons /-
--- length
 theorem length_cons (a : α) (l : List α) : length (a :: l) = length l + 1 :=
   rfl
 #align list.length_cons List.length_cons
@@ -90,13 +94,15 @@ theorem length_drop : ∀ (i : ℕ) (l : List α), length (drop i l) = length l 
 #align list.length_drop List.length_drop
 -/
 
+/-! map -/
+
+
 /- warning: list.map_cons -> List.map_cons is a dubious translation:
 lean 3 declaration is
   forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (a : α) (l : List.{u} α), Eq.{succ v} (List.{v} β) (List.map.{u v} α β f (List.cons.{u} α a l)) (List.cons.{v} β (f a) (List.map.{u v} α β f l))
 but is expected to have type
   forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (a : α) (l : List.{u_1} α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1 u_2} α β f (List.cons.{u_1} α a l)) (List.cons.{u_2} β (f a) (List.map.{u_1 u_2} α β f l))
 Case conversion may be inaccurate. Consider using '#align list.map_cons List.map_consₓ'. -/
--- map
 theorem map_cons (f : α → β) (a l) : map f (a :: l) = f a :: map f l :=
   rfl
 #align list.map_cons List.map_cons
@@ -148,13 +154,15 @@ Case conversion may be inaccurate. Consider using '#align list.length_map List.l
 theorem length_map (f : α → β) (l : List α) : length (map f l) = length l := by induction l <;> simp [*]
 #align list.length_map List.length_map
 
+/-! bind -/
+
+
 /- warning: list.nil_bind -> List.nil_bind is a dubious translation:
 lean 3 declaration is
   forall {α : Type.{u}} {β : Type.{v}} (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u v} α β (List.nil.{u} α) f) (List.nil.{v} β)
 but is expected to have type
   forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1 u_2} α β (List.nil.{u_1} α) f) (List.nil.{u_2} β)
 Case conversion may be inaccurate. Consider using '#align list.nil_bind List.nil_bindₓ'. -/
--- bind
 @[simp]
 theorem nil_bind (f : α → List β) : List.bind [] f = [] := by simp [join, List.bind]
 #align list.nil_bind List.nil_bind
@@ -180,8 +188,10 @@ theorem append_bind (xs ys) (f : α → List β) : List.bind (xs ++ ys) f = List
   induction xs <;> [rfl, simp [*, cons_bind]]
 #align list.append_bind List.append_bind
 
+/-! mem -/
+
+
 #print List.mem_nil_iff /-
--- mem
 theorem mem_nil_iff (a : α) : a ∈ ([] : List α) ↔ False :=
   Iff.rfl
 #align list.mem_nil_iff List.mem_nil_iff
@@ -268,8 +278,10 @@ theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀ x ∈ a :: l, 
     o.elim (fun e => e.symm ▸ pa) (al x)⟩
 #align list.ball_cons List.ball_cons
 
+/-! list subset -/
+
+
 #print List.Subset /-
--- list subset
 protected def Subset (l₁ l₂ : List α) :=
   ∀ ⦃a : α⦄, a ∈ l₁ → a ∈ l₂
 #align list.subset List.Subset
@@ -390,8 +402,10 @@ theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
   | a :: l => by by_cases pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
 #align list.partition_eq_filter_filter List.partition_eq_filter_filter
 
+/-! sublists -/
+
+
 #print List.Sublist /-
--- sublists
 inductive Sublist : List α → List α → Prop
   | slnil : sublist [] []
   | cons (l₁ l₂ a) : sublist l₁ l₂ → sublist l₁ (a :: l₂)
@@ -408,7 +422,9 @@ theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → lengt
   | _, _, sublist.cons2 l₁ l₂ a s => succ_le_succ (length_le_of_sublist s)
 #align list.length_le_of_sublist List.length_le_of_sublist
 
--- filter
+/-! filter -/
+
+
 @[simp]
 theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter' p [] = [] :=
   rfl
@@ -439,7 +455,9 @@ theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α
     else by simp [pa] <;> apply sublist.cons <;> apply filter_sublist l
 #align list.filter_sublist List.filter_sublist
 
--- map_accumr
+/-! map_accumr -/
+
+
 section MapAccumr
 
 variable {φ : Type w₁} {σ : Type w₂}

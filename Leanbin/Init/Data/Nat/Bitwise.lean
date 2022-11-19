@@ -229,7 +229,9 @@ theorem binary_rec_zero {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (
   rfl
 #align nat.binary_rec_zero Nat.binary_rec_zero
 
--- bitwise ops
+/-! bitwise ops -/
+
+
 theorem bodd_bit (b n) : bodd (bit b n) = b := by rw [bit_val] <;> simp <;> cases b <;> cases bodd n <;> rfl
 #align nat.bodd_bit Nat.bodd_bit
 

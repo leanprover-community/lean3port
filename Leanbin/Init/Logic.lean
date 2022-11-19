@@ -28,7 +28,7 @@ def flip {α : Sort u} {β : Sort v} {φ : Sort w} (f : α → β → φ) : β �
 -/
 
 #print Implies /-
--- implication
+/-- implication -/
 def Implies (a b : Prop) :=
   a → b
 #align implies Implies
@@ -67,8 +67,10 @@ theorem mt {a b : Prop} (h₁ : a → b) (h₂ : ¬b) : ¬a := fun ha : a => h�
 #align mt mt
 -/
 
+/-! not -/
+
+
 #print not_false /-
--- not
 theorem not_false : ¬False :=
   id
 #align not_false not_false
@@ -85,16 +87,20 @@ theorem not_not_intro {a : Prop} (ha : a) : ¬¬a := fun hna : ¬a => absurd ha 
 #align non_contradictory_intro not_not_intro
 -/
 
+/-! false -/
+
+
 #print False.elim /-
--- false
 @[inline]
 def False.elim {C : Sort u} (h : False) : C :=
   False.ndrec C h
 #align false.elim False.elim
 -/
 
+/-! eq -/
+
+
 #print proof_irrel /-
--- eq 
 -- proof irrelevance is built in
 theorem proof_irrel {a : Prop} (h₁ h₂ : a) : h₁ = h₂ :=
   rfl
@@ -188,8 +194,10 @@ theorem cast_eq {α : Sort u} (h : α = α) (a : α) : cast h a = a :=
 #align cast_eq cast_eq
 -/
 
+/-! ne -/
+
+
 #print Ne /-
--- ne
 @[reducible]
 def Ne {α : Sort u} (a b : α) :=
   ¬a = b
@@ -364,7 +372,9 @@ theorem cast_heq : ∀ {α β : Sort u} (h : α = β) (a : α), HEq (cast h a) a
 #align cast_heq cast_heq
 -/
 
--- and
+/-! and -/
+
+
 variable {a b c d : Prop}
 
 theorem And.elim (h₁ : a ∧ b) (h₂ : a → b → c) : c :=
@@ -384,7 +394,9 @@ theorem And.symm : a ∧ b → b ∧ a :=
 #align and.symm And.symm
 -/
 
--- or
+/-! or -/
+
+
 namespace Or
 
 #print Or.elim /-
@@ -416,15 +428,19 @@ theorem Or.symm : a ∨ b → b ∨ a :=
 #align or.symm Or.symm
 -/
 
+/-! xor -/
+
+
 #print Xor' /-
--- xor
 def Xor' (a b : Prop) :=
   a ∧ ¬b ∨ b ∧ ¬a
 #align xor Xor'
 -/
 
+/-! iff -/
+
+
 #print Iff /-
--- iff
 /-- `iff P Q`, with notation `P ↔ Q`, is the proposition asserting that `P` and `Q` are equivalent,
 that is, have the same truth value. -/
 structure Iff (a b : Prop) : Prop where intro ::
@@ -677,13 +693,15 @@ theorem eq_comm {α : Sort u} {a b : α} : a = b ↔ b = a :=
 #align eq_comm eq_comm
 -/
 
+/-! and simp rules -/
+
+
 /- warning: and.imp -> And.imp is a dubious translation:
 lean 3 declaration is
   forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (a -> c) -> (b -> d) -> (And a b) -> (And c d)
 but is expected to have type
   forall {a : Prop} {c : Prop} {b : Prop} {d : Prop}, (a -> c) -> (b -> d) -> (And a b) -> (And c d)
 Case conversion may be inaccurate. Consider using '#align and.imp And.impₓ'. -/
--- and simp rules
 theorem And.imp (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
 #align and.imp And.imp
 
@@ -797,7 +815,9 @@ theorem and_self_iff (a : Prop) : a ∧ a ↔ a :=
 #align and_self and_self_iff
 -/
 
--- or simp rules
+/-! or simp rules -/
+
+
 theorem Or.imp (h₂ : a → c) (h₃ : b → d) : a ∨ b → c ∨ d :=
   Or.ndrec (fun h => Or.inl (h₂ h)) fun h => Or.inr (h₃ h)
 #align or.imp Or.impₓ
@@ -910,8 +930,10 @@ theorem not_or_of_not {a b : Prop} : ¬a → ¬b → ¬(a ∨ b)
 #align not_or not_or_of_not
 -/
 
+/-! or resolution rulse -/
+
+
 #print Or.resolve_left /-
--- or resolution rulse
 theorem Or.resolve_left {a b : Prop} (h : a ∨ b) (na : ¬a) : b :=
   Or.elim h (fun ha => absurd ha na) id
 #align or.resolve_left Or.resolve_left
@@ -935,8 +957,10 @@ theorem Or.neg_resolve_right {a b : Prop} (h : a ∨ ¬b) (hb : b) : a :=
 #align or.neg_resolve_right Or.neg_resolve_right
 -/
 
+/-! iff simp rules -/
+
+
 #print iff_true_iff /-
--- iff simp rules
 @[simp]
 theorem iff_true_iff (a : Prop) : (a ↔ True) ↔ a :=
   Iff.intro (fun h => Iff.mpr h trivial) iff_true_intro
@@ -977,8 +1001,10 @@ theorem iff_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : (a ↔ b) ↔ (c ↔ d) :=
     ((and_congr (imp_congr h₁ h₂) (imp_congr h₂ h₁)).trans (iff_iff_implies_and_implies c d).symm)
 #align iff_congr iff_congrₓ
 
+/-! implies simp rule -/
+
+
 #print imp_true_iff /-
--- implies simp rule
 @[simp]
 theorem imp_true_iff (α : Sort u) : α → True ↔ True :=
   Iff.intro (fun h => trivial) fun ha h => trivial
@@ -1031,8 +1057,10 @@ theorem Exists.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₁ : ∃ x, p 
 #align exists.elim Exists.elim
 -/
 
+/-! exists unique -/
+
+
 #print ExistsUnique /-
--- exists unique
 def ExistsUnique {α : Sort u} (p : α → Prop) :=
   ∃ x, p x ∧ ∀ y, p y → y = x
 #align exists_unique ExistsUnique
@@ -1074,8 +1102,10 @@ theorem ExistsUnique.unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) {y
 #align unique_of_exists_unique ExistsUnique.unique
 -/
 
+/-! exists, forall, exists unique congruences -/
+
+
 #print forall_congr' /-
--- exists, forall, exists unique congruences
 @[congr]
 theorem forall_congr' {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) : (∀ a, p a) ↔ ∀ a, q a :=
   Iff.intro (fun p a => Iff.mp (h a) (p a)) fun q a => Iff.mpr (h a) (q a)
@@ -1111,8 +1141,10 @@ theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x
 #align forall_not_of_not_exists forall_not_of_not_exists
 -/
 
+/-! decidable -/
+
+
 #print Decidable.decide /-
--- decidable
 def Decidable.decide (p : Prop) [h : Decidable p] : Bool :=
   Decidable.casesOn h (fun h₁ => Bool.false) fun h₂ => Bool.true
 #align decidable.to_bool Decidable.decide
@@ -1151,7 +1183,7 @@ def dite {α : Sort u} (c : Prop) [h : Decidable c] : (c → α) → (¬c → α
 -/
 
 #print ite /-
--- if-then-else
+/-- if-then-else -/
 @[inline]
 def ite {α : Sort u} (c : Prop) [h : Decidable c] (t e : α) : α :=
   Decidable.recOn h (fun hnc => e) fun hc => t
@@ -1355,8 +1387,10 @@ theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} : ∀
 #align decidable_eq_inr_neg decidable_eq_inr_neg
 -/
 
+/-! inhabited -/
+
+
 #print Inhabited /-
--- inhabited
 class Inhabited (α : Sort u) where
   default : α
 #align inhabited Inhabited
@@ -1411,8 +1445,10 @@ theorem nonempty_of_exists {α : Sort u} {p : α → Prop} : (∃ x, p x) → No
 #align nonempty_of_exists nonempty_of_exists
 -/
 
+/-! subsingleton -/
+
+
 #print Subsingleton /-
--- subsingleton
 class inductive Subsingleton (α : Sort u) : Prop
   | intro (h : ∀ a b : α, a = b) : Subsingleton
 #align subsingleton Subsingleton
@@ -1649,7 +1685,7 @@ structure ULift.{r, s} (α : Type s) : Type max s r where up ::
 namespace ULift
 
 #print ULift.up_down /-
--- Bijection between α and ulift.{v} α
+/-- Bijection between α and ulift.{v} α -/
 theorem up_down {α : Type u} : ∀ b : ULift.{v} α, up (down b) = b
   | up a => rfl
 #align ulift.up_down ULift.up_down
@@ -1673,7 +1709,7 @@ structure PLift (α : Sort u) : Type u where up ::
 namespace PLift
 
 #print PLift.up_down /-
--- Bijection between α and plift α
+/-- Bijection between α and plift α -/
 theorem up_down {α : Sort u} : ∀ b : PLift α, up (down b) = b
   | up a => rfl
 #align plift.up_down PLift.up_down
@@ -1688,7 +1724,7 @@ theorem down_up {α : Sort u} (a : α) : down (up a) = a :=
 end PLift
 
 #print let_value_eq /-
--- Equalities for rewriting let-expressions
+/-- Equalities for rewriting let-expressions -/
 theorem let_value_eq {α : Sort u} {β : Sort v} {a₁ a₂ : α} (b : α → β) :
     a₁ = a₂ →
       (let x : α := a₁

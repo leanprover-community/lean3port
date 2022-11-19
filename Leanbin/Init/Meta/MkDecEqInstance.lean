@@ -17,7 +17,7 @@ namespace Tactic
 
 open Expr Environment List
 
--- Retrieve the name of the type we are building a decidable equality proof for.
+/-- Retrieve the name of the type we are building a decidable equality proof for. -/
 private unsafe def get_dec_eq_type_name : tactic Name :=
   (do
       let pi x1 i1 d1 (pi x2 i2 d2 b) ← target >>= whnf
@@ -28,7 +28,7 @@ private unsafe def get_dec_eq_type_name : tactic Name :=
     fail "mk_dec_eq_instance tactic failed, target type is expected to be of the form (decidable_eq ...)"
 #align tactic.get_dec_eq_type_name tactic.get_dec_eq_type_name
 
--- Extract (lhs, rhs) from a goal (decidable (lhs = rhs))
+/-- Extract (lhs, rhs) from a goal (decidable (lhs = rhs)) -/
 private unsafe def get_lhs_rhs : tactic (expr × expr) := do
   let app dec lhs_eq_rhs ← target |
     fail "mk_dec_eq_instance failed, unexpected case"
@@ -40,7 +40,7 @@ private unsafe def find_next_target : List expr → List expr → tactic (expr �
   | l1, l2 => failed
 #align tactic.find_next_target tactic.find_next_target
 
--- Create an inhabitant of (decidable (lhs = rhs))
+/-- Create an inhabitant of (decidable (lhs = rhs)) -/
 private unsafe def mk_dec_eq_for (lhs : expr) (rhs : expr) : tactic expr := do
   let lhs_type ← infer_type lhs
   let dec_type ← mk_app `decidable_eq [lhs_type] >>= whnf
@@ -59,7 +59,7 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
 #align tactic.apply_eq_of_heq tactic.apply_eq_of_heq
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
--- Target is of the form (decidable (C ... = C ...)) where C is a constructor
+/-- Target is of the form (decidable (C ... = C ...)) where C is a constructor -/
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
     let (lhs, rhs) ← get_lhs_rhs
@@ -100,12 +100,12 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         return ()
 #align tactic.dec_eq_same_constructor tactic.dec_eq_same_constructor
 
--- Easy case: target is of the form (decidable (C_1 ... = C_2 ...)) where C_1 and C_2 are distinct constructors
+/-- Easy case: target is of the form (decidable (C_1 ... = C_2 ...)) where C_1 and C_2 are distinct constructors -/
 private unsafe def dec_eq_diff_constructor : tactic Unit :=
   (left >> intron 1) >> contradiction
 #align tactic.dec_eq_diff_constructor tactic.dec_eq_diff_constructor
 
-/- This tactic is invoked for each case of decidable_eq. There n^2 cases, where n is the number
+/-- This tactic is invoked for each case of decidable_eq. There n^2 cases, where n is the number
    of constructors. -/
 private unsafe def dec_eq_case_2 (I_name : Name) (F_name : Name) : tactic Unit := do
   let (lhs, rhs) ← get_lhs_rhs

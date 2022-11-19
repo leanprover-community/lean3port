@@ -9,7 +9,7 @@ import Leanbin.Init.Function
 
 namespace Tactic
 
--- Return target after instantiating metavars and whnf
+/-- Return target after instantiating metavars and whnf -/
 private unsafe def target' : tactic expr :=
   target >>= instantiate_mvars >>= whnf
 #align tactic.target' tactic.target'

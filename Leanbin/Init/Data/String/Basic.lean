@@ -7,12 +7,7 @@ prelude
 import Leanbin.Init.Data.List.Basic
 import Leanbin.Init.Data.Char.Basic
 
-/- In the VM, strings are implemented using a dynamic array and UTF-8 encoding.
-
-   TODO: we currently cannot mark string_imp as private because
-   we need to bind string_imp.mk and string_imp.cases_on in the VM.
--/
-/- In the VM, strings are implemented using a dynamic array and UTF-8 encoding.
+/-- In the VM, strings are implemented using a dynamic array and UTF-8 encoding.
 
    TODO: we currently cannot mark string_imp as private because
    we need to bind string_imp.mk and string_imp.cases_on in the VM.
@@ -38,7 +33,7 @@ namespace String
 instance : LT String :=
   ⟨fun s₁ s₂ => s₁.data < s₂.data⟩
 
--- Remark: this function has a VM builtin efficient implementation.
+/-- Remark: this function has a VM builtin efficient implementation. -/
 instance hasDecidableLt (s₁ s₂ : String) : Decidable (s₁ < s₂) :=
   List.hasDecidableLt s₁.data s₂.data
 #align string.has_decidable_lt String.hasDecidableLt
@@ -60,7 +55,7 @@ def length : String → Nat
 -/
 
 #print String.push /-
-/- The internal implementation uses dynamic arrays and will perform destructive updates
+/-- The internal implementation uses dynamic arrays and will perform destructive updates
    if the string is not shared. -/
 def push : String → Char → String
   | ⟨s⟩, c => ⟨s ++ [c]⟩
@@ -68,7 +63,7 @@ def push : String → Char → String
 -/
 
 #print String.append /-
-/- The internal implementation uses dynamic arrays and will perform destructive updates
+/-- The internal implementation uses dynamic arrays and will perform destructive updates
    if the string is not shared. -/
 def append : String → String → String
   | ⟨a⟩, ⟨b⟩ => ⟨a ++ b⟩
@@ -76,7 +71,7 @@ def append : String → String → String
 -/
 
 #print String.toList /-
--- O(n) in the VM, where n is the length of the string
+/-- O(n) in the VM, where n is the length of the string -/
 def toList : String → List Char
   | ⟨s⟩ => s
 #align string.to_list String.toList
@@ -86,7 +81,7 @@ def fold {α} (a : α) (f : α → Char → α) (s : String) : α :=
   s.toList.foldl f a
 #align string.fold String.fold
 
-/- In the VM, the string iterator is implemented as a pointer to the string being iterated + index.
+/-- In the VM, the string iterator is implemented as a pointer to the string being iterated + index.
 
    TODO: we currently cannot mark interator_imp as private because
    we need to bind string_imp.mk and string_imp.cases_on in the VM.
@@ -118,7 +113,7 @@ def curr : Iterator → Char
 -/
 
 #print String.Iterator.setCurr /-
-/- In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
+/-- In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
    if it is. -/
 def setCurr : Iterator → Char → Iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩
@@ -163,7 +158,7 @@ def remove : Iterator → Nat → Iterator
 #align string.iterator.remove String.Iterator.remove
 
 #print String.Iterator.toString /-
--- In the VM, `to_string` is a constant time operation.
+/-- In the VM, `to_string` is a constant time operation. -/
 def toString : Iterator → String
   | ⟨p, n⟩ => ⟨p.reverse ++ n⟩
 #align string.iterator.to_string String.Iterator.toString
@@ -214,7 +209,9 @@ end Iterator
 
 end String
 
--- The following definitions do not have builtin support in the VM
+/-! The following definitions do not have builtin support in the VM -/
+
+
 instance : Inhabited String :=
   ⟨String.empty⟩
 

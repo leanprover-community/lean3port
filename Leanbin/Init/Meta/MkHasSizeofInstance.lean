@@ -13,7 +13,7 @@ namespace Tactic
 
 open Expr Environment List
 
--- Retrieve the name of the type we are building a has_sizeof instance for.
+/-- Retrieve the name of the type we are building a has_sizeof instance for. -/
 private unsafe def get_has_sizeof_type_name : tactic Name :=
   (do
       let app (const n ls) t ← target >>= whnf
@@ -23,7 +23,7 @@ private unsafe def get_has_sizeof_type_name : tactic Name :=
     fail "mk_has_sizeof_instance tactic failed, target type is expected to be of the form (has_sizeof ...)"
 #align tactic.get_has_sizeof_type_name tactic.get_has_sizeof_type_name
 
--- Try to synthesize constructor argument using type class resolution
+/-- Try to synthesize constructor argument using type class resolution -/
 private unsafe def mk_has_sizeof_instance_for (a : expr) (use_default : Bool) : tactic expr := do
   let t ← infer_type a
   (do

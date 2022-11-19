@@ -120,7 +120,9 @@ theorem empty_wf {α : Sort u} : WellFounded (@EmptyRelation α) :=
   WellFounded.intro fun a : α => Acc.intro a fun (b : α) (lt : False) => False.ndrec _ lt
 #align empty_wf empty_wf
 
--- Subrelation of a well-founded relation is well-founded
+/-! Subrelation of a well-founded relation is well-founded -/
+
+
 namespace Subrelation
 
 section

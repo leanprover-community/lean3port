@@ -52,8 +52,10 @@ unsafe instance unsigned.reflect : has_reflect Unsigned
 
 end
 
-/- Instances that [derive] depends on. All other basic instances are defined at the end of
+/-! Instances that [derive] depends on. All other basic instances are defined at the end of
    derive.lean. -/
+
+
 unsafe instance name.reflect : has_reflect Name
   | Name.anonymous => q(Name.anonymous)
   | Name.mk_string s n => q(fun n => Name.mk_string s n).subst (name.reflect n)

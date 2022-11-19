@@ -2,8 +2,6 @@
 Copyright (c) 2016 Jeremy Avigad. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad
-
-The integers, with addition, multiplication, and subtraction.
 -/
 prelude
 import Leanbin.Init.Data.Nat.Lemmas
@@ -11,8 +9,13 @@ import Leanbin.Init.Data.Nat.Gcd
 
 open Nat
 
+/-!
+# The integers, with addition, multiplication, and subtraction.
+
+the type, coercions, and notation -/
+
+
 #print Int /-
--- the type, coercions, and notation
 inductive Int : Type
   | of_nat : Nat → Int
   | neg_succ_of_nat : Nat → Int
@@ -72,8 +75,10 @@ theorem ofNat_one : ofNat (1 : Nat) = (1 : Int) :=
 #align int.of_nat_one Int.ofNat_one
 -/
 
+/-! definitions of basic functions -/
+
+
 #print Int.negOfNat /-
--- definitions of basic functions
 def negOfNat : ℕ → ℤ
   | 0 => 0
   | succ m => -[m+1]
@@ -261,8 +266,10 @@ protected theorem ofNat_add_one_out (n : ℕ) : ↑n + (1 : ℤ) = ↑(succ n) :
 #align int.coe_nat_add_one_out Int.ofNat_add_one_out
 -/
 
+/-! these are only for internal use -/
+
+
 #print Int.ofNat_add_ofNat /-
--- these are only for internal use
 theorem ofNat_add_ofNat (m n : Nat) : ofNat m + ofNat n = ofNat (m + n) :=
   rfl
 #align int.of_nat_add_of_nat Int.ofNat_add_ofNat
@@ -313,8 +320,10 @@ theorem negSucc_mul_negSucc' (m n : Nat) : -[m+1] * -[n+1] = ofNat (succ m * suc
 attribute [local simp]
   of_nat_add_of_nat of_nat_mul_of_nat neg_of_nat_zero neg_of_nat_of_succ neg_neg_of_nat_succ of_nat_add_neg_succ_of_nat neg_succ_of_nat_add_of_nat neg_succ_of_nat_add_neg_succ_of_nat of_nat_mul_neg_succ_of_nat neg_succ_of_nat_of_nat mul_neg_succ_of_nat_neg_succ_of_nat
 
+/-!  some basic functions and properties -/
+
+
 #print Int.ofNat.inj /-
--- some basic functions and properties
 protected theorem Int.ofNat.inj {m n : ℕ} (h : (↑m : ℤ) = ↑n) : m = n :=
   Int.ofNat.inj h
 #align int.coe_nat_inj Int.ofNat.inj
@@ -346,8 +355,10 @@ theorem negSucc_eq (n : ℕ) : -[n+1] = -(n + 1) :=
 #align int.neg_succ_of_nat_eq Int.negSucc_eq
 -/
 
+/-! neg -/
+
+
 #print Int.neg_neg /-
--- neg
 protected theorem neg_neg : ∀ a : ℤ, - -a = a
   | of_nat 0 => rfl
   | of_nat (n + 1) => rfl
@@ -366,8 +377,10 @@ protected theorem sub_eq_add_neg {a b : ℤ} : a - b = a + -b :=
 #align int.sub_eq_add_neg Int.sub_eq_add_neg
 -/
 
+/-! basic properties of sub_nat_nat -/
+
+
 #print Int.subNatNat_elim /-
--- basic properties of sub_nat_nat
 theorem subNatNat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ i n, P (n + i) n (ofNat i))
     (hn : ∀ i m, P m (m + i + 1) -[i+1]) : P m n (subNatNat m n) := by
   have H : ∀ k, n - m = k → P m n (Nat.casesOn k (of_nat (m - n)) fun a => -[a+1]) := by
@@ -437,8 +450,10 @@ theorem subNatNat_of_lt {m n : ℕ} (h : m < n) : subNatNat m n = -[pred (n - m)
 #align int.sub_nat_nat_of_lt Int.subNatNat_of_lt
 -/
 
+/-! nat_abs -/
+
+
 #print Int.natAbs /-
--- nat_abs
 @[simp]
 def natAbs : ℤ → ℕ
   | of_nat m => m
@@ -506,8 +521,10 @@ theorem eq_nat_or_neg (a : ℤ) : ∃ n : ℕ, a = n ∨ a = -n :=
 #align int.eq_coe_or_neg Int.eq_nat_or_neg
 -/
 
+/-! sign -/
+
+
 #print Int.sign /-
--- sign
 def sign : ℤ → ℤ
   | (n + 1 : ℕ) => 1
   | 0 => 0
@@ -536,8 +553,10 @@ theorem sign_neg_one : sign (-1) = -1 :=
 #align int.sign_neg_one Int.sign_neg_one
 -/
 
+/-! Quotient and remainder -/
+
+
 #print Int.ediv /-
--- Quotient and remainder 
 -- There are three main conventions for integer division,
 -- referred here as the E, F, T rounding conventions.
 -- All three pairs satisfy the identity x % y + (x / y) * y = x
@@ -606,18 +625,22 @@ instance : Div ℤ :=
 instance : Mod ℤ :=
   ⟨Int.emod⟩
 
+/-! gcd -/
+
+
 #print Int.gcd /-
--- gcd
 def gcd (m n : ℤ) : ℕ :=
   gcd (natAbs m) (natAbs n)
 #align int.gcd Int.gcd
 -/
 
+/-! addition -/
+
+
 #print Int.add_comm /-
 /-
    int is a ring
 -/
--- addition
 protected theorem add_comm : ∀ a b : ℤ, a + b = b + a
   | of_nat n, of_nat m => by simp [Nat.add_comm]
   | of_nat n, -[m+1] => rfl
@@ -713,8 +736,10 @@ protected theorem add_assoc : ∀ a b c : ℤ, a + b + c = a + (b + c)
 #align int.add_assoc Int.add_assoc
 -/
 
+/-! negation -/
+
+
 #print Int.subNatNat_self /-
--- negation
 theorem subNatNat_self : ∀ n, subNatNat n n = 0
   | 0 => rfl
   | succ m => by
@@ -738,8 +763,10 @@ protected theorem add_right_neg (a : ℤ) : a + -a = 0 := by rw [Int.add_comm, I
 #align int.add_right_neg Int.add_right_neg
 -/
 
+/-! multiplication -/
+
+
 #print Int.mul_comm /-
--- multiplication
 protected theorem mul_comm : ∀ a b : ℤ, a * b = b * a
   | of_nat m, of_nat n => by simp [Nat.mul_comm]
   | of_nat m, -[n+1] => by simp [Nat.mul_comm]

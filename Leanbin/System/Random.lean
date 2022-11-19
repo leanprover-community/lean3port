@@ -6,12 +6,15 @@ Authors: Leonardo de Moura
 
 universe u
 
-#print RandomGen /-
-/-
-Basic random number generator support based on the one
-available on the Haskell library
+/-!
+# Basic random number generator support
+
+based on the one available on the Haskell library
 -/
--- Interface for random number generators.
+
+
+#print RandomGen /-
+/-- Interface for random number generators. -/
 class RandomGen (g : Type u) where
   /- `range` returns the range of values returned by
       the generator. -/
@@ -29,7 +32,7 @@ class RandomGen (g : Type u) where
 -/
 
 #print StdGen /-
--- "Standard" random number generator.
+/-- "Standard" random number generator. -/
 structure StdGen where
   s1 : Nat
   s2 : Nat
@@ -83,8 +86,7 @@ def mkStdGen (s : Nat := 0) : StdGen :=
 -/
 
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.comp_val -/
-/-
-Auxiliary function for random_nat_val.
+/-- Auxiliary function for random_nat_val.
 Generate random values until we exceed the target magnitude.
 `gen_lo` and `gen_mag` are the generator lower bound and magnitude.
 The parameter `r` is the "remaining" magnitude.

@@ -2,16 +2,20 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-Auxiliary lemmas used to compare int numerals.
 -/
 prelude
 import Leanbin.Init.Data.Int.Order
 
 namespace Int
 
--- Auxiliary lemmas for proving that to int numerals are different 
--- 1. Lemmas for reducing the problem to the case where the numerals are positive
+/-!
+# Auxiliary lemmas for proving that two int numerals are differen
+-/
+
+
+/-! 1. Lemmas for reducing the problem to the case where the numerals are positive -/
+
+
 protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_eq_neg h₂) h₁
 #align int.ne_neg_of_ne Int.ne_neg_of_ne
 
@@ -35,7 +39,9 @@ protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b := fu
 protected theorem ne_neg_of_pos {a b : ℤ} : 0 < a → 0 < b → a ≠ -b := fun h₁ h₂ => Ne.symm (Int.neg_ne_of_pos h₂ h₁)
 #align int.ne_neg_of_pos Int.ne_neg_of_pos
 
--- 2. Lemmas for proving that positive int numerals are nonneg and positive
+/-! 2. Lemmas for proving that positive int numerals are nonneg and positive -/
+
+
 protected theorem one_pos : 0 < (1 : Int) :=
   Int.zero_lt_one
 #align int.one_pos Int.one_pos
@@ -65,7 +71,9 @@ protected theorem nonneg_of_pos {a : ℤ} : 0 < a → 0 ≤ a :=
   le_of_lt
 #align int.nonneg_of_pos Int.nonneg_of_pos
 
--- 3. nat_abs auxiliary lemmas
+/-! 3. nat_abs auxiliary lemmas -/
+
+
 theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
   @lt.intro _ _ n
     (by
@@ -95,8 +103,10 @@ protected theorem ne_of_nat_ne_nonneg_case {a b : ℤ} {n m : Nat} (ha : 0 ≤ a
   ne_of_nat_abs_ne_nat_abs_of_nonneg ha hb this
 #align int.ne_of_nat_ne_nonneg_case Int.ne_of_nat_ne_nonneg_case
 
-/- 4. Aux lemmas for pushing nat_abs inside numerals
+/-! 4. Aux lemmas for pushing nat_abs inside numerals
    nat_abs_zero and nat_abs_one are defined at init/data/int/basic.lean -/
+
+
 theorem nat_abs_of_nat_core (n : ℕ) : natAbs (ofNat n) = n :=
   rfl
 #align int.nat_abs_of_nat_core Int.nat_abs_of_nat_core

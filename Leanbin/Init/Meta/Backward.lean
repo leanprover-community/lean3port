@@ -12,19 +12,19 @@ namespace Tactic
 unsafe axiom back_lemmas : Type
 #align tactic.back_lemmas tactic.back_lemmas
 
-/- Create a datastructure containing all lemmas tagged as [intro].
+/-- Create a datastructure containing all lemmas tagged as [intro].
    Lemmas are indexed using their head-symbol.
    The head-symbol is computed with respect to the given transparency setting. -/
 unsafe axiom mk_back_lemmas_core : Transparency → tactic back_lemmas
 #align tactic.mk_back_lemmas_core tactic.mk_back_lemmas_core
 
-/- (back_lemmas_insert_core m lemmas lemma) adds the given lemma to the set back_lemmas.
+/-- (back_lemmas_insert_core m lemmas lemma) adds the given lemma to the set back_lemmas.
    It infers the type of the lemma, and uses its head-symbol as an index.
    The head-symbol is computed with respect to the given transparency setting. -/
 unsafe axiom back_lemmas_insert_core : Transparency → back_lemmas → expr → tactic back_lemmas
 #align tactic.back_lemmas_insert_core tactic.back_lemmas_insert_core
 
--- Return the lemmas that have the same head symbol of the given expression
+/-- Return the lemmas that have the same head symbol of the given expression -/
 unsafe axiom back_lemmas_find : back_lemmas → expr → tactic (List expr)
 #align tactic.back_lemmas_find tactic.back_lemmas_find
 
@@ -36,7 +36,7 @@ unsafe def back_lemmas_insert : back_lemmas → expr → tactic back_lemmas :=
   back_lemmas_insert_core reducible
 #align tactic.back_lemmas_insert tactic.back_lemmas_insert
 
-/- (backward_chaining_core t insts max_depth pre_tactic leaf_tactic lemmas): perform backward chaining using
+/-- (backward_chaining_core t insts max_depth pre_tactic leaf_tactic lemmas): perform backward chaining using
    the lemmas marked as [intro] and extra_lemmas.
 
    The search maximum depth is \c max_depth.

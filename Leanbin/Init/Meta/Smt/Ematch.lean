@@ -187,7 +187,9 @@ structure EmatchConfig where
   maxGeneration : Nat := 10
 #align ematch_config EmatchConfig
 
--- Ematching
+/-! Ematching -/
+
+
 unsafe axiom ematch_state : Type
 #align ematch_state ematch_state
 

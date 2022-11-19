@@ -215,8 +215,10 @@ theorem ofNat_lt_ofNat_of_lt {m n : ℕ} (h : m < n) : (↑m : ℤ) < ↑n :=
 #align int.coe_nat_lt_coe_nat_of_lt Int.ofNat_lt_ofNat_of_lt
 -/
 
+/-! show that the integers form an ordered additive group -/
+
+
 #print Int.le_refl /-
--- show that the integers form an ordered additive group
 protected theorem le_refl (a : ℤ) : a ≤ a :=
   le.intro (Int.add_zero a)
 #align int.le_refl Int.le_refl
@@ -399,8 +401,10 @@ theorem eq_negSucc_of_lt_zero : ∀ {a : ℤ}, a < 0 → ∃ n : ℕ, a = -[n+1]
 #align int.eq_neg_succ_of_lt_zero Int.eq_negSucc_of_lt_zero
 -/
 
+/-! int is an ordered add comm group -/
+
+
 #print Int.eq_neg_of_eq_neg /-
--- int is an ordered add comm group
 protected theorem eq_neg_of_eq_neg {a b : ℤ} (h : a = -b) : b = -a := by rw [h, Int.neg_neg]
 #align int.eq_neg_of_eq_neg Int.eq_neg_of_eq_neg
 -/
@@ -1226,8 +1230,10 @@ protected theorem add_le_add_three {a b c d e f : ℤ} (h₁ : a ≤ d) (h₂ : 
 
 end
 
+/-! missing facts -/
+
+
 #print Int.mul_lt_mul_of_pos_left /-
--- missing facts
 protected theorem mul_lt_mul_of_pos_left {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : c * a < c * b := by
   have : 0 < b - a := Int.sub_pos_of_lt h₁
   have : 0 < c * (b - a) := Int.mul_pos h₂ this
@@ -1378,8 +1384,10 @@ protected theorem mul_self_lt_mul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a < b) :
 #align int.mul_self_lt_mul_self Int.mul_self_lt_mul_self
 -/
 
+/-! more facts specific to int -/
+
+
 #print Int.ofNat_nonneg /-
--- more facts specific to int
 theorem ofNat_nonneg (n : ℕ) : 0 ≤ ofNat n :=
   trivial
 #align int.of_nat_nonneg Int.ofNat_nonneg

@@ -5,12 +5,13 @@ Authors: Luke Nelson, Jared Roesch and Leonardo de Moura
 -/
 import Leanbin.System.IoInterface
 
--- The following constants have a builtin implementation 
--- The following constants have a builtin implementation
+/-! The following constants have a builtin implementation -/
+
+
 axiom IoCore : Type → Type → Type
 #align io_core IoCore
 
--- Auxiliary definition used in the builtin implementation of monad_io_random_impl
+/-- Auxiliary definition used in the builtin implementation of monad_io_random_impl -/
 def ioRandNat : StdGen → Nat → Nat → Nat × StdGen :=
   randNat
 #align io_rand_nat ioRandNat
@@ -66,10 +67,12 @@ def Io (α : Type) :=
 
 namespace Io
 
-/- Remark: the following definitions can be generalized and defined for any (m : Type -> Type -> Type)
+/-! Remark: the following definitions can be generalized and defined for any (m : Type -> Type -> Type)
    that implements the required type classes. However, the generalized versions are very inconvenient to use,
    (example: `#eval io.put_str "hello world"` does not work because we don't have enough information to infer `m`.).
 -/
+
+
 def iterate {e α} (a : α) (f : α → IoCore e (Option α)) : IoCore e α :=
   MonadIo.iterate e α a f
 #align io.iterate Io.iterate

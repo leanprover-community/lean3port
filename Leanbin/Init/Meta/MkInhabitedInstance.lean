@@ -16,7 +16,7 @@ namespace Tactic
 
 open Expr Environment List
 
--- Retrieve the name of the type we are building an inhabitant instance for.
+/-- Retrieve the name of the type we are building an inhabitant instance for. -/
 private unsafe def get_inhabited_type_name : tactic Name :=
   (do
       let app (const n ls) t ← target >>= whnf
@@ -26,7 +26,7 @@ private unsafe def get_inhabited_type_name : tactic Name :=
     fail "mk_inhabited_instance tactic failed, target type is expected to be of the form (inhabited ...)"
 #align tactic.get_inhabited_type_name tactic.get_inhabited_type_name
 
--- Try to synthesize constructor argument using type class resolution
+/-- Try to synthesize constructor argument using type class resolution -/
 private unsafe def mk_inhabited_arg : tactic Unit := do
   let tgt ← target
   let inh ← mk_app `inhabited [tgt]

@@ -202,7 +202,7 @@ unsafe axiom simp_lemmas.dsimplify (s : simp_lemmas) (u : List Name := []) (e : 
 
 namespace Tactic
 
--- Remark: the configuration parameters `cfg.md` and `cfg.eta` are ignored by this tactic.
+/-- Remark: the configuration parameters `cfg.md` and `cfg.eta` are ignored by this tactic. -/
 unsafe axiom dsimplify_core
     -- The user state type.
     {α : Type}
@@ -267,8 +267,10 @@ structure DunfoldConfig extends DsimpConfig where
   md := Transparency.instances
 #align tactic.dunfold_config Tactic.DunfoldConfig
 
-/- Remark: in principle, dunfold can be implemented on top of dsimp. We don't do it for
+/-! Remark: in principle, dunfold can be implemented on top of dsimp. We don't do it for
    performance reasons. -/
+
+
 unsafe axiom dunfold (cs : List Name) (e : expr) (cfg : DunfoldConfig := {  }) : tactic expr
 #align tactic.dunfold tactic.dunfold
 
@@ -511,7 +513,9 @@ unsafe def mk_eq_simp_ext (simp_ext : expr → tactic (expr × expr)) : tactic U
   exact HEq
 #align tactic.mk_eq_simp_ext tactic.mk_eq_simp_ext
 
--- Simp attribute support
+/-! Simp attribute support -/
+
+
 unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
   | S, [] => return S
   | S, n :: ns => do
@@ -615,7 +619,7 @@ private unsafe def remove_deps (s : name_set) (h : expr) : name_set :=
   if s.Empty then s else h.fold s fun e o s => if e.is_local_constant then s.erase e.local_uniq_name else s
 #align tactic.remove_deps tactic.remove_deps
 
-/- Return the list of hypothesis that are propositions and do not have
+/-- Return the list of hypothesis that are propositions and do not have
    forward dependencies. -/
 unsafe def non_dep_prop_hyps : tactic (List expr) := do
   let ctx ← local_context
@@ -652,7 +656,7 @@ private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) : ta
     return { e with s := new_s }
 #align tactic.update_simp_lemmas tactic.update_simp_lemmas
 
-/- Helper tactic for `init`.
+/-- Helper tactic for `init`.
    Remark: the following tactic is quadratic on the length of list expr (the list of non dependent propositions).
    We can make it more efficient as soon as we have an efficient simp_lemmas.erase. -/
 private unsafe def init_aux : List expr → simp_lemmas → List simp_all_entry → tactic (simp_lemmas × List simp_all_entry)
@@ -728,7 +732,9 @@ unsafe def simp_all (s : simp_lemmas) (to_unfold : List Name) (cfg : SimpConfig 
 
 end SimpAll
 
--- debugging support for algebraic normalizer
+/-! debugging support for algebraic normalizer -/
+
+
 unsafe axiom trace_algebra_info : expr → tactic Unit
 #align tactic.trace_algebra_info tactic.trace_algebra_info
 

@@ -12,7 +12,7 @@ namespace Classical
 universe u v
 
 #print Classical.choice /-
--- the axiom
+/-- The axiom -/
 axiom choice {α : Sort u} : Nonempty α → α
 #align classical.choice Classical.choice
 -/
@@ -119,7 +119,7 @@ noncomputable def inhabitedOfExists {α : Sort u} {p : α → Prop} (h : ∃ x, 
 #align classical.inhabited_of_exists Classical.inhabitedOfExists
 
 #print Classical.propDecidable /-
--- all propositions are decidable
+/-- All propositions are decidable -/
 noncomputable def propDecidable (a : Prop) : Decidable a :=
   choice <| Or.elim (em a) (fun ha => ⟨isTrue ha⟩) fun hna => ⟨isFalse hna⟩
 #align classical.prop_decidable Classical.propDecidable
@@ -159,7 +159,7 @@ noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α 
 -/
 
 #print Classical.epsilon /-
--- the Hilbert epsilon function
+/-- The Hilbert epsilon function -/
 noncomputable def epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α :=
   (strongIndefiniteDescription p h).val
 #align classical.epsilon Classical.epsilon
@@ -184,7 +184,7 @@ theorem epsilon_singleton {α : Sort u} (x : α) : (@epsilon α ⟨x⟩ fun y =>
 -/
 
 #print Classical.axiom_of_choice /-
--- the axiom of choice
+/-- The axiom of choice -/
 theorem axiom_of_choice {α : Sort u} {β : α → Sort v} {r : ∀ x, β x → Prop} (h : ∀ x, ∃ y, r x y) :
     ∃ f : ∀ x, β x, ∀ x, r x (f x) :=
   ⟨_, fun x => choose_spec (h x)⟩

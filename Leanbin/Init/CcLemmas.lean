@@ -7,9 +7,10 @@ prelude
 import Leanbin.Init.Propext
 import Leanbin.Init.Classical
 
+/-! Lemmas use by the congruence closure module -/
+
+
 #print iff_eq_of_eq_true_left /-
--- Lemmas use by the congruence closure module 
--- Lemmas use by the congruence closure module
 theorem iff_eq_of_eq_true_left {a b : Prop} (h : a = True) : (a ↔ b) = b :=
   h.symm ▸ propext (true_iff_iff _)
 #align iff_eq_of_eq_true_left iff_eq_of_eq_true_left
@@ -112,7 +113,7 @@ theorem imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (a → b) = Not 
 -/
 
 #print not_imp_eq_of_eq_false_right /-
-/- Remark: the congruence closure module will only use the following lemma is
+/-- Remark: the congruence closure module will only use this lemma if
    cc_config.em is tt. -/
 theorem not_imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (Not a → b) = a :=
   h.symm ▸ propext (Iff.intro (fun h' => Classical.by_contradiction fun hna => h' hna) fun ha hna => hna ha)
@@ -197,7 +198,7 @@ theorem eq_false_of_not_eq_true {a : Prop} (h : Not a = True) : a = False :=
 -/
 
 #print eq_true_of_not_eq_false /-
-/- Remark: the congruence closure module will only use the following lemma is
+/-- Remark: the congruence closure module will only use this lemma if
    cc_config.em is tt. -/
 theorem eq_true_of_not_eq_false {a : Prop} (h : Not a = False) : a = True :=
   eq_true (Classical.by_contradiction fun hna => Eq.mp h hna)

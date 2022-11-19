@@ -11,13 +11,13 @@ import Leanbin.Init.Meta.Task
 /-- Reducibility hints are used in the convertibility checker.
 When trying to solve a constraint such a
 
-           (f ...) =?= (g ...)
+    (f ...) =?= (g ...)
 
-where f and g are definitions, the checker has to decide which one will be unfolded.
-  If      f (g) is opaque,     then g (f) is unfolded if it is also not marked as opaque,
-  Else if f (g) is abbrev,     then f (g) is unfolded if g (f) is also not marked as abbrev,
-  Else if f and g are regular, then we unfold the one with the biggest definitional height.
-  Otherwise both are unfolded.
+where `f` and `g` are definitions, the checker has to decide which one will be unfolded.
+* If      `f` (`g`) is opaque,     then `g` (`f`) is unfolded if it is also not marked as opaque,
+* Else if `f` (`g`) is abbrev,     then `f` (`g`) is unfolded if `g` (`f`) is also not marked as abbrev,
+* Else if `f` and `g` are regular, then we unfold the one with the biggest definitional height.
+* Otherwise both are unfolded.
 
 The arguments of the `regular` constructor are: the definitional height and the flag `self_opt`.
 
@@ -27,10 +27,10 @@ we can specify the definitional depth manually.
 
 For definitions marked as regular, we also have a hint for constraints such as
 
-          (f a) =?= (f b)
+    (f a) =?= (f b)
 
-if self_opt == true, then checker will first try to solve (a =?= b), only if it fails,
-it unfolds f.
+if `self_opt = tt`, then checker will first try to solve `a =?= b`, only if it fails,
+it unfolds `f`.
 
 Remark: the hint only affects performance. None of the hints prevent the kernel from unfolding a
 declaration during type checking.
@@ -40,36 +40,23 @@ These attributes are used by the elaborator. The reducibility_hints are used by 
 Moreover, the reducibility_hints cannot be changed after a declaration is added to the kernel.
 -/
 inductive ReducibilityHints
-  | opaque : ReducibilityHints
-  | abbrev : ReducibilityHints
-  | regular : Nat → Bool → ReducibilityHints
+  | opaque
+  | abbrev
+  | regular (height : Nat) (self_opt : Bool)
 #align reducibility_hints ReducibilityHints
 
 /-- Reflect a C++ declaration object. The VM replaces it with the C++ implementation. -/
-unsafe inductive declaration-- definition: name, list universe parameters, type, value, is_trusted
+unsafe inductive declaration-- definition
 
   |
-  defn :
-    Name →
-      List Name →
-        expr →
-          expr →
-            ReducibilityHints →
-              Bool →
-                declaration-- theorem: name, list universe parameters, type, value (remark: theorems are always trusted)
+  defn (n : Name) (univs : List Name) (type : expr) (value : expr) (red : ReducibilityHints)
+    (is_trusted : Bool)-- theorem (remark: theorems are always trusted)
 
-  |
-  thm :
-    Name →
-      List Name → expr → task expr → declaration-- constant assumption: name, list universe parameters, type, is_trusted
+  | thm (n : Name) (univs : List Name) (type : expr) (value : task expr)-- constant assumption
 
-  |
-  cnst :
-    Name →
-      List Name →
-        expr → Bool → declaration-- axiom : name → list universe parameters, type (remark: axioms are always trusted)
+  | cnst (n : Name) (univs : List Name) (type : expr) (is_trusted : Bool)-- axiom (remark: axioms are always trusted)
 
-  | ax : Name → List Name → expr → declaration
+  | ax (n : Name) (univs : List Name) (type : expr)
 #align declaration declaration
 
 open Declaration

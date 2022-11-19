@@ -43,8 +43,7 @@ def outParam (α : Sort u) : Sort u :=
 #align out_param outParam
 -/
 
-/-
-  id_rhs is an auxiliary declaration used in the equation compiler to address performance
+/-- id_rhs is an auxiliary declaration used in the equation compiler to address performance
   issues when proving equational lemmas. The equation compiler uses it as a marker.
 -/
 abbrev idRhs (α : Sort u) (a : α) : α :=
@@ -118,16 +117,16 @@ def Not (a : Prop) :=
 #align not Not
 -/
 
-/- ./././Mathport/Syntax/Translate/Command.lean:324:30: infer kinds are unsupported in Lean 4: refl [] -/
+/- ./././Mathport/Syntax/Translate/Command.lean:355:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print Eq /-
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
 #align eq Eq
 -/
 
-/-
+/-!
 Initialize the quotient module, which effectively adds the following definitions:
-
+```lean
 constant quot {α : Sort u} (r : α → α → Prop) : Sort u
 
 constant quot.mk {α : Sort u} (r : α → α → Prop) (a : α) : quot r
@@ -137,15 +136,17 @@ constant quot.lift {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α 
 
 constant quot.ind {α : Sort u} {r : α → α → Prop} {β : quot r → Prop} :
   (∀ a : α, β (quot.mk r a)) → ∀ q : quot r, β q
-
+```
 Also the reduction rule:
-
+```
 quot.lift f _ (quot.mk a) ~~> f a
-
+```
 -/
+
+
 init_quot
 
-/- ./././Mathport/Syntax/Translate/Command.lean:324:30: infer kinds are unsupported in Lean 4: refl [] -/
+/- ./././Mathport/Syntax/Translate/Command.lean:355:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print HEq /-
 /-- Heterogeneous equality.
 
@@ -354,7 +355,7 @@ inductive Bool : Type
 -/
 
 #print Subtype /-
--- Remark: subtype must take a Sort instead of Type because of the axiom strong_indefinite_description.
+/-- Remark: subtype must take a Sort instead of Type because of the axiom strong_indefinite_description. -/
 structure Subtype {α : Sort u} (p : α → Prop) where
   val : α
   property : p val
@@ -427,8 +428,10 @@ structure UnificationHint where
   constraints : List UnificationConstraint
 #align unification_hint UnificationHint
 
+/-! Declare builtin and reserved notation -/
+
+
 #print Zero /-
--- Declare builtin and reserved notation
 class Zero (α : Type u) where
   zero : α
 #align has_zero Zero
@@ -572,14 +575,14 @@ class Singleton (α : outParam <| Type u) (β : Type v) where
 -/
 
 #print Sep /-
--- Type class used to implement the notation { a ∈ c | p a }
+/-- Type class used to implement the notation { a ∈ c | p a } -/
 class Sep (α : outParam <| Type u) (γ : Type v) where
   sep : (α → Prop) → γ → γ
 #align has_sep Sep
 -/
 
 #print Membership /-
--- Type class for set-like membership
+/-- Type class for set-like membership -/
 class Membership (α : outParam <| Type u) (γ : Type v) where
   Mem : α → γ → Prop
 #align has_mem Membership
@@ -660,7 +663,9 @@ export LawfulSingleton (insert_emptyc_eq)
 
 attribute [simp] insert_emptyc_eq
 
--- nat basic instances
+/-! nat basic instances -/
+
+
 namespace Nat
 
 #print Nat.add /-
@@ -729,8 +734,7 @@ def Std.Prec.arrow : Nat :=
 -/
 
 #print Std.Prec.maxPlus /-
-/-
-The next def is "max + 10". It can be used e.g. for postfix operations that should
+/-- This def is "max + 10". It can be used e.g. for postfix operations that should
 be stronger than application.
 -/
 def Std.Prec.maxPlus : Nat :=
@@ -755,11 +759,13 @@ def SizeOf.sizeOf {α : Sort u} [s : SizeOf α] : α → Nat :=
 #align sizeof SizeOf.sizeOf
 -/
 
-/-
+/-!
 Declare sizeof instances and lemmas for types declared before has_sizeof.
 From now on, the inductive compiler will automatically generate sizeof instances and lemmas.
 -/
--- Every type `α` has a default has_sizeof instance that just returns 0 for every element of `α`
+
+
+/-- Every type `α` has a default has_sizeof instance that just returns 0 for every element of `α` -/
 protected def Default.sizeof (α : Sort u) : α → Nat
   | a => 0
 #align default.sizeof Default.sizeof

@@ -22,7 +22,7 @@ open Lean.Parser
 
 open Native
 
-/- ./././Mathport/Syntax/Translate/Command.lean:639:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:671:29: warning: unsupported: precedence command -/
 -- mathport name: «expr ?»
 local postfix:1024 "?" => optional
 
@@ -31,22 +31,22 @@ local postfix:1024 "*" => many
 
 namespace Tactic
 
--- allows metavars
+/-- allows metavars -/
 unsafe def i_to_expr (q : pexpr) : tactic expr :=
   to_expr q true
 #align tactic.i_to_expr tactic.i_to_expr
 
--- allow metavars and no subgoals
+/-- allow metavars and no subgoals -/
 unsafe def i_to_expr_no_subgoals (q : pexpr) : tactic expr :=
   to_expr q true false
 #align tactic.i_to_expr_no_subgoals tactic.i_to_expr_no_subgoals
 
--- doesn't allows metavars
+/-- doesn't allows metavars -/
 unsafe def i_to_expr_strict (q : pexpr) : tactic expr :=
   to_expr q false
 #align tactic.i_to_expr_strict tactic.i_to_expr_strict
 
-/- Auxiliary version of i_to_expr for apply-like tactics.
+/-- Auxiliary version of i_to_expr for apply-like tactics.
    This is a workaround for comment
       https://github.com/leanprover/lean/issues/1342#issuecomment-307912291
    at issue #1342.
@@ -375,7 +375,7 @@ private unsafe def resolve_name' (n : Name) : tactic expr := do
       i_to_expr p
 #align tactic.interactive.resolve_name' tactic.interactive.resolve_name'
 
-/- Version of to_expr that tries to bypass the elaborator if `p` is just a constant or local constant.
+/-- Version of to_expr that tries to bypass the elaborator if `p` is just a constant or local constant.
    This is not an optimization, by skipping the elaborator we make sure that no unwanted resolution is used.
    Example: the elaborator will force any unassigned ?A that must have be an instance of (has_one ?A) to nat.
    Remark: another benefit is that auxiliary temporary metavariables do not appear in error messages. -/
@@ -645,7 +645,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
         with_enable_tags <| set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 #align tactic.interactive.set_cases_tags tactic.interactive.set_cases_tags
 
-/- ./././Mathport/Syntax/Translate/Command.lean:639:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:671:29: warning: unsupported: precedence command -/
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 
@@ -2012,7 +2012,9 @@ unsafe def mk_inj_eq : tactic Unit :=
   -/
 end Tactic
 
--- Define inj_eq lemmas for inductive datatypes that were declared before `mk_inj_eq`
+/-! Define inj_eq lemmas for inductive datatypes that were declared before `mk_inj_eq` -/
+
+
 universe u v
 
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_inj_eq -/

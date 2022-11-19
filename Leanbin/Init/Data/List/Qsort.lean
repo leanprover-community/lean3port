@@ -24,7 +24,7 @@ def Qsort.f {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, 
     exact IH small this.left ++ h :: IH large this.right
 #align list.qsort.F List.Qsort.f
 
-/- This is based on the minimalist Haskell "quicksort".
+/-- This is based on the minimalist Haskell "quicksort".
 
    Remark: this is *not* really quicksort since it doesn't partition the elements in-place -/
 def qsort {α} (lt : α → α → Bool) : List α → List α :=

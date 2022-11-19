@@ -10,7 +10,7 @@ namespace Tactic
 
 open Expr
 
-/- Given a local constant `H : C x₁ ... xₙ = D y₁ ... yₘ`, where `C` and `D` are
+/-- Given a local constant `H : C x₁ ... xₙ = D y₁ ... yₘ`, where `C` and `D` are
 fully applied constructors, `injection_with H ns base offset` does the
 following:
 

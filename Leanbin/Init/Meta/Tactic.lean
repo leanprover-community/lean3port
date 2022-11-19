@@ -756,11 +756,11 @@ structure ApplyCfg where
 unsafe axiom apply_core (e : expr) (cfg : ApplyCfg := {  }) : tactic (List (Name × expr))
 #align tactic.apply_core tactic.apply_core
 
--- Create a fresh meta universe variable.
+/-- Create a fresh meta universe variable. -/
 unsafe axiom mk_meta_univ : tactic level
 #align tactic.mk_meta_univ tactic.mk_meta_univ
 
-/- Create a fresh meta-variable with the given type.
+/-- Create a fresh meta-variable with the given type.
    The scope of the new meta-variable is the local context of the main goal. -/
 unsafe axiom mk_meta_var : expr → tactic expr
 #align tactic.mk_meta_var tactic.mk_meta_var
@@ -1011,7 +1011,7 @@ unsafe axiom unfreeze_local_instances : tactic Unit
 unsafe axiom freeze_local_instances : tactic Unit
 #align tactic.freeze_local_instances tactic.freeze_local_instances
 
--- Return the list of frozen local instances. Return `none` if local instances were not frozen.
+/-- Return the list of frozen local instances. Return `none` if local instances were not frozen. -/
 unsafe axiom frozen_local_instances : tactic (Option (List expr))
 #align tactic.frozen_local_instances tactic.frozen_local_instances
 
@@ -1218,7 +1218,7 @@ unsafe def revert (l : expr) : tactic Nat :=
   revert_lst [l]
 #align tactic.revert tactic.revert
 
-/- Revert "all" hypotheses. Actually, the tactic only reverts
+/-- Revert "all" hypotheses. Actually, the tactic only reverts
    hypotheses occurring after the last frozen local instance.
    Recall that frozen local instances cannot be reverted,
    use `unfreezing revert_all` instead. -/
@@ -2042,7 +2042,7 @@ unsafe def updateex_env (f : environment → exceptional environment) : tactic U
   set_env env
 #align tactic.updateex_env tactic.updateex_env
 
-/- Add a new inductive datatype to the environment
+/-- Add a new inductive datatype to the environment
    name, universe parameters, number of parameters, type, constructors (name and type), is_meta -/
 unsafe def add_inductive (n : Name) (ls : List Name) (p : Nat) (ty : expr) (is : List (Name × expr))
     (is_meta : Bool := false) : tactic Unit :=
@@ -2195,7 +2195,9 @@ unsafe def main_goal : tactic expr := do
   return g
 #align tactic.main_goal tactic.main_goal
 
--- Goal tagging support
+/-! Goal tagging support -/
+
+
 unsafe def with_enable_tags {α : Type} (t : tactic α) (b := true) : tactic α := do
   let old ← tags_enabled
   enable_tags b
@@ -2250,7 +2252,9 @@ unsafe def any_of {α β} : List α → (α → tactic β) → tactic β
 
 end List
 
--- Install monad laws tactic and use it to prove some instances.
+/-! Install monad laws tactic and use it to prove some instances. -/
+
+
 /-- Try to prove with `iff.refl`.-/
 unsafe def order_laws_tac :=
   (whnf_target >> intros) >> to_expr ``(Iff.refl _) >>= exact

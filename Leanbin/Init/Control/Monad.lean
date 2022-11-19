@@ -36,7 +36,7 @@ def return {m : Type u → Type v} [Monad m] {α : Type u} : α → m α :=
   pure
 #align return return
 
--- Identical to has_bind.and_then, but it is not inlined.
+/-- Identical to `has_bind.and_then`, but it is not inlined. -/
 def Bind.seq {α β : Type u} {m : Type u → Type v} [Bind m] (x : m α) (y : m β) : m β := do
   x
   y

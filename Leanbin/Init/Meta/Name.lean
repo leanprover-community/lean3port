@@ -102,7 +102,9 @@ instance : Repr Name :=
 unsafe axiom name.has_decidable_eq : DecidableEq Name
 #align name.has_decidable_eq name.has_decidable_eq
 
--- Both cmp and lex_cmp are total orders, but lex_cmp implements a lexicographical order.
+/-! Both cmp and lex_cmp are total orders, but lex_cmp implements a lexicographical order. -/
+
+
 unsafe axiom name.cmp : Name → Name → Ordering
 #align name.cmp name.cmp
 

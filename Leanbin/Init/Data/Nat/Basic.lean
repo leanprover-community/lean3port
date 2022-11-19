@@ -92,8 +92,10 @@ theorem zero_eq : Nat.zero = 0 :=
 #align nat.nat_zero_eq_zero Nat.zero_eq
 -/
 
+/-! properties of inequality -/
+
+
 #print Nat.le_refl /-
--- properties of inequality
 @[refl]
 protected theorem le_refl (a : ℕ) : a ≤ a :=
   less_than_or_equal.refl
@@ -238,8 +240,10 @@ protected theorem lt_of_lt_of_le {n m k : ℕ} : n < m → m ≤ k → n < k :=
 #align nat.lt_of_lt_of_le Nat.lt_of_lt_of_le
 -/
 
+/-! Basic nat.add lemmas -/
+
+
 #print Nat.zero_add /-
--- Basic nat.add lemmas
 protected theorem zero_add : ∀ n : ℕ, 0 + n = n
   | 0 => rfl
   | n + 1 => congr_arg succ (zero_add n)
@@ -279,7 +283,9 @@ theorem succ_eq_add_one (n : ℕ) : succ n = n + 1 :=
 #align nat.succ_eq_add_one Nat.succ_eq_add_one
 -/
 
--- Basic lemmas for comparing numerals
+/-! Basic lemmas for comparing numerals -/
+
+
 protected theorem bit0_succ_eq (n : ℕ) : bit0 (succ n) = succ (succ (bit0 n)) :=
   show succ (succ n + n) = succ (succ (n + n)) from congr_arg succ (succ_add n n)
 #align nat.bit0_succ_eq Nat.bit0_succ_eq

@@ -249,7 +249,7 @@ private unsafe def mk_smt_goals_for (cfg : SmtConfig) :
     mk_smt_goals_for tgs (new_sg :: sr) (new_tg :: tr)
 #align smt_tactic.mk_smt_goals_for smt_tactic.mk_smt_goals_for
 
--- See slift
+/-- See slift -/
 unsafe def slift_aux {α : Type} (t : tactic α) (cfg : SmtConfig) : smt_tactic α :=
   ⟨fun ss => do
     let _ :: sgs ← return ss |

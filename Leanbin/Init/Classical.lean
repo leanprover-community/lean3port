@@ -110,13 +110,17 @@ theorem exists_true_of_nonempty {α : Sort u} : Nonempty α → ∃ x : α, True
 #align classical.exists_true_of_nonempty Classical.exists_true_of_nonempty
 -/
 
-noncomputable def inhabitedOfNonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
+#print Classical.inhabited_of_nonempty /-
+noncomputable def inhabited_of_nonempty {α : Sort u} (h : Nonempty α) : Inhabited α :=
   ⟨choice h⟩
-#align classical.inhabited_of_nonempty Classical.inhabitedOfNonempty
+#align classical.inhabited_of_nonempty Classical.inhabited_of_nonempty
+-/
 
-noncomputable def inhabitedOfExists {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : Inhabited α :=
-  inhabitedOfNonempty (Exists.elim h fun w hw => ⟨w⟩)
-#align classical.inhabited_of_exists Classical.inhabitedOfExists
+#print Classical.inhabited_of_exists /-
+noncomputable def inhabited_of_exists {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : Inhabited α :=
+  inhabited_of_nonempty (Exists.elim h fun w hw => ⟨w⟩)
+#align classical.inhabited_of_exists Classical.inhabited_of_exists
+-/
 
 #print Classical.propDecidable /-
 /-- All propositions are decidable -/
@@ -143,7 +147,7 @@ noncomputable def typeDecidableEq (α : Sort u) : DecidableEq α := fun x y => p
 #print Classical.typeDecidable /-
 noncomputable def typeDecidable (α : Sort u) : PSum α (α → False) :=
   match propDecidable (Nonempty α) with
-  | is_true hp => PSum.inl (@Inhabited.default _ (inhabitedOfNonempty hp))
+  | is_true hp => PSum.inl (@Inhabited.default _ (inhabited_of_nonempty hp))
   | is_false hn => PSum.inr fun a => absurd (Nonempty.intro a) hn
 #align classical.type_decidable Classical.typeDecidable
 -/

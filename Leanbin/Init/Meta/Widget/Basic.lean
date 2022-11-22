@@ -341,7 +341,7 @@ unsafe def cn : String → attr α :=
   className
 #align widget.cn widget.cn
 
-unsafe def button : String → Thunk' α → html α
+unsafe def button : String → Thunk α → html α
   | s, t => h "button" [on_click t] [s]
 #align widget.button widget.button
 
@@ -359,7 +359,7 @@ unsafe structure select_item (α : Type) where
 unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html α
   | items, value =>
     let k :=
-      match List.filter' (fun i => select_item.result i = value) items with
+      match List.filter (fun i => select_item.result i = value) items with
       | [] => ""
       | h :: _ => select_item.key h
     h "select"

@@ -391,13 +391,13 @@ theorem length_remove_nth : ∀ (l : List α) (i : ℕ), i < length l → length
 
 /- warning: list.partition_eq_filter_filter -> List.partition_eq_filter_filter is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} (p : α -> Prop) [_inst_1 : DecidablePred.{succ u} α p] (l : List.{u} α), Eq.{succ u} (Prod.{u u} (List.{u} α) (List.{u} α)) (List.partition'.{u} α p (fun (a : α) => _inst_1 a) l) (Prod.mk.{u u} (List.{u} α) (List.{u} α) (List.filter'.{u} α p (fun (a : α) => _inst_1 a) l) (List.filter'.{u} α (Function.comp.{succ u 1 1} α Prop Prop Not p) (fun (a : α) => Not.decidable (p a) (_inst_1 a)) l))
+  forall {α : Type.{u}} (p : α -> Prop) [_inst_1 : DecidablePred.{succ u} α p] (l : List.{u} α), Eq.{succ u} (Prod.{u u} (List.{u} α) (List.{u} α)) (List.partitionₓ.{u} α p (fun (a : α) => _inst_1 a) l) (Prod.mk.{u u} (List.{u} α) (List.{u} α) (List.filterₓ.{u} α p (fun (a : α) => _inst_1 a) l) (List.filterₓ.{u} α (Function.comp.{succ u 1 1} α Prop Prop Not p) (fun (a : α) => Not.decidable (p a) (_inst_1 a)) l))
 but is expected to have type
   forall {α : Type.{u_1}} (p : α -> Bool) (l : List.{u_1} α), Eq.{succ u_1} (Prod.{u_1 u_1} (List.{u_1} α) (List.{u_1} α)) (List.partition.{u_1} α p l) (Prod.mk.{u_1 u_1} (List.{u_1} α) (List.{u_1} α) (List.filter.{u_1} α p l) (List.filter.{u_1} α (Function.comp.{succ u_1 1 1} α Bool Bool not p) l))
 Case conversion may be inaccurate. Consider using '#align list.partition_eq_filter_filter List.partition_eq_filter_filterₓ'. -/
 @[simp]
 theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
-    ∀ l : List α, partition' p l = (filter' p l, filter' (Not ∘ p) l)
+    ∀ l : List α, partition p l = (filter p l, filter (Not ∘ p) l)
   | [] => rfl
   | a :: l => by by_cases pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
 #align list.partition_eq_filter_filter List.partition_eq_filter_filter
@@ -426,29 +426,29 @@ theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → lengt
 
 
 @[simp]
-theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter' p [] = [] :=
+theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter p [] = [] :=
   rfl
 #align list.filter_nil List.filter_nil
 
 @[simp]
 theorem filter_cons_of_pos {p : α → Prop} [h : DecidablePred p] {a : α} :
-    ∀ l, p a → filter' p (a :: l) = a :: filter' p l := fun l pa => if_pos pa
+    ∀ l, p a → filter p (a :: l) = a :: filter p l := fun l pa => if_pos pa
 #align list.filter_cons_of_pos List.filter_cons_of_pos
 
 @[simp]
-theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
-    ∀ l, ¬p a → filter' p (a :: l) = filter' p l := fun l pa => if_neg pa
+theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} : ∀ l, ¬p a → filter p (a :: l) = filter p l :=
+  fun l pa => if_neg pa
 #align list.filter_cons_of_neg List.filter_cons_of_neg
 
 @[simp]
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
-    ∀ l₁ l₂ : List α, filter' p (l₁ ++ l₂) = filter' p l₁ ++ filter' p l₂
+    ∀ l₁ l₂ : List α, filter p (l₁ ++ l₂) = filter p l₁ ++ filter p l₂
   | [], l₂ => rfl
   | a :: l₁, l₂ => by by_cases pa : p a <;> simp [pa, filter_append]
 #align list.filter_append List.filter_append
 
 @[simp]
-theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filter' p l <+ l
+theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filter p l <+ l
   | [] => Sublist.slnil
   | a :: l =>
     if pa : p a then by simp [pa] <;> apply sublist.cons2 <;> apply filter_sublist l

@@ -20,12 +20,12 @@ inductive Name
     Like opt_param, this gadget only affects elaboration.
     For example, the tactic will *not* be invoked during type class resolution. -/
 @[reducible]
-def autoParam'.{u} (α : Sort u) (tac_name : Name) : Sort u :=
+def autoParam.{u} (α : Sort u) (tac_name : Name) : Sort u :=
   α
-#align auto_param autoParam'
+#align auto_param autoParamₓ
 
 @[simp]
-theorem auto_param_eq.{u} (α : Sort u) (n : Name) : autoParam' α n = α :=
+theorem auto_param_eq.{u} (α : Sort u) (n : Name) : autoParam α n = α :=
   rfl
 #align auto_param_eq auto_param_eq
 

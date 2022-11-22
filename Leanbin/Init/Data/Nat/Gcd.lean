@@ -71,7 +71,7 @@ theorem gcd_rec (m n : ℕ) : gcd m n = gcd (n % m) m := by cases m <;> simp [gc
 @[elab_as_elim]
 theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n) (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) :
     P m n :=
-  @induction _ _ Nat.lt_wfRel.wf (fun m => ∀ n, P m n) m
+  @induction _ _ lt_wfRel (fun m => ∀ n, P m n) m
     (fun k IH => by
       induction' k with k ih
       exact H0

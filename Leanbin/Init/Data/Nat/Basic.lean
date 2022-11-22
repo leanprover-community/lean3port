@@ -77,10 +77,10 @@ instance : DecidableEq ℕ
     | is_true xeqy => isTrue (xeqy ▸ Eq.refl (succ x))
     | is_false xney => isFalse fun h => Nat.noConfusion h fun xeqy => absurd xeqy xney
 
-def repeat'.{u} {α : Type u} (f : ℕ → α → α) : ℕ → α → α
+def repeat.{u} {α : Type u} (f : ℕ → α → α) : ℕ → α → α
   | 0, a => a
   | succ n, a => f n (repeat n a)
-#align nat.repeat Nat.repeat'
+#align nat.repeat Nat.repeatₓ
 
 instance : Inhabited ℕ :=
   ⟨Nat.zero⟩

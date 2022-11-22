@@ -34,7 +34,7 @@ def ofList (l : List α) : Dlist α :=
 #align dlist.of_list Dlist.ofList
 
 /-- Convert a lazily-evaluated list to a dlist -/
-def lazyOfList (l : Thunk' (List α)) : Dlist α :=
+def lazyOfList (l : Thunk (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
 #align dlist.lazy_of_list Dlist.lazyOfList
 

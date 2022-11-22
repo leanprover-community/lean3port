@@ -447,7 +447,7 @@ unsafe def trace {α : Type u} [has_to_tactic_format α] (a : α) : tactic Unit 
 unsafe def trace_call_stack : tactic Unit := fun state => traceCallStack (success () state)
 #align tactic.trace_call_stack tactic.trace_call_stack
 
-unsafe def timetac {α : Type u} (desc : String) (t : Thunk' (tactic α)) : tactic α := fun s => timeit desc (t () s)
+unsafe def timetac {α : Type u} (desc : String) (t : Thunk (tactic α)) : tactic α := fun s => timeit desc (t () s)
 #align tactic.timetac tactic.timetac
 
 unsafe def trace_state : tactic Unit := do
@@ -1662,7 +1662,7 @@ unsafe def apply_opt_param : tactic Unit := do
 #align tactic.apply_opt_param tactic.apply_opt_param
 
 unsafe def apply_auto_param : tactic Unit := do
-  let q(autoParam' $(type) $(tac_name_expr)) ← target
+  let q(autoParam $(type) $(tac_name_expr)) ← target
   change type
   let tac_name ← eval_expr Name tac_name_expr
   let tac ← eval_expr (tactic Unit) (expr.const tac_name [])

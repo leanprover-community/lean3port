@@ -713,7 +713,7 @@ unsafe def pis : List expr → expr → expr
 
 unsafe def extract_opt_auto_param : expr → expr
   | q(@optParam $(t) _) => extract_opt_auto_param t
-  | q(@autoParam' $(t) _) => extract_opt_auto_param t
+  | q(@autoParam $(t) _) => extract_opt_auto_param t
   | e => e
 #align expr.extract_opt_auto_param expr.extract_opt_auto_param
 

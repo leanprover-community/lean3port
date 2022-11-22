@@ -72,21 +72,21 @@ instance decidableMem [DecidableEq α] (a : α) : ∀ l : List α, Decidable (a 
 instance : EmptyCollection (List α) :=
   ⟨List.nil⟩
 
-protected def erase' {α} [DecidableEq α] : List α → α → List α
+protected def erase {α} [DecidableEq α] : List α → α → List α
   | [], b => []
   | a :: l, b => if a = b then l else a :: erase l b
-#align list.erase List.erase'
+#align list.erase List.eraseₓ
 
-protected def bagInter' {α} [DecidableEq α] : List α → List α → List α
+protected def bagInter {α} [DecidableEq α] : List α → List α → List α
   | [], _ => []
   | _, [] => []
   | a :: l₁, l₂ => if a ∈ l₂ then a :: bag_inter l₁ (l₂.erase a) else bag_inter l₁ l₂
-#align list.bag_inter List.bagInter'
+#align list.bag_inter List.bagInterₓ
 
-protected def diff' {α} [DecidableEq α] : List α → List α → List α
+protected def diff {α} [DecidableEq α] : List α → List α → List α
   | l, [] => l
   | l₁, a :: l₂ => if a ∈ l₁ then diff (l₁.erase a) l₂ else diff l₁ l₂
-#align list.diff List.diff'
+#align list.diff List.diffₓ
 
 #print List.length /-
 @[simp]
@@ -118,10 +118,10 @@ def nthLe : ∀ (l : List α) (n), n < l.length → α
 #align list.nth_le List.nthLe
 
 @[simp]
-def head' [Inhabited α] : List α → α
+def head [Inhabited α] : List α → α
   | [] => default
   | a :: l => a
-#align list.head List.head'
+#align list.head List.headₓ
 
 #print List.tail /-
 @[simp]
@@ -184,22 +184,22 @@ def filterMap (f : α → Option β) : List α → List β
 #align list.filter_map List.filterMap
 -/
 
-def filter' (p : α → Prop) [DecidablePred p] : List α → List α
+def filter (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | a :: l => if p a then a :: filter l else filter l
-#align list.filter List.filter'
+#align list.filter List.filterₓ
 
-def partition' (p : α → Prop) [DecidablePred p] : List α → List α × List α
+def partition (p : α → Prop) [DecidablePred p] : List α → List α × List α
   | [] => ([], [])
   | a :: l =>
     let (l₁, l₂) := partition l
     if p a then (a :: l₁, l₂) else (l₁, a :: l₂)
-#align list.partition List.partition'
+#align list.partition List.partitionₓ
 
-def dropWhile' (p : α → Prop) [DecidablePred p] : List α → List α
+def dropWhile (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | a :: l => if p a then drop_while l else a :: l
-#align list.drop_while List.dropWhile'
+#align list.drop_while List.dropWhileₓ
 
 /-- `after p xs` is the suffix of `xs` after the first element that satisfies
   `p`, not including that element.
@@ -209,32 +209,32 @@ def dropWhile' (p : α → Prop) [DecidablePred p] : List α → List α
   drop_while (not ∘ eq 1) [0, 1, 2, 3] = [1, 2, 3]
   ```
 -/
-def after' (p : α → Prop) [DecidablePred p] : List α → List α
+def after (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
   | x :: xs => if p x then xs else after xs
-#align list.after List.after'
+#align list.after List.afterₓ
 
-def span' (p : α → Prop) [DecidablePred p] : List α → List α × List α
+def span (p : α → Prop) [DecidablePred p] : List α → List α × List α
   | [] => ([], [])
   | a :: xs =>
     if p a then
       let (l, r) := span xs
       (a :: l, r)
     else ([], a :: xs)
-#align list.span List.span'
+#align list.span List.spanₓ
 
 def findIndex (p : α → Prop) [DecidablePred p] : List α → Nat
   | [] => 0
   | a :: l => if p a then 0 else succ (find_index l)
 #align list.find_index List.findIndex
 
-def indexOf' [DecidableEq α] (a : α) : List α → Nat :=
+def indexOf [DecidableEq α] (a : α) : List α → Nat :=
   findIndex (Eq a)
-#align list.index_of List.indexOf'
+#align list.index_of List.indexOfₓ
 
-def removeAll' [DecidableEq α] (xs ys : List α) : List α :=
-  filter' (· ∉ ys) xs
-#align list.remove_all List.removeAll'
+def removeAll [DecidableEq α] (xs ys : List α) : List α :=
+  filter (· ∉ ys) xs
+#align list.remove_all List.removeAllₓ
 
 def updateNth : List α → ℕ → α → List α
   | x :: xs, 0, a => a :: xs
@@ -338,7 +338,7 @@ instance [DecidableEq α] : Insert α (List α) :=
 instance : Singleton α (List α) :=
   ⟨fun x => [x]⟩
 
-instance [DecidableEq α] : LawfulSingleton α (List α) :=
+instance [DecidableEq α] : IsLawfulSingleton α (List α) :=
   ⟨fun x => show (if x ∈ ([] : List α) then [] else [x]) = [x] from if_neg not_false⟩
 
 #print List.union /-
@@ -352,7 +352,7 @@ instance [DecidableEq α] : Union (List α) :=
 
 #print List.inter /-
 protected def inter [DecidableEq α] (l₁ l₂ : List α) : List α :=
-  filter' (· ∈ l₂) l₁
+  filter (· ∈ l₂) l₁
 #align list.inter List.inter
 -/
 
@@ -492,16 +492,16 @@ theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] : �
 #align list.lt_eq_not_ge List.lt_eq_not_ge
 
 /-- `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/
-def isPrefixOf' [DecidableEq α] : List α → List α → Bool
+def isPrefixOf [DecidableEq α] : List α → List α → Bool
   | [], _ => true
   | _, [] => false
   | a :: as, b :: bs => decide (a = b) && is_prefix_of as bs
-#align list.is_prefix_of List.isPrefixOf'
+#align list.is_prefix_of List.isPrefixOfₓ
 
 /-- `is_suffix_of l₁ l₂` returns `tt` iff `l₁` is a suffix of `l₂`. -/
-def isSuffixOf' [DecidableEq α] (l₁ l₂ : List α) : Bool :=
-  isPrefixOf' l₁.reverse l₂.reverse
-#align list.is_suffix_of List.isSuffixOf'
+def isSuffixOf [DecidableEq α] (l₁ l₂ : List α) : Bool :=
+  isPrefixOf l₁.reverse l₂.reverse
+#align list.is_suffix_of List.isSuffixOfₓ
 
 end List
 

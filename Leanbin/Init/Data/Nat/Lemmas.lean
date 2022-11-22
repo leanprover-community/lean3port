@@ -821,9 +821,13 @@ theorem exists_eq_succ_of_ne_zero {n : ℕ} (H : n ≠ 0) : ∃ k : ℕ, n = suc
 #align nat.exists_eq_succ_of_ne_zero Nat.exists_eq_succ_of_ne_zero
 -/
 
-def discriminate {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
+/- warning: nat.discriminate clashes with [anonymous] -> [anonymous]
+Case conversion may be inaccurate. Consider using '#align nat.discriminate [anonymous]ₓ'. -/
+#print [anonymous] /-
+def [anonymous] {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
   induction' h : n with <;> [exact H1 h, exact H2 _ h]
-#align nat.discriminate Nat.discriminateₓ
+#align nat.discriminate[anonymous]
+-/
 
 theorem one_succ_zero : 1 = succ 0 :=
   rfl

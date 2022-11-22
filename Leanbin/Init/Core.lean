@@ -81,9 +81,9 @@ an application
      f "hello" (λ _, 10)
 -/
 @[reducible]
-def Thunk' (α : Type u) : Type u :=
+def Thunk (α : Type u) : Type u :=
   Unit → α
-#align thunk Thunk'
+#align thunk Thunkₓ
 
 #print True /-
 inductive True : Prop
@@ -653,13 +653,15 @@ attribute [match_pattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 
 export Insert (insert)
 
-class LawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] : Prop where
+#print IsLawfulSingleton /-
+class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] : Prop where
   insert_emptyc_eq : ∀ x : α, (insert x ∅ : β) = {x}
-#align is_lawful_singleton LawfulSingleton
+#align is_lawful_singleton IsLawfulSingleton
+-/
 
 export Singleton (singleton)
 
-export LawfulSingleton (insert_emptyc_eq)
+export IsLawfulSingleton (insert_emptyc_eq)
 
 attribute [simp] insert_emptyc_eq
 

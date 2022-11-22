@@ -93,14 +93,14 @@ instance : Inhabited (Parser α) :=
   ⟨Parser.failure⟩
 
 /-- Overrides the expected token name, and does not consume input on failure. -/
-def decorateErrors (msgs : Thunk' (List String)) (p : Parser α) : Parser α := fun input pos =>
+def decorateErrors (msgs : Thunk (List String)) (p : Parser α) : Parser α := fun input pos =>
   match p input Pos with
   | ParseResult.fail _ expected => ParseResult.fail Pos (Dlist.lazyOfList (msgs ()))
   | ok => ok
 #align parser.decorate_errors Parser.decorateErrors
 
 /-- Overrides the expected token name, and does not consume input on failure. -/
-def decorateError (msg : Thunk' String) (p : Parser α) : Parser α :=
+def decorateError (msg : Thunk String) (p : Parser α) : Parser α :=
   decorateErrors [msg ()] p
 #align parser.decorate_error Parser.decorateError
 

@@ -10,17 +10,17 @@ universe u
 
 /- warning: timeit -> timeit is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}}, String -> (Thunk'.{u} α) -> α
+  forall {α : Type.{u}}, String -> (Thunkₓ.{u} α) -> α
 but is expected to have type
   forall {α : Type}, ([mdata borrowed:1 String]) -> (IO α) -> (IO α)
 Case conversion may be inaccurate. Consider using '#align timeit timeitₓ'. -/
 /-- This function has a native implementation that tracks time. -/
-def timeit {α : Type u} (s : String) (f : Thunk' α) : α :=
+def timeit {α : Type u} (s : String) (f : Thunk α) : α :=
   f ()
 #align timeit timeit
 
 /-- This function has a native implementation that displays the given string in the regular output stream. -/
-def trace {α : Type u} (s : String) (f : Thunk' α) : α :=
+def trace {α : Type u} (s : String) (f : Thunk α) : α :=
   f ()
 #align trace trace
 
@@ -29,13 +29,13 @@ unsafe def trace_val {α : Type u} [has_to_format α] (f : α) : α :=
 #align trace_val trace_val
 
 /-- This function has a native implementation that shows the VM call stack. -/
-def traceCallStack {α : Type u} (f : Thunk' α) : α :=
+def traceCallStack {α : Type u} (f : Thunk α) : α :=
   f ()
 #align trace_call_stack traceCallStack
 
 /-- This function has a native implementation that displays in the given position all trace messages used in f.
    The arguments line and col are filled by the elaborator. -/
-def scopeTrace {α : Type u} {line col : Nat} (f : Thunk' α) : α :=
+def scopeTrace {α : Type u} {line col : Nat} (f : Thunk α) : α :=
   f ()
 #align scope_trace scopeTrace
 
@@ -43,14 +43,14 @@ def scopeTrace {α : Type u} {line col : Nat} (f : Thunk' α) : α :=
   the thunk is interrupted if it takes more than 'max' "heartbeats" to compute it.
   The heartbeat is approx. the maximum number of memory allocations (in thousands) performed by 'f ()'.
   This is a deterministic way of interrupting long running tasks. -/
-unsafe def try_for {α : Type u} (max : Nat) (f : Thunk' α) : Option α :=
+unsafe def try_for {α : Type u} (max : Nat) (f : Thunk α) : Option α :=
   some (f ())
 #align try_for try_for
 
 /-- This function has a native implementation where
   the thunk is interrupted if it takes more than `max` milliseconds to compute it.
   This is useful due to the variance in the number of heartbeats used by tactics. -/
-unsafe def try_for_time {α : Type u} (max : ℕ) (f : Thunk' α) : Option α :=
+unsafe def try_for_time {α : Type u} (max : ℕ) (f : Thunk α) : Option α :=
   some (f ())
 #align try_for_time try_for_time
 

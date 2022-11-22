@@ -176,12 +176,18 @@ end
 
 end InvImage
 
+/- warning: nat.lt_wf -> Nat.lt_wfRel is a dubious translation:
+lean 3 declaration is
+  WellFounded.{1} Nat Nat.lt
+but is expected to have type
+  WellFoundedRelation.{1} Nat
+Case conversion may be inaccurate. Consider using '#align nat.lt_wf Nat.lt_wfRelₓ'. -/
 /-- less-than is well-founded -/
-theorem Nat.lt_wfRel.wf : WellFounded Nat.lt :=
+theorem Nat.lt_wfRel : WellFounded Nat.lt :=
   ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zero n)) fun n ih =>
       Acc.intro (Nat.succ n) fun m h =>
         Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih) (Acc.inv ih)⟩
-#align nat.lt_wf Nat.lt_wfRel.wf
+#align nat.lt_wf Nat.lt_wfRel
 
 #print Measure /-
 def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
@@ -190,7 +196,7 @@ def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
 -/
 
 theorem measure_wf {α : Sort u} (f : α → ℕ) : WellFounded (Measure f) :=
-  InvImage.wf f Nat.lt_wfRel.wf
+  InvImage.wf f Nat.lt_wfRel
 #align measure_wf measure_wf
 
 def SizeofMeasure (α : Sort u) [SizeOf α] : α → α → Prop :=
@@ -226,10 +232,12 @@ inductive Lex : α × β → α × β → Prop
 #align prod.lex Prod.Lex
 -/
 
+#print Prod.RProd /-
 -- relational product based on ra and rb
-inductive Rprod : α × β → α × β → Prop
+inductive RProd : α × β → α × β → Prop
   | intro {a₁ b₁ a₂ b₂} (h₁ : ra a₁ a₂) (h₂ : rb b₁ b₂) : rprod (a₁, b₁) (a₂, b₂)
-#align prod.rprod Prod.Rprod
+#align prod.rprod Prod.RProd
+-/
 
 end
 
@@ -259,12 +267,12 @@ theorem lex_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Lex ra
 #align prod.lex_wf Prod.lex_wf
 
 -- relational product is a subrelation of the lex
-theorem rprod_sub_lex : ∀ a b, Rprod ra rb a b → Lex ra rb a b := fun a b h =>
-  Prod.Rprod.rec_on h fun a₁ b₁ a₂ b₂ h₁ h₂ => Lex.left b₁ b₂ h₁
+theorem rprod_sub_lex : ∀ a b, RProd ra rb a b → Lex ra rb a b := fun a b h =>
+  Prod.RProd.rec_on h fun a₁ b₁ a₂ b₂ h₁ h₂ => Lex.left b₁ b₂ h₁
 #align prod.rprod_sub_lex Prod.rprod_sub_lex
 
 -- The relational product of well founded relations is well-founded
-theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Rprod ra rb) :=
+theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (RProd ra rb) :=
   Subrelation.wf rprod_sub_lex (lex_wf ha hb)
 #align prod.rprod_wf Prod.rprod_wf
 

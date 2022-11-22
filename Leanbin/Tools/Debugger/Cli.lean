@@ -54,7 +54,7 @@ unsafe def add_breakpoint (s : State) (args : List String) : vm State :=
   | [arg] => do
     let fn ← return <| toQualifiedName arg
     let ok ← is_valid_fn_prefix fn
-    if ok then return { s with fnBps := fn :: List.filter' (fun fn' => fn ≠ fn') s }
+    if ok then return { s with fnBps := fn :: List.filter (fun fn' => fn ≠ fn') s }
       else vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >> return s
   | _ => vm.put_str "invalid 'break <fn>' command, incorrect number of arguments\n" >> return s
 #align debugger.add_breakpoint debugger.add_breakpoint
@@ -63,7 +63,7 @@ unsafe def remove_breakpoint (s : State) (args : List String) : vm State :=
   match args with
   | [arg] => do
     let fn ← return <| toQualifiedName arg
-    return { s with fnBps := List.filter' (fun fn' => fn ≠ fn') s }
+    return { s with fnBps := List.filter (fun fn' => fn ≠ fn') s }
   | _ => vm.put_str "invalid 'rbreak <fn>' command, incorrect number of arguments\n" >> return s
 #align debugger.remove_breakpoint debugger.remove_breakpoint
 

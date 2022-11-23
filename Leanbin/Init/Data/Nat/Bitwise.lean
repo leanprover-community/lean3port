@@ -276,10 +276,11 @@ theorem test_bit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m := by
   rw [← shiftr_add, Nat.add_comm] at this <;> exact this
 #align nat.test_bit_succ Nat.test_bit_succ
 
+/- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:145:2: warning: unsupported: with_cases -/
 theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)} (h : f false 0 z = z) (b n) :
     binaryRec z f (bit b n) = f b n (binaryRec z f n) := by
   rw [binary_rec]
-  with_cases by_cases bit b n = 0
+  by_cases bit b n = 0
   case pos h' =>
   simp [dif_pos h']
   generalize binary_rec._main._pack._proof_1 (bit b n) h' = e

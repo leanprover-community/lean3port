@@ -15,8 +15,8 @@ tag=$1
 curl -qsSL {https://raw.githubusercontent.com/leanprover-community/mathport/$tag/,-o}lean-toolchain
 
 mathlib4_rev=$(
-  curl -qsSL https://raw.githubusercontent.com/leanprover-community/mathport/$tag/lean_packages/manifest.json |
-  jq -r '.packages[] | select(.name=="mathlib") | .rev'
+  curl -qsSL https://raw.githubusercontent.com/leanprover-community/mathport/$tag/lake-manifest.json |
+  jq -r '.packages[].git | select(.name=="mathlib") | .rev'
 )
 
 # We specify a suffix for `-i` for macos compatibility.
@@ -25,7 +25,6 @@ sed -i.bak '
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean
 rm lakefile.lean.bak
-rm lean_packages/manifest.json
 lake update
 
 rm -rf Leanbin

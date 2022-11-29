@@ -184,7 +184,8 @@ theorem lt_succ_of_le {a b : ℕ} : a ≤ b → a < succ b :=
 #print Nat.succ_sub_succ_eq_sub /-
 @[simp]
 theorem succ_sub_succ_eq_sub (a b : ℕ) : succ a - succ b = a - b :=
-  Nat.recOn b (show succ a - succ zero = a - zero from Eq.refl (succ a - succ zero)) fun b => congr_arg pred
+  Nat.recOn b (show succ a - succ zero = a - zero from Eq.refl (succ a - succ zero)) fun b =>
+    congr_arg pred
 #align nat.succ_sub_succ_eq_sub Nat.succ_sub_succ_eq_sub
 -/
 
@@ -230,7 +231,8 @@ protected theorem sub_le (a b : ℕ) : a - b ≤ a :=
 protected theorem sub_lt : ∀ {a b : ℕ}, 0 < a → 0 < b → a - b < a
   | 0, b, h1, h2 => absurd h1 (Nat.lt_irrefl 0)
   | a + 1, 0, h1, h2 => absurd h2 (Nat.lt_irrefl 0)
-  | a + 1, b + 1, h1, h2 => Eq.symm (succ_sub_succ_eq_sub a b) ▸ show a - b < succ a from lt_succ_of_le (a.sub_le b)
+  | a + 1, b + 1, h1, h2 =>
+    Eq.symm (succ_sub_succ_eq_sub a b) ▸ show a - b < succ a from lt_succ_of_le (a.sub_le b)
 #align nat.sub_lt Nat.sub_lt
 -/
 

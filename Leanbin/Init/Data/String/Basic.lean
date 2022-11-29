@@ -113,7 +113,8 @@ def curr : Iterator → Char
 -/
 
 #print String.Iterator.setCurr /-
-/-- In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
+/--
+In the VM, `set_curr` is constant time if the string being iterated is not shared and linear time
    if it is. -/
 def setCurr : Iterator → Char → Iterator
   | ⟨p, c :: n⟩, c' => ⟨p, c' :: n⟩
@@ -331,7 +332,8 @@ theorem str_ne_empty (c : Char) (s : String) : str s c ≠ Empty :=
   (empty_ne_str c s).symm
 #align string.str_ne_empty String.str_ne_empty
 
-private theorem str_ne_str_left_aux : ∀ {c₁ c₂ : Char} (l₁ l₂ : List Char), c₁ ≠ c₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
+private theorem str_ne_str_left_aux :
+    ∀ {c₁ c₂ : Char} (l₁ l₂ : List Char), c₁ ≠ c₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
   | c₁, c₂, [], [], h₁, h₂ => List.noConfusion h₂ fun h _ => absurd h h₁
   | c₁, c₂, d₁ :: l₁, [], h₁, h₂ =>
     have : d₁ :: (l₁ ++ [c₁]) = [c₂] := h₂
@@ -353,7 +355,8 @@ theorem str_ne_str_left : ∀ {c₁ c₂ : Char} (s₁ s₂ : String), c₁ ≠ 
     absurd this (str_ne_str_left_aux l₁ l₂ h₁)
 #align string.str_ne_str_left String.str_ne_str_left
 
-private theorem str_ne_str_right_aux : ∀ (c₁ c₂ : Char) {l₁ l₂ : List Char}, l₁ ≠ l₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
+private theorem str_ne_str_right_aux :
+    ∀ (c₁ c₂ : Char) {l₁ l₂ : List Char}, l₁ ≠ l₂ → l₁ ++ [c₁] ≠ l₂ ++ [c₂]
   | c₁, c₂, [], [], h₁, h₂ => absurd rfl h₁
   | c₁, c₂, d₁ :: l₁, [], h₁, h₂ =>
     have : d₁ :: (l₁ ++ [c₁]) = [c₂] := h₂

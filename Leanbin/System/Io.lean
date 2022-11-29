@@ -353,7 +353,8 @@ def Io.cmd (args : Io.Process.SpawnArgs) : Io String := do
   return buf
 #align io.cmd Io.cmd
 
-/-- This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.
+/--
+This is the "back door" into the `io` monad, allowing IO computation to be performed during tactic execution.
 For this to be safe, the IO computation should be ideally free of side effects and independent of its environment.
 This primitive is used to invoke external tools (e.g., SAT and SMT solvers) from a tactic.
 
@@ -371,7 +372,8 @@ unsafe axiom tactic.unsafe_run_io {α : Type} : Io α → tactic α
 unsafe axiom io.run_tactic {α : Type} (a : tactic α) : Io α
 #align io.run_tactic io.run_tactic
 
-/-- Similarly to `tactic.unsafe_run_io`, this gives an unsafe backdoor to run io inside a pure function.
+/--
+Similarly to `tactic.unsafe_run_io`, this gives an unsafe backdoor to run io inside a pure function.
 
 If `unsafe_perform_io` is used to perform side-effects, users need to take the following
 precautions:

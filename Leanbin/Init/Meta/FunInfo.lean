@@ -40,7 +40,8 @@ unsafe def param_info.to_format : ParamInfo → format
                   "implicit"+++when ii
                   "inst_implicit"+++when p
                 "prop"+++when d
-              "has_fwd_deps"+++when di "is_dec_inst"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
+              "has_fwd_deps"+++when di
+            "is_dec_inst"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
 #align param_info.to_format param_info.to_format
 
 unsafe instance : has_to_format ParamInfo :=
@@ -95,7 +96,8 @@ unsafe instance : has_to_format SubsingletonInfo :=
 namespace Tactic
 
 /-- If nargs is not none, then return information assuming the function has only nargs arguments. -/
-unsafe axiom get_fun_info (f : expr) (nargs : Option Nat := none) (md := semireducible) : tactic FunInfo
+unsafe axiom get_fun_info (f : expr) (nargs : Option Nat := none) (md := semireducible) :
+    tactic FunInfo
 #align tactic.get_fun_info tactic.get_fun_info
 
 unsafe axiom get_subsingleton_info (f : expr) (nargs : Option Nat := none) (md := semireducible) :
@@ -118,7 +120,8 @@ unsafe axiom get_subsingleton_info (f : expr) (nargs : Option Nat := none) (md :
 
     The second argument is marked as subsingleton only because the resulting information
     is taking into account the first argument. -/
-unsafe axiom get_spec_subsingleton_info (t : expr) (md := semireducible) : tactic (List SubsingletonInfo)
+unsafe axiom get_spec_subsingleton_info (t : expr) (md := semireducible) :
+    tactic (List SubsingletonInfo)
 #align tactic.get_spec_subsingleton_info tactic.get_spec_subsingleton_info
 
 unsafe axiom get_spec_prefix_size (t : expr) (nargs : Nat) (md := semireducible) : tactic Nat
@@ -129,10 +132,12 @@ private unsafe def is_next_explicit : List ParamInfo → Bool
   | p :: ps => not p.isImplicit && not p.isInstImplicit
 #align tactic.is_next_explicit tactic.is_next_explicit
 
-unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) : List expr → List ParamInfo → α → tactic α
+unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) :
+    List expr → List ParamInfo → α → tactic α
   | [], _, a => return a
   | e :: es, ps, a =>
-    if is_next_explicit ps then f a e >>= fold_explicit_args_aux es ps.tail else fold_explicit_args_aux es ps.tail a
+    if is_next_explicit ps then f a e >>= fold_explicit_args_aux es ps.tail
+    else fold_explicit_args_aux es ps.tail a
 #align tactic.fold_explicit_args_aux tactic.fold_explicit_args_aux
 
 unsafe def fold_explicit_args {α} (e : expr) (a : α) (f : α → expr → tactic α) : tactic α :=

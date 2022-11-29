@@ -149,7 +149,9 @@ unsafe def name.is_suffix_of : Name → Name → Bool
 
 unsafe def name.replace_prefix : Name → Name → Name → Name
   | anonymous, p, p' => anonymous
-  | mk_string s c, p, p' => if c = p then mk_string s p' else mk_string s (name.replace_prefix c p p')
-  | mk_numeral v c, p, p' => if c = p then mk_numeral v p' else mk_numeral v (name.replace_prefix c p p')
+  | mk_string s c, p, p' =>
+    if c = p then mk_string s p' else mk_string s (name.replace_prefix c p p')
+  | mk_numeral v c, p, p' =>
+    if c = p then mk_numeral v p' else mk_numeral v (name.replace_prefix c p p')
 #align name.replace_prefix name.replace_prefix
 

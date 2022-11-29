@@ -20,7 +20,8 @@ private unsafe def get_has_sizeof_type_name : tactic Name :=
       when (n ≠ `has_sizeof) failed
       let const I ls ← return (get_app_fn t)
       return I) <|>
-    fail "mk_has_sizeof_instance tactic failed, target type is expected to be of the form (has_sizeof ...)"
+    fail
+      "mk_has_sizeof_instance tactic failed, target type is expected to be of the form (has_sizeof ...)"
 #align tactic.get_has_sizeof_type_name tactic.get_has_sizeof_type_name
 
 /-- Try to synthesize constructor argument using type class resolution -/
@@ -43,7 +44,9 @@ private unsafe def mk_sizeof : Bool → Name → Name → List Name → Nat → 
   | use_default, I_name, F_name, fname :: fnames, num_rec => do
     let field ← get_local fname
     let rec ← is_type_app_of field I_name
-    let sz ← if rec then mk_brec_on_rec_value F_name num_rec else mk_has_sizeof_instance_for field use_default
+    let sz ←
+      if rec then mk_brec_on_rec_value F_name num_rec
+        else mk_has_sizeof_instance_for field use_default
     let szs ← mk_sizeof use_default I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (sz :: szs)
 #align tactic.mk_sizeof tactic.mk_sizeof
@@ -53,14 +56,15 @@ private unsafe def mk_sum : List expr → expr
   | e :: es => app (app (const `nat.add []) e) (mk_sum es)
 #align tactic.mk_sum tactic.mk_sum
 
-private unsafe def has_sizeof_case (use_default : Bool) (I_name F_name : Name) (field_names : List Name) :
-    tactic Unit := do
+private unsafe def has_sizeof_case (use_default : Bool) (I_name F_name : Name)
+    (field_names : List Name) : tactic Unit := do
   let szs ← mk_sizeof use_default I_name F_name field_names 0
   exact (mk_sum szs)
 #align tactic.has_sizeof_case tactic.has_sizeof_case
 
 private unsafe def for_each_has_sizeof_goal : Bool → Name → Name → List (List Name) → tactic Unit
-  | d, I_name, F_name, [] => done <|> fail "mk_has_sizeof_instance failed, unexpected number of cases"
+  | d, I_name, F_name, [] =>
+    done <|> fail "mk_has_sizeof_instance failed, unexpected number of cases"
   | d, I_name, F_name, ns :: nss => do
     solve1 (has_sizeof_case d I_name F_name ns)
     for_each_has_sizeof_goal d I_name F_name nss
@@ -79,7 +83,8 @@ unsafe def mk_has_sizeof_instance_core (use_default : Bool) : tactic Unit := do
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then
-      intro `_v >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| .str I_name "brec_on") >> return ()
+      intro `_v >>= fun x =>
+        induction x (idx_names ++ [v_name, F_name]) (some <| .str I_name "brec_on") >> return ()
     else intro v_name >> return ()
   let arg_names : List (List Name) ← mk_constructors_arg_names I_name `_p
   get_local v_name >>= fun v => cases v (join arg_names)

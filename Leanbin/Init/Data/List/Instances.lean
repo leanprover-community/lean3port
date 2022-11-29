@@ -54,15 +54,12 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
       | is_true h₂ =>
         isTrue
           (by
-            cases' h₂ with y h
-            cases' h with hm hp
+            cases' h₂ with y h; cases' h with hm hp
             exact ⟨y, mem_cons_of_mem _ hm, hp⟩)
       | is_false h₂ =>
         isFalse
           (by
-            intro h
-            cases' h with y h
-            cases' h with hm hp
+            intro h; cases' h with y h; cases' h with hm hp
             cases eq_or_mem_of_mem_cons hm
             · rw [h] at hp
               contradiction

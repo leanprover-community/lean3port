@@ -54,7 +54,9 @@ unsafe inductive declaration-- definition
 
   | thm (n : Name) (univs : List Name) (type : expr) (value : task expr)-- constant assumption
 
-  | cnst (n : Name) (univs : List Name) (type : expr) (is_trusted : Bool)-- axiom (remark: axioms are always trusted)
+  |
+  cnst (n : Name) (univs : List Name) (type : expr)
+    (is_trusted : Bool)-- axiom (remark: axioms are always trusted)
 
   | ax (n : Name) (univs : List Name) (type : expr)
 #align declaration declaration

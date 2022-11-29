@@ -135,9 +135,16 @@ open Format
 
 protected unsafe def case_tag.to_format : CaseTag → format
   | pi names num_arguments =>
-    join ["(pi ", group <| nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments], ")"]
+    join
+      ["(pi ",
+        group <|
+          nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments],
+        ")"]
   | hyps names arguments =>
-    join ["(hyps ", group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format], ")"]
+    join
+      ["(hyps ",
+        group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format],
+        ")"]
 #align tactic.interactive.case_tag.to_format tactic.interactive.case_tag.to_format
 
 end
@@ -265,7 +272,8 @@ def combine : MatchResult → MatchResult → MatchResult
   | fuzzy_match, no_match => no_match
   | fuzzy_match, _ => fuzzy_match
   | no_match, _ => no_match
-#align tactic.interactive.case_tag.match_result.combine Tactic.Interactive.CaseTag.MatchResult.combine
+#align
+  tactic.interactive.case_tag.match_result.combine Tactic.Interactive.CaseTag.MatchResult.combine
 
 end MatchResult
 

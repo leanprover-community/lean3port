@@ -81,13 +81,14 @@ unsafe instance : has_to_tactic_format hinst_lemmas :=
 
 open Tactic
 
-private unsafe def add_lemma (m : Transparency) (as_simp : Bool) (h : Name) (hs : hinst_lemmas) : tactic hinst_lemmas :=
-  do
+private unsafe def add_lemma (m : Transparency) (as_simp : Bool) (h : Name) (hs : hinst_lemmas) :
+    tactic hinst_lemmas := do
   let h ← hinst_lemma.mk_from_decl_core m h as_simp
   return <| hs h
 #align add_lemma add_lemma
 
-unsafe def to_hinst_lemmas_core (m : Transparency) : Bool → List Name → hinst_lemmas → tactic hinst_lemmas
+unsafe def to_hinst_lemmas_core (m : Transparency) :
+    Bool → List Name → hinst_lemmas → tactic hinst_lemmas
   | as_simp, [], hs => return hs
   | as_simp, n :: ns, hs =>
     let add (n) := add_lemma m as_simp n hs >>= to_hinst_lemmas_core as_simp ns
@@ -137,11 +138,13 @@ unsafe def mk_hinst_lemma_attrs_core (as_simp : Bool) : List Name → Tactic
       let type ← infer_type (expr.const n [])
       let expected := q(user_attribute)
       is_def_eq type expected <|>
-          fail f! "failed to create hinst_lemma attribute '{n}', declaration already exists and has different type."
+          fail
+            f! "failed to create hinst_lemma attribute '{n}', declaration already exists and has different type."
       mk_hinst_lemma_attrs_core ns
 #align mk_hinst_lemma_attrs_core mk_hinst_lemma_attrs_core
 
-unsafe def merge_hinst_lemma_attrs (m : Transparency) (as_simp : Bool) : List Name → hinst_lemmas → tactic hinst_lemmas
+unsafe def merge_hinst_lemma_attrs (m : Transparency) (as_simp : Bool) :
+    List Name → hinst_lemmas → tactic hinst_lemmas
   | [], hs => return hs
   | attr :: attrs, hs => do
     let ns ← attribute.get_instances attr
@@ -155,8 +158,8 @@ yet. Moreover, the hinst_lemmas for attr_name will be the union of the lemmas ta
     attr_name, attrs_name, and simp_attr_names.
 For the ones in simp_attr_names, we use the left-hand-side of the conclusion as the pattern.
 -/
-unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name) (simp_attr_names : List Name) : Tactic :=
-  do
+unsafe def mk_hinst_lemma_attr_set (attr_name : Name) (attr_names : List Name)
+    (simp_attr_names : List Name) : Tactic := do
   mk_hinst_lemma_attrs_core ff attr_names
   mk_hinst_lemma_attrs_core tt simp_attr_names
   let t := q(user_attribute hinst_lemmas)
@@ -202,20 +205,26 @@ unsafe axiom ematch_state.internalize : ematch_state → expr → tactic ematch_
 namespace Tactic
 
 unsafe axiom ematch_core :
-    Transparency → cc_state → ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state)
+    Transparency →
+      cc_state →
+        ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state)
 #align tactic.ematch_core tactic.ematch_core
 
 unsafe axiom ematch_all_core :
-    Transparency → cc_state → ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state)
+    Transparency →
+      cc_state →
+        ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state)
 #align tactic.ematch_all_core tactic.ematch_all_core
 
 unsafe def ematch :
-    cc_state → ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state) :=
+    cc_state →
+      ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state) :=
   ematch_core reducible
 #align tactic.ematch tactic.ematch
 
 unsafe def ematch_all :
-    cc_state → ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state) :=
+    cc_state →
+      ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state) :=
   ematch_all_core reducible
 #align tactic.ematch_all tactic.ematch_all
 

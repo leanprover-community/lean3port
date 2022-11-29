@@ -27,8 +27,8 @@ unsafe def expr {α : Type u} (v : reflected_value α) : expr :=
   v.reflect
 #align reflected_value.expr reflected_value.expr
 
-unsafe def subst {α : Type u} {β : Type v} (f : α → β) [rf : reflected _ f] (a : reflected_value α) :
-    reflected_value β :=
+unsafe def subst {α : Type u} {β : Type v} (f : α → β) [rf : reflected _ f]
+    (a : reflected_value α) : reflected_value β :=
   @mk _ (f a.val) (rf.subst a.reflect)
 #align reflected_value.subst reflected_value.subst
 
@@ -43,7 +43,8 @@ unsafe instance nat.reflect : has_reflect ℕ
     if n = 0 then q((0 : ℕ))
     else
       if n = 1 then q((1 : ℕ))
-      else if n % 2 = 0 then q((bit0 $(nat.reflect n / 2) : ℕ)) else q((bit1 $(nat.reflect n / 2) : ℕ))
+      else
+        if n % 2 = 0 then q((bit0 $(nat.reflect n / 2) : ℕ)) else q((bit1 $(nat.reflect n / 2) : ℕ))
 #align nat.reflect nat.reflect
 
 unsafe instance unsigned.reflect : has_reflect Unsigned

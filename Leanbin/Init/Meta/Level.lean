@@ -7,7 +7,8 @@ prelude
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Format
 
-/-- A type universe term. eg `max u v`. Reflect a C++ level object. The VM replaces it with the C++ implementation. -/
+/--
+A type universe term. eg `max u v`. Reflect a C++ level object. The VM replaces it with the C++ implementation. -/
 unsafe inductive level
   | zero : level
   | succ : level → level

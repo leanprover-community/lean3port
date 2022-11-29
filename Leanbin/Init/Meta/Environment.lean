@@ -9,13 +9,15 @@ import Leanbin.Init.Meta.Exceptional
 import Leanbin.Init.Data.Option.Basic
 import Leanbin.Init.Meta.RbMap
 
-/-- An __environment__ contains all of the declarations and notation that have been defined so far.   -/
+/--
+An __environment__ contains all of the declarations and notation that have been defined so far.   -/
 unsafe axiom environment : Type
 #align environment environment
 
 namespace Environment
 
-/-- Consider a type `ψ` which is an inductive datatype using a single constructor `mk (a : α) (b : β) : ψ`.
+/--
+Consider a type `ψ` which is an inductive datatype using a single constructor `mk (a : α) (b : β) : ψ`.
 Lean will automatically make two projection functions `a : ψ → α`, `b : ψ → β`.
 Lean tags these declarations as __projections__.
 This helps the simplifier / rewriter not have to expand projectors.
@@ -108,8 +110,9 @@ unsafe def contains (env : environment) (d : Name) : Bool :=
   | exceptional.exception _ => false
 #align environment.contains environment.contains
 
-unsafe axiom add_defn_eqns (env : environment) (opt : options) (lp_params : List Name) (params : List expr) (sig : expr)
-    (eqns : List (List (expr false) × expr)) (is_meta : Bool) : exceptional environment
+unsafe axiom add_defn_eqns (env : environment) (opt : options) (lp_params : List Name)
+    (params : List expr) (sig : expr) (eqns : List (List (expr false) × expr)) (is_meta : Bool) :
+    exceptional environment
 #align environment.add_defn_eqns environment.add_defn_eqns
 
 /-- Register the given name as a namespace, making it available to the `open` command -/
@@ -134,8 +137,8 @@ unsafe axiom is_namespace : environment → Name → Bool
 
 /-- Add a new inductive datatype to the environment
    name, universe parameters, number of parameters, type, constructors (name and type), is_meta -/
-unsafe axiom add_inductive (env : environment) (n : Name) (levels : List Name) (num_params : Nat) (type : expr)
-    (intros : List (Name × expr)) (is_meta : Bool) : exceptional environment
+unsafe axiom add_inductive (env : environment) (n : Name) (levels : List Name) (num_params : Nat)
+    (type : expr) (intros : List (Name × expr)) (is_meta : Bool) : exceptional environment
 #align environment.add_inductive environment.add_inductive
 
 /-- Add a new general inductive declaration to the environment.
@@ -151,8 +154,9 @@ unsafe axiom add_inductive (env : environment) (n : Name) (levels : List Name) (
   `implicit_infer_kind` giving the implicitness of the params for this constructor,
   and an expression with the type of the constructor (not including the params).
 -/
-unsafe axiom add_ginductive (env : environment) (opt : options) (levels : List Name) (params : List expr)
-    (inds : List ((Name × expr) × List intro_rule)) (is_meta : Bool) : exceptional environment
+unsafe axiom add_ginductive (env : environment) (opt : options) (levels : List Name)
+    (params : List expr) (inds : List ((Name × expr) × List intro_rule)) (is_meta : Bool) :
+    exceptional environment
 #align environment.add_ginductive environment.add_ginductive
 
 /-- Return tt iff the given name is an inductive datatype -/
@@ -256,7 +260,8 @@ unsafe axiom structure_fields : environment → Name → Option (List Name)
 unsafe axiom get_class_attribute_symbols : environment → Name → name_set
 #align environment.get_class_attribute_symbols environment.get_class_attribute_symbols
 
-/-- The fingerprint of the environment is a hash formed from all of the declarations in the environment. -/
+/--
+The fingerprint of the environment is a hash formed from all of the declarations in the environment. -/
 unsafe axiom fingerprint : environment → Nat
 #align environment.fingerprint environment.fingerprint
 
@@ -294,7 +299,8 @@ unsafe def is_refl_app (env : environment) (e : expr) : Option (Name × expr × 
 
 /-- Return true if 'n' has been declared in the current file -/
 unsafe def in_current_file (env : environment) (n : Name) : Bool :=
-  (env.decl_olean n).isNone && env.contains n && n ∉ [`` Quot, `` Quot.mk, `` Quot.lift, `` Quot.ind]
+  (env.decl_olean n).isNone && env.contains n &&
+    n ∉ [`` Quot, `` Quot.mk, `` Quot.lift, `` Quot.ind]
 #align environment.in_current_file environment.in_current_file
 
 unsafe def is_definition (env : environment) (n : Name) : Bool :=

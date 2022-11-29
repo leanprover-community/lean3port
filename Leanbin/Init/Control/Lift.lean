@@ -39,7 +39,8 @@ def hasMonadLiftToHasCoe {m n} [HasMonadLiftT m n] {α} : Coe (m α) (n α) :=
   ⟨monadLift⟩
 #align has_monad_lift_to_has_coe hasMonadLiftToHasCoe
 
-instance (priority := 100) hasMonadLiftTTrans (m n o) [HasMonadLiftT m n] [HasMonadLift n o] : HasMonadLiftT m o :=
+instance (priority := 100) hasMonadLiftTTrans (m n o) [HasMonadLiftT m n] [HasMonadLift n o] :
+    HasMonadLiftT m o :=
   ⟨fun α ma => HasMonadLift.monadLift (monadLift ma : n α)⟩
 #align has_monad_lift_t_trans hasMonadLiftTTrans
 
@@ -81,8 +82,8 @@ class MonadFunctorT (m m' : Type u → Type v) (n n' : Type u → Type w) where
 
 export MonadFunctorT (monadMap)
 
-instance (priority := 100) monadFunctorTTrans (m m' n n' o o') [MonadFunctorT m m' n n'] [MonadFunctor n n' o o'] :
-    MonadFunctorT m m' o o' :=
+instance (priority := 100) monadFunctorTTrans (m m' n n' o o') [MonadFunctorT m m' n n']
+    [MonadFunctor n n' o o'] : MonadFunctorT m m' o o' :=
   ⟨fun α f => MonadFunctor.monadMap fun α => (monadMap @f : n α → n' α)⟩
 #align monad_functor_t_trans monadFunctorTTrans
 
@@ -91,7 +92,8 @@ instance monadFunctorTRefl (m m') : MonadFunctorT m m' m m' :=
 #align monad_functor_t_refl monadFunctorTRefl
 
 @[simp]
-theorem monad_map_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α) {α} : (monadMap @f : m α → m' α) = f :=
+theorem monad_map_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α) {α} :
+    (monadMap @f : m α → m' α) = f :=
   rfl
 #align monad_map_refl monad_map_refl
 

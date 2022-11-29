@@ -455,7 +455,8 @@ instance [LT α] : LT (List α) :=
   ⟨List.lt⟩
 
 #print List.hasDecidableLt /-
-instance hasDecidableLt [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, Decidable (l₁ < l₂)
+instance hasDecidableLt [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] :
+    ∀ l₁ l₂ : List α, Decidable (l₁ < l₂)
   | [], [] => isFalse not_false
   | [], b :: bs => isTrue trivial
   | a :: as, [] => isFalse not_false
@@ -480,15 +481,16 @@ protected def Le [LT α] (a b : List α) : Prop :=
 instance [LT α] : LE (List α) :=
   ⟨List.Le⟩
 
-instance hasDecidableLe [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, Decidable (l₁ ≤ l₂) :=
-  fun a b => Not.decidable
+instance hasDecidableLe [LT α] [h : DecidableRel ((· < ·) : α → α → Prop)] :
+    ∀ l₁ l₂ : List α, Decidable (l₁ ≤ l₂) := fun a b => Not.decidable
 #align list.has_decidable_le List.hasDecidableLe
 
 theorem le_eq_not_gt [LT α] : ∀ l₁ l₂ : List α, (l₁ ≤ l₂) = ¬l₂ < l₁ := fun l₁ l₂ => rfl
 #align list.le_eq_not_gt List.le_eq_not_gt
 
-theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] : ∀ l₁ l₂ : List α, (l₁ < l₂) = ¬l₂ ≤ l₁ :=
-  fun l₁ l₂ => show (l₁ < l₂) = ¬¬l₁ < l₂ from Eq.subst (propext (not_not_iff (l₁ < l₂))).symm rfl
+theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] :
+    ∀ l₁ l₂ : List α, (l₁ < l₂) = ¬l₂ ≤ l₁ := fun l₁ l₂ =>
+  show (l₁ < l₂) = ¬¬l₁ < l₂ from Eq.subst (propext (not_not_iff (l₁ < l₂))).symm rfl
 #align list.lt_eq_not_ge List.lt_eq_not_ge
 
 /-- `is_prefix_of l₁ l₂` returns `tt` iff `l₁` is a prefix of `l₂`. -/

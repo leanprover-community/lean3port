@@ -166,12 +166,14 @@ unsafe axiom set_lemmas : hinst_lemmas → smt_tactic Unit
 unsafe axiom add_lemmas : hinst_lemmas → smt_tactic Unit
 #align smt_tactic.add_lemmas smt_tactic.add_lemmas
 
-unsafe def add_ematch_lemma_core (md : Transparency) (as_simp : Bool) (e : expr) : smt_tactic Unit := do
+unsafe def add_ematch_lemma_core (md : Transparency) (as_simp : Bool) (e : expr) :
+    smt_tactic Unit := do
   let h ← hinst_lemma.mk_core md e as_simp
   add_lemmas (mk_hinst_singleton h)
 #align smt_tactic.add_ematch_lemma_core smt_tactic.add_ematch_lemma_core
 
-unsafe def add_ematch_lemma_from_decl_core (md : Transparency) (as_simp : Bool) (n : Name) : smt_tactic Unit := do
+unsafe def add_ematch_lemma_from_decl_core (md : Transparency) (as_simp : Bool) (n : Name) :
+    smt_tactic Unit := do
   let h ← hinst_lemma.mk_from_decl_core md n as_simp
   add_lemmas (mk_hinst_singleton h)
 #align smt_tactic.add_ematch_lemma_from_decl_core smt_tactic.add_ematch_lemma_from_decl_core
@@ -320,7 +322,8 @@ unsafe def all_goals (tac : smt_tactic Unit) : smt_tactic Unit := do
   all_goals_core tac ss ts [] []
 #align smt_tactic.all_goals smt_tactic.all_goals
 
-/-- LCF-style AND_THEN tactic. It applies tac1, and if succeed applies tac2 to each subgoal produced by tac1 -/
+/--
+LCF-style AND_THEN tactic. It applies tac1, and if succeed applies tac2 to each subgoal produced by tac1 -/
 unsafe def seq (tac1 : smt_tactic Unit) (tac2 : smt_tactic Unit) : smt_tactic Unit := do
   let (s :: ss, t :: ts) ← get_goals
   set_goals [s] [t]
@@ -412,8 +415,11 @@ unsafe def by_cases (e : expr) : smt_tactic Unit := do
   let c ← classical
   if c then destruct (expr.app (expr.const `classical.em []) e)
     else do
-      let dec_e ← mk_app `decidable [e] <|> fail "by_cases smt_tactic failed, type is not a proposition"
-      let inst ← mk_instance dec_e <|> fail "by_cases smt_tactic failed, type of given expression is not decidable"
+      let dec_e ←
+        mk_app `decidable [e] <|> fail "by_cases smt_tactic failed, type is not a proposition"
+      let inst ←
+        mk_instance dec_e <|>
+            fail "by_cases smt_tactic failed, type of given expression is not decidable"
       let em ← mk_app `decidable.em [e, inst]
       destruct em
 #align smt_tactic.by_cases smt_tactic.by_cases
@@ -427,8 +433,11 @@ unsafe def by_contradiction : smt_tactic Unit := do
         apply (expr.app (expr.const `classical.by_contradiction []) t)
         intros
       else do
-        let dec_t ← mk_app `decidable [t] <|> fail "by_contradiction smt_tactic failed, target is not a proposition"
-        let inst ← mk_instance dec_t <|> fail "by_contradiction smt_tactic failed, target is not decidable"
+        let dec_t ←
+          mk_app `decidable [t] <|>
+              fail "by_contradiction smt_tactic failed, target is not a proposition"
+        let inst ←
+          mk_instance dec_t <|> fail "by_contradiction smt_tactic failed, target is not decidable"
         let a ← mk_mapp `decidable.by_contradiction [some t, some inst]
         apply a
         intros
@@ -440,7 +449,8 @@ unsafe def proof_for (e : expr) : smt_tactic expr := do
   cc e
 #align smt_tactic.proof_for smt_tactic.proof_for
 
-/-- Return a refutation for e (i.e., a proof for (not e)), if 'e' has been refuted in the main goal. -/
+/--
+Return a refutation for e (i.e., a proof for (not e)), if 'e' has been refuted in the main goal. -/
 unsafe def refutation_for (e : expr) : smt_tactic expr := do
   let cc ← to_cc_state
   cc e
@@ -480,7 +490,9 @@ unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do
-    try ((is_prop f >> guard (f && not (f f.is_arrow))) >> proof_for f >>= add_ematch_lemma_core reducible ff)
+    try
+        ((is_prop f >> guard (f && not (f f.is_arrow))) >> proof_for f >>=
+          add_ematch_lemma_core reducible ff)
     add_lemmas_from_facts_core fs
 #align smt_tactic.add_lemmas_from_facts_core smt_tactic.add_lemmas_from_facts_core
 
@@ -488,7 +500,8 @@ unsafe def add_lemmas_from_facts : smt_tactic Unit :=
   get_facts >>= add_lemmas_from_facts_core
 #align smt_tactic.add_lemmas_from_facts smt_tactic.add_lemmas_from_facts
 
-unsafe def induction (e : expr) (ids : List Name := []) (rec : Option Name := none) : smt_tactic Unit :=
+unsafe def induction (e : expr) (ids : List Name := []) (rec : Option Name := none) :
+    smt_tactic Unit :=
   slift (tactic.induction e ids rec >> return ())
 #align smt_tactic.induction smt_tactic.induction
 

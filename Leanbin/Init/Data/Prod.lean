@@ -34,8 +34,8 @@ instance [h₁ : DecidableEq α] [h₂ : DecidableEq β] : DecidableEq (α × β
 end
 
 #print Prod.map /-
-def Prod.map.{u₁, u₂, v₁, v₂} {α₁ : Type u₁} {α₂ : Type u₂} {β₁ : Type v₁} {β₂ : Type v₂} (f : α₁ → α₂) (g : β₁ → β₂)
-    (x : α₁ × β₁) : α₂ × β₂ :=
+def Prod.map.{u₁, u₂, v₁, v₂} {α₁ : Type u₁} {α₂ : Type u₂} {β₁ : Type v₁} {β₂ : Type v₂}
+    (f : α₁ → α₂) (g : β₁ → β₂) (x : α₁ × β₁) : α₂ × β₂ :=
   (f x.1, g x.2)
 #align prod.map Prod.map
 -/

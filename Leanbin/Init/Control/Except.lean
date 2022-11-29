@@ -102,7 +102,8 @@ protected def lift {α : Type u} (t : m α) : ExceptT ε m α :=
 instance : HasMonadLift m (ExceptT ε m) :=
   ⟨@ExceptT.lift⟩
 
-protected def catch {α : Type u} (ma : ExceptT ε m α) (handle : ε → ExceptT ε m α) : ExceptT ε m α :=
+protected def catch {α : Type u} (ma : ExceptT ε m α) (handle : ε → ExceptT ε m α) :
+    ExceptT ε m α :=
   ⟨ma.run >>= fun res =>
       match res with
       | Except.ok a => pure (Except.ok a)
@@ -110,8 +111,8 @@ protected def catch {α : Type u} (ma : ExceptT ε m α) (handle : ε → Except
 #align except_t.catch ExceptTₓ.catch
 
 @[inline]
-protected def monadMap {m'} [Monad m'] {α} (f : ∀ {α}, m α → m' α) : ExceptT ε m α → ExceptT ε m' α := fun x =>
-  ⟨f x.run⟩
+protected def monadMap {m'} [Monad m'] {α} (f : ∀ {α}, m α → m' α) :
+    ExceptT ε m α → ExceptT ε m' α := fun x => ⟨f x.run⟩
 #align except_t.monad_map ExceptTₓ.monadMap
 
 instance (m') [Monad m'] : MonadFunctor m m' (ExceptT ε m) (ExceptT ε m') :=
@@ -178,8 +179,8 @@ section
 
 variable {ε ε' : Type u} {m m' : Type u → Type v}
 
-instance (priority := 100) monadExceptAdapterTrans {n n' : Type u → Type v} [MonadExceptAdapter ε ε' m m']
-    [MonadFunctor m m' n n'] : MonadExceptAdapter ε ε' n n' :=
+instance (priority := 100) monadExceptAdapterTrans {n n' : Type u → Type v}
+    [MonadExceptAdapter ε ε' m m'] [MonadFunctor m m' n n'] : MonadExceptAdapter ε ε' n n' :=
   ⟨fun α f => monadMap fun α => (adaptExcept f : m α → m' α)⟩
 #align monad_except_adapter_trans monadExceptAdapterTrans
 

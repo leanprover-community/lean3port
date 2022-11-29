@@ -68,16 +68,16 @@ instance (m) [Monad m] : HasMonadLift m (ReaderT ρ m) :=
   ⟨@ReaderT.lift ρ m _⟩
 
 @[inline]
-protected def monadMap {ρ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) : ReaderT ρ m α → ReaderT ρ m' α :=
-  fun x => ⟨fun r => f (x.run r)⟩
+protected def monadMap {ρ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) :
+    ReaderT ρ m α → ReaderT ρ m' α := fun x => ⟨fun r => f (x.run r)⟩
 #align reader_t.monad_map ReaderTₓ.monadMap
 
 instance (ρ m m') [Monad m] [Monad m'] : MonadFunctor m m' (ReaderT ρ m) (ReaderT ρ m') :=
   ⟨@ReaderT.monadMap ρ m m' _ _⟩
 
 @[inline]
-protected def adapt {ρ' : Type u} [Monad m] {α : Type u} (f : ρ' → ρ) : ReaderT ρ m α → ReaderT ρ' m α := fun x =>
-  ⟨fun r => x.run (f r)⟩
+protected def adapt {ρ' : Type u} [Monad m] {α : Type u} (f : ρ' → ρ) :
+    ReaderT ρ m α → ReaderT ρ' m α := fun x => ⟨fun r => x.run (f r)⟩
 #align reader_t.adapt ReaderTₓ.adapt
 
 protected def orelse [Alternative m] {α : Type u} (x₁ x₂ : ReaderT ρ m α) : ReaderT ρ m α :=
@@ -119,8 +119,8 @@ class MonadReader (ρ : outParam (Type u)) (m : Type u → Type v) where
 
 export MonadReader (read)
 
-instance (priority := 100) monadReaderTrans {ρ : Type u} {m : Type u → Type v} {n : Type u → Type w} [MonadReader ρ m]
-    [HasMonadLift m n] : MonadReader ρ n :=
+instance (priority := 100) monadReaderTrans {ρ : Type u} {m : Type u → Type v} {n : Type u → Type w}
+    [MonadReader ρ m] [HasMonadLift m n] : MonadReader ρ n :=
   ⟨monadLift (MonadReader.read : m ρ)⟩
 #align monad_reader_trans monadReaderTrans
 
@@ -147,8 +147,8 @@ section
 
 variable {ρ ρ' : Type u} {m m' : Type u → Type v}
 
-instance (priority := 100) monadReaderAdapterTrans {n n' : Type u → Type v} [MonadReaderAdapter ρ ρ' m m']
-    [MonadFunctor m m' n n'] : MonadReaderAdapter ρ ρ' n n' :=
+instance (priority := 100) monadReaderAdapterTrans {n n' : Type u → Type v}
+    [MonadReaderAdapter ρ ρ' m m'] [MonadFunctor m m' n n'] : MonadReaderAdapter ρ ρ' n n' :=
   ⟨fun α f => monadMap fun α => (adaptReader f : m α → m' α)⟩
 #align monad_reader_adapter_trans monadReaderAdapterTrans
 

@@ -29,8 +29,8 @@ def comp (f : β → φ) (g : α → β) : α → φ := fun x => f (g x)
 /-- Composition of dependent functions: `(f ∘' g) x = f (g x)`, where type of `g x` depends on `x`
 and type of `f (g x)` depends on `x` and `g x`. -/
 @[inline, reducible]
-def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} (y : β x), φ y) (g : ∀ x, β x) :
-    ∀ x, φ (g x) := fun x => f (g x)
+def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} (y : β x), φ y)
+    (g : ∀ x, β x) : ∀ x, φ (g x) := fun x => f (g x)
 #align function.dcomp Function.dcomp
 
 -- mathport name: «expr ∘' »
@@ -55,7 +55,8 @@ def onFun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y =
 
 #print Function.combine /-
 @[reducible]
-def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y => op (f x y) (g x y)
+def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y =>
+  op (f x y) (g x y)
 #align function.combine Function.combine
 -/
 
@@ -99,9 +100,9 @@ theorem right_id (f : α → β) : f ∘ id = f :=
 
 /- warning: function.comp_app -> Function.comp_apply is a dubious translation:
 lean 3 declaration is
-  forall {α : Sort.{u₁}} {β : Sort.{u₂}} {φ : Sort.{u₃}} (f : β -> φ) (g : α -> β) (a : α), Eq.{u₃} φ (Function.comp.{u₁ u₂ u₃} α β φ f g a) (f (g a))
+  forall {α : Sort.{u₁}} {β : Sort.{u₂}} {φ : Sort.{u₃}} (f : β -> φ) (g : α -> β) (a : α), Eq.{u₃} φ (Function.comp.{u₁, u₂, u₃} α β φ f g a) (f (g a))
 but is expected to have type
-  forall {β : Sort.{u_1}} {δ : Sort.{u_2}} {α : Sort.{u_3}} {f : β -> δ} {g : α -> β} {x : α}, Eq.{u_2} δ (Function.comp.{u_3 u_1 u_2} α β δ f g x) (f (g x))
+  forall {β : Sort.{u_1}} {δ : Sort.{u_2}} {α : Sort.{u_3}} {f : β -> δ} {g : α -> β} {x : α}, Eq.{u_2} δ (Function.comp.{u_3, u_1, u_2} α β δ f g x) (f (g x))
 Case conversion may be inaccurate. Consider using '#align function.comp_app Function.comp_applyₓ'. -/
 @[simp]
 theorem comp_apply (f : β → φ) (g : α → β) (a : α) : (f ∘ g) a = f (g a) :=
@@ -142,8 +143,8 @@ def Injective (f : α → β) : Prop :=
 -/
 
 #print Function.Injective.comp /-
-theorem Injective.comp {g : β → φ} {f : α → β} (hg : Injective g) (hf : Injective f) : Injective (g ∘ f) := fun a₁ a₂ =>
-  fun h => hf (hg h)
+theorem Injective.comp {g : β → φ} {f : α → β} (hg : Injective g) (hf : Injective f) :
+    Injective (g ∘ f) := fun a₁ a₂ => fun h => hf (hg h)
 #align function.injective.comp Function.Injective.comp
 -/
 
@@ -157,10 +158,11 @@ def Surjective (f : α → β) : Prop :=
 -/
 
 #print Function.Surjective.comp /-
-theorem Surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) : Surjective (g ∘ f) :=
-  fun c : φ =>
+theorem Surjective.comp {g : β → φ} {f : α → β} (hg : Surjective g) (hf : Surjective f) :
+    Surjective (g ∘ f) := fun c : φ =>
   Exists.elim (hg c) fun b hb =>
-    Exists.elim (hf b) fun a ha => Exists.intro a (show g (f a) = c from Eq.trans (congr_arg g ha) hb)
+    Exists.elim (hf b) fun a ha =>
+      Exists.intro a (show g (f a) = c from Eq.trans (congr_arg g ha) hb)
 #align function.surjective.comp Function.Surjective.comp
 -/
 
@@ -206,7 +208,8 @@ def HasRightInverse (f : α → β) : Prop :=
 -/
 
 #print Function.LeftInverse.injective /-
-theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f := fun h a b faeqfb =>
+theorem LeftInverse.injective {g : β → α} {f : α → β} : LeftInverse g f → Injective f :=
+  fun h a b faeqfb =>
   calc
     a = g (f a) := (h a).symm
     _ = g (f b) := congr_arg g faeqfb
@@ -222,15 +225,17 @@ theorem HasLeftInverse.injective {f : α → β} : HasLeftInverse f → Injectiv
 -/
 
 #print Function.rightInverse_of_injective_of_leftInverse /-
-theorem rightInverse_of_injective_of_leftInverse {f : α → β} {g : β → α} (injf : Injective f) (lfg : LeftInverse f g) :
-    RightInverse f g := fun x =>
+theorem rightInverse_of_injective_of_leftInverse {f : α → β} {g : β → α} (injf : Injective f)
+    (lfg : LeftInverse f g) : RightInverse f g := fun x =>
   have h : f (g (f x)) = f x := lfg (f x)
   injf h
-#align function.right_inverse_of_injective_of_left_inverse Function.rightInverse_of_injective_of_leftInverse
+#align
+  function.right_inverse_of_injective_of_left_inverse Function.rightInverse_of_injective_of_leftInverse
 -/
 
 #print Function.RightInverse.surjective /-
-theorem RightInverse.surjective {f : α → β} {g : β → α} (h : RightInverse g f) : Surjective f := fun y => ⟨g y, h y⟩
+theorem RightInverse.surjective {f : α → β} {g : β → α} (h : RightInverse g f) : Surjective f :=
+  fun y => ⟨g y, h y⟩
 #align function.right_inverse.surjective Function.RightInverse.surjective
 -/
 
@@ -249,7 +254,8 @@ theorem leftInverse_of_surjective_of_rightInverse {f : α → β} {g : β → α
       _ = f x := Eq.symm (rfg x) ▸ rfl
       _ = y := hx
       
-#align function.left_inverse_of_surjective_of_right_inverse Function.leftInverse_of_surjective_of_rightInverse
+#align
+  function.left_inverse_of_surjective_of_right_inverse Function.leftInverse_of_surjective_of_rightInverse
 -/
 
 #print Function.injective_id /-

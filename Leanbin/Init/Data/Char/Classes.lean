@@ -46,45 +46,27 @@ def toLower (c : Char) : Char :=
 #align char.to_lower Char.toLower
 -/
 
-instance decidableIsWhitespace : DecidablePred IsWhitespace := by
-  intro c
-  delta is_whitespace
+instance decidableIsWhitespace : DecidablePred IsWhitespace := by intro c; delta is_whitespace;
   infer_instance
 #align char.decidable_is_whitespace Char.decidableIsWhitespace
 
-instance decidableIsUpper : DecidablePred IsUpper := by
-  intro c
-  delta is_upper
-  infer_instance
+instance decidableIsUpper : DecidablePred IsUpper := by intro c; delta is_upper; infer_instance
 #align char.decidable_is_upper Char.decidableIsUpper
 
-instance decidableIsLower : DecidablePred IsLower := by
-  intro c
-  delta is_lower
-  infer_instance
+instance decidableIsLower : DecidablePred IsLower := by intro c; delta is_lower; infer_instance
 #align char.decidable_is_lower Char.decidableIsLower
 
-instance decidableIsAlpha : DecidablePred IsAlpha := by
-  intro c
-  delta is_alpha
-  infer_instance
+instance decidableIsAlpha : DecidablePred IsAlpha := by intro c; delta is_alpha; infer_instance
 #align char.decidable_is_alpha Char.decidableIsAlpha
 
-instance decidableIsDigit : DecidablePred IsDigit := by
-  intro c
-  delta is_digit
-  infer_instance
+instance decidableIsDigit : DecidablePred IsDigit := by intro c; delta is_digit; infer_instance
 #align char.decidable_is_digit Char.decidableIsDigit
 
-instance decidableIsAlphanum : DecidablePred IsAlphanum := by
-  intro c
-  delta is_alphanum
+instance decidableIsAlphanum : DecidablePred IsAlphanum := by intro c; delta is_alphanum;
   infer_instance
 #align char.decidable_is_alphanum Char.decidableIsAlphanum
 
-instance decidableIsPunctuation : DecidablePred IsPunctuation := by
-  intro c
-  delta is_punctuation
+instance decidableIsPunctuation : DecidablePred IsPunctuation := by intro c; delta is_punctuation;
   infer_instance
 #align char.decidable_is_punctuation Char.decidableIsPunctuation
 

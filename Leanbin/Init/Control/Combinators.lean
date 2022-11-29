@@ -13,7 +13,8 @@ import Leanbin.Init.Data.List.Basic
 universe u v w
 
 #print List.mapM /-
-def List.mapM {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u} (f : α → m β) : List α → m (List β)
+def List.mapM {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u} (f : α → m β) :
+    List α → m (List β)
   | [] => return []
   | h :: t => do
     let h' ← f h
@@ -24,9 +25,9 @@ def List.mapM {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u} (f :
 
 /- warning: list.mmap' -> List.mapM' is a dubious translation:
 lean 3 declaration is
-  forall {m : Type -> Type.{v}} [_inst_1 : Monad.{0 v} m] {α : Type.{u}} {β : Type}, (α -> (m β)) -> (List.{u} α) -> (m Unit)
+  forall {m : Type -> Type.{v}} [_inst_1 : Monad.{0, v} m] {α : Type.{u}} {β : Type}, (α -> (m β)) -> (List.{u} α) -> (m Unit)
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_3}} {β : Type.{u_1}} [inst._@.Std.Data.List.Init.Lemmas._hyg.3676 : Monad.{u_1 u_2} m], (α -> (m β)) -> (List.{u_3} α) -> (m (List.{u_1} β))
+  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_3}} {β : Type.{u_1}} [inst._@.Std.Data.List.Init.Lemmas._hyg.3669 : Monad.{u_1, u_2} m], (α -> (m β)) -> (List.{u_3} α) -> (m (List.{u_1} β))
 Case conversion may be inaccurate. Consider using '#align list.mmap' List.mapM'ₓ'. -/
 def List.mapM' {m : Type → Type v} [Monad m] {α : Type u} {β : Type} (f : α → m β) : List α → m Unit
   | [] => return ()
@@ -50,7 +51,8 @@ def List.filterM {m : Type → Type v} [Monad m] {α : Type} (f : α → m Bool)
 -/
 
 #print List.foldlM /-
-def List.foldlM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} : (s → α → m s) → s → List α → m s
+def List.foldlM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} :
+    (s → α → m s) → s → List α → m s
   | f, s, [] => return s
   | f, s, h :: r => do
     let s' ← f s h
@@ -59,7 +61,8 @@ def List.foldlM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} : (
 -/
 
 #print List.foldrM /-
-def List.foldrM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} : (α → s → m s) → s → List α → m s
+def List.foldrM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} :
+    (α → s → m s) → s → List α → m s
   | f, s, [] => return s
   | f, s, h :: r => do
     let s' ← List.foldrM f s r
@@ -68,7 +71,8 @@ def List.foldrM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} : (
 -/
 
 #print List.firstM /-
-def List.firstM {m : Type u → Type v} [Monad m] [Alternative m] {α : Type w} {β : Type u} (f : α → m β) : List α → m β
+def List.firstM {m : Type u → Type v} [Monad m] [Alternative m] {α : Type w} {β : Type u}
+    (f : α → m β) : List α → m β
   | [] => failure
   | a :: as => f a <|> List.firstM as
 #align list.mfirst List.firstM
@@ -105,9 +109,9 @@ def mapM :=
 
 /- warning: monad.mapm' -> Monad.mapM' is a dubious translation:
 lean 3 declaration is
-  forall {m : Type -> Type.{u_1}} [_inst_1 : Monad.{0 u_1} m] {α : Type.{u_2}} {β : Type}, (α -> (m β)) -> (List.{u_2} α) -> (m Unit)
+  forall {m : Type -> Type.{u_1}} [_inst_1 : Monad.{0, u_1} m] {α : Type.{u_2}} {β : Type}, (α -> (m β)) -> (List.{u_2} α) -> (m Unit)
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_3}} {β : Type.{u_1}} [inst._@.Std.Data.List.Init.Lemmas._hyg.3676 : Monad.{u_1 u_2} m], (α -> (m β)) -> (List.{u_3} α) -> (m (List.{u_1} β))
+  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_3}} {β : Type.{u_1}} [inst._@.Std.Data.List.Init.Lemmas._hyg.3669 : Monad.{u_1, u_2} m], (α -> (m β)) -> (List.{u_3} α) -> (m (List.{u_1} β))
 Case conversion may be inaccurate. Consider using '#align monad.mapm' Monad.mapM'ₓ'. -/
 def mapM' :=
   @mapM'

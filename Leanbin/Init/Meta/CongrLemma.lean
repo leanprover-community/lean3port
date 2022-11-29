@@ -8,7 +8,8 @@ import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Function
 
-/-- This is a kind attached to an argument of a congruence lemma that tells the simplifier how to fill it in.
+/--
+This is a kind attached to an argument of a congruence lemma that tells the simplifier how to fill it in.
 - `fixed`: It is a parameter for the congruence lemma, the parameter occurs in the left and right hand sides.
   For example the α in the congruence generated from `f: Π {α : Type} α → α`.
 - `fixed_no_param`: It is not a parameter for the congruence lemma, the lemma was specialized for this parameter.
@@ -87,7 +88,8 @@ From `congr_lemma.cpp`:
 > The idea is that the right-hand-side of this lemma "tells" the simplifier
 > how the resulting term looks like.
 -/
-unsafe axiom mk_congr_lemma_simp (f : expr) (nargs : Option Nat := none) (md := semireducible) : tactic congr_lemma
+unsafe axiom mk_congr_lemma_simp (f : expr) (nargs : Option Nat := none) (md := semireducible) :
+    tactic congr_lemma
 #align tactic.mk_congr_lemma_simp tactic.mk_congr_lemma_simp
 
 /-- Create a specialized theorem using (a prefix of) the arguments of the given application.
@@ -95,7 +97,8 @@ unsafe axiom mk_congr_lemma_simp (f : expr) (nargs : Option Nat := none) (md := 
 An example of usage can be found in `tests/lean/simp_subsingleton.lean`.
 For more information on specialization see the comment in the method body for `get_specialization_prefix_size` in `src/library/fun_info.cpp`.
  -/
-unsafe axiom mk_specialized_congr_lemma_simp (h : expr) (md : Transparency := semireducible) : tactic congr_lemma
+unsafe axiom mk_specialized_congr_lemma_simp (h : expr) (md : Transparency := semireducible) :
+    tactic congr_lemma
 #align tactic.mk_specialized_congr_lemma_simp tactic.mk_specialized_congr_lemma_simp
 
 /-- Similar to `mk_congr_lemma_simp`, this will make a `congr_lemma` object.
@@ -114,7 +117,8 @@ From `congr_lemma.cpp`:
 > It uses subsinglenton elimination to show that the congr-simp lemma right-hand-side
 > is equal to the right-hand-side of this lemma.
  -/
-unsafe axiom mk_congr_lemma (h : expr) (nargs : Option Nat := none) (md := semireducible) : tactic congr_lemma
+unsafe axiom mk_congr_lemma (h : expr) (nargs : Option Nat := none) (md := semireducible) :
+    tactic congr_lemma
 #align tactic.mk_congr_lemma tactic.mk_congr_lemma
 
 /-- Create a specialized theorem using (a prefix of) the arguments of the given application.
@@ -136,7 +140,8 @@ For example `mk_hcongr_lemma (f : Π (α : ℕ → Type) (n:ℕ) (b:α n), ℕ` 
 
 (Using merely `mk_congr_lemma` instead will produce `[fixed,fixed,eq]` instaed.)
 -/
-unsafe axiom mk_hcongr_lemma (h : expr) (nargs : Option Nat := none) (md := semireducible) : tactic congr_lemma
+unsafe axiom mk_hcongr_lemma (h : expr) (nargs : Option Nat := none) (md := semireducible) :
+    tactic congr_lemma
 #align tactic.mk_hcongr_lemma tactic.mk_hcongr_lemma
 
 end Tactic

@@ -19,7 +19,8 @@ def timeit {α : Type u} (s : String) (f : Thunk α) : α :=
   f ()
 #align timeit timeit
 
-/-- This function has a native implementation that displays the given string in the regular output stream. -/
+/--
+This function has a native implementation that displays the given string in the regular output stream. -/
 def trace {α : Type u} (s : String) (f : Thunk α) : α :=
   f ()
 #align trace trace
@@ -33,7 +34,8 @@ def traceCallStack {α : Type u} (f : Thunk α) : α :=
   f ()
 #align trace_call_stack traceCallStack
 
-/-- This function has a native implementation that displays in the given position all trace messages used in f.
+/--
+This function has a native implementation that displays in the given position all trace messages used in f.
    The arguments line and col are filled by the elaborator. -/
 def scopeTrace {α : Type u} {line col : Nat} (f : Thunk α) : α :=
   f ()

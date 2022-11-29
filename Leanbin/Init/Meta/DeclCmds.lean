@@ -21,7 +21,8 @@ private unsafe def apply_replacement (replacements : name_map Name) (e : expr) :
     | _ => none
 #align apply_replacement apply_replacement
 
-/-- Given a set of constant renamings `replacements` and a declaration name `src_decl_name`, create a new
+/--
+Given a set of constant renamings `replacements` and a declaration name `src_decl_name`, create a new
    declaration called `new_decl_name` s.t. its type is the type of `src_decl_name` after applying the
    given constant replacement.
 
@@ -38,8 +39,8 @@ private unsafe def apply_replacement (replacements : name_map Name) (e : expr) :
         run_command copy_decl_updating_type M `f_lemma `g_lemma
    creates the declaration
         lemma g_lemma : forall a, g a > 0 := ... -/
-unsafe def copy_decl_updating_type (replacements : name_map Name) (src_decl_name : Name) (new_decl_name : Name) :
-    Tactic := do
+unsafe def copy_decl_updating_type (replacements : name_map Name) (src_decl_name : Name)
+    (new_decl_name : Name) : Tactic := do
   let env ← get_env
   let decl ← env.get src_decl_name
   let decl := decl.update_name <| new_decl_name
@@ -48,7 +49,8 @@ unsafe def copy_decl_updating_type (replacements : name_map Name) (src_decl_name
   add_decl decl
 #align copy_decl_updating_type copy_decl_updating_type
 
-unsafe def copy_decl_using (replacements : name_map Name) (src_decl_name : Name) (new_decl_name : Name) : Tactic := do
+unsafe def copy_decl_using (replacements : name_map Name) (src_decl_name : Name)
+    (new_decl_name : Name) : Tactic := do
   let env ← get_env
   let decl ← env.get src_decl_name
   let decl := decl.update_name <| new_decl_name

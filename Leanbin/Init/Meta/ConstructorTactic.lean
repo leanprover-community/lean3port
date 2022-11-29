@@ -55,7 +55,8 @@ unsafe def right : tactic (List (Name × expr)) := do
 unsafe def constructor_idx (idx : Nat) : tactic (List (Name × expr)) := do
   let cs ← target' >>= get_constructors_for
   let some c ← return <| cs.nth (idx - 1) |
-    fail "constructor_idx tactic failed, target is an inductive datatype, but it does not have sufficient constructors"
+    fail
+        "constructor_idx tactic failed, target is an inductive datatype, but it does not have sufficient constructors"
   mk_const c >>= apply
 #align tactic.constructor_idx tactic.constructor_idx
 
@@ -89,7 +90,8 @@ unsafe def existsi (e : expr) : tactic Unit := do
   let t_type ← infer_type t >>= whnf
   let e_type ← infer_type e
   guard t_type <|> fail "existsi tactic failed, failed to infer type"
-  unify t_type e_type <|> fail "existsi tactic failed, type mismatch between given term witness and expected type"
+  unify t_type e_type <|>
+      fail "existsi tactic failed, type mismatch between given term witness and expected type"
 #align tactic.existsi tactic.existsi
 
 end Tactic

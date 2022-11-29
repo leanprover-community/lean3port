@@ -37,7 +37,8 @@ unsafe instance : Alternative conv := by dsimp only [conv] <;> infer_instance
 
 namespace Conv
 
-/-- Applies the conversion `c`. Returns `(rhs,p)` where `p : r lhs rhs`. Throws away the return value of `c`.-/
+/--
+Applies the conversion `c`. Returns `(rhs,p)` where `p : r lhs rhs`. Throws away the return value of `c`.-/
 unsafe def convert (c : conv Unit) (lhs : expr) (rel : Name := `eq) : tactic (expr × expr) := do
   let lhs_type ← infer_type lhs
   let rhs ← mk_meta_var lhs_type
@@ -92,7 +93,8 @@ unsafe def whnf : conv Unit :=
 #align conv.whnf conv.whnf
 
 /-- dsimp the LHS. -/
-unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : DsimpConfig := {  }) : conv Unit := do
+unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := [])
+    (cfg : DsimpConfig := {  }) : conv Unit := do
   let s ←
     match s with
       | some s => return s
@@ -143,7 +145,7 @@ unsafe def congr : conv Unit := do
 
 /-- Create a conversion from the function extensionality tactic.-/
 unsafe def funext : conv Unit :=
-  iterate' <| do
+  iterate' do
     let (r, lhs, rhs) ← target_lhs_rhs
     guard (r = `eq)
     let expr.lam n _ _ _ ← return lhs

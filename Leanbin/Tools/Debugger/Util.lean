@@ -11,7 +11,8 @@ def isSpace (c : Char) : Bool :=
 #align debugger.is_space Debugger.isSpace
 
 private def split_core : List Char → Option String → List String
-  | c :: cs, none => if isSpace c then split_core cs none else split_core cs (some <| String.singleton c)
+  | c :: cs, none =>
+    if isSpace c then split_core cs none else split_core cs (some <| String.singleton c)
   | c :: cs, some s => if isSpace c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
@@ -26,7 +27,9 @@ def toQualifiedNameCore : List Char → Name → String → Name
   | c :: cs, r, s =>
     if isSpace c then to_qualified_name_core cs r s
     else
-      if c = '.' then if s.isEmpty then to_qualified_name_core cs r "" else to_qualified_name_core cs (.str r s) ""
+      if c = '.' then
+        if s.isEmpty then to_qualified_name_core cs r ""
+        else to_qualified_name_core cs (.str r s) ""
       else to_qualified_name_core cs r (s.str c)
 #align debugger.to_qualified_name_core Debugger.toQualifiedNameCore
 

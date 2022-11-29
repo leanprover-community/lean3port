@@ -23,7 +23,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.15 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (Min.min.{u} α (LinearOrder.toMin.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.15) a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.15))) a b) (instDecidableLeToLEToPreorderToPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.15 a b) a b)
 Case conversion may be inaccurate. Consider using '#align min_def min_defₓ'. -/
-theorem min_def (a b : α) : min a b = if a ≤ b then a else b := by rw [congr_fun LinearOrder.min_def a, minDefault]
+theorem min_def (a b : α) : min a b = if a ≤ b then a else b := by
+  rw [congr_fun LinearOrder.min_def a, minDefault]
 #align min_def min_def
 
 /- warning: max_def -> max_def is a dubious translation:
@@ -32,7 +33,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.281 : LinearOrder.{u} α] (a : α) (b : α), Eq.{succ u} α (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281) a b) (ite.{succ u} α (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281))) a b) (instDecidableLeToLEToPreorderToPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.281 a b) b a)
 Case conversion may be inaccurate. Consider using '#align max_def max_defₓ'. -/
-theorem max_def (a b : α) : max a b = if a ≤ b then b else a := by rw [congr_fun LinearOrder.max_def a, maxDefault]
+theorem max_def (a b : α) : max a b = if a ≤ b then b else a := by
+  rw [congr_fun LinearOrder.max_def a, maxDefault]
 #align max_def max_def
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
@@ -117,7 +119,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.547 : LinearOrder.{u} α] {a : α} {b : α} {c : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.547))) c a) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.547))) c b) -> (forall {d : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.547))) d a) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.547))) d b) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.547))) d c)) -> (Eq.{succ u} α c (Min.min.{u} α (LinearOrder.toMin.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.547) a b))
 Case conversion may be inaccurate. Consider using '#align eq_min eq_minₓ'. -/
-theorem eq_min {a b c : α} (h₁ : c ≤ a) (h₂ : c ≤ b) (h₃ : ∀ {d}, d ≤ a → d ≤ b → d ≤ c) : c = min a b :=
+theorem eq_min {a b c : α} (h₁ : c ≤ a) (h₂ : c ≤ b) (h₃ : ∀ {d}, d ≤ a → d ≤ b → d ≤ c) :
+    c = min a b :=
   le_antisymm (le_min h₁ h₂) (h₃ (min_le_left a b) (min_le_right a b))
 #align eq_min eq_min
 
@@ -163,7 +166,7 @@ theorem min_assoc (a b c : α) : min (min a b) c = min a (min b c) := by
 lean 3 declaration is
   forall {α : Type.{u}} [_inst_1 : LinearOrder.{u} α] (a : α) (b : α) (c : α), Eq.{succ u} α (LinearOrder.min.{u} α _inst_1 a (LinearOrder.min.{u} α _inst_1 b c)) (LinearOrder.min.{u} α _inst_1 b (LinearOrder.min.{u} α _inst_1 a c))
 but is expected to have type
-  forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.777 : LinearOrder.{u} α], LeftCommutative.{u u} α α (Min.min.{u} α (LinearOrder.toMin.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.777))
+  forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.777 : LinearOrder.{u} α], LeftCommutative.{u, u} α α (Min.min.{u} α (LinearOrder.toMin.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.777))
 Case conversion may be inaccurate. Consider using '#align min_left_comm min_left_commₓ'. -/
 theorem min_left_comm : ∀ a b c : α, min a (min b c) = min b (min a c) :=
   left_comm (@min α _) (@min_comm α _) (@min_assoc α _)
@@ -187,11 +190,8 @@ but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.817 : LinearOrder.{u} α] {a : α} {b : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.817))) a b) -> (Eq.{succ u} α (Min.min.{u} α (LinearOrder.toMin.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.817) a b) a)
 Case conversion may be inaccurate. Consider using '#align min_eq_left min_eq_leftₓ'. -/
 @[ematch]
-theorem min_eq_left {a b : α} (h : a ≤ b) : min a b = a := by
-  apply Eq.symm
-  apply eq_min (le_refl _) h
-  intros
-  assumption
+theorem min_eq_left {a b : α} (h : a ≤ b) : min a b = a := by apply Eq.symm;
+  apply eq_min (le_refl _) h; intros ; assumption
 #align min_eq_left min_eq_left
 
 /- warning: min_eq_right -> min_eq_right is a dubious translation:
@@ -211,7 +211,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.910 : LinearOrder.{u} α] {a : α} {b : α} {c : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.910))) a c) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.910))) b c) -> (forall {d : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.910))) a d) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.910))) b d) -> (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.910))) c d)) -> (Eq.{succ u} α c (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.910) a b))
 Case conversion may be inaccurate. Consider using '#align eq_max eq_maxₓ'. -/
-theorem eq_max {a b c : α} (h₁ : a ≤ c) (h₂ : b ≤ c) (h₃ : ∀ {d}, a ≤ d → b ≤ d → c ≤ d) : c = max a b :=
+theorem eq_max {a b c : α} (h₁ : a ≤ c) (h₂ : b ≤ c) (h₃ : ∀ {d}, a ≤ d → b ≤ d → c ≤ d) :
+    c = max a b :=
   le_antisymm (h₃ (le_max_left a b) (le_max_right a b)) (max_le h₁ h₂)
 #align eq_max eq_max
 
@@ -278,11 +279,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u}} [inst._@.Mathlib.Init.Algebra.Functions._hyg.1202 : LinearOrder.{u} α] {a : α} {b : α}, (LE.le.{u} α (Preorder.toLE.{u} α (PartialOrder.toPreorder.{u} α (LinearOrder.toPartialOrder.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.1202))) b a) -> (Eq.{succ u} α (Max.max.{u} α (LinearOrder.toMax.{u} α inst._@.Mathlib.Init.Algebra.Functions._hyg.1202) a b) a)
 Case conversion may be inaccurate. Consider using '#align max_eq_left max_eq_leftₓ'. -/
-theorem max_eq_left {a b : α} (h : b ≤ a) : max a b = a := by
-  apply Eq.symm
-  apply eq_max (le_refl _) h
-  intros
-  assumption
+theorem max_eq_left {a b : α} (h : b ≤ a) : max a b = a := by apply Eq.symm;
+  apply eq_max (le_refl _) h; intros ; assumption
 #align max_eq_left max_eq_left
 
 /- warning: max_eq_right -> max_eq_right is a dubious translation:

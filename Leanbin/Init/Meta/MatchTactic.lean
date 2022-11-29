@@ -61,14 +61,15 @@ The procedure is as follows:
 Let `h`,`t` be exprs with types `α` and `list α` respectively.
 Then `mk_pattern [] [α,h,t] `(@list.cons α h t) [] [h,t]` would `match_pattern` against any expr which is a list.cons constructor and return the head and tail arguments.
 -/
-unsafe axiom mk_pattern (umetas : List level) (emetas : List expr) (target : expr) (uoutput : List level)
-    (eoutput : List expr) : tactic pattern
+unsafe axiom mk_pattern (umetas : List level) (emetas : List expr) (target : expr)
+    (uoutput : List level) (eoutput : List expr) : tactic pattern
 #align tactic.mk_pattern tactic.mk_pattern
 
 /-- `mk_pattern p e m` matches (pattern.target p) and e using transparency m.
    If the matching is successful, then return the instantiation of `pattern.output p`.
    The tactic fails if not all (temporary) meta-variables are assigned. -/
-unsafe axiom match_pattern (p : pattern) (e : expr) (m : Transparency := reducible) : tactic (List level × List expr)
+unsafe axiom match_pattern (p : pattern) (e : expr) (m : Transparency := reducible) :
+    tactic (List level × List expr)
 #align tactic.match_pattern tactic.match_pattern
 
 open Expr
@@ -129,7 +130,8 @@ unsafe def match_target_subexpr (p : pexpr) (m := reducible) : tactic (List expr
   match_subexpr p t m
 #align tactic.match_target_subexpr tactic.match_target_subexpr
 
-private unsafe def match_hypothesis_core (m : Transparency) : pattern → List expr → tactic (expr × List expr)
+private unsafe def match_hypothesis_core (m : Transparency) :
+    pattern → List expr → tactic (expr × List expr)
   | p, [] => failed
   | p, h :: hs => do
     let h_type ← infer_type h

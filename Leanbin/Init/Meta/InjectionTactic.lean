@@ -80,7 +80,8 @@ unsafe def injection (h : expr) (base := `h) (offset := some 1) : tactic (List e
   Prod.fst <$> injection_with h [] base offset
 #align tactic.injection tactic.injection
 
-private unsafe def injections_with_inner (base : Name) (offset : Option ℕ) : ℕ → List expr → List Name → tactic Unit
+private unsafe def injections_with_inner (base : Name) (offset : Option ℕ) :
+    ℕ → List expr → List Name → tactic Unit
   | 0, lc, ns => fail "recursion depth exceeded"
   | n + 1, [], ns => skip
   | n + 1, h :: lc, ns => do

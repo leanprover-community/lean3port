@@ -16,7 +16,8 @@ namespace Int
 /-! 1. Lemmas for reducing the problem to the case where the numerals are positive -/
 
 
-protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ => absurd (Int.neg_eq_neg h₂) h₁
+protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h₂ =>
+  absurd (Int.neg_eq_neg h₂) h₁
 #align int.ne_neg_of_ne Int.ne_neg_of_ne
 
 protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ => by
@@ -36,7 +37,8 @@ protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b := fu
   exact absurd (le_of_lt h₁) (not_le_of_gt (Int.neg_of_neg_pos h₂))
 #align int.neg_ne_of_pos Int.neg_ne_of_pos
 
-protected theorem ne_neg_of_pos {a b : ℤ} : 0 < a → 0 < b → a ≠ -b := fun h₁ h₂ => Ne.symm (Int.neg_ne_of_pos h₂ h₁)
+protected theorem ne_neg_of_pos {a b : ℤ} : 0 < a → 0 < b → a ≠ -b := fun h₁ h₂ =>
+  Ne.symm (Int.neg_ne_of_pos h₂ h₁)
 #align int.ne_neg_of_pos Int.ne_neg_of_pos
 
 /-! 2. Lemmas for proving that positive int numerals are nonneg and positive -/
@@ -77,8 +79,8 @@ protected theorem nonneg_of_pos {a : ℤ} : 0 < a → 0 ≤ a :=
 theorem neg_succ_of_nat_lt_zero (n : ℕ) : negSucc n < 0 :=
   @lt.intro _ _ n
     (by
-      simp [neg_succ_of_nat_coe, Int.ofNat_succ, Int.ofNat_add, Int.ofNat_one, Int.add_comm, Int.add_left_comm,
-        Int.neg_add, Int.add_right_neg, Int.zero_add])
+      simp [neg_succ_of_nat_coe, Int.ofNat_succ, Int.ofNat_add, Int.ofNat_one, Int.add_comm,
+        Int.add_left_comm, Int.neg_add, Int.add_right_neg, Int.zero_add])
 #align int.neg_succ_of_nat_lt_zero Int.neg_succ_of_nat_lt_zero
 
 theorem zero_le_of_nat (n : ℕ) : 0 ≤ ofNat n :=
@@ -90,15 +92,16 @@ theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → ofNat (natAbs a
   | neg_succ_of_nat n, h => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_ge h)
 #align int.of_nat_nat_abs_eq_of_nonneg Int.of_nat_nat_abs_eq_of_nonneg
 
-theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : natAbs a ≠ natAbs b) : a ≠ b :=
-  fun h => by
-  have : ofNat (natAbs a) = ofNat (natAbs b) := by rwa [of_nat_nat_abs_eq_of_nonneg ha, of_nat_nat_abs_eq_of_nonneg hb]
+theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b)
+    (h : natAbs a ≠ natAbs b) : a ≠ b := fun h => by
+  have : ofNat (natAbs a) = ofNat (natAbs b) := by
+    rwa [of_nat_nat_abs_eq_of_nonneg ha, of_nat_nat_abs_eq_of_nonneg hb]
   injection this
   contradiction
 #align int.ne_of_nat_abs_ne_nat_abs_of_nonneg Int.ne_of_nat_abs_ne_nat_abs_of_nonneg
 
-protected theorem ne_of_nat_ne_nonneg_case {a b : ℤ} {n m : Nat} (ha : 0 ≤ a) (hb : 0 ≤ b) (e1 : natAbs a = n)
-    (e2 : natAbs b = m) (h : n ≠ m) : a ≠ b :=
+protected theorem ne_of_nat_ne_nonneg_case {a b : ℤ} {n m : Nat} (ha : 0 ≤ a) (hb : 0 ≤ b)
+    (e1 : natAbs a = n) (e2 : natAbs b = m) (h : n ≠ m) : a ≠ b :=
   have : natAbs a ≠ natAbs b := by rwa [e1, e2]
   ne_of_nat_abs_ne_nat_abs_of_nonneg ha hb this
 #align int.ne_of_nat_ne_nonneg_case Int.ne_of_nat_ne_nonneg_case
@@ -115,7 +118,8 @@ theorem nat_abs_of_neg_succ_of_nat (n : ℕ) : natAbs (negSucc n) = Nat.succ n :
   rfl
 #align int.nat_abs_of_neg_succ_of_nat Int.nat_abs_of_neg_succ_of_nat
 
-protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → natAbs (a + b) = natAbs a + natAbs b
+protected theorem nat_abs_add_nonneg :
+    ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → natAbs (a + b) = natAbs a + natAbs b
   | of_nat n, of_nat m, h₁, h₂ => by
     have : ofNat n + ofNat m = ofNat (n + m) := rfl
     simp [nat_abs_of_nat_core, this]
@@ -123,7 +127,8 @@ protected theorem nat_abs_add_nonneg : ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → 
   | neg_succ_of_nat n, _, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero n) (not_lt_of_ge h₁)
 #align int.nat_abs_add_nonneg Int.nat_abs_add_nonneg
 
-protected theorem nat_abs_add_neg : ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
+protected theorem nat_abs_add_neg :
+    ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
   | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ => by
     have : -[n+1] + -[m+1] = -[Nat.succ (n + m)+1] := rfl
     simp [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
@@ -134,9 +139,8 @@ protected theorem nat_abs_bit0 : ∀ a : Int, natAbs (bit0 a) = bit0 (natAbs a)
   | neg_succ_of_nat n => Int.nat_abs_add_neg (neg_succ_of_nat_lt_zero n) (neg_succ_of_nat_lt_zero n)
 #align int.nat_abs_bit0 Int.nat_abs_bit0
 
-protected theorem nat_abs_bit0_step {a : Int} {n : Nat} (h : natAbs a = n) : natAbs (bit0 a) = bit0 n := by
-  rw [← h]
-  apply Int.nat_abs_bit0
+protected theorem nat_abs_bit0_step {a : Int} {n : Nat} (h : natAbs a = n) :
+    natAbs (bit0 a) = bit0 n := by rw [← h]; apply Int.nat_abs_bit0
 #align int.nat_abs_bit0_step Int.nat_abs_bit0_step
 
 protected theorem nat_abs_bit1_nonneg {a : Int} (h : 0 ≤ a) : natAbs (bit1 a) = bit1 (natAbs a) :=
@@ -145,9 +149,7 @@ protected theorem nat_abs_bit1_nonneg {a : Int} (h : 0 ≤ a) : natAbs (bit1 a) 
 #align int.nat_abs_bit1_nonneg Int.nat_abs_bit1_nonneg
 
 protected theorem nat_abs_bit1_nonneg_step {a : Int} {n : Nat} (h₁ : 0 ≤ a) (h₂ : natAbs a = n) :
-    natAbs (bit1 a) = bit1 n := by
-  rw [← h₂]
-  apply Int.nat_abs_bit1_nonneg h₁
+    natAbs (bit1 a) = bit1 n := by rw [← h₂]; apply Int.nat_abs_bit1_nonneg h₁
 #align int.nat_abs_bit1_nonneg_step Int.nat_abs_bit1_nonneg_step
 
 end Int

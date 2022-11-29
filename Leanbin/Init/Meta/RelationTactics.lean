@@ -11,8 +11,8 @@ namespace Tactic
 
 open Expr
 
-private unsafe def relation_tactic (md : Transparency) (op_for : environment → Name → Option Name) (tac_name : String) :
-    tactic Unit := do
+private unsafe def relation_tactic (md : Transparency) (op_for : environment → Name → Option Name)
+    (tac_name : String) : tactic Unit := do
   let tgt ← target >>= instantiate_mvars
   let env ← get_env
   let r := get_app_fn tgt
@@ -20,7 +20,10 @@ private unsafe def relation_tactic (md : Transparency) (op_for : environment →
     | some refl => do
       let r ← mk_const refl
       apply_core r { md, NewGoals := new_goals.non_dep_only } >> return ()
-    | none => fail <| tac_name ++ " tactic failed, target is not a relation application with the expected property."
+    | none =>
+      fail <|
+        tac_name ++
+          " tactic failed, target is not a relation application with the expected property."
 #align tactic.relation_tactic tactic.relation_tactic
 
 unsafe def reflexivity (md := semireducible) : tactic Unit :=

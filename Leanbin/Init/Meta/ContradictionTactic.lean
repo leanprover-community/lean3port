@@ -66,7 +66,8 @@ private unsafe def contra_constructor_eq : List expr → tactic Unit
         let rhs ← whnf rhs_0
         if
               is_constructor_app env lhs ∧
-                is_constructor_app env rhs ∧ const_name (get_app_fn lhs) ≠ const_name (get_app_fn rhs) then
+                is_constructor_app env rhs ∧
+                  const_name (get_app_fn lhs) ≠ const_name (get_app_fn rhs) then
             do
             let tgt ← target
             let I_name ← return <| Name.getPrefix (const_name (get_app_fn lhs))

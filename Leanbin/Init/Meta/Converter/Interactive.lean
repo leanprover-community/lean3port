@@ -56,8 +56,8 @@ unsafe def whnf : conv Unit :=
   conv.whnf
 #align conv.interactive.whnf conv.interactive.whnf
 
-unsafe def dsimp (no_dflt : parse only_flag) (es : parse tactic.simp_arg_list) (attr_names : parse with_ident_list)
-    (cfg : Tactic.DsimpConfig := {  }) : conv Unit := do
+unsafe def dsimp (no_dflt : parse only_flag) (es : parse tactic.simp_arg_list)
+    (attr_names : parse with_ident_list) (cfg : Tactic.DsimpConfig := {  }) : conv Unit := do
   let (s, u) ← tactic.mk_simp_set no_dflt attr_names es
   conv.dsimp (some s) u cfg
 #align conv.interactive.dsimp conv.interactive.dsimp
@@ -79,7 +79,8 @@ unsafe def funext : conv Unit :=
 #align conv.interactive.funext conv.interactive.funext
 
 private unsafe def is_relation : conv Unit :=
-  (lhs >>= tactic.relation_lhs_rhs) >> return () <|> tactic.fail "current expression is not a relation"
+  (lhs >>= tactic.relation_lhs_rhs) >> return () <|>
+    tactic.fail "current expression is not a relation"
 #align conv.interactive.is_relation conv.interactive.is_relation
 
 unsafe def to_lhs : conv Unit :=
@@ -105,8 +106,8 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   let (found_result, new_lhs, pr) ←
     tactic.ext_simplify_core
         (success false st)-- loop counter
-        { zeta := false, beta := false, singlePass := true, eta := false, proj := false, failIfUnchanged := false,
-          memoize := false }
+        { zeta := false, beta := false, singlePass := true, eta := false, proj := false,
+          failIfUnchanged := false, memoize := false }
         s (fun u => return u)
         (fun found_result s r p e => do
           let found ← tactic.unwrap found_result
@@ -125,7 +126,8 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   update_lhs new_lhs pr
 #align conv.interactive.find conv.interactive.find
 
-unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : itactic) : conv Unit := do
+unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : itactic) :
+    conv Unit := do
   let (r, lhs, _) ← tactic.target_lhs_rhs
   let pat ← tactic.pexpr_to_pattern p
   let s ← simp_lemmas.mk_default
@@ -136,8 +138,8 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
   let (found_result, new_lhs, pr) ←
     tactic.ext_simplify_core
         (success 1 st)-- loop counter, and whether the conversion tactic failed
-        { zeta := false, beta := false, singlePass := true, eta := false, proj := false, failIfUnchanged := false,
-          memoize := false }
+        { zeta := false, beta := false, singlePass := true, eta := false, proj := false,
+          failIfUnchanged := false, memoize := false }
         s (fun u => return u)
         (fun found_result s r p e => do
           let i ← tactic.unwrap found_result
@@ -158,8 +160,8 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
   update_lhs new_lhs pr
 #align conv.interactive.for conv.interactive.for
 
-unsafe def simp (no_dflt : parse only_flag) (hs : parse tactic.simp_arg_list) (attr_names : parse with_ident_list)
-    (cfg : tactic.simp_config_ext := {  }) : conv Unit := do
+unsafe def simp (no_dflt : parse only_flag) (hs : parse tactic.simp_arg_list)
+    (attr_names : parse with_ident_list) (cfg : tactic.simp_config_ext := {  }) : conv Unit := do
   let (s, u) ← tactic.mk_simp_set no_dflt attr_names hs
   let (r, lhs, rhs) ← tactic.target_lhs_rhs
   let (new_lhs, pr, lms) ← tactic.simplify s u lhs cfg.toSimpConfig r cfg.discharger

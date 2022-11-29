@@ -54,13 +54,15 @@ unsafe def loc.get_locals : Loc → tactic (List expr)
       []
 #align interactive.loc.get_locals interactive.loc.get_locals
 
-unsafe def loc.apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
+unsafe def loc.apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) :
+    tactic Unit := do
   let hs ← l.get_locals
   hs hyp_tac
   if l then goal_tac else pure ()
 #align interactive.loc.apply interactive.loc.apply
 
-unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) : tactic Unit := do
+unsafe def loc.try_apply (hyp_tac : expr → tactic Unit) (goal_tac : tactic Unit) (l : Loc) :
+    tactic Unit := do
   let hs ← l.get_locals
   let hts := hs.map hyp_tac
   tactic.try_lst <| if l then hts ++ [goal_tac] else hts
@@ -71,8 +73,8 @@ unsafe def with_desc {α : Type} (desc : format) (p : parser α) : parser α :=
   p
 #align interactive.with_desc interactive.with_desc
 
-unsafe instance with_desc.reflectable {α : Type} (p : parser α) [h : lean.parser.reflectable p] (f : format) :
-    reflectable (with_desc f p) :=
+unsafe instance with_desc.reflectable {α : Type} (p : parser α) [h : lean.parser.reflectable p]
+    (f : format) : reflectable (with_desc f p) :=
   h
 #align interactive.with_desc.reflectable interactive.with_desc.reflectable
 
@@ -186,16 +188,31 @@ private unsafe
       | q( _ <$ $ ( p ) ) => parser_desc_aux p
       | q( set_goal_info_pos $ ( p ) ) => parser_desc_aux p
       | q( with_desc $ ( desc ) $ ( p ) ) => List.ret <$> eval_expr format desc
-      | q( $ ( p₁ ) <*> $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
-      | q( $ ( p₁ ) <* $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
-      | q( $ ( p₁ ) *> $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
-      | q( $ ( p₁ ) >> $ ( p₂ ) ) => do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
+      |
+        q( $ ( p₁ ) <*> $ ( p₂ ) )
+        =>
+        do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
+      |
+        q( $ ( p₁ ) <* $ ( p₂ ) )
+        =>
+        do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
+      |
+        q( $ ( p₁ ) *> $ ( p₂ ) )
+        =>
+        do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
+      |
+        q( $ ( p₁ ) >> $ ( p₂ ) )
+        =>
+        do let f₁ ← parser_desc_aux p₁ let f₂ ← parser_desc_aux p₂ return <| concat f₁ f₂
       | q( many $ ( p ) ) => do let f ← parser_desc_aux p return [ maybe_paren f ++ "*" ]
       | q( optional $ ( p ) ) => do let f ← parser_desc_aux p return [ maybe_paren f ++ "?" ]
       |
         q( sep_by $ ( sep ) $ ( p ) )
         =>
-        do let f₁ ← parser_desc_aux sep let f₂ ← parser_desc_aux p return [ maybe_paren f₂ ++ join f₁ , " ..." ]
+        do
+          let f₁ ← parser_desc_aux sep
+            let f₂ ← parser_desc_aux p
+            return [ maybe_paren f₂ ++ join f₁ , " ..." ]
       |
         q( $ ( p₁ ) <|> $ ( p₂ ) )
         =>
@@ -209,7 +226,12 @@ private unsafe
                 then
                 [ maybe_paren f₂ ++ "?" ]
                 else
-                if f₂ then [ maybe_paren f₁ ++ "?" ] else [ paren <| join <| f₁ ++ [ to_fmt " | " ] ++ f₂ ]
+                if
+                  f₂
+                  then
+                  [ maybe_paren f₁ ++ "?" ]
+                  else
+                  [ paren <| join <| f₁ ++ [ to_fmt " | " ] ++ f₂ ]
       |
         q( brackets $ ( l ) $ ( r ) $ ( p ) )
         =>
@@ -235,7 +257,8 @@ unsafe def param_desc : expr → tactic format
   | q(parse $(p)) => join <$> parser_desc_aux p
   | q(optParam $(t) _) => (· ++ "?") <$> pp t
   | e =>
-    if is_constant e ∧ (const_name e).components.ilast = `itactic then return <| to_fmt "{ tactic }" else paren <$> pp e
+    if is_constant e ∧ (const_name e).components.ilast = `itactic then return <| to_fmt "{ tactic }"
+    else paren <$> pp e
 #align interactive.param_desc interactive.param_desc
 
 private unsafe axiom parse_binders_core (rbp : ℕ) : parser (List pexpr)

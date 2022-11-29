@@ -61,7 +61,8 @@ unsafe def to_format : json → format
         (format.group <|
           format.nest 2 <|
             format.join <|
-              List.intersperse (", " ++ format.line) <| kvs.map fun ⟨k, v⟩ => String.quote k ++ ":" ++ to_format v) ++
+              List.intersperse (", " ++ format.line) <|
+                kvs.map fun ⟨k, v⟩ => String.quote k ++ ":" ++ to_format v) ++
       "}"
   | Array' js => list.to_format <| js.map to_format
 #align json.to_format json.to_format
@@ -84,12 +85,8 @@ unsafe instance : DecidableEq json := fun j₁ j₂ => by
   case of_int => exact Int.decidableEq _ _
   case of_bool => exact Bool.decidableEq _ _
   case null => exact Decidable.true
-  case array =>
-  letI := DecidableEq
-  exact List.decidableEq _ _
-  case object =>
-  letI := DecidableEq
-  exact List.decidableEq _ _
+  case array => letI := DecidableEq; exact List.decidableEq _ _
+  case object => letI := DecidableEq; exact List.decidableEq _ _
 
 end Json
 

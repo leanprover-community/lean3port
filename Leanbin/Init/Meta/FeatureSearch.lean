@@ -61,7 +61,8 @@ namespace FeatureVec
 unsafe axiom of_expr (env : environment) (e : expr) (cfg : FeatureCfg := {  }) : feature_vec
 #align feature_search.feature_vec.of_expr feature_search.feature_vec.of_expr
 
-unsafe axiom of_exprs (env : environment) (es : List expr) (cfg : FeatureCfg := {  }) : List feature_vec
+unsafe axiom of_exprs (env : environment) (es : List expr) (cfg : FeatureCfg := {  }) :
+    List feature_vec
 #align feature_search.feature_vec.of_exprs feature_search.feature_vec.of_exprs
 
 protected unsafe axiom union (a b : feature_vec) : feature_vec
@@ -149,7 +150,8 @@ end FeatureStats
 unsafe axiom predictor : Type
 #align feature_search.predictor feature_search.predictor
 
-unsafe axiom predictor.predict (p : predictor) (goal : feature_vec) (max_results : ℕ) : List (Name × float)
+unsafe axiom predictor.predict (p : predictor) (goal : feature_vec) (max_results : ℕ) :
+    List (Name × float)
 #align feature_search.predictor.predict feature_search.predictor.predict
 
 inductive PredictorType

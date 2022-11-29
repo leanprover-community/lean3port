@@ -143,15 +143,15 @@ theorem Bool.eq_true_of_not_eq_false {b : Bool} : ¬b = ff → b = tt :=
 
 #print Bool.and_eq_true_eq_eq_true_and_eq_true /-
 @[simp]
-theorem Bool.and_eq_true_eq_eq_true_and_eq_true (a b : Bool) : ((a && b) = tt) = (a = tt ∧ b = tt) := by
-  cases a <;> cases b <;> simp
+theorem Bool.and_eq_true_eq_eq_true_and_eq_true (a b : Bool) :
+    ((a && b) = tt) = (a = tt ∧ b = tt) := by cases a <;> cases b <;> simp
 #align band_eq_true_eq_eq_tt_and_eq_tt Bool.and_eq_true_eq_eq_true_and_eq_true
 -/
 
 #print Bool.or_eq_true_eq_eq_true_or_eq_true /-
 @[simp]
-theorem Bool.or_eq_true_eq_eq_true_or_eq_true (a b : Bool) : ((a || b) = tt) = (a = tt ∨ b = tt) := by
-  cases a <;> cases b <;> simp
+theorem Bool.or_eq_true_eq_eq_true_or_eq_true (a b : Bool) : ((a || b) = tt) = (a = tt ∨ b = tt) :=
+  by cases a <;> cases b <;> simp
 #align bor_eq_true_eq_eq_tt_or_eq_tt Bool.or_eq_true_eq_eq_true_or_eq_true
 -/
 
@@ -163,15 +163,15 @@ theorem Bool.not_eq_true_eq_eq_false (a : Bool) : (not a = tt) = (a = ff) := by 
 
 #print Bool.and_eq_false_eq_eq_false_or_eq_false /-
 @[simp]
-theorem Bool.and_eq_false_eq_eq_false_or_eq_false (a b : Bool) : ((a && b) = ff) = (a = ff ∨ b = ff) := by
-  cases a <;> cases b <;> simp
+theorem Bool.and_eq_false_eq_eq_false_or_eq_false (a b : Bool) :
+    ((a && b) = ff) = (a = ff ∨ b = ff) := by cases a <;> cases b <;> simp
 #align band_eq_false_eq_eq_ff_or_eq_ff Bool.and_eq_false_eq_eq_false_or_eq_false
 -/
 
 #print Bool.or_eq_false_eq_eq_false_and_eq_false /-
 @[simp]
-theorem Bool.or_eq_false_eq_eq_false_and_eq_false (a b : Bool) : ((a || b) = ff) = (a = ff ∧ b = ff) := by
-  cases a <;> cases b <;> simp
+theorem Bool.or_eq_false_eq_eq_false_and_eq_false (a b : Bool) :
+    ((a || b) = ff) = (a = ff ∧ b = ff) := by cases a <;> cases b <;> simp
 #align bor_eq_false_eq_eq_ff_and_eq_ff Bool.or_eq_false_eq_eq_false_and_eq_false
 -/
 
@@ -269,7 +269,8 @@ theorem Bool.of_decide_false {p : Prop} [Decidable p] : decide p = ff → ¬p :=
 -/
 
 #print Bool.decide_congr /-
-theorem Bool.decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) : decide p = decide q := by
+theorem Bool.decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) :
+    decide p = decide q := by
   induction' h' : to_bool q with
   exact Bool.decide_false (mt h.1 <| Bool.of_decide_false h')
   exact Bool.decide_true (h.2 <| Bool.of_decide_true h')
@@ -290,7 +291,8 @@ theorem Bool.and_coe_iff (a b : Bool) : a && b ↔ a ∧ b := by cases a <;> cas
 
 #print Bool.xor_coe_iff /-
 @[simp]
-theorem Bool.xor_coe_iff (a b : Bool) : xor a b ↔ Xor' a b := by cases a <;> cases b <;> exact by decide
+theorem Bool.xor_coe_iff (a b : Bool) : xor a b ↔ Xor' a b := by
+  cases a <;> cases b <;> exact by decide
 #align bxor_coe_iff Bool.xor_coe_iff
 -/
 

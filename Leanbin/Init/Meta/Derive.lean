@@ -54,7 +54,8 @@ unsafe def derive_attr : user_attribute Unit (List pexpr) where
 /-- Given a tactic `tac` that can solve an application of `cls` in the right context,
     `instance_derive_handler` uses it to build an instance declaration of `cls n`. -/
 unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly := true)
-    (modify_target : Name → List expr → expr → tactic expr := fun _ _ => pure) : derive_handler := fun p n =>
+    (modify_target : Name → List expr → expr → tactic expr := fun _ _ => pure) : derive_handler :=
+  fun p n =>
   if p.is_constant_of cls then do
     let decl ← get_decl n
     let cls_decl ← get_decl cls
@@ -85,7 +86,8 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     let val ← instantiate_mvars val
     let trusted := decl.is_trusted ∧ cls_decl.is_trusted
     add_protected_decl
-        (declaration.defn (n ++ cls) (if univ_poly then decl else []) tgt val ReducibilityHints.abbrev trusted)
+        (declaration.defn (n ++ cls) (if univ_poly then decl else []) tgt val
+          ReducibilityHints.abbrev trusted)
     set_basic_attribute `instance (n ++ cls) tt
     pure True
   else pure False

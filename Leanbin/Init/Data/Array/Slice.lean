@@ -46,11 +46,7 @@ def takeRight (a : Array' n α) (m : Nat) (h : m ≤ n) : Array' m α :=
 
 def reverse (a : Array' n α) : Array' n α :=
   ⟨fun ⟨i, hi⟩ =>
-    a.read
-      ⟨n - (i + 1), by
-        apply Nat.sub_lt_of_pos_le
-        apply Nat.zero_lt_succ
-        assumption⟩⟩
+    a.read ⟨n - (i + 1), by apply Nat.sub_lt_of_pos_le; apply Nat.zero_lt_succ; assumption⟩⟩
 #align array.reverse Array'.reverse
 
 end Array'

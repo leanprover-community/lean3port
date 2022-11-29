@@ -116,7 +116,9 @@ theorem imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (a → b) = Not 
 /-- Remark: the congruence closure module will only use this lemma if
    cc_config.em is tt. -/
 theorem not_imp_eq_of_eq_false_right {a b : Prop} (h : b = False) : (Not a → b) = a :=
-  h.symm ▸ propext (Iff.intro (fun h' => Classical.by_contradiction fun hna => h' hna) fun ha hna => hna ha)
+  h.symm ▸
+    propext
+      (Iff.intro (fun h' => Classical.by_contradiction fun hna => h' hna) fun ha hna => hna ha)
 #align not_imp_eq_of_eq_false_right not_imp_eq_of_eq_false_right
 -/
 
@@ -148,19 +150,22 @@ theorem false_of_a_eq_not_a {a : Prop} (h : a = Not a) : False :=
 universe u
 
 #print if_eq_of_eq_true /-
-theorem if_eq_of_eq_true {c : Prop} [d : Decidable c] {α : Sort u} (t e : α) (h : c = True) : @ite α c d t e = t :=
+theorem if_eq_of_eq_true {c : Prop} [d : Decidable c] {α : Sort u} (t e : α) (h : c = True) :
+    @ite α c d t e = t :=
   if_pos (of_eq_true h)
 #align if_eq_of_eq_true if_eq_of_eq_true
 -/
 
 #print if_eq_of_eq_false /-
-theorem if_eq_of_eq_false {c : Prop} [d : Decidable c] {α : Sort u} (t e : α) (h : c = False) : @ite α c d t e = e :=
+theorem if_eq_of_eq_false {c : Prop} [d : Decidable c] {α : Sort u} (t e : α) (h : c = False) :
+    @ite α c d t e = e :=
   if_neg (not_of_eq_false h)
 #align if_eq_of_eq_false if_eq_of_eq_false
 -/
 
 #print if_eq_of_eq /-
-theorem if_eq_of_eq (c : Prop) [d : Decidable c] {α : Sort u} {t e : α} (h : t = e) : @ite α c d t e = t :=
+theorem if_eq_of_eq (c : Prop) [d : Decidable c] {α : Sort u} {t e : α} (h : t = e) :
+    @ite α c d t e = t :=
   match d with
   | is_true hc => rfl
   | is_false hnc => Eq.symm h

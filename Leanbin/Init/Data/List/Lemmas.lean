@@ -71,7 +71,8 @@ theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
 -/
 
 @[simp]
-theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by induction n <;> simp [*] <;> rfl
+theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by
+  induction n <;> simp [*] <;> rfl
 #align list.length_repeat List.length_repeat
 
 #print List.length_tail /-
@@ -99,9 +100,9 @@ theorem length_drop : ∀ (i : ℕ) (l : List α), length (drop i l) = length l 
 
 /- warning: list.map_cons -> List.map_cons is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (a : α) (l : List.{u} α), Eq.{succ v} (List.{v} β) (List.map.{u v} α β f (List.cons.{u} α a l)) (List.cons.{v} β (f a) (List.map.{u v} α β f l))
+  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (a : α) (l : List.{u} α), Eq.{succ v} (List.{v} β) (List.map.{u, v} α β f (List.cons.{u} α a l)) (List.cons.{v} β (f a) (List.map.{u, v} α β f l))
 but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (a : α) (l : List.{u_1} α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1 u_2} α β f (List.cons.{u_1} α a l)) (List.cons.{u_2} β (f a) (List.map.{u_1 u_2} α β f l))
+  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (a : α) (l : List.{u_1} α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1, u_2} α β f (List.cons.{u_1} α a l)) (List.cons.{u_2} β (f a) (List.map.{u_1, u_2} α β f l))
 Case conversion may be inaccurate. Consider using '#align list.map_cons List.map_consₓ'. -/
 theorem map_cons (f : α → β) (a l) : map f (a :: l) = f a :: map f l :=
   rfl
@@ -109,9 +110,9 @@ theorem map_cons (f : α → β) (a l) : map f (a :: l) = f a :: map f l :=
 
 /- warning: list.map_append -> List.map_append is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (l₁ : List.{u} α) (l₂ : List.{u} α), Eq.{succ v} (List.{v} β) (List.map.{u v} α β f (Append.append.{u} (List.{u} α) (List.hasAppend.{u} α) l₁ l₂)) (Append.append.{v} (List.{v} β) (List.hasAppend.{v} β) (List.map.{u v} α β f l₁) (List.map.{u v} α β f l₂))
+  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (l₁ : List.{u} α) (l₂ : List.{u} α), Eq.{succ v} (List.{v} β) (List.map.{u, v} α β f (Append.append.{u} (List.{u} α) (List.hasAppend.{u} α) l₁ l₂)) (Append.append.{v} (List.{v} β) (List.hasAppend.{v} β) (List.map.{u, v} α β f l₁) (List.map.{u, v} α β f l₂))
 but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (l₁ : List.{u_1} α) (l₂ : List.{u_1} α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1 u_2} α β f (HAppend.hAppend.{u_1 u_1 u_1} (List.{u_1} α) (List.{u_1} α) (List.{u_1} α) (instHAppend.{u_1} (List.{u_1} α) (List.instAppendList.{u_1} α)) l₁ l₂)) (HAppend.hAppend.{u_2 u_2 u_2} (List.{u_2} β) (List.{u_2} β) (List.{u_2} β) (instHAppend.{u_2} (List.{u_2} β) (List.instAppendList.{u_2} β)) (List.map.{u_1 u_2} α β f l₁) (List.map.{u_1 u_2} α β f l₂))
+  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (l₁ : List.{u_1} α) (l₂ : List.{u_1} α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1, u_2} α β f (HAppend.hAppend.{u_1, u_1, u_1} (List.{u_1} α) (List.{u_1} α) (List.{u_1} α) (instHAppend.{u_1} (List.{u_1} α) (List.instAppendList.{u_1} α)) l₁ l₂)) (HAppend.hAppend.{u_2, u_2, u_2} (List.{u_2} β) (List.{u_2} β) (List.{u_2} β) (instHAppend.{u_2} (List.{u_2} β) (List.instAppendList.{u_2} β)) (List.map.{u_1, u_2} α β f l₁) (List.map.{u_1, u_2} α β f l₂))
 Case conversion may be inaccurate. Consider using '#align list.map_append List.map_appendₓ'. -/
 @[simp]
 theorem map_append (f : α → β) : ∀ l₁ l₂, map f (l₁ ++ l₂) = map f l₁ ++ map f l₂ := by
@@ -120,9 +121,9 @@ theorem map_append (f : α → β) : ∀ l₁ l₂, map f (l₁ ++ l₂) = map f
 
 /- warning: list.map_singleton -> List.map_singleton is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (a : α), Eq.{succ v} (List.{v} β) (List.map.{u v} α β f (List.cons.{u} α a (List.nil.{u} α))) (List.cons.{v} β (f a) (List.nil.{v} β))
+  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (a : α), Eq.{succ v} (List.{v} β) (List.map.{u, v} α β f (List.cons.{u} α a (List.nil.{u} α))) (List.cons.{v} β (f a) (List.nil.{v} β))
 but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (a : α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1 u_2} α β f (List.cons.{u_1} α a (List.nil.{u_1} α))) (List.cons.{u_2} β (f a) (List.nil.{u_2} β))
+  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> β) (a : α), Eq.{succ u_2} (List.{u_2} β) (List.map.{u_1, u_2} α β f (List.cons.{u_1} α a (List.nil.{u_1} α))) (List.cons.{u_2} β (f a) (List.nil.{u_2} β))
 Case conversion may be inaccurate. Consider using '#align list.map_singleton List.map_singletonₓ'. -/
 theorem map_singleton (f : α → β) (a : α) : map f [a] = [f a] :=
   rfl
@@ -136,22 +137,24 @@ theorem map_id (l : List α) : map id l = l := by induction l <;> simp [*]
 
 /- warning: list.map_map -> List.map_map is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} {γ : Type.{w}} (g : β -> γ) (f : α -> β) (l : List.{u} α), Eq.{succ w} (List.{w} γ) (List.map.{v w} β γ g (List.map.{u v} α β f l)) (List.map.{u w} α γ (Function.comp.{succ u succ v succ w} α β γ g f) l)
+  forall {α : Type.{u}} {β : Type.{v}} {γ : Type.{w}} (g : β -> γ) (f : α -> β) (l : List.{u} α), Eq.{succ w} (List.{w} γ) (List.map.{v, w} β γ g (List.map.{u, v} α β f l)) (List.map.{u, w} α γ (Function.comp.{succ u, succ v, succ w} α β γ g f) l)
 but is expected to have type
-  forall {β : Type.{u_1}} {γ : Type.{u_2}} {α : Type.{u_3}} (g : β -> γ) (f : α -> β) (l : List.{u_3} α), Eq.{succ u_2} (List.{u_2} γ) (List.map.{u_1 u_2} β γ g (List.map.{u_3 u_1} α β f l)) (List.map.{u_3 u_2} α γ (Function.comp.{succ u_3 succ u_1 succ u_2} α β γ g f) l)
+  forall {β : Type.{u_1}} {γ : Type.{u_2}} {α : Type.{u_3}} (g : β -> γ) (f : α -> β) (l : List.{u_3} α), Eq.{succ u_2} (List.{u_2} γ) (List.map.{u_1, u_2} β γ g (List.map.{u_3, u_1} α β f l)) (List.map.{u_3, u_2} α γ (Function.comp.{succ u_3, succ u_1, succ u_2} α β γ g f) l)
 Case conversion may be inaccurate. Consider using '#align list.map_map List.map_mapₓ'. -/
 @[simp]
-theorem map_map (g : β → γ) (f : α → β) (l : List α) : map g (map f l) = map (g ∘ f) l := by induction l <;> simp [*]
+theorem map_map (g : β → γ) (f : α → β) (l : List α) : map g (map f l) = map (g ∘ f) l := by
+  induction l <;> simp [*]
 #align list.map_map List.map_map
 
 /- warning: list.length_map -> List.length_map is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (l : List.{u} α), Eq.{1} Nat (List.length.{v} β (List.map.{u v} α β f l)) (List.length.{u} α l)
+  forall {α : Type.{u}} {β : Type.{v}} (f : α -> β) (l : List.{u} α), Eq.{1} Nat (List.length.{v} β (List.map.{u, v} α β f l)) (List.length.{u} α l)
 but is expected to have type
-  forall {α : Type.{u}} {β : Type.{v}} (as : List.{u} α) (f : α -> β), Eq.{1} Nat (List.length.{v} β (List.map.{u v} α β f as)) (List.length.{u} α as)
+  forall {α : Type.{u}} {β : Type.{v}} (as : List.{u} α) (f : α -> β), Eq.{1} Nat (List.length.{v} β (List.map.{u, v} α β f as)) (List.length.{u} α as)
 Case conversion may be inaccurate. Consider using '#align list.length_map List.length_mapₓ'. -/
 @[simp]
-theorem length_map (f : α → β) (l : List α) : length (map f l) = length l := by induction l <;> simp [*]
+theorem length_map (f : α → β) (l : List α) : length (map f l) = length l := by
+  induction l <;> simp [*]
 #align list.length_map List.length_map
 
 /-! bind -/
@@ -159,9 +162,9 @@ theorem length_map (f : α → β) (l : List α) : length (map f l) = length l :
 
 /- warning: list.nil_bind -> List.nil_bind is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u v} α β (List.nil.{u} α) f) (List.nil.{v} β)
+  forall {α : Type.{u}} {β : Type.{v}} (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u, v} α β (List.nil.{u} α) f) (List.nil.{v} β)
 but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1 u_2} α β (List.nil.{u_1} α) f) (List.nil.{u_2} β)
+  forall {α : Type.{u_1}} {β : Type.{u_2}} (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1, u_2} α β (List.nil.{u_1} α) f) (List.nil.{u_2} β)
 Case conversion may be inaccurate. Consider using '#align list.nil_bind List.nil_bindₓ'. -/
 @[simp]
 theorem nil_bind (f : α → List β) : List.bind [] f = [] := by simp [join, List.bind]
@@ -169,22 +172,24 @@ theorem nil_bind (f : α → List β) : List.bind [] f = [] := by simp [join, Li
 
 /- warning: list.cons_bind -> List.cons_bind is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (x : α) (xs : List.{u} α) (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u v} α β (List.cons.{u} α x xs) f) (Append.append.{v} (List.{v} β) (List.hasAppend.{v} β) (f x) (List.bind.{u v} α β xs f))
+  forall {α : Type.{u}} {β : Type.{v}} (x : α) (xs : List.{u} α) (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u, v} α β (List.cons.{u} α x xs) f) (Append.append.{v} (List.{v} β) (List.hasAppend.{v} β) (f x) (List.bind.{u, v} α β xs f))
 but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} (x : α) (xs : List.{u_1} α) (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1 u_2} α β (List.cons.{u_1} α x xs) f) (HAppend.hAppend.{u_2 u_2 u_2} (List.{u_2} β) (List.{u_2} β) (List.{u_2} β) (instHAppend.{u_2} (List.{u_2} β) (List.instAppendList.{u_2} β)) (f x) (List.bind.{u_1 u_2} α β xs f))
+  forall {α : Type.{u_1}} {β : Type.{u_2}} (x : α) (xs : List.{u_1} α) (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1, u_2} α β (List.cons.{u_1} α x xs) f) (HAppend.hAppend.{u_2, u_2, u_2} (List.{u_2} β) (List.{u_2} β) (List.{u_2} β) (instHAppend.{u_2} (List.{u_2} β) (List.instAppendList.{u_2} β)) (f x) (List.bind.{u_1, u_2} α β xs f))
 Case conversion may be inaccurate. Consider using '#align list.cons_bind List.cons_bindₓ'. -/
 @[simp]
-theorem cons_bind (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by simp [join, List.bind]
+theorem cons_bind (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by
+  simp [join, List.bind]
 #align list.cons_bind List.cons_bind
 
 /- warning: list.append_bind -> List.append_bind is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {β : Type.{v}} (xs : List.{u} α) (ys : List.{u} α) (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u v} α β (Append.append.{u} (List.{u} α) (List.hasAppend.{u} α) xs ys) f) (Append.append.{v} (List.{v} β) (List.hasAppend.{v} β) (List.bind.{u v} α β xs f) (List.bind.{u v} α β ys f))
+  forall {α : Type.{u}} {β : Type.{v}} (xs : List.{u} α) (ys : List.{u} α) (f : α -> (List.{v} β)), Eq.{succ v} (List.{v} β) (List.bind.{u, v} α β (Append.append.{u} (List.{u} α) (List.hasAppend.{u} α) xs ys) f) (Append.append.{v} (List.{v} β) (List.hasAppend.{v} β) (List.bind.{u, v} α β xs f) (List.bind.{u, v} α β ys f))
 but is expected to have type
-  forall {α : Type.{u_1}} {β : Type.{u_2}} (xs : List.{u_1} α) (ys : List.{u_1} α) (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1 u_2} α β (HAppend.hAppend.{u_1 u_1 u_1} (List.{u_1} α) (List.{u_1} α) (List.{u_1} α) (instHAppend.{u_1} (List.{u_1} α) (List.instAppendList.{u_1} α)) xs ys) f) (HAppend.hAppend.{u_2 u_2 u_2} (List.{u_2} β) (List.{u_2} β) (List.{u_2} β) (instHAppend.{u_2} (List.{u_2} β) (List.instAppendList.{u_2} β)) (List.bind.{u_1 u_2} α β xs f) (List.bind.{u_1 u_2} α β ys f))
+  forall {α : Type.{u_1}} {β : Type.{u_2}} (xs : List.{u_1} α) (ys : List.{u_1} α) (f : α -> (List.{u_2} β)), Eq.{succ u_2} (List.{u_2} β) (List.bind.{u_1, u_2} α β (HAppend.hAppend.{u_1, u_1, u_1} (List.{u_1} α) (List.{u_1} α) (List.{u_1} α) (instHAppend.{u_1} (List.{u_1} α) (List.instAppendList.{u_1} α)) xs ys) f) (HAppend.hAppend.{u_2, u_2, u_2} (List.{u_2} β) (List.{u_2} β) (List.{u_2} β) (instHAppend.{u_2} (List.{u_2} β) (List.instAppendList.{u_2} β)) (List.bind.{u_1, u_2} α β xs f) (List.bind.{u_1, u_2} α β ys f))
 Case conversion may be inaccurate. Consider using '#align list.append_bind List.append_bindₓ'. -/
 @[simp]
-theorem append_bind (xs ys) (f : α → List β) : List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
+theorem append_bind (xs ys) (f : α → List β) :
+    List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
   induction xs <;> [rfl, simp [*, cons_bind]]
 #align list.append_bind List.append_bind
 
@@ -232,7 +237,8 @@ theorem eq_or_mem_of_mem_cons {a y : α} {l : List α} : a ∈ y :: l → a = y 
 
 #print List.mem_append /-
 @[simp]
-theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by induction s <;> simp [*, or_assoc']
+theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by
+  induction s <;> simp [*, or_assoc']
 #align list.mem_append List.mem_append
 -/
 
@@ -270,7 +276,8 @@ theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p
       
     · exact Or.inr ⟨x, h, px⟩
       ,
-    fun o => o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
+    fun o =>
+    o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 #align list.bex_cons List.bex_cons
 
 theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀ x ∈ a :: l, p x) ↔ p a ∧ ∀ x ∈ l, p x :=
@@ -304,7 +311,8 @@ theorem Subset.refl (l : List α) : l ⊆ l := fun b i => i
 
 #print List.Subset.trans /-
 @[trans]
-theorem Subset.trans {l₁ l₂ l₃ : List α} (h₁ : l₁ ⊆ l₂) (h₂ : l₂ ⊆ l₃) : l₁ ⊆ l₃ := fun b i => h₂ (h₁ i)
+theorem Subset.trans {l₁ l₂ l₃ : List α} (h₁ : l₁ ⊆ l₂) (h₂ : l₂ ⊆ l₃) : l₁ ⊆ l₃ := fun b i =>
+  h₂ (h₁ i)
 #align list.subset.trans List.Subset.trans
 -/
 
@@ -315,7 +323,8 @@ theorem subset_cons (a : α) (l : List α) : l ⊆ a :: l := fun b i => Or.inr i
 -/
 
 #print List.subset_of_cons_subset /-
-theorem subset_of_cons_subset {a : α} {l₁ l₂ : List α} : a :: l₁ ⊆ l₂ → l₁ ⊆ l₂ := fun s b i => s (mem_cons_of_mem _ i)
+theorem subset_of_cons_subset {a : α} {l₁ l₂ : List α} : a :: l₁ ⊆ l₂ → l₁ ⊆ l₂ := fun s b i =>
+  s (mem_cons_of_mem _ i)
 #align list.subset_of_cons_subset List.subset_of_cons_subset
 -/
 
@@ -358,8 +367,10 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
 -/
 
 @[simp]
-theorem length_map₂ (f : α → β → γ) (l₁) : ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
-  induction l₁ <;> intro l₂ <;> cases l₂ <;> simp [*, add_one, min_succ_succ, Nat.zero_min, Nat.min_zero]
+theorem length_map₂ (f : α → β → γ) (l₁) :
+    ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
+  induction l₁ <;> intro l₂ <;> cases l₂ <;>
+    simp [*, add_one, min_succ_succ, Nat.zero_min, Nat.min_zero]
 #align list.length_map₂ List.length_map₂
 
 /- warning: list.length_take -> List.length_take is a dubious translation:
@@ -380,20 +391,23 @@ theorem length_take_le (n) (l : List α) : length (take n l) ≤ n := by simp [m
 #align list.length_take_le List.length_take_le
 -/
 
-theorem length_remove_nth : ∀ (l : List α) (i : ℕ), i < length l → length (removeNth l i) = length l - 1
+theorem length_remove_nth :
+    ∀ (l : List α) (i : ℕ), i < length l → length (removeNth l i) = length l - 1
   | [], _, h => rfl
   | x :: xs, 0, h => by simp [remove_nth]
   | x :: xs, i + 1, h => by
     have : i < length xs := lt_of_succ_lt_succ h
     dsimp [remove_nth] <;>
-      rw [length_remove_nth xs i this, Nat.sub_add_cancel (lt_of_le_of_lt (Nat.zero_le _) this)] <;> rfl
+        rw [length_remove_nth xs i this,
+          Nat.sub_add_cancel (lt_of_le_of_lt (Nat.zero_le _) this)] <;>
+      rfl
 #align list.length_remove_nth List.length_remove_nth
 
 /- warning: list.partition_eq_filter_filter -> List.partition_eq_filter_filter is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} (p : α -> Prop) [_inst_1 : DecidablePred.{succ u} α p] (l : List.{u} α), Eq.{succ u} (Prod.{u u} (List.{u} α) (List.{u} α)) (List.partitionₓ.{u} α p (fun (a : α) => _inst_1 a) l) (Prod.mk.{u u} (List.{u} α) (List.{u} α) (List.filterₓ.{u} α p (fun (a : α) => _inst_1 a) l) (List.filterₓ.{u} α (Function.comp.{succ u 1 1} α Prop Prop Not p) (fun (a : α) => Not.decidable (p a) (_inst_1 a)) l))
+  forall {α : Type.{u}} (p : α -> Prop) [_inst_1 : DecidablePred.{succ u} α p] (l : List.{u} α), Eq.{succ u} (Prod.{u, u} (List.{u} α) (List.{u} α)) (List.partitionₓ.{u} α p (fun (a : α) => _inst_1 a) l) (Prod.mk.{u, u} (List.{u} α) (List.{u} α) (List.filterₓ.{u} α p (fun (a : α) => _inst_1 a) l) (List.filterₓ.{u} α (Function.comp.{succ u, 1, 1} α Prop Prop Not p) (fun (a : α) => Not.decidable (p a) (_inst_1 a)) l))
 but is expected to have type
-  forall {α : Type.{u_1}} (p : α -> Bool) (l : List.{u_1} α), Eq.{succ u_1} (Prod.{u_1 u_1} (List.{u_1} α) (List.{u_1} α)) (List.partition.{u_1} α p l) (Prod.mk.{u_1 u_1} (List.{u_1} α) (List.{u_1} α) (List.filter.{u_1} α p l) (List.filter.{u_1} α (Function.comp.{succ u_1 1 1} α Bool Bool not p) l))
+  forall {α : Type.{u_1}} (p : α -> Bool) (l : List.{u_1} α), Eq.{succ u_1} (Prod.{u_1, u_1} (List.{u_1} α) (List.{u_1} α)) (List.partition.{u_1} α p l) (Prod.mk.{u_1, u_1} (List.{u_1} α) (List.{u_1} α) (List.filter.{u_1} α p l) (List.filter.{u_1} α (Function.comp.{succ u_1, 1, 1} α Bool Bool not p) l))
 Case conversion may be inaccurate. Consider using '#align list.partition_eq_filter_filter List.partition_eq_filter_filterₓ'. -/
 @[simp]
 theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
@@ -436,8 +450,8 @@ theorem filter_cons_of_pos {p : α → Prop} [h : DecidablePred p] {a : α} :
 #align list.filter_cons_of_pos List.filter_cons_of_pos
 
 @[simp]
-theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} : ∀ l, ¬p a → filter p (a :: l) = filter p l :=
-  fun l pa => if_neg pa
+theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
+    ∀ l, ¬p a → filter p (a :: l) = filter p l := fun l pa => if_neg pa
 #align list.filter_cons_of_neg List.filter_cons_of_neg
 
 @[simp]
@@ -473,7 +487,8 @@ def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
 #align list.map_accumr List.mapAccumr
 
 @[simp]
-theorem length_map_accumr : ∀ (f : α → σ → σ × β) (x : List α) (s : σ), length (mapAccumr f x s).2 = length x
+theorem length_map_accumr :
+    ∀ (f : α → σ → σ × β) (x : List α) (s : σ), length (mapAccumr f x s).2 = length x
   | f, a :: x, s => congr_arg succ (length_map_accumr f x s)
   | f, [], s => rfl
 #align list.length_map_accumr List.length_map_accumr

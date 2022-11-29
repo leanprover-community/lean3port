@@ -31,17 +31,17 @@ attribute [elab_as_elim] lift ind
 
 /- warning: quot.lift_beta -> Quot.lift_mk is a dubious translation:
 lean 3 declaration is
-  forall {α : Sort.{u}} {r : α -> α -> Prop} {β : Sort.{v}} (f : α -> β) (c : forall (a : α) (b : α), (r a b) -> (Eq.{v} β (f a) (f b))) (a : α), Eq.{v} β (Quot.lift.{u v} α (fun (a : α) (b : α) => r a b) β f c (Quot.mk.{u} α r a)) (f a)
+  forall {α : Sort.{u}} {r : α -> α -> Prop} {β : Sort.{v}} (f : α -> β) (c : forall (a : α) (b : α), (r a b) -> (Eq.{v} β (f a) (f b))) (a : α), Eq.{v} β (Quot.lift.{u, v} α (fun (a : α) (b : α) => r a b) β f c (Quot.mk.{u} α r a)) (f a)
 but is expected to have type
-  forall {α : Sort.{u_2}} {γ : Sort.{u_1}} {r : α -> α -> Prop} (f : α -> γ) (h : forall (a₁ : α) (a₂ : α), (r a₁ a₂) -> (Eq.{u_1} γ (f a₁) (f a₂))) (a : α), Eq.{u_1} γ (Quot.lift.{u_2 u_1} α (fun (a : α) (b : α) => r a b) γ f h (Quot.mk.{u_2} α r a)) (f a)
+  forall {α : Sort.{u_2}} {γ : Sort.{u_1}} {r : α -> α -> Prop} (f : α -> γ) (h : forall (a₁ : α) (a₂ : α), (r a₁ a₂) -> (Eq.{u_1} γ (f a₁) (f a₂))) (a : α), Eq.{u_1} γ (Quot.lift.{u_2, u_1} α (fun (a : α) (b : α) => r a b) γ f h (Quot.mk.{u_2} α r a)) (f a)
 Case conversion may be inaccurate. Consider using '#align quot.lift_beta Quot.lift_mkₓ'. -/
-protected theorem lift_mk {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β) (c : ∀ a b, r a b → f a = f b)
-    (a : α) : lift f c (Quot.mk r a) = f a :=
+protected theorem lift_mk {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β)
+    (c : ∀ a b, r a b → f a = f b) (a : α) : lift f c (Quot.mk r a) = f a :=
   rfl
 #align quot.lift_beta Quot.lift_mk
 
-protected theorem ind_beta {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop} (p : ∀ a, β (Quot.mk r a)) (a : α) :
-    (ind p (Quot.mk r a) : β (Quot.mk r a)) = p a :=
+protected theorem ind_beta {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop}
+    (p : ∀ a, β (Quot.mk r a)) (a : α) : (ind p (Quot.mk r a) : β (Quot.mk r a)) = p a :=
   rfl
 #align quot.ind_beta Quot.ind_beta
 
@@ -98,8 +98,8 @@ protected theorem lift_indep_pr1 (f : ∀ a, β ⟦a⟧)
 
 #print Quot.rec /-
 @[reducible, elab_as_elim]
-protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b)
-    (q : Quot r) : β q :=
+protected def rec (f : ∀ a, β ⟦a⟧)
+    (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) (q : Quot r) : β q :=
   Eq.recOn (Quot.lift_indep_pr1 f h q) (lift (Quot.indep f) (Quot.indep_coherent f h) q).2
 #align quot.rec Quot.rec
 -/
@@ -114,14 +114,16 @@ protected def recOn (q : Quot r) (f : ∀ a, β ⟦a⟧)
 
 #print Quot.recOnSubsingleton /-
 @[reducible, elab_as_elim]
-protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot r) (f : ∀ a, β ⟦a⟧) : β q :=
+protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot r) (f : ∀ a, β ⟦a⟧) :
+    β q :=
   Quot.rec f (fun a b h => Subsingleton.elim _ (f b)) q
 #align quot.rec_on_subsingleton Quot.recOnSubsingleton
 -/
 
 #print Quot.hrecOn /-
 @[reducible, elab_as_elim]
-protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) : β q :=
+protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) :
+    β q :=
   Quot.recOn q f fun a b p =>
     eq_of_heq
       (calc
@@ -160,14 +162,16 @@ theorem sound {α : Sort u} [s : Setoid α] {a b : α} : a ≈ b → ⟦a⟧ = �
 
 #print Quotient.lift /-
 @[reducible, elab_as_elim]
-protected def lift {α : Sort u} {β : Sort v} [s : Setoid α] (f : α → β) : (∀ a b, a ≈ b → f a = f b) → Quotient s → β :=
+protected def lift {α : Sort u} {β : Sort v} [s : Setoid α] (f : α → β) :
+    (∀ a b, a ≈ b → f a = f b) → Quotient s → β :=
   Quot.lift f
 #align quotient.lift Quotient.lift
 -/
 
 #print Quotient.ind /-
 @[elab_as_elim]
-protected theorem ind {α : Sort u} [s : Setoid α] {β : Quotient s → Prop} : (∀ a, β ⟦a⟧) → ∀ q, β q :=
+protected theorem ind {α : Sort u} [s : Setoid α] {β : Quotient s → Prop} :
+    (∀ a, β ⟦a⟧) → ∀ q, β q :=
   Quot.ind
 #align quotient.ind Quotient.ind
 -/
@@ -181,8 +185,8 @@ protected def liftOn {α : Sort u} {β : Sort v} [s : Setoid α] (q : Quotient s
 -/
 
 @[elab_as_elim]
-protected theorem induction_on {α : Sort u} [s : Setoid α] {β : Quotient s → Prop} (q : Quotient s) (h : ∀ a, β ⟦a⟧) :
-    β q :=
+protected theorem induction_on {α : Sort u} [s : Setoid α] {β : Quotient s → Prop} (q : Quotient s)
+    (h : ∀ a, β ⟦a⟧) : β q :=
   Quot.induction_on q h
 #align quotient.induction_on Quotient.induction_on
 
@@ -201,7 +205,8 @@ variable [s : Setoid α]
 variable {β : Quotient s → Sort v}
 
 #print Quotient.rec /-
-protected def rec (f : ∀ a, β ⟦a⟧) (h : ∀ (a b : α) (p : a ≈ b), (Eq.ndrec (f a) (Quotient.sound p) : β ⟦b⟧) = f b)
+protected def rec (f : ∀ a, β ⟦a⟧)
+    (h : ∀ (a b : α) (p : a ≈ b), (Eq.ndrec (f a) (Quotient.sound p) : β ⟦b⟧) = f b)
     (q : Quotient s) : β q :=
   Quot.rec f h q
 #align quotient.rec Quotient.rec
@@ -217,14 +222,16 @@ protected def recOn (q : Quotient s) (f : ∀ a, β ⟦a⟧)
 
 #print Quotient.recOnSubsingleton /-
 @[reducible, elab_as_elim]
-protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quotient s) (f : ∀ a, β ⟦a⟧) : β q :=
+protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quotient s) (f : ∀ a, β ⟦a⟧) :
+    β q :=
   @Quot.recOnSubsingleton _ _ _ h q f
 #align quotient.rec_on_subsingleton Quotient.recOnSubsingleton
 -/
 
 #print Quotient.hrecOn /-
 @[reducible, elab_as_elim]
-protected def hrecOn (q : Quotient s) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : a ≈ b), HEq (f a) (f b)) : β q :=
+protected def hrecOn (q : Quotient s) (f : ∀ a, β ⟦a⟧)
+    (c : ∀ (a b : α) (p : a ≈ b), HEq (f a) (f b)) : β q :=
   Quot.hrecOn q f c
 #align quotient.hrec_on Quotient.hrecOn
 -/
@@ -243,9 +250,10 @@ include s₁ s₂
 
 #print Quotient.lift₂ /-
 @[reducible, elab_as_elim]
-protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂) (q₁ : Quotient s₁)
-    (q₂ : Quotient s₂) : φ :=
-  Quotient.lift (fun a₁ : α => Quotient.lift (f a₁) (fun a b : β => c a₁ a a₁ b (Setoid.refl a₁)) q₂)
+protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂)
+    (q₁ : Quotient s₁) (q₂ : Quotient s₂) : φ :=
+  Quotient.lift
+    (fun a₁ : α => Quotient.lift (f a₁) (fun a b : β => c a₁ a a₁ b (Setoid.refl a₁)) q₂)
     (fun (a b : α) (h : a ≈ b) =>
       @Quotient.ind β s₂
         (fun a_1 : Quotient s₂ =>
@@ -266,21 +274,22 @@ protected def liftOn₂ (q₁ : Quotient s₁) (q₂ : Quotient s₂) (f : α �
 
 #print Quotient.ind₂ /-
 @[elab_as_elim]
-protected theorem ind₂ {φ : Quotient s₁ → Quotient s₂ → Prop} (h : ∀ a b, φ ⟦a⟧ ⟦b⟧) (q₁ : Quotient s₁)
-    (q₂ : Quotient s₂) : φ q₁ q₂ :=
+protected theorem ind₂ {φ : Quotient s₁ → Quotient s₂ → Prop} (h : ∀ a b, φ ⟦a⟧ ⟦b⟧)
+    (q₁ : Quotient s₁) (q₂ : Quotient s₂) : φ q₁ q₂ :=
   Quotient.ind (fun a₁ => Quotient.ind (fun a₂ => h a₁ a₂) q₂) q₁
 #align quotient.ind₂ Quotient.ind₂
 -/
 
 @[elab_as_elim]
-protected theorem induction_on₂ {φ : Quotient s₁ → Quotient s₂ → Prop} (q₁ : Quotient s₁) (q₂ : Quotient s₂)
-    (h : ∀ a b, φ ⟦a⟧ ⟦b⟧) : φ q₁ q₂ :=
+protected theorem induction_on₂ {φ : Quotient s₁ → Quotient s₂ → Prop} (q₁ : Quotient s₁)
+    (q₂ : Quotient s₂) (h : ∀ a b, φ ⟦a⟧ ⟦b⟧) : φ q₁ q₂ :=
   Quotient.ind (fun a₁ => Quotient.ind (fun a₂ => h a₁ a₂) q₂) q₁
 #align quotient.induction_on₂ Quotient.induction_on₂
 
 @[elab_as_elim]
-protected theorem induction_on₃ [s₃ : Setoid φ] {δ : Quotient s₁ → Quotient s₂ → Quotient s₃ → Prop} (q₁ : Quotient s₁)
-    (q₂ : Quotient s₂) (q₃ : Quotient s₃) (h : ∀ a b c, δ ⟦a⟧ ⟦b⟧ ⟦c⟧) : δ q₁ q₂ q₃ :=
+protected theorem induction_on₃ [s₃ : Setoid φ] {δ : Quotient s₁ → Quotient s₂ → Quotient s₃ → Prop}
+    (q₁ : Quotient s₁) (q₂ : Quotient s₂) (q₃ : Quotient s₃) (h : ∀ a b c, δ ⟦a⟧ ⟦b⟧ ⟦c⟧) :
+    δ q₁ q₂ q₃ :=
   Quotient.ind (fun a₁ => Quotient.ind (fun a₂ => Quotient.ind (fun a₃ => h a₁ a₂ a₃) q₃) q₂) q₁
 #align quotient.induction_on₃ Quotient.induction_on₃
 
@@ -304,10 +313,12 @@ private def rel (q₁ q₂ : Quotient s) : Prop :=
 -- mathport name: «expr ~ »
 local infixl:50 " ~ " => Rel
 
-private theorem rel.refl : ∀ q : Quotient s, q ~ q := fun q => Quot.induction_on q fun a => Setoid.refl a
+private theorem rel.refl : ∀ q : Quotient s, q ~ q := fun q =>
+  Quot.induction_on q fun a => Setoid.refl a
 #align quotient.rel.refl quotient.rel.refl
 
-private theorem eq_imp_rel {q₁ q₂ : Quotient s} : q₁ = q₂ → q₁ ~ q₂ := fun h => Eq.recOn h (Rel.refl q₁)
+private theorem eq_imp_rel {q₁ q₂ : Quotient s} : q₁ = q₂ → q₁ ~ q₂ := fun h =>
+  Eq.recOn h (Rel.refl q₁)
 #align quotient.eq_imp_rel quotient.eq_imp_rel
 
 #print Quotient.exact /-
@@ -329,10 +340,11 @@ include s₁ s₂
 
 #print Quotient.recOnSubsingleton₂ /-
 @[reducible, elab_as_elim]
-protected def recOnSubsingleton₂ {φ : Quotient s₁ → Quotient s₂ → Sort u_c} [h : ∀ a b, Subsingleton (φ ⟦a⟧ ⟦b⟧)]
-    (q₁ : Quotient s₁) (q₂ : Quotient s₂) (f : ∀ a b, φ ⟦a⟧ ⟦b⟧) : φ q₁ q₂ :=
-  @Quotient.recOnSubsingleton _ s₁ (fun q => φ q q₂) (fun a => Quotient.ind (fun b => h a b) q₂) q₁ fun a =>
-    Quotient.recOnSubsingleton q₂ fun b => f a b
+protected def recOnSubsingleton₂ {φ : Quotient s₁ → Quotient s₂ → Sort u_c}
+    [h : ∀ a b, Subsingleton (φ ⟦a⟧ ⟦b⟧)] (q₁ : Quotient s₁) (q₂ : Quotient s₂)
+    (f : ∀ a b, φ ⟦a⟧ ⟦b⟧) : φ q₁ q₂ :=
+  @Quotient.recOnSubsingleton _ s₁ (fun q => φ q q₂) (fun a => Quotient.ind (fun b => h a b) q₂) q₁
+    fun a => Quotient.recOnSubsingleton q₂ fun b => f a b
 #align quotient.rec_on_subsingleton₂ Quotient.recOnSubsingleton₂
 -/
 
@@ -370,14 +382,16 @@ def EqvGen.Setoid : Setoid α :=
 #print Quot.exact /-
 theorem Quot.exact {a b : α} (H : Quot.mk r a = Quot.mk r b) : EqvGen r a b :=
   @Quotient.exact _ (EqvGen.Setoid r) a b
-    (@congr_arg _ _ _ _ (Quot.lift (@Quotient.mk'' _ (EqvGen.Setoid r)) fun x y h => Quot.sound (EqvGen.rel x y h)) H)
+    (@congr_arg _ _ _ _
+      (Quot.lift (@Quotient.mk'' _ (EqvGen.Setoid r)) fun x y h => Quot.sound (EqvGen.rel x y h)) H)
 #align quot.exact Quot.exact
 -/
 
 #print Quot.EqvGen_sound /-
-theorem Quot.EqvGen_sound {r : α → α → Prop} {a b : α} (H : EqvGen r a b) : Quot.mk r a = Quot.mk r b :=
-  EqvGen.rec_on H (fun x y h => Quot.sound h) (fun x => rfl) (fun x y _ IH => Eq.symm IH) fun x y z _ _ IH₁ IH₂ =>
-    Eq.trans IH₁ IH₂
+theorem Quot.EqvGen_sound {r : α → α → Prop} {a b : α} (H : EqvGen r a b) :
+    Quot.mk r a = Quot.mk r b :=
+  EqvGen.rec_on H (fun x y h => Quot.sound h) (fun x => rfl) (fun x y _ IH => Eq.symm IH)
+    fun x y z _ _ IH₁ IH₂ => Eq.trans IH₁ IH₂
 #align quot.eqv_gen_sound Quot.EqvGen_sound
 -/
 
@@ -385,8 +399,8 @@ end
 
 open Decidable
 
-instance {α : Sort u} {s : Setoid α} [d : ∀ a b : α, Decidable (a ≈ b)] : DecidableEq (Quotient s) :=
-  fun q₁ q₂ : Quotient s =>
+instance {α : Sort u} {s : Setoid α} [d : ∀ a b : α, Decidable (a ≈ b)] :
+    DecidableEq (Quotient s) := fun q₁ q₂ : Quotient s =>
   Quotient.recOnSubsingleton₂ q₁ q₂ fun a₁ a₂ =>
     match d a₁ a₂ with
     | is_true h₁ => isTrue (Quotient.sound h₁)

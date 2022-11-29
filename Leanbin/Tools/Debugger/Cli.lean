@@ -42,7 +42,8 @@ unsafe def show_help : vm Unit := do
   vm.put_str " vars      - display variables in the current stack frame\n"
   vm.put_str " stack     - display all functions on the call stack\n"
   vm.put_str " print var - display the value of variable named 'var' in the current stack frame\n"
-  vm.put_str " pidx  idx - display the value of variable at position #idx in the current stack frame\n"
+  vm.put_str
+      " pidx  idx - display the value of variable at position #idx in the current stack frame\n"
   vm.put_str "breakpoints\n"
   vm.put_str " break fn  - add breakpoint for fn\n"
   vm.put_str " rbreak fn - remove breakpoint\n"
@@ -55,7 +56,9 @@ unsafe def add_breakpoint (s : State) (args : List String) : vm State :=
     let fn ← return <| toQualifiedName arg
     let ok ← is_valid_fn_prefix fn
     if ok then return { s with fnBps := fn :: List.filter (fun fn' => fn ≠ fn') s }
-      else vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >> return s
+      else
+        vm.put_str "invalid 'break' command, given name is not the prefix for any function\n" >>
+          return s
   | _ => vm.put_str "invalid 'break <fn>' command, incorrect number of arguments\n" >> return s
 #align debugger.add_breakpoint debugger.add_breakpoint
 

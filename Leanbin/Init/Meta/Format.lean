@@ -165,7 +165,10 @@ unsafe instance : has_to_format Char :=
 
 unsafe def list.to_format {α : Type u} [has_to_format α] : List α → format
   | [] => to_fmt "[]"
-  | xs => to_fmt "[" ++ group (nest 1 <| format.join <| List.intersperse ("," ++ line) <| xs.map to_fmt) ++ to_fmt "]"
+  | xs =>
+    to_fmt "[" ++
+        group (nest 1 <| format.join <| List.intersperse ("," ++ line) <| xs.map to_fmt) ++
+      to_fmt "]"
 #align list.to_format list.to_format
 
 unsafe instance {α : Type u} [has_to_format α] : has_to_format (List α) :=
@@ -180,7 +183,8 @@ unsafe instance : has_to_format Unit :=
   ⟨fun u => to_fmt "()"⟩
 
 unsafe instance {α : Type u} [has_to_format α] : has_to_format (Option α) :=
-  ⟨fun o => Option.casesOn o (to_fmt "none") fun a => to_fmt "(some " ++ nest 6 (to_fmt a) ++ to_fmt ")"⟩
+  ⟨fun o =>
+    Option.casesOn o (to_fmt "none") fun a => to_fmt "(some " ++ nest 6 (to_fmt a) ++ to_fmt ")"⟩
 
 unsafe instance sum_has_to_format {α : Type u} {β : Type v} [has_to_format α] [has_to_format β] :
     has_to_format (Sum α β) :=
@@ -191,14 +195,17 @@ unsafe instance sum_has_to_format {α : Type u} {β : Type v} [has_to_format α]
 
 open Prod
 
-unsafe instance {α : Type u} {β : Type v} [has_to_format α] [has_to_format β] : has_to_format (Prod α β) :=
-  ⟨fun ⟨a, b⟩ => group (nest 1 (to_fmt "(" ++ to_fmt a ++ to_fmt "," ++ line ++ to_fmt b ++ to_fmt ")"))⟩
+unsafe instance {α : Type u} {β : Type v} [has_to_format α] [has_to_format β] :
+    has_to_format (Prod α β) :=
+  ⟨fun ⟨a, b⟩ =>
+    group (nest 1 (to_fmt "(" ++ to_fmt a ++ to_fmt "," ++ line ++ to_fmt b ++ to_fmt ")"))⟩
 
 open Sigma
 
 unsafe instance {α : Type u} {β : α → Type v} [has_to_format α] [s : ∀ x, has_to_format (β x)] :
     has_to_format (Sigma β) :=
-  ⟨fun ⟨a, b⟩ => group (nest 1 (to_fmt "⟨" ++ to_fmt a ++ to_fmt "," ++ line ++ to_fmt b ++ to_fmt "⟩"))⟩
+  ⟨fun ⟨a, b⟩ =>
+    group (nest 1 (to_fmt "⟨" ++ to_fmt a ++ to_fmt "," ++ line ++ to_fmt b ++ to_fmt "⟩"))⟩
 
 open Subtype
 

@@ -47,7 +47,8 @@ inductive BinderInfo-- `(x : α)`
 
   | strict_implicit-- `[x : α]`. Should be inferred with typeclass resolution.
 
-  | inst_implicit/- Auxiliary internal attribute used to mark local constants representing recursive functions
+  |
+  inst_implicit/- Auxiliary internal attribute used to mark local constants representing recursive functions
         in recursive equations and `match` statements. -/
 
   | aux_decl
@@ -96,10 +97,14 @@ unsafe inductive expr (elaborated : Bool := true)-- A bound variable with a de-B
 
   | var (i : Nat) : expr-- A type universe: `Sort u`
 
-  | sort (l : level) : expr/- A global constant. These include definitions, constants and inductive type stuff present
+  |
+  sort (l : level) :
+    expr/- A global constant. These include definitions, constants and inductive type stuff present
 in the environment as well as hard-coded definitions. -/
 
-  | const (name : Name) (ls : List level) : expr/- [WARNING] Do not trust the types for `mvar` and `local_const`,
+  |
+  const (name : Name) (ls : List level) :
+    expr/- [WARNING] Do not trust the types for `mvar` and `local_const`,
 they are sometimes dummy values. Use `tactic.infer_type` instead. -/
 -- An `mvar` is a 'hole' yet to be filled in by the elaborator or tactic state.
 
@@ -107,7 +112,9 @@ they are sometimes dummy values. Use `tactic.infer_type` instead. -/
   mvar (unique : Name) (pretty : Name) (type : expr) :
     expr-- A local constant. For example, if our tactic state was `h : P ⊢ Q`, `h` would be a local constant.
 
-  | local_const (unique : Name) (pretty : Name) (bi : BinderInfo) (type : expr) : expr-- Function application.
+  |
+  local_const (unique : Name) (pretty : Name) (bi : BinderInfo) (type : expr) :
+    expr-- Function application.
 
   | app (f : expr) (x : expr) : expr-- Lambda abstraction. eg ```(λ a : α, x)``
 
@@ -115,7 +122,9 @@ they are sometimes dummy values. Use `tactic.infer_type` instead. -/
   lam (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) :
     expr-- Pi type constructor. eg ```(Π a : α, x)`` and ```(α → β)``
 
-  | pi (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) : expr-- An explicit let binding.
+  |
+  pi (var_name : Name) (bi : BinderInfo) (var_type : expr) (body : expr) :
+    expr-- An explicit let binding.
 
   |
   elet (var_name : Name) (type : expr) (assignment : expr) (body : expr) :
@@ -193,7 +202,8 @@ unsafe axiom expr.lt : expr → expr → Bool
 unsafe axiom expr.lex_lt : expr → expr → Bool
 #align expr.lex_lt expr.lex_lt
 
-/-- `expr.fold e a f`: Traverses each subexpression of `e`. The `nat` passed to the folder `f` is the binder depth. -/
+/--
+`expr.fold e a f`: Traverses each subexpression of `e`. The `nat` passed to the folder `f` is the binder depth. -/
 unsafe axiom expr.fold {α : Type} : expr → α → (expr → Nat → α → α) → α
 #align expr.fold expr.fold
 
@@ -227,11 +237,13 @@ unsafe def expr.abstract : expr → expr → expr
 unsafe axiom expr.instantiate_univ_params : expr → List (Name × level) → expr
 #align expr.instantiate_univ_params expr.instantiate_univ_params
 
-/-- `instantiate_nth_var n a b` takes the `n`th de-Bruijn variable in `a` and replaces each occurrence with `b`. -/
+/--
+`instantiate_nth_var n a b` takes the `n`th de-Bruijn variable in `a` and replaces each occurrence with `b`. -/
 unsafe axiom expr.instantiate_nth_var : Nat → expr → expr → expr
 #align expr.instantiate_nth_var expr.instantiate_nth_var
 
-/-- `instantiate_var a b` takes the 0th de-Bruijn variable in `a` and replaces each occurrence with `b`. -/
+/--
+`instantiate_var a b` takes the 0th de-Bruijn variable in `a` and replaces each occurrence with `b`. -/
 unsafe axiom expr.instantiate_var : expr → expr → expr
 #align expr.instantiate_var expr.instantiate_var
 
@@ -247,7 +259,8 @@ unsafe axiom expr.instantiate_vars : expr → List expr → expr
 unsafe axiom expr.instantiate_vars_core : expr → Nat → List expr → expr
 #align expr.instantiate_vars_core expr.instantiate_vars_core
 
-/-- Perform beta-reduction if the left expression is a lambda, or construct an application otherwise.
+/--
+Perform beta-reduction if the left expression is a lambda, or construct an application otherwise.
 That is: ``expr.subst `(λ x, %%Y) Z = Y[x/Z]``, and
 ``expr.subst X Z = X.app Z`` otherwise -/
 protected unsafe axiom expr.subst : expr elab → expr elab → expr elab
@@ -274,7 +287,8 @@ unsafe axiom expr.has_local : expr → Bool
 unsafe axiom expr.has_meta_var : expr → Bool
 #align expr.has_meta_var expr.has_meta_var
 
-/-- `lower_vars e s d` lowers the free variables >= s in `e` by `d`. Note that this can cause variable clashes.
+/--
+`lower_vars e s d` lowers the free variables >= s in `e` by `d`. Note that this can cause variable clashes.
     examples:
     -  ``lower_vars `(#2 #1 #0) 1 1 = `(#1 #0 #0)``
     -  ``lower_vars `(λ x, #2 #1 #0) 1 1 = `(λ x, #1 #1 #0 )``
@@ -282,7 +296,8 @@ unsafe axiom expr.has_meta_var : expr → Bool
 unsafe axiom expr.lower_vars : expr → Nat → Nat → expr
 #align expr.lower_vars expr.lower_vars
 
-/-- Lifts free variables. `lift_vars e s d` will lift all free variables with index `≥ s` in `e` by `d`. -/
+/--
+Lifts free variables. `lift_vars e s d` will lift all free variables with index `≥ s` in `e` by `d`. -/
 unsafe axiom expr.lift_vars : expr → Nat → Nat → expr
 #align expr.lift_vars expr.lift_vars
 
@@ -305,7 +320,8 @@ is_internal_cnstr : expr → option unsigned
 unsafe axiom expr.is_internal_cnstr : expr → Option Unsigned
 #align expr.is_internal_cnstr expr.is_internal_cnstr
 
-/-- There is a macro called a "nat_value_macro" holding a natural number which are used during compilation.
+/--
+There is a macro called a "nat_value_macro" holding a natural number which are used during compilation.
 This function extracts that to a natural number. [NOTE] This is not used anywhere in Lean. -/
 unsafe axiom expr.get_nat_value : expr → Option Nat
 #align expr.get_nat_value expr.get_nat_value
@@ -558,7 +574,11 @@ unsafe def is_false : expr → Bool
 #align expr.is_false expr.is_false
 
 -- failed to format: unknown constant 'term.pseudo.antiquot'
-unsafe def is_not : expr → Option expr | q( Not $ ( a ) ) => some a | q( $ ( a ) → False ) => some a | e => none
+unsafe
+  def
+    is_not
+    : expr → Option expr
+    | q( Not $ ( a ) ) => some a | q( $ ( a ) → False ) => some a | e => none
 #align expr.is_not expr.is_not
 
 unsafe def is_and : expr → Option (expr × expr)
@@ -736,12 +756,15 @@ unsafe def to_raw_fmt : expr elab → format
   | pi n bi e t => p ["pi", to_fmt n, repr bi, to_raw_fmt e, to_raw_fmt t]
   | elet n g e f => p ["elet", to_fmt n, to_raw_fmt g, to_raw_fmt e, to_raw_fmt f]
   | macro d args =>
-    sbracket (format.join (List.intersperse " " ("macro" :: to_fmt (macro_def_name d) :: args.map to_raw_fmt)))
+    sbracket
+      (format.join
+        (List.intersperse " " ("macro" :: to_fmt (macro_def_name d) :: args.map to_raw_fmt)))
 #align expr.to_raw_fmt expr.to_raw_fmt
 
 /-- Fold an accumulator `a` over each subexpression in the expression `e`.
 The `nat` passed to `fn` is the number of binders above the subexpression. -/
-unsafe def mfold {α : Type} {m : Type → Type} [Monad m] (e : expr) (a : α) (fn : expr → Nat → α → m α) : m α :=
+unsafe def mfold {α : Type} {m : Type → Type} [Monad m] (e : expr) (a : α)
+    (fn : expr → Nat → α → m α) : m α :=
   fold e (return a) fun e n a => a >>= fn e n
 #align expr.mfold expr.mfold
 

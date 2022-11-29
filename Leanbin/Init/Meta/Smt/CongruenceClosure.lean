@@ -102,7 +102,8 @@ unsafe axiom cc_state.is_not_eqv : cc_state → expr → expr → tactic Bool
 unsafe axiom cc_state.eqv_proof : cc_state → expr → expr → tactic expr
 #align cc_state.eqv_proof cc_state.eqv_proof
 
-/-- Returns true if the cc_state is inconsistent. For example if it had both `a = b` and `a ≠ b` in it.-/
+/--
+Returns true if the cc_state is inconsistent. For example if it had both `a = b` and `a ≠ b` in it.-/
 unsafe axiom cc_state.inconsistent : cc_state → Bool
 #align cc_state.inconsistent cc_state.inconsistent
 
@@ -164,7 +165,8 @@ unsafe def fold_eqc {α} (s : cc_state) (e : expr) (a : α) (f : α → expr →
   fold_eqc_core s f e e a
 #align cc_state.fold_eqc cc_state.fold_eqc
 
-unsafe def mfold_eqc {α} {m : Type → Type} [Monad m] (s : cc_state) (e : expr) (a : α) (f : α → expr → m α) : m α :=
+unsafe def mfold_eqc {α} {m : Type → Type} [Monad m] (s : cc_state) (e : expr) (a : α)
+    (f : α → expr → m α) : m α :=
   fold_eqc s e (return a) fun act e => do
     let a ← act
     f a e

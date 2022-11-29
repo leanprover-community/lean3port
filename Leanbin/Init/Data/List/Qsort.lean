@@ -11,7 +11,8 @@ namespace List
 
 -- Note: we can't use the equation compiler here because
 -- init.meta.well_founded_tactics uses this file
-def Qsort.f {α} (lt : α → α → Bool) : ∀ x : List α, (∀ y : List α, length y < length x → List α) → List α
+def Qsort.f {α} (lt : α → α → Bool) :
+    ∀ x : List α, (∀ y : List α, length y < length x → List α) → List α
   | [], IH => []
   | h :: t, IH => by
     induction' e : partition (fun x => lt h x = tt) t with large small
@@ -32,7 +33,8 @@ def qsort {α} (lt : α → α → Bool) : List α → List α :=
 #align list.qsort List.qsort
 
 @[simp]
-theorem qsort_nil {α} (lt : α → α → Bool) : qsort lt [] = [] := by rw [qsort, WellFounded.fix_eq, qsort.F]
+theorem qsort_nil {α} (lt : α → α → Bool) : qsort lt [] = [] := by
+  rw [qsort, WellFounded.fix_eq, qsort.F]
 #align list.qsort_nil List.qsort_nil
 
 @[simp]
@@ -43,8 +45,7 @@ theorem qsort_cons {α} (lt : α → α → Bool) (h t) :
   by
   rw [qsort, WellFounded.fix_eq, qsort.F]
   induction' e : partition (fun x => lt h x = tt) t with large small
-  simp [e]
-  rw [e]
+  simp [e]; rw [e]
 #align list.qsort_cons List.qsort_cons
 
 end List

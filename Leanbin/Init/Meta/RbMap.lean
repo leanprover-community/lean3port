@@ -50,11 +50,13 @@ unsafe axiom min {key : Type} {data : Type} : rb_map key data → Option data
 unsafe axiom max {key : Type} {data : Type} : rb_map key data → Option data
 #align native.rb_map.max native.rb_map.max
 
-unsafe axiom fold {key : Type} {data : Type} {α : Type} : rb_map key data → α → (key → data → α → α) → α
+unsafe axiom fold {key : Type} {data : Type} {α : Type} :
+    rb_map key data → α → (key → data → α → α) → α
 #align native.rb_map.fold native.rb_map.fold
 
 @[inline]
-unsafe def mk (key : Type) [LT key] [DecidableRel ((· < ·) : key → key → Prop)] (data : Type) : rb_map key data :=
+unsafe def mk (key : Type) [LT key] [DecidableRel ((· < ·) : key → key → Prop)] (data : Type) :
+    rb_map key data :=
   mk_core data cmp
 #align native.rb_map.mk native.rb_map.mk
 
@@ -113,7 +115,8 @@ end
 
 end RbMap
 
-unsafe def mk_rb_map {key data : Type} [LT key] [DecidableRel ((· < ·) : key → key → Prop)] : rb_map key data :=
+unsafe def mk_rb_map {key data : Type} [LT key] [DecidableRel ((· < ·) : key → key → Prop)] :
+    rb_map key data :=
   rb_map.mk key data
 #align native.mk_rb_map native.mk_rb_map
 
@@ -144,14 +147,18 @@ section
 variable {key : Type} {data : Type} [has_to_format key] [has_to_format data]
 
 private unsafe def format_key_data (k : key) (d : data) (first : Bool) : format :=
-  (if first then to_fmt "" else to_fmt "," ++ line) ++ to_fmt k ++ space ++ to_fmt "←" ++ space ++ to_fmt d
+  (if first then to_fmt "" else to_fmt "," ++ line) ++ to_fmt k ++ space ++ to_fmt "←" ++ space ++
+    to_fmt d
 #align native.format_key_data native.format_key_data
 
 unsafe instance : has_to_format (rb_map key data) :=
   ⟨fun m =>
     group <|
       to_fmt "⟨" ++
-          nest 1 (fst (fold m (to_fmt "", true) fun k d p => (fst p ++ format_key_data k d (snd p), false))) ++
+          nest 1
+            (fst
+              (fold m (to_fmt "", true) fun k d p =>
+                (fst p ++ format_key_data k d (snd p), false))) ++
         to_fmt "⟩"⟩
 
 end
@@ -165,7 +172,9 @@ private unsafe def key_data_to_string (k : key) (d : data) (first : Bool) : Stri
 #align native.key_data_to_string native.key_data_to_string
 
 unsafe instance : ToString (rb_map key data) :=
-  ⟨fun m => "⟨" ++ fst (fold m ("", true) fun k d p => (fst p ++ key_data_to_string k d (snd p), false)) ++ "⟩"⟩
+  ⟨fun m =>
+    "⟨" ++ fst (fold m ("", true) fun k d p => (fst p ++ key_data_to_string k d (snd p), false)) ++
+      "⟩"⟩
 
 end
 
@@ -177,12 +186,13 @@ unsafe def rb_lmap (key : Type) (data : Type) : Type :=
 
 namespace RbLmap
 
-protected unsafe def mk (key : Type) [LT key] [DecidableRel ((· < ·) : key → key → Prop)] (data : Type) :
-    rb_lmap key data :=
+protected unsafe def mk (key : Type) [LT key] [DecidableRel ((· < ·) : key → key → Prop)]
+    (data : Type) : rb_lmap key data :=
   rb_map.mk key (List data)
 #align native.rb_lmap.mk native.rb_lmap.mk
 
-unsafe def insert {key : Type} {data : Type} (rbl : rb_lmap key data) (k : key) (d : data) : rb_lmap key data :=
+unsafe def insert {key : Type} {data : Type} (rbl : rb_lmap key data) (k : key) (d : data) :
+    rb_lmap key data :=
   match rb_map.find rbl k with
   | none => rb_map.insert rbl k [d]
   | some l => rb_map.insert (rb_map.erase rbl k) k (d :: l)
@@ -238,7 +248,8 @@ unsafe def fold {key α : Type} (s : rb_set key) (a : α) (fn : key → α → �
   rb_map.fold s a fun k _ a => fn k a
 #align native.rb_set.fold native.rb_set.fold
 
-unsafe def mfold {key α : Type} {m : Type → Type} [Monad m] (s : rb_set key) (a : α) (fn : key → α → m α) : m α :=
+unsafe def mfold {key α : Type} {m : Type → Type} [Monad m] (s : rb_set key) (a : α)
+    (fn : key → α → m α) : m α :=
   s.fold (return a) fun k act => act >>= fn k
 #align native.rb_set.mfold native.rb_set.mfold
 
@@ -249,7 +260,9 @@ unsafe def to_list {key : Type} (s : rb_set key) : List key :=
 unsafe instance {key} [has_to_format key] : has_to_format (rb_set key) :=
   ⟨fun m =>
     group <|
-      to_fmt "{" ++ nest 1 (fst (fold m (to_fmt "", true) fun k p => (fst p ++ format_key k (snd p), false))) ++
+      to_fmt "{" ++
+          nest 1
+            (fst (fold m (to_fmt "", true) fun k p => (fst p ++ format_key k (snd p), false))) ++
         to_fmt "}"⟩
 
 end RbSet
@@ -316,13 +329,16 @@ unsafe def to_list (s : name_set) : List Name :=
 unsafe instance : has_to_format name_set :=
   ⟨fun m =>
     group <|
-      to_fmt "{" ++ nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++ to_fmt "}"⟩
+      to_fmt "{" ++
+          nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++
+        to_fmt "}"⟩
 
 unsafe def of_list (l : List Name) : name_set :=
   List.foldl name_set.insert mk_name_set l
 #align name_set.of_list name_set.of_list
 
-unsafe def mfold {α : Type} {m : Type → Type} [Monad m] (ns : name_set) (a : α) (fn : Name → α → m α) : m α :=
+unsafe def mfold {α : Type} {m : Type → Type} [Monad m] (ns : name_set) (a : α)
+    (fn : Name → α → m α) : m α :=
   ns.fold (return a) fun k act => act >>= fn k
 #align name_set.mfold name_set.mfold
 

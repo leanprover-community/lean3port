@@ -16,9 +16,9 @@ namespace Option
 
 /- warning: option.to_monad -> Option.toMonad is a dubious translation:
 lean 3 declaration is
-  forall {m : Type -> Type} [_inst_1 : Monad.{0 0} m] [_inst_2 : Alternative.{0 0} m] {A : Type}, (Option.{0} A) -> (m A)
+  forall {m : Type -> Type} [_inst_1 : Monad.{0, 0} m] [_inst_2 : Alternative.{0, 0} m] {A : Type}, (Option.{0} A) -> (m A)
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Data.Option.Basic._hyg.16 : Monad.{u_1 u_2} m] [inst._@.Init.Data.Option.Basic._hyg.19 : Alternative.{u_1 u_2} m], (Option.{u_1} α) -> (m α)
+  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Data.Option.Basic._hyg.16 : Monad.{u_1, u_2} m] [inst._@.Init.Data.Option.Basic._hyg.19 : Alternative.{u_1, u_2} m], (Option.{u_1} α) -> (m α)
 Case conversion may be inaccurate. Consider using '#align option.to_monad Option.toMonadₓ'. -/
 def toMonad {m : Type → Type} [Monad m] [Alternative m] {A} : Option A → m A
   | none => failure

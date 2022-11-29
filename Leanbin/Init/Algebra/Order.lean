@@ -31,7 +31,7 @@ section Preorder
 
 
 #print Preorder /-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic order_laws_tac -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic order_laws_tac -/
 /-- A preorder is a reflexive, transitive relation `≤` with `a < b` defined in the obvious way. -/
 class Preorder (α : Type u) extends LE α, LT α where
   le_refl : ∀ a : α, a ≤ a
@@ -200,7 +200,8 @@ theorem le_of_eq_or_lt {a b : α} (h : a = b ∨ a < b) : a ≤ b :=
 def decidableLtOfDecidableLe [@DecidableRel α (· ≤ ·)] : @DecidableRel α (· < ·)
   | a, b =>
     if hab : a ≤ b then
-      if hba : b ≤ a then is_false fun hab' => not_le_of_gt hab' hba else is_true <| lt_of_le_not_le hab hba
+      if hba : b ≤ a then is_false fun hab' => not_le_of_gt hab' hba
+      else is_true <| lt_of_le_not_le hab hba
     else is_false fun hab' => hab (le_of_lt hab')
 #align decidable_lt_of_decidable_le decidableLtOfDecidableLe
 
@@ -235,14 +236,16 @@ theorem le_antisymm_iff {a b : α} : a = b ↔ a ≤ b ∧ b ≤ a :=
 -/
 
 #print lt_of_le_of_ne /-
-theorem lt_of_le_of_ne {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ => lt_of_le_not_le h₁ <| mt (le_antisymm h₁) h₂
+theorem lt_of_le_of_ne {a b : α} : a ≤ b → a ≠ b → a < b := fun h₁ h₂ =>
+  lt_of_le_not_le h₁ <| mt (le_antisymm h₁) h₂
 #align lt_of_le_of_ne lt_of_le_of_ne
 -/
 
 /-- Equality is decidable if `≤` is. -/
 def decidableEqOfDecidableLe [@DecidableRel α (· ≤ ·)] : DecidableEq α
   | a, b =>
-    if hab : a ≤ b then if hba : b ≤ a then isTrue (le_antisymm hab hba) else isFalse fun heq => hba (HEq ▸ le_refl _)
+    if hab : a ≤ b then
+      if hba : b ≤ a then isTrue (le_antisymm hab hba) else isFalse fun heq => hba (HEq ▸ le_refl _)
     else isFalse fun heq => hab (HEq ▸ le_refl _)
 #align decidable_eq_of_decidable_le decidableEqOfDecidableLe
 
@@ -304,8 +307,8 @@ def minDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → 
 #align min_default minDefault
 
 #print LinearOrder /-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
 /-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
 We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`. -/
 class LinearOrder (α : Type u) extends PartialOrder α where
@@ -356,9 +359,11 @@ theorem not_lt_of_gt {a b : α} (h : a > b) : ¬a < b :=
 theorem lt_trichotomy (a b : α) : a < b ∨ a = b ∨ b < a :=
   Or.elim (le_total a b)
     (fun h : a ≤ b =>
-      Or.elim (Decidable.lt_or_eq_of_le h) (fun h : a < b => Or.inl h) fun h : a = b => Or.inr (Or.inl h))
+      Or.elim (Decidable.lt_or_eq_of_le h) (fun h : a < b => Or.inl h) fun h : a = b =>
+        Or.inr (Or.inl h))
     fun h : b ≤ a =>
-    Or.elim (Decidable.lt_or_eq_of_le h) (fun h : b < a => Or.inr (Or.inr h)) fun h : b = a => Or.inr (Or.inl h.symm)
+    Or.elim (Decidable.lt_or_eq_of_le h) (fun h : b < a => Or.inr (Or.inr h)) fun h : b = a =>
+      Or.inr (Or.inl h.symm)
 #align lt_trichotomy lt_trichotomy
 -/
 
@@ -467,12 +472,14 @@ instance is_strict_weak_order_of_linear_order : IsStrictWeakOrder α (· < ·) :
 #align is_strict_weak_order_of_linear_order is_strict_weak_order_of_linear_order
 
 -- TODO(Leo): decide whether we should keep this instance or not
-instance is_strict_total_order_of_linear_order : IsStrictTotalOrder α (· < ·) where trichotomous := lt_trichotomy
+instance is_strict_total_order_of_linear_order :
+    IsStrictTotalOrder α (· < ·) where trichotomous := lt_trichotomy
 #align is_strict_total_order_of_linear_order is_strict_total_order_of_linear_order
 
 /-- Perform a case-split on the ordering of `x` and `y` in a decidable linear order. -/
 def ltByCases (x y : α) {P : Sort _} (h₁ : x < y → P) (h₂ : x = y → P) (h₃ : y < x → P) : P :=
-  if h : x < y then h₁ h else if h' : y < x then h₃ h' else h₂ (le_antisymm (le_of_not_gt h') (le_of_not_gt h))
+  if h : x < y then h₁ h
+  else if h' : y < x then h₃ h' else h₂ (le_antisymm (le_of_not_gt h') (le_of_not_gt h))
 #align lt_by_cases ltByCases
 
 /- warning: le_imp_le_of_lt_imp_lt -> le_imp_le_of_lt_imp_lt is a dubious translation:
@@ -481,8 +488,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u}} {β : Type.{u_1}} [inst._@.Mathlib.Init.Algebra.Order._hyg.3454 : Preorder.{u} α] [inst._@.Mathlib.Init.Algebra.Order._hyg.3457 : LinearOrder.{u_1} β] {a : α} {b : α} {c : β} {d : β}, ((LT.lt.{u_1} β (Preorder.toLT.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β inst._@.Mathlib.Init.Algebra.Order._hyg.3457))) d c) -> (LT.lt.{u} α (Preorder.toLT.{u} α inst._@.Mathlib.Init.Algebra.Order._hyg.3454) b a)) -> (LE.le.{u} α (Preorder.toLE.{u} α inst._@.Mathlib.Init.Algebra.Order._hyg.3454) a b) -> (LE.le.{u_1} β (Preorder.toLE.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β inst._@.Mathlib.Init.Algebra.Order._hyg.3457))) c d)
 Case conversion may be inaccurate. Consider using '#align le_imp_le_of_lt_imp_lt le_imp_le_of_lt_imp_ltₓ'. -/
-theorem le_imp_le_of_lt_imp_lt {β} [Preorder α] [LinearOrder β] {a b : α} {c d : β} (H : d < c → b < a) (h : a ≤ b) :
-    c ≤ d :=
+theorem le_imp_le_of_lt_imp_lt {β} [Preorder α] [LinearOrder β] {a b : α} {c d : β}
+    (H : d < c → b < a) (h : a ≤ b) : c ≤ d :=
   le_of_not_lt fun h' => not_le_of_gt (H h') h
 #align le_imp_le_of_lt_imp_lt le_imp_le_of_lt_imp_lt
 

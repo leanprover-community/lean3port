@@ -98,13 +98,13 @@ unsafe instance interaction_monad.monad : Monad m where
   bind := @interaction_monad_bind
 #align interaction_monad.monad interaction_monad.monad
 
-unsafe def interaction_monad.mk_exception {α : Type u} {β : Type v} [has_to_format β] (msg : β) (ref : Option expr)
-    (s : state) : result state α :=
+unsafe def interaction_monad.mk_exception {α : Type u} {β : Type v} [has_to_format β] (msg : β)
+    (ref : Option expr) (s : state) : result state α :=
   exception (some fun _ => to_fmt msg) none s
 #align interaction_monad.mk_exception interaction_monad.mk_exception
 
-unsafe def interaction_monad.fail {α : Type u} {β : Type v} [has_to_format β] (msg : β) : m α := fun s =>
-  interaction_monad.mk_exception msg none s
+unsafe def interaction_monad.fail {α : Type u} {β : Type v} [has_to_format β] (msg : β) : m α :=
+  fun s => interaction_monad.mk_exception msg none s
 #align interaction_monad.fail interaction_monad.fail
 
 unsafe def interaction_monad.silent_fail {α : Type u} : m α := fun s => exception none none s
@@ -116,7 +116,8 @@ unsafe def interaction_monad.failed {α : Type u} : m α :=
 
 /-- Alternative orelse operator that allows to select which exception should be used.
    The default is to use the first exception since the standard `orelse` uses the second. -/
-unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first_ex := true) : m α := fun s =>
+unsafe def interaction_monad.orelse' {α : Type u} (t₁ t₂ : m α) (use_first_ex := true) : m α :=
+  fun s =>
   interaction_monad.result.cases_on (t₁ s) success fun e₁ ref₁ s₁' =>
     interaction_monad.result.cases_on (t₂ s) success fun e₂ ref₂ s₂' =>
       if use_first_ex then exception e₁ ref₁ s₁' else exception e₂ ref₂ s₂'

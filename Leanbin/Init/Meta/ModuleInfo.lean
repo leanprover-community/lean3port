@@ -89,11 +89,13 @@ unsafe axiom import_dependencies : environment → module_info → environment
 unsafe axiom import_only : environment → module_info → environment
 #align environment.import_only environment.import_only
 
-/-- Imports all declarations until `decl_name` of the module (without the dependencies) into an environment.
+/--
+Imports all declarations until `decl_name` of the module (without the dependencies) into an environment.
 
 **ONLY USE THIS FUNCTION IN (CI) SCRIPTS!**
 -/
-unsafe axiom import_only_until_decl (env : environment) (mod_info : module_info) (decl_name : Name) : environment
+unsafe axiom import_only_until_decl (env : environment) (mod_info : module_info)
+    (decl_name : Name) : environment
 #align environment.import_only_until_decl environment.import_only_until_decl
 
 /-- Imports a module including dependencies into an environment.
@@ -108,7 +110,8 @@ unsafe def import' (env : environment) (mi : module_info) : environment :=
 
 **ONLY USE THIS FUNCTION IN (CI) SCRIPTS!**
 -/
-unsafe def import_until_decl (env : environment) (mi : module_info) (decl_name : Name) : environment :=
+unsafe def import_until_decl (env : environment) (mi : module_info) (decl_name : Name) :
+    environment :=
   (env.import_dependencies mi).import_only_until_decl mi decl_name
 #align environment.import_until_decl environment.import_until_decl
 
@@ -144,7 +147,8 @@ including dependencies.
 
 **ONLY USE THIS FUNCTION IN (CI) SCRIPTS!**
 -/
-unsafe def for_decl_of_imported_module_name (mod_nam : module_name) (decl : Name) (cur_mod := "") : environment :=
+unsafe def for_decl_of_imported_module_name (mod_nam : module_name) (decl : Name) (cur_mod := "") :
+    environment :=
   for_decl_of_imported_module (resolve_module_name mod_nam cur_mod) decl
 #align environment.for_decl_of_imported_module_name environment.for_decl_of_imported_module_name
 

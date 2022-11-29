@@ -63,7 +63,8 @@ unsafe def mk_constructor_arg_names (c : Name) (p : Name) (i : Nat) : tactic (Li
   return <| mk_name_list p i nfields
 #align tactic.mk_constructor_arg_names tactic.mk_constructor_arg_names
 
-private unsafe def mk_constructors_arg_names_aux : List Name → Name → Nat → List (List Name) → tactic (List (List Name))
+private unsafe def mk_constructors_arg_names_aux :
+    List Name → Name → Nat → List (List Name) → tactic (List (List Name))
   | [], p, i, r => return (List.reverse r)
   | c :: cs, p, i, r => do
     let v : List Name × Nat ← mk_constructor_arg_names c p i
@@ -90,7 +91,8 @@ private unsafe def mk_fresh_arg_name (n : Name) (s : name_set) : tactic (Name ×
   if s r then mk_fresh_arg_name_aux n 1 s else return (r, s r)
 #align tactic.mk_fresh_arg_name tactic.mk_fresh_arg_name
 
-private unsafe def mk_constructor_fresh_names_aux : Nat → expr → name_set → tactic (List Name × name_set)
+private unsafe def mk_constructor_fresh_names_aux :
+    Nat → expr → name_set → tactic (List Name × name_set)
   | nparams, ty, s => do
     let ty ← whnf ty
     match ty with
@@ -108,7 +110,8 @@ private unsafe def mk_constructor_fresh_names_aux : Nat → expr → name_set �
       | _ => return ([], s)
 #align tactic.mk_constructor_fresh_names_aux tactic.mk_constructor_fresh_names_aux
 
-unsafe def mk_constructor_fresh_names (nparams : Nat) (c : Name) (s : name_set) : tactic (List Name × name_set) := do
+unsafe def mk_constructor_fresh_names (nparams : Nat) (c : Name) (s : name_set) :
+    tactic (List Name × name_set) := do
   let d ← get_decl c
   let t := d.type
   mk_constructor_fresh_names_aux nparams t s

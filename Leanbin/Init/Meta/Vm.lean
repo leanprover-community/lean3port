@@ -160,11 +160,13 @@ namespace Vm
 unsafe axiom get_env : vm environment
 #align vm.get_env vm.get_env
 
-/-- Returns the vm declaration associated with the given name. Remark: does _not_ return the vm_override if present.-/
+/--
+Returns the vm declaration associated with the given name. Remark: does _not_ return the vm_override if present.-/
 unsafe axiom get_decl : Name → vm vm_decl
 #align vm.get_decl vm.get_decl
 
-/-- Returns the vm declaration associated with the given index. Remark: does _not_ return the vm_override if present.-/
+/--
+Returns the vm declaration associated with the given index. Remark: does _not_ return the vm_override if present.-/
 unsafe axiom decl_of_idx : Nat → vm vm_decl
 #align vm.decl_of_idx vm.decl_of_idx
 

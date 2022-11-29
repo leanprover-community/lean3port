@@ -36,7 +36,8 @@ unsafe def back_lemmas_insert : back_lemmas → expr → tactic back_lemmas :=
   back_lemmas_insert_core reducible
 #align tactic.back_lemmas_insert tactic.back_lemmas_insert
 
-/-- (backward_chaining_core t insts max_depth pre_tactic leaf_tactic lemmas): perform backward chaining using
+/--
+(backward_chaining_core t insts max_depth pre_tactic leaf_tactic lemmas): perform backward chaining using
    the lemmas marked as [intro] and extra_lemmas.
 
    The search maximum depth is \c max_depth.
@@ -50,7 +51,8 @@ unsafe def back_lemmas_insert : back_lemmas → expr → tactic back_lemmas :=
    If insts is tt, then type class resolution is used to discharge goals.
 
    Remark pre_tactic may also be used to trace the execution of backward_chaining_core -/
-unsafe axiom backward_chaining_core : Transparency → Bool → Nat → tactic Unit → tactic Unit → back_lemmas → tactic Unit
+unsafe axiom backward_chaining_core :
+    Transparency → Bool → Nat → tactic Unit → tactic Unit → back_lemmas → tactic Unit
 #align tactic.backward_chaining_core tactic.backward_chaining_core
 
 unsafe def back_lemmas_add_extra : Transparency → back_lemmas → List expr → tactic back_lemmas
@@ -60,8 +62,8 @@ unsafe def back_lemmas_add_extra : Transparency → back_lemmas → List expr �
     back_lemmas_add_extra m new_bls ls
 #align tactic.back_lemmas_add_extra tactic.back_lemmas_add_extra
 
-unsafe def back_chaining_core (pre_tactic : tactic Unit) (leaf_tactic : tactic Unit) (extra_lemmas : List expr) :
-    tactic Unit := do
+unsafe def back_chaining_core (pre_tactic : tactic Unit) (leaf_tactic : tactic Unit)
+    (extra_lemmas : List expr) : tactic Unit := do
   let intro_lemmas ← mk_back_lemmas_core reducible
   let new_lemmas ← back_lemmas_add_extra reducible intro_lemmas extra_lemmas
   let max ← get_nat_option `back_chaining.max_depth 8

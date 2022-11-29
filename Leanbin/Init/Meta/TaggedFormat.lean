@@ -37,7 +37,8 @@ protected unsafe def map (f : α → β) : tagged_format α → tagged_format β
 unsafe instance is_functor : Functor tagged_format where map := @tagged_format.map
 #align tagged_format.is_functor tagged_format.is_functor
 
-unsafe def m_untag {t : Type → Type} [Monad t] (f : α → format → t format) : tagged_format α → t format
+unsafe def m_untag {t : Type → Type} [Monad t] (f : α → format → t format) :
+    tagged_format α → t format
   | compose x y => pure format.compose <*> m_untag x <*> m_untag y
   | group x => pure format.group <*> m_untag x
   | nest i x => pure (format.nest i) <*> m_untag x

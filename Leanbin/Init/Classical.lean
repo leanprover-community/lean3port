@@ -18,7 +18,8 @@ axiom choice {α : Sort u} : Nonempty α → α
 -/
 
 #print Classical.indefiniteDescription /-
-noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Prop) (h : ∃ x, p x) : { x // p x } :=
+noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Prop) (h : ∃ x, p x) :
+  { x // p x } :=
   choice <|
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
@@ -153,8 +154,8 @@ noncomputable def typeDecidable (α : Sort u) : PSum α (α → False) :=
 -/
 
 #print Classical.strongIndefiniteDescription /-
-noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α → Prop) (h : Nonempty α) :
-  { x : α // (∃ y : α, p y) → p x } :=
+noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α → Prop)
+  (h : Nonempty α) : { x : α // (∃ y : α, p y) → p x } :=
   if hp : ∃ x : α, p x then
     let xp := indefiniteDescription _ hp
     ⟨xp.val, fun h' => xp.property⟩
@@ -170,13 +171,15 @@ noncomputable def epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α
 -/
 
 #print Classical.epsilon_spec_aux /-
-theorem epsilon_spec_aux {α : Sort u} (h : Nonempty α) (p : α → Prop) : (∃ y, p y) → p (@epsilon α h p) :=
+theorem epsilon_spec_aux {α : Sort u} (h : Nonempty α) (p : α → Prop) :
+    (∃ y, p y) → p (@epsilon α h p) :=
   (strongIndefiniteDescription p h).property
 #align classical.epsilon_spec_aux Classical.epsilon_spec_aux
 -/
 
 #print Classical.epsilon_spec /-
-theorem epsilon_spec {α : Sort u} {p : α → Prop} (hex : ∃ y, p y) : p (@epsilon α (nonempty_of_exists hex) p) :=
+theorem epsilon_spec {α : Sort u} {p : α → Prop} (hex : ∃ y, p y) :
+    p (@epsilon α (nonempty_of_exists hex) p) :=
   epsilon_spec_aux (nonempty_of_exists hex) p hex
 #align classical.epsilon_spec Classical.epsilon_spec
 -/

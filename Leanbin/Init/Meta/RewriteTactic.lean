@@ -35,10 +35,12 @@ structure RewriteCfg extends ApplyCfg where
     even the assigned ones.
 
     TODO(Leo): improve documentation and explain symm/occs -/
-unsafe axiom rewrite_core (h : expr) (e : expr) (cfg : RewriteCfg := {  }) : tactic (expr × expr × List expr)
+unsafe axiom rewrite_core (h : expr) (e : expr) (cfg : RewriteCfg := {  }) :
+    tactic (expr × expr × List expr)
 #align tactic.rewrite_core tactic.rewrite_core
 
-unsafe def rewrite (h : expr) (e : expr) (cfg : RewriteCfg := {  }) : tactic (expr × expr × List expr) := do
+unsafe def rewrite (h : expr) (e : expr) (cfg : RewriteCfg := {  }) :
+    tactic (expr × expr × List expr) := do
   let (new_t, prf, metas) ← rewrite_core h e cfg
   try_apply_opt_auto_param cfg metas
   return (new_t, prf, metas)

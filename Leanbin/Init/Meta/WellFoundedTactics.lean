@@ -28,12 +28,14 @@ theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
 
 #print Nat.lt_add_right /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
-theorem Nat.lt_add_right (a b c : Nat) : a < b → a < b + c := fun h => lt_of_lt_of_le h (Nat.le_add_right _ _)
+theorem Nat.lt_add_right (a b c : Nat) : a < b → a < b + c := fun h =>
+  lt_of_lt_of_le h (Nat.le_add_right _ _)
 #align nat.lt_add_right Nat.lt_add_right
 -/
 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
-theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h => lt_of_lt_of_le h (Nat.le_add_left _ _)
+theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h =>
+  lt_of_lt_of_le h (Nat.le_add_left _ _)
 #align nat.lt_add_left Nat.lt_add_left
 
 protected def PSum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → ℕ
@@ -42,7 +44,8 @@ protected def PSum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [Si
 #align psum.alt.sizeof PSum.Alt.sizeof
 
 @[reducible]
-protected def PSum.hasSizeofAlt.{u, v} (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=
+protected def PSum.hasSizeofAlt.{u, v} (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] :
+    SizeOf (PSum α β) :=
   ⟨PSum.Alt.sizeof⟩
 #align psum.has_sizeof_alt PSum.hasSizeofAlt
 
@@ -65,14 +68,16 @@ unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do
   let rel ← mk_instance tgt
   exact <|
       match e, rel with
-      | expr.local_const _ (Name.mk_string "_mutual" _) _ _, expr.app (e@q(@hasWellFoundedOfHasSizeof _)) sz =>
-        e (mk_alt_sizeof sz)
+      | expr.local_const _ (Name.mk_string "_mutual" _) _ _,
+        expr.app (e@q(@hasWellFoundedOfHasSizeof _)) sz => e (mk_alt_sizeof sz)
       | _, _ => rel
 #align well_founded_tactics.default_rel_tac well_founded_tactics.default_rel_tac
 
 private unsafe def clear_wf_rec_goal_aux : List expr → tactic Unit
   | [] => return ()
-  | h :: hs => clear_wf_rec_goal_aux hs >> try (guard (h.local_pp_name.is_internal || h.is_aux_decl) >> clear h)
+  | h :: hs =>
+    clear_wf_rec_goal_aux hs >>
+      try (guard (h.local_pp_name.is_internal || h.is_aux_decl) >> clear h)
 #align well_founded_tactics.clear_wf_rec_goal_aux well_founded_tactics.clear_wf_rec_goal_aux
 
 unsafe def clear_internals : tactic Unit :=
@@ -175,12 +180,15 @@ private unsafe def get_add_fn (e : expr) : expr :=
 #align well_founded_tactics.get_add_fn well_founded_tactics.get_add_fn
 
 private unsafe def prove_eq_by_perm (a b : expr) : tactic expr :=
-  is_def_eq a b >> to_expr ``(Eq.refl $(a)) <|> perm_ac (get_add_fn a) q(Nat.add_assoc) q(Nat.add_comm) a b
+  is_def_eq a b >> to_expr ``(Eq.refl $(a)) <|>
+    perm_ac (get_add_fn a) q(Nat.add_assoc) q(Nat.add_comm) a b
 #align well_founded_tactics.prove_eq_by_perm well_founded_tactics.prove_eq_by_perm
 
 private unsafe def num_small_lt (a b : expr) : Bool :=
   if a = b then false
-  else if is_napp_of a `has_one.one 2 then true else if is_napp_of b `has_one.one 2 then false else a.lt b
+  else
+    if is_napp_of a `has_one.one 2 then true
+    else if is_napp_of b `has_one.one 2 then false else a.lt b
 #align well_founded_tactics.num_small_lt well_founded_tactics.num_small_lt
 
 private unsafe def sort_args (args : List expr) : List expr :=
@@ -218,14 +226,16 @@ unsafe
                 let new_rhs ← mk_nat_add_add common ( sort_args rhs_rest )
                 let lhs_pr ← prove_eq_by_perm lhs new_lhs
                 let rhs_pr ← prove_eq_by_perm rhs new_rhs
-                let target_pr ← to_expr ` `( congr ( congr_arg ( · < · ) $ ( lhs_pr ) ) $ ( rhs_pr ) )
+                let
+                  target_pr ← to_expr ` `( congr ( congr_arg ( · < · ) $ ( lhs_pr ) ) $ ( rhs_pr ) )
                 let new_target ← to_expr ` `( $ ( new_lhs ) < $ ( new_rhs ) )
                 replace_target new_target target_pr ` ` id_tag.wf
                 sorry <|> sorry
 #align well_founded_tactics.cancel_nat_add_lt well_founded_tactics.cancel_nat_add_lt
 
 -- failed to format: unknown constant 'term.pseudo.antiquot'
-unsafe def check_target_is_value_lt : tactic Unit := do let q( $ ( lhs ) < $ ( rhs ) ) ← target guard lhs
+unsafe
+  def check_target_is_value_lt : tactic Unit := do let q( $ ( lhs ) < $ ( rhs ) ) ← target guard lhs
 #align well_founded_tactics.check_target_is_value_lt well_founded_tactics.check_target_is_value_lt
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
@@ -246,7 +256,7 @@ unsafe def trivial_nat_lt : tactic Unit :=
 end SimpleDecTac
 
 unsafe def default_dec_tac : tactic Unit :=
-  abstract <| do
+  abstract do
     clear_internals
     unfold_wf_rel
     -- The next line was adapted from code in mathlib by Scott Morrison.

@@ -54,8 +54,8 @@ def map (f : ∀ i : Fin n, α i → α' i) (a : DArray n α) : DArray n α' :=
   foreach a f
 #align d_array.map DArray.map
 
-def map₂ {α'' : Fin n → Type w} (f : ∀ i : Fin n, α i → α' i → α'' i) (a : DArray n α) (b : DArray n α') :
-    DArray n α'' :=
+def map₂ {α'' : Fin n → Type w} (f : ∀ i : Fin n, α i → α' i → α'' i) (a : DArray n α)
+    (b : DArray n α') : DArray n α'' :=
   foreach b fun i => f i (a.read i)
 #align d_array.map₂ DArray.map₂
 
@@ -75,25 +75,22 @@ def revIterate (a : DArray n α) (b : β) (f : ∀ i : Fin n, α i → β → β
 #align d_array.rev_iterate DArray.revIterate
 
 @[simp]
-theorem read_write (a : DArray n α) (i : Fin n) (v : α i) : read (write a i v) i = v := by simp [read, write]
+theorem read_write (a : DArray n α) (i : Fin n) (v : α i) : read (write a i v) i = v := by
+  simp [read, write]
 #align d_array.read_write DArray.read_write
 
 @[simp]
-theorem read_write_of_ne (a : DArray n α) {i j : Fin n} (v : α i) : i ≠ j → read (write a i v) j = read a j := by
-  intro h <;> simp [read, write, h]
+theorem read_write_of_ne (a : DArray n α) {i j : Fin n} (v : α i) :
+    i ≠ j → read (write a i v) j = read a j := by intro h <;> simp [read, write, h]
 #align d_array.read_write_of_ne DArray.read_write_of_ne
 
 protected theorem ext {a b : DArray n α} (h : ∀ i, read a i = read b i) : a = b := by
   cases a <;> cases b <;> congr <;> exact funext h
 #align d_array.ext DArray.ext
 
-protected theorem ext' {a b : DArray n α} (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b := by
-  cases a
-  cases b
-  congr
-  funext i
-  cases i
-  apply h
+protected theorem ext' {a b : DArray n α}
+    (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b := by cases a; cases b;
+  congr ; funext i; cases i; apply h
 #align d_array.ext' DArray.ext'
 
 protected def beqAux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : Nat, i ≤ n → Bool
@@ -116,7 +113,9 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       simp [DArray.beqAux] at h₂
       assumption
     have h₁' : i ≤ n := le_of_lt h₁
-    have ih : ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
+    have ih :
+      ∀ (j : Nat) (h' : j < i),
+        a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
       of_beq_aux_eq_tt i h₁' h₂'.2
     by_cases hji : j = i
     · subst hji
@@ -138,9 +137,7 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = ff →
         ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
-  | 0, h₁, h₂ => by
-    simp [DArray.beqAux] at h₂
-    contradiction
+  | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂; contradiction
   | i + 1, h₁, h₂ => by
     have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
       simp [DArray.beqAux] at h₂
@@ -151,7 +148,9 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact h
       
     · have h₁' : i ≤ n := le_of_lt h₁
-      have ih : ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
+      have ih :
+        ∃ (j : Nat)(h' : j < i),
+          a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
         of_beq_aux_eq_ff i h₁' h
       cases' ih with j ih
       cases' ih with h' ih
@@ -164,7 +163,8 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
 theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b := by
   unfold DArray.beq
   intro h hne
-  have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ := of_beq_aux_eq_ff n (le_refl _) h
+  have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ :=
+    of_beq_aux_eq_ff n (le_refl _) h
   cases' this with j this
   cases' this with h' this
   subst hne
@@ -172,7 +172,8 @@ theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.be
 #align d_array.of_beq_eq_ff DArray.of_beq_eq_ff
 
 instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) := fun a b =>
-  if h : DArray.beq a b = tt then isTrue (of_beq_eq_tt h) else isFalse (of_beq_eq_ff (Bool.eq_false_of_not_eq_true h))
+  if h : DArray.beq a b = tt then isTrue (of_beq_eq_tt h)
+  else isFalse (of_beq_eq_ff (Bool.eq_false_of_not_eq_true h))
 
 end DArray
 
@@ -181,7 +182,8 @@ def Array' (n : Nat) (α : Type u) : Type u :=
   DArray n fun _ => α
 #align array Array'
 
-/-- `mk_array n v` creates a new array of length `n` where each element is `v`. Has builtin VM implementation. -/
+/--
+`mk_array n v` creates a new array of length `n` where each element is `v`. Has builtin VM implementation. -/
 def mkArray' {α} (n) (v : α) : Array' n α where data _ := v
 #align mk_array mkArray'
 
@@ -247,7 +249,8 @@ theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
 
 /-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
 def pushBack (a : Array' n α) (v : α) :
-    Array' (n + 1) α where data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
+    Array' (n + 1)
+      α where data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
 #align array.push_back Array'.pushBack
 
 theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
@@ -255,12 +258,14 @@ theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
 #align array.pop_back_idx Array'.pop_back_idx
 
 /-- Discard _last_ element in the array. Has builtin VM implementation. -/
-def popBack (a : Array' (n + 1) α) : Array' n α where data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
+def popBack (a : Array' (n + 1) α) :
+    Array' n α where data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
 #align array.pop_back Array'.popBack
 
 /-- Auxilliary function for monadically mapping a function over an array. -/
 @[inline]
-def mmapCore {β : Type v} {m : Type v → Type w} [Monad m] (a : Array' n α) (f : α → m β) : ∀ i ≤ n, m (Array' i β)
+def mmapCore {β : Type v} {m : Type v → Type w} [Monad m] (a : Array' n α) (f : α → m β) :
+    ∀ i ≤ n, m (Array' i β)
   | 0, _ => pure DArray.nil
   | i + 1, h => do
     let bs ← mmap_core i (le_of_lt h)
@@ -306,7 +311,8 @@ theorem read_write (a : Array' n α) (i : Fin n) (v : α) : read (write a i v) i
 #align array.read_write Array'.read_write
 
 @[simp]
-theorem read_write_of_ne (a : Array' n α) {i j : Fin n} (v : α) : i ≠ j → read (write a i v) j = read a j :=
+theorem read_write_of_ne (a : Array' n α) {i j : Fin n} (v : α) :
+    i ≠ j → read (write a i v) j = read a j :=
   DArray.read_write_of_ne a v
 #align array.read_write_of_ne Array'.read_write_of_ne
 
@@ -318,25 +324,24 @@ def write' (a : Array' n α) (i : Nat) (v : α) : Array' n α :=
   if h : i < n then a.write ⟨i, h⟩ v else a
 #align array.write' Array'.write'
 
-theorem read_eq_read' [Inhabited α] (a : Array' n α) {i : Nat} (h : i < n) : read a ⟨i, h⟩ = read' a i := by
-  simp [read', h]
+theorem read_eq_read' [Inhabited α] (a : Array' n α) {i : Nat} (h : i < n) :
+    read a ⟨i, h⟩ = read' a i := by simp [read', h]
 #align array.read_eq_read' Array'.read_eq_read'
 
-theorem write_eq_write' (a : Array' n α) {i : Nat} (h : i < n) (v : α) : write a ⟨i, h⟩ v = write' a i v := by
-  simp [write', h]
+theorem write_eq_write' (a : Array' n α) {i : Nat} (h : i < n) (v : α) :
+    write a ⟨i, h⟩ v = write' a i v := by simp [write', h]
 #align array.write_eq_write' Array'.write_eq_write'
 
 protected theorem ext {a b : Array' n α} (h : ∀ i, read a i = read b i) : a = b :=
   DArray.ext h
 #align array.ext Array'.ext
 
-protected theorem ext' {a b : Array' n α} (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b :=
+protected theorem ext' {a b : Array' n α}
+    (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b :=
   DArray.ext' h
 #align array.ext' Array'.ext'
 
-instance [DecidableEq α] : DecidableEq (Array' n α) := by
-  unfold Array'
-  infer_instance
+instance [DecidableEq α] : DecidableEq (Array' n α) := by unfold Array'; infer_instance
 
 end Array'
 

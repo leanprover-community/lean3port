@@ -37,7 +37,8 @@ class SeqRight (f : Type u → Type v) : Type max (u + 1) v where
 -/
 
 #print Applicative /-
-class Applicative (f : Type u → Type v) extends Functor f, Pure f, Seq f, SeqLeft f, SeqRight f where
+class Applicative (f : Type u → Type v) extends Functor f, Pure f, Seq f, SeqLeft f,
+  SeqRight f where
   map := fun _ _ x y => pure x <*> y
   seqLeft := fun α β a b => const β <$> a <*> b
   seqRight := fun α β a b => const α id <$> a <*> b

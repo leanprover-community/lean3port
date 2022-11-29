@@ -25,7 +25,8 @@ private unsafe def get_dec_eq_type_name : tactic Name :=
       when (n ≠ `decidable) failed
       let const I ls ← return (get_app_fn d1)
       return I) <|>
-    fail "mk_dec_eq_instance tactic failed, target type is expected to be of the form (decidable_eq ...)"
+    fail
+      "mk_dec_eq_instance tactic failed, target type is expected to be of the form (decidable_eq ...)"
 #align tactic.get_dec_eq_type_name tactic.get_dec_eq_type_name
 
 /-- Extract (lhs, rhs) from a goal (decidable (lhs = rhs)) -/
@@ -49,7 +50,9 @@ private unsafe def mk_dec_eq_for (lhs : expr) (rhs : expr) : tactic expr := do
         return <| inst lhs rhs) <|>
       do
       let f ← pp dec_type
-      fail <| to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++ format.nest 2 (format.line ++ f)
+      fail <|
+          to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++
+            format.nest 2 (format.line ++ f)
 #align tactic.mk_dec_eq_for tactic.mk_dec_eq_for
 
 private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
@@ -72,7 +75,8 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         let lhs_list := get_app_args lhs
         let rhs_list := get_app_args rhs
         when (length lhs_list ≠ length rhs_list)
-            (fail "mk_dec_eq_instance failed, constructor applications have different number of arguments")
+            (fail
+              "mk_dec_eq_instance failed, constructor applications have different number of arguments")
         let (lhs_arg, rhs_arg) ← find_next_target lhs_list rhs_list
         let rec ← is_type_app_of lhs_arg I_name
         let inst ←
@@ -100,7 +104,8 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
         return ()
 #align tactic.dec_eq_same_constructor tactic.dec_eq_same_constructor
 
-/-- Easy case: target is of the form (decidable (C_1 ... = C_2 ...)) where C_1 and C_2 are distinct constructors -/
+/--
+Easy case: target is of the form (decidable (C_1 ... = C_2 ...)) where C_1 and C_2 are distinct constructors -/
 private unsafe def dec_eq_diff_constructor : tactic Unit :=
   (left >> intron 1) >> contradiction
 #align tactic.dec_eq_diff_constructor tactic.dec_eq_diff_constructor
@@ -130,7 +135,8 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   -- Use brec_on if type is recursive.
       -- We store the functional in the variable F.
       if is_recursive env I_name then
-      intro1 >>= fun x => induction x (idx_names ++ [v_name, F_name]) (some <| .str I_name "brec_on") >> return ()
+      intro1 >>= fun x =>
+        induction x (idx_names ++ [v_name, F_name]) (some <| .str I_name "brec_on") >> return ()
     else intro v_name >> return ()
   -- Apply cases to first element of type (I ...)
         get_local
@@ -150,13 +156,16 @@ unsafe
         let env ← get_env
           let pi x1 i1 d1 ( pi x2 i2 d2 b ) ← target >>= whnf
           let const I_name ls ← return ( get_app_fn d1 )
-          when ( is_ginductive env I_name ∧ ¬ is_inductive env I_name )
-            <|
+          ( when ( is_ginductive env I_name ∧ ¬ is_inductive env I_name ) )
             do
               let d1' ← whnf d1
                 let app I_basic_const I_idx ← return d1'
                 let I_idx_type ← infer_type I_idx
-                let new_goal ← to_expr ` `( ∀ _idx : $ ( I_idx_type ) , DecidableEq ( $ ( I_basic_const ) _idx ) )
+                let
+                  new_goal
+                    ←
+                    to_expr
+                      ` `( ∀ _idx : $ ( I_idx_type ) , DecidableEq ( $ ( I_basic_const ) _idx ) )
                 assert `_basic_dec_eq new_goal
                 swap
                 sorry
@@ -165,7 +174,7 @@ unsafe
           mk_dec_eq_instance_core
 #align tactic.mk_dec_eq_instance tactic.mk_dec_eq_instance
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
 unsafe instance binder_info.has_decidable_eq : DecidableEq BinderInfo := by
   run_tac
     mk_dec_eq_instance

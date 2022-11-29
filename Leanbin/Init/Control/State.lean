@@ -87,15 +87,15 @@ instance : HasMonadLift m (StateT σ m) :=
   ⟨@StateT.lift σ m _⟩
 
 @[inline]
-protected def monadMap {σ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) : StateT σ m α → StateT σ m' α :=
-  fun x => ⟨fun st => f (x.run st)⟩
+protected def monadMap {σ m m'} [Monad m] [Monad m'] {α} (f : ∀ {α}, m α → m' α) :
+    StateT σ m α → StateT σ m' α := fun x => ⟨fun st => f (x.run st)⟩
 #align state_t.monad_map StateTₓ.monadMap
 
 instance (σ m m') [Monad m] [Monad m'] : MonadFunctor m m' (StateT σ m) (StateT σ m') :=
   ⟨@StateT.monadMap σ m m' _ _⟩
 
-protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monad m] (split : σ → σ' × σ'') (join : σ' → σ'' → σ)
-    (x : StateT σ' m α) : StateT σ m α :=
+protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monad m] (split : σ → σ' × σ'')
+    (join : σ' → σ'' → σ) (x : StateT σ' m α) : StateT σ m α :=
   ⟨fun st => do
     let (st, ctx) := split st
     let (a, st') ← x.run st
@@ -136,7 +136,8 @@ variable {σ : Type u} {m : Type u → Type v}
 
 -- NOTE: The ordering of the following two instances determines that the top-most `state_t` monad layer
 -- will be picked first
-instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadState σ m] [HasMonadLift m n] : MonadState σ n :=
+instance (priority := 100) monadStateTrans {n : Type u → Type w} [MonadState σ m]
+    [HasMonadLift m n] : MonadState σ n :=
   ⟨fun α x => monadLift (MonadState.lift x : m α)⟩
 #align monad_state_trans monadStateTrans
 
@@ -159,9 +160,9 @@ def put (st : σ) : m PUnit :=
 
 /- warning: modify -> modify is a dubious translation:
 lean 3 declaration is
-  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [_inst_1 : Monad.{u v} m] [_inst_2 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
+  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [_inst_1 : Monad.{u, v} m] [_inst_2 : MonadState.{u, v} σ m], (σ -> σ) -> (m PUnit.{succ u})
 but is expected to have type
-  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [inst._@.Init.Prelude._hyg.11980 : MonadState.{u v} σ m], (σ -> σ) -> (m PUnit.{succ u})
+  forall {σ : Type.{u}} {m : Type.{u} -> Type.{v}} [inst._@.Init.Prelude._hyg.11980 : MonadState.{u, v} σ m], (σ -> σ) -> (m PUnit.{succ u})
 Case conversion may be inaccurate. Consider using '#align modify modifyₓ'. -/
 /-- Map the top-most state of a monad stack.
 
@@ -217,8 +218,8 @@ section
 
 variable {σ σ' : Type u} {m m' : Type u → Type v}
 
-instance (priority := 100) monadStateAdapterTrans {n n' : Type u → Type v} [MonadStateAdapter σ σ' m m']
-    [MonadFunctor m m' n n'] : MonadStateAdapter σ σ' n n' :=
+instance (priority := 100) monadStateAdapterTrans {n n' : Type u → Type v}
+    [MonadStateAdapter σ σ' m m'] [MonadFunctor m m' n n'] : MonadStateAdapter σ σ' n n' :=
   ⟨fun σ'' α split join => monadMap fun α => (adaptState split join : m α → m' α)⟩
 #align monad_state_adapter_trans monadStateAdapterTrans
 

@@ -24,9 +24,7 @@ variable {α : Type u} {β : Type v} {φ : Type w}
 
 variable {n : ℕ}
 
-instance [DecidableEq α] : DecidableEq (Vector α n) := by
-  unfold Vector
-  infer_instance
+instance [DecidableEq α] : DecidableEq (Vector α n) := by unfold Vector; infer_instance
 
 @[match_pattern]
 def nil : Vector α 0 :=
@@ -88,7 +86,8 @@ but is expected to have type
   forall {α : Type.{_aux_param_0}} {C : forall {n : Nat}, (Vector.{_aux_param_0} α n) -> Sort.{u}}, (forall (l : List.{_aux_param_0} α), C (List.length.{_aux_param_0} α l) (Subtype.mk.{succ _aux_param_0} (List.{_aux_param_0} α) (fun (l_1 : List.{_aux_param_0} α) => Eq.{1} Nat (List.length.{_aux_param_0} α l_1) (List.length.{_aux_param_0} α l)) l (rfl.{1} Nat (List.length.{_aux_param_0} α l)))) -> (forall {n : Nat} (v : Vector.{_aux_param_0} α n), C n v)
 Case conversion may be inaccurate. Consider using '#align vector.elim Vector.elimₓ'. -/
 @[elab_as_elim]
-def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} : ∀ v : Vector α n, C v
+def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} :
+    ∀ v : Vector α n, C v
   | ⟨l, h⟩ =>
     match n, h with
     | _, rfl => H l
@@ -145,7 +144,8 @@ def mapAccumr (f : α → σ → σ × β) : Vector α n → σ → σ × Vector
     ⟨res.1, res.2, by simp [*]⟩
 #align vector.map_accumr Vector.mapAccumr
 
-def mapAccumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) : Vector α n → Vector β n → σ → σ × Vector φ n
+def mapAccumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) :
+    Vector α n → Vector β n → σ → σ × Vector φ n
   | ⟨x, px⟩, ⟨y, py⟩, c =>
     let res := List.mapAccumr₂ f x y c
     ⟨res.1, res.2, by simp [*]⟩
@@ -177,28 +177,22 @@ theorem to_list_length (v : Vector α n) : (toList v).length = n :=
 #align vector.to_list_length Vector.to_list_length
 
 @[simp]
-theorem to_list_cons (a : α) (v : Vector α n) : toList (cons a v) = a :: toList v := by
-  cases v
-  rfl
+theorem to_list_cons (a : α) (v : Vector α n) : toList (cons a v) = a :: toList v := by cases v; rfl
 #align vector.to_list_cons Vector.to_list_cons
 
 @[simp]
-theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) : toList (append v w) = toList v ++ toList w := by
-  cases v
-  cases w
-  rfl
+theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) :
+    toList (append v w) = toList v ++ toList w := by cases v; cases w; rfl
 #align vector.to_list_append Vector.to_list_append
 
 @[simp]
 theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.drop n (toList v) := by
-  cases v
-  rfl
+  cases v; rfl
 #align vector.to_list_drop Vector.to_list_drop
 
 @[simp]
 theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.take n (toList v) := by
-  cases v
-  rfl
+  cases v; rfl
 #align vector.to_list_take Vector.to_list_take
 
 end Vector

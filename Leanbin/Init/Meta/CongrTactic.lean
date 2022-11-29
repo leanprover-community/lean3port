@@ -15,7 +15,7 @@ unsafe def apply_congr_core (clemma : congr_lemma) : tactic Unit := do
   assert `H_congr_lemma clemma
   exact clemma
   get_local `H_congr_lemma >>= apply
-  all_goals' <| do
+  all_goals' do
       try (applyc `heq_of_eq)
       get_local `H_congr_lemma >>= clear
 #align tactic.apply_congr_core tactic.apply_congr_core

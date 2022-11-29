@@ -16,7 +16,8 @@ instance : LawfulMonad Option where
   bind_assoc α β γ x f g := Option.rec rfl (fun x => rfl) x
 
 #print Option.eq_of_eq_some /-
-theorem Option.eq_of_eq_some {α : Type u} : ∀ {x y : Option α}, (∀ z, x = some z ↔ y = some z) → x = y
+theorem Option.eq_of_eq_some {α : Type u} :
+    ∀ {x y : Option α}, (∀ z, x = some z ↔ y = some z) → x = y
   | none, none, h => rfl
   | none, some z, h => Option.noConfusion ((h z).2 rfl)
   | some z, none, h => Option.noConfusion ((h z).1 rfl)
@@ -25,7 +26,8 @@ theorem Option.eq_of_eq_some {α : Type u} : ∀ {x y : Option α}, (∀ z, x = 
 -/
 
 #print Option.eq_some_of_isSome /-
-theorem Option.eq_some_of_isSome {α : Type u} : ∀ {o : Option α} (h : Option.isSome o), o = some (Option.get h)
+theorem Option.eq_some_of_isSome {α : Type u} :
+    ∀ {o : Option α} (h : Option.isSome o), o = some (Option.get h)
   | some x, h => rfl
 #align option.eq_some_of_is_some Option.eq_some_of_isSome
 -/

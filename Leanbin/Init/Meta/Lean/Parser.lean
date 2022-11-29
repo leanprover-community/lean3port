@@ -133,7 +133,8 @@ protected unsafe def itactic : parser (tactic Unit) :=
 unsafe axiom skip_info (p : parser α) : parser α
 #align lean.parser.skip_info lean.parser.skip_info
 
-/-- Set goal info position of content parsed by `p` to current position. Nested calls take precedence. -/
+/--
+Set goal info position of content parsed by `p` to current position. Nested calls take precedence. -/
 unsafe axiom set_goal_info_pos (p : parser α) : parser α
 #align lean.parser.set_goal_info_pos lean.parser.set_goal_info_pos
 
@@ -160,7 +161,8 @@ unsafe instance : Alternative parser :=
   { interaction_monad.monad with failure := @interaction_monad.failed _, orelse := @parser_orelse }
 
 -- TODO: move
-unsafe def many.{u, v} {f : Type u → Type v} [Monad f] [Alternative f] {a : Type u} : f a → f (List a)
+unsafe def many.{u, v} {f : Type u → Type v} [Monad f] [Alternative f] {a : Type u} :
+    f a → f (List a)
   | x =>
     (do
         let y ← x
@@ -209,7 +211,8 @@ unsafe def reflect (p : parser α) [r : reflectable p] : parser expr :=
 unsafe axiom run {α} : parser α → tactic α
 #align lean.parser.run lean.parser.run
 
-unsafe def run_with_input {α} : parser α → String → tactic α := fun p s => Prod.fst <$> run (with_input p s)
+unsafe def run_with_input {α} : parser α → String → tactic α := fun p s =>
+  Prod.fst <$> run (with_input p s)
 #align lean.parser.run_with_input lean.parser.run_with_input
 
 end Parser

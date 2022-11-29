@@ -45,7 +45,8 @@ def stdRange :=
 #align std_range stdRange
 -/
 
-instance : Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
+instance :
+    Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
 
 def stdNext : StdGen → Nat × StdGen
   | ⟨s1, s2⟩ =>
@@ -85,7 +86,7 @@ def mkStdGen (s : Nat := 0) : StdGen :=
 #align mk_std_gen mkStdGen
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:62:18: unsupported non-interactive tactic tactic.comp_val -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.comp_val -/
 /-- Auxiliary function for random_nat_val.
 Generate random values until we exceed the target magnitude.
 `gen_lo` and `gen_mag` are the generator lower bound and magnitude.

@@ -47,7 +47,8 @@ theorem gcd_one_left (n : ℕ) : gcd 1 n = 1 := by simp [gcd]
 #align nat.gcd_one_left Nat.gcd_one_left
 -/
 
-theorem gcd_def (x y : ℕ) : gcd x y = if x = 0 then y else gcd (y % x) x := by cases x <;> simp [gcd, succ_ne_zero]
+theorem gcd_def (x y : ℕ) : gcd x y = if x = 0 then y else gcd (y % x) x := by
+  cases x <;> simp [gcd, succ_ne_zero]
 #align nat.gcd_def Nat.gcd_def
 
 #print Nat.gcd_self /-
@@ -69,8 +70,8 @@ theorem gcd_rec (m n : ℕ) : gcd m n = gcd (n % m) m := by cases m <;> simp [gc
 
 #print Nat.gcd.induction /-
 @[elab_as_elim]
-theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n) (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) :
-    P m n :=
+theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n)
+    (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) : P m n :=
   @induction _ _ lt_wfRel (fun m => ∀ n, P m n) m
     (fun k IH => by
       induction' k with k ih

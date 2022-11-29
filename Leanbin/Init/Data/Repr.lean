@@ -17,7 +17,8 @@ open Sum Subtype Nat
 universe u v
 
 #print Repr /-
-/-- Implement `has_repr` if the output string is valid lean code that evaluates back to the original object.
+/--
+Implement `has_repr` if the output string is valid lean code that evaluates back to the original object.
 If you just want to view the object as a string for a trace message, use `has_to_string`.
 
 ### Example:
@@ -130,7 +131,9 @@ def digitChar (n : ℕ) : Char :=
                         if n = 11 then 'b'
                         else
                           if n = 12 then 'c'
-                          else if n = 13 then 'd' else if n = 14 then 'e' else if n = 15 then 'f' else '*'
+                          else
+                            if n = 13 then 'd'
+                            else if n = 14 then 'e' else if n = 15 then 'f' else '*'
 #align nat.digit_char Nat.digitChar
 -/
 
@@ -175,7 +178,9 @@ def Char.quoteCore (c : Char) : String :=
     if c = '\t' then "\\t"
     else
       if c = '\\' then "\\\\"
-      else if c = '\"' then "\\\"" else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
+      else
+        if c = '\"' then "\\\""
+        else if c.toNat ≤ 31 ∨ c = '\x7f' then "\\x" ++ charToHex c else String.singleton c
 #align char.quote_core Char.quoteCore
 -/
 

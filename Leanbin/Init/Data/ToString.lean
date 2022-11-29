@@ -90,7 +90,8 @@ instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (Sum
 instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (α × β) :=
   ⟨fun ⟨a, b⟩ => "(" ++ toString a ++ ", " ++ toString b ++ ")"⟩
 
-instance {α : Type u} {β : α → Type v} [ToString α] [s : ∀ x, ToString (β x)] : ToString (Sigma β) :=
+instance {α : Type u} {β : α → Type v} [ToString α] [s : ∀ x, ToString (β x)] :
+    ToString (Sigma β) :=
   ⟨fun ⟨a, b⟩ => "⟨" ++ toString a ++ ", " ++ toString b ++ "⟩"⟩
 
 instance {α : Type u} {p : α → Prop} [ToString α] : ToString (Subtype p) :=

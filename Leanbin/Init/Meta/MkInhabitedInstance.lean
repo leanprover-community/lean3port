@@ -23,7 +23,8 @@ private unsafe def get_inhabited_type_name : tactic Name :=
       when (n ≠ `inhabited) failed
       let const I ls ← return (get_app_fn t)
       return I) <|>
-    fail "mk_inhabited_instance tactic failed, target type is expected to be of the form (inhabited ...)"
+    fail
+      "mk_inhabited_instance tactic failed, target type is expected to be of the form (inhabited ...)"
 #align tactic.get_inhabited_type_name tactic.get_inhabited_type_name
 
 /-- Try to synthesize constructor argument using type class resolution -/
@@ -51,7 +52,8 @@ unsafe def mk_inhabited_instance : tactic Unit := do
   when (n = 0) (fail f! "mk_inhabited_instance failed, type '{I}' does not have constructors")
   constructor
   try_constructors n n <|>
-      fail f! "mk_inhabited_instance failed, failed to build instance using all constructors of '{I}'"
+      fail
+        f! "mk_inhabited_instance failed, failed to build instance using all constructors of '{I}'"
 #align tactic.mk_inhabited_instance tactic.mk_inhabited_instance
 
 end Tactic

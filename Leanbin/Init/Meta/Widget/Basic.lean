@@ -202,15 +202,19 @@ mutual
   unsafe inductive component : Type → Type → Type
     | pure {Props Action : Type} (view : Props → List (html Action)) : component Props Action
     |
-    filter_map_action {Props InnerAction OuterAction} (action_map : Props → InnerAction → Option OuterAction) :
+    filter_map_action {Props InnerAction OuterAction}
+      (action_map : Props → InnerAction → Option OuterAction) :
       component Props InnerAction → component Props OuterAction
-    | map_props {Props1 Props2 Action} (map : Props2 → Props1) : component Props1 Action → component Props2 Action
+    |
+    map_props {Props1 Props2 Action} (map : Props2 → Props1) :
+      component Props1 Action → component Props2 Action
     |
     with_should_update {Props Action : Type} (should_update : ∀ old new : Props, Bool) :
       component Props Action → component Props Action
     |
     with_state {Props Action : Type} (InnerAction State : Type) (init : Props → State)
-      (props_changed : Props → Props → State → State) (update : Props → State → InnerAction → State × Option Action) :
+      (props_changed : Props → Props → State → State)
+      (update : Props → State → InnerAction → State × Option Action) :
       component (State × Props) InnerAction → component Props Action
     |
     with_effects {Props Action : Type} (emit : Props → Action → effects) :
@@ -253,16 +257,18 @@ unsafe instance : Coe (component π Empty) (component π α) :=
 unsafe instance : CoeFun (component π α) fun c => π → html α :=
   ⟨fun c p => html.of_component p c⟩
 
-unsafe def stateful {π α : Type} (β σ : Type) (init : π → Option σ → σ) (update : π → σ → β → σ × Option α)
-    (view : π → σ → List (html β)) : component π α :=
-  with_state β σ (fun p => init p none) (fun _ p s => init p <| some s) update (component.pure fun ⟨s, p⟩ => view p s)
+unsafe def stateful {π α : Type} (β σ : Type) (init : π → Option σ → σ)
+    (update : π → σ → β → σ × Option α) (view : π → σ → List (html β)) : component π α :=
+  with_state β σ (fun p => init p none) (fun _ p s => init p <| some s) update
+    (component.pure fun ⟨s, p⟩ => view p s)
 #align widget.component.stateful widget.component.stateful
 
 unsafe def stateless {π α : Type} [DecidableEq π] (view : π → List (html α)) : component π α :=
   (component.with_should_update fun p1 p2 => p1 ≠ p2) <| component.pure view
 #align widget.component.stateless widget.component.stateless
 
-/-- Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
+/--
+Causes the component to only update on a props change when `test old_props new_props` yields `ff`. -/
 unsafe def with_props_eq (test : π → π → Bool) : component π α → component π α
   | c => component.with_should_update (fun x y => not <| test x y) c
 #align widget.component.with_props_eq widget.component.with_props_eq
@@ -404,16 +410,19 @@ end Widget
 
 namespace Tactic
 
-/-- Same as `tactic.save_info_thunk` except saves a widget to be displayed by a compatible infoviewer. -/
+/--
+Same as `tactic.save_info_thunk` except saves a widget to be displayed by a compatible infoviewer. -/
 unsafe axiom save_widget : Pos → widget.component tactic_state Empty → tactic Unit
 #align tactic.save_widget tactic.save_widget
 
 /-- Outputs a widget trace position at the given position. -/
-unsafe axiom trace_widget_at (p : Pos) (w : widget.component tactic_state Empty) (text := "(widget)") : tactic Unit
+unsafe axiom trace_widget_at (p : Pos) (w : widget.component tactic_state Empty)
+    (text := "(widget)") : tactic Unit
 #align tactic.trace_widget_at tactic.trace_widget_at
 
 /-- Outputs a widget trace position at the current default trace position. -/
-unsafe def trace_widget (w : widget.component tactic_state Empty) (text := "(widget)") : tactic Unit := do
+unsafe def trace_widget (w : widget.component tactic_state Empty) (text := "(widget)") :
+    tactic Unit := do
   let p ← get_trace_msg_pos
   trace_widget_at p w text
 #align tactic.trace_widget tactic.trace_widget

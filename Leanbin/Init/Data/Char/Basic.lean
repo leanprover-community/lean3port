@@ -70,7 +70,8 @@ theorem zero_lt_d800 : 0 < 55296 :=
           Nat.bit0_ne_zero <|
             Nat.bit0_ne_zero <|
               Nat.bit0_ne_zero <|
-                Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
+                Nat.bit0_ne_zero <|
+                  Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit0_ne_zero <| Nat.bit1_ne_zero 13
 #align char.zero_lt_d800 Char.zero_lt_d800
 
 #print Char.ofNat /-

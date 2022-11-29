@@ -35,7 +35,8 @@ theorem select_store (a : Array α β) (i : α) (v : β) : select (store a i v) 
 #align smt.select_store Smt.select_store
 
 @[simp]
-theorem select_store_ne (a : Array α β) (i j : α) (v : β) : j ≠ i → select (store a i v) j = select a j := by
+theorem select_store_ne (a : Array α β) (i j : α) (v : β) :
+    j ≠ i → select (store a i v) j = select a j := by
   intros <;> unfold Smt.store Smt.select <;> rw [if_neg] <;> assumption
 #align smt.select_store_ne Smt.select_store_ne
 

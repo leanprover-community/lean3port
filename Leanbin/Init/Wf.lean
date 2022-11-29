@@ -88,7 +88,8 @@ def fixF (x : α) (a : Acc r x) : C x :=
 #align well_founded.fix_F WellFounded.fixF
 -/
 
-theorem fix_F_eq (x : α) (acx : Acc r x) : fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.inv acx p) :=
+theorem fix_F_eq (x : α) (acx : Acc r x) :
+    fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.inv acx p) :=
   Acc.drec (fun x r ih => rfl) acx
 #align well_founded.fix_F_eq WellFounded.fix_F_eq
 
@@ -159,7 +160,8 @@ parameter (f : α → β)
 parameter (h : WellFounded r)
 
 private def acc_aux {b : β} (ac : Acc r b) : ∀ x : α, f x = b → Acc (InvImage r f) x :=
-  Acc.recOn ac fun x acx ih z e => Acc.intro z fun y lt => Eq.recOn e (fun acx ih => ih (f y) lt y rfl) acx ih
+  Acc.recOn ac fun x acx ih z e =>
+    Acc.intro z fun y lt => Eq.recOn e (fun acx ih => ih (f y) lt y rfl) acx ih
 #align inv_image.acc_aux inv_image.acc_aux
 
 theorem accessible {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
@@ -186,7 +188,8 @@ Case conversion may be inaccurate. Consider using '#align nat.lt_wf Nat.lt_wfRel
 theorem Nat.lt_wfRel : WellFounded Nat.lt :=
   ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zero n)) fun n ih =>
       Acc.intro (Nat.succ n) fun m h =>
-        Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih) (Acc.inv ih)⟩
+        Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih)
+          (Acc.inv ih)⟩
 #align nat.lt_wf Nat.lt_wfRel
 
 #print Measure /-
@@ -255,9 +258,11 @@ theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc
     Acc.recOn (acb b) fun xb acb ihb =>
       Acc.intro (xa, xb) fun p lt =>
         have aux : xa = xa → xb = xb → Acc (Lex ra rb) p :=
-          @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p (xa, xb) lt
+          @Prod.Lex.rec_on α β ra rb (fun p₁ p₂ => fst p₂ = xa → snd p₂ = xb → Acc (Lex ra rb) p₁) p
+            (xa, xb) lt
             (fun a₁ b₁ a₂ b₂ h (eq₂ : a₂ = xa) (eq₃ : b₂ = xb) => iha a₁ (Eq.recOn eq₂ h) b₁)
-            fun a b₁ b₂ h (eq₂ : a = xa) (eq₃ : b₂ = xb) => Eq.recOn eq₂.symm (ihb b₁ (Eq.recOn eq₃ h))
+            fun a b₁ b₂ h (eq₂ : a = xa) (eq₃ : b₂ = xb) =>
+            Eq.recOn eq₂.symm (ihb b₁ (Eq.recOn eq₃ h))
         aux rfl rfl
 #align prod.lex_accessible Prod.lex_accessible
 
@@ -278,8 +283,8 @@ theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (RPro
 
 end
 
-instance hasWellFounded {α : Type u} {β : Type v} [s₁ : WellFoundedRelation α] [s₂ : WellFoundedRelation β] :
-    WellFoundedRelation (α × β) where
+instance hasWellFounded {α : Type u} {β : Type v} [s₁ : WellFoundedRelation α]
+    [s₂ : WellFoundedRelation β] : WellFoundedRelation (α × β) where
   R := Lex s₁.R s₂.R
   wf := lex_wf s₁.wf s₂.wf
 #align prod.has_well_founded Prod.hasWellFounded

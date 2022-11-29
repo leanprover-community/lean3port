@@ -123,7 +123,8 @@ universe u₁ u₂ u₃
 /-! ### Transitive closure for `has_lift`, `has_coe`, `has_coe_to_fun` -/
 
 
-instance liftTrans {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [HasLiftT b c] [HasLift a b] : HasLiftT a c :=
+instance liftTrans {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [HasLiftT b c] [HasLift a b] :
+    HasLiftT a c :=
   ⟨fun x => liftT (lift x : b)⟩
 #align lift_trans liftTrans
 
@@ -164,7 +165,8 @@ class HasCoeTAux (a : Sort u) (b : Sort v) where
   coe : a → b
 #align has_coe_t_aux HasCoeTAux
 
-instance coeTransAux {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [HasCoeTAux b c] [Coe a b] : HasCoeTAux a c :=
+instance coeTransAux {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [HasCoeTAux b c] [Coe a b] :
+    HasCoeTAux a c :=
   ⟨fun x : a => @HasCoeTAux.coe b c _ (coeB x)⟩
 #align coe_trans_aux coeTransAux
 
@@ -177,7 +179,8 @@ instance coeFnTrans {a : Sort u₁} {b : Sort u₂} {c : b → Sort v} [CoeFun b
   ⟨fun x => coeFn (@HasCoeTAux.coe a b _ x)⟩
 #align coe_fn_trans coeFnTrans
 
-instance coeSortTrans {a : Sort u₁} {b : Sort u₂} {c : Sort v} [CoeSort b c] [HasCoeTAux a b] : CoeSort a c :=
+instance coeSortTrans {a : Sort u₁} {b : Sort u₂} {c : Sort v} [CoeSort b c] [HasCoeTAux a b] :
+    CoeSort a c :=
   ⟨fun x => coeSort (@HasCoeTAux.coe a b _ x)⟩
 #align coe_sort_trans coeSortTrans
 
@@ -193,7 +196,8 @@ instance coeBoolToProp : Coe Bool Prop :=
   ⟨fun y => y = tt⟩
 #align coe_bool_to_Prop coeBoolToProp
 
-/-- Tactics such as the simplifier only unfold reducible constants when checking whether two terms are definitionally
+/--
+Tactics such as the simplifier only unfold reducible constants when checking whether two terms are definitionally
    equal or a term is a proposition. The motivation is performance.
    In particular, when simplifying `p -> q`, the tactic `simp` only visits `p` if it can establish that it is a proposition.
    Thus, we mark the following instance as `@[reducible]`, otherwise `simp` will not visit `↑p` when simplifying `↑p -> q`.
@@ -216,14 +220,16 @@ instance coeSubtype {a : Sort u} {p : a → Prop} : Coe { x // p x } a :=
 
 universe ua ua₁ ua₂ ub ub₁ ub₂
 
-/-- Remark: we can't use `[has_lift_t a₂ a₁]` since it will produce non-termination whenever a type class resolution
+/--
+Remark: we can't use `[has_lift_t a₂ a₁]` since it will produce non-termination whenever a type class resolution
    problem does not have a solution. -/
-instance liftFn {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLift a₂ a₁] [HasLiftT b₁ b₂] :
-    HasLift (a₁ → b₁) (a₂ → b₂) :=
+instance liftFn {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLift a₂ a₁]
+    [HasLiftT b₁ b₂] : HasLift (a₁ → b₁) (a₂ → b₂) :=
   ⟨fun f x => ↑(f ↑x)⟩
 #align lift_fn liftFn
 
-instance liftFnRange {a : Sort ua} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLiftT b₁ b₂] : HasLift (a → b₁) (a → b₂) :=
+instance liftFnRange {a : Sort ua} {b₁ : Sort ub₁} {b₂ : Sort ub₂} [HasLiftT b₁ b₂] :
+    HasLift (a → b₁) (a → b₂) :=
   ⟨fun f x => ↑(f x)⟩
 #align lift_fn_range liftFnRange
 
@@ -233,20 +239,23 @@ instance liftPiRange {α : Sort u} {A : α → Sort ua} {B : α → Sort ub} [�
   ⟨fun f i => ↑(f i)⟩
 #align lift_pi_range liftPiRange
 
-instance liftFnDom {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b : Sort ub} [HasLift a₂ a₁] : HasLift (a₁ → b) (a₂ → b) :=
+instance liftFnDom {a₁ : Sort ua₁} {a₂ : Sort ua₂} {b : Sort ub} [HasLift a₂ a₁] :
+    HasLift (a₁ → b) (a₂ → b) :=
   ⟨fun f x => f ↑x⟩
 #align lift_fn_dom liftFnDom
 
-instance liftPair {a₁ : Type ua₁} {a₂ : Type ub₂} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT a₁ a₂] [HasLiftT b₁ b₂] :
-    HasLift (a₁ × b₁) (a₂ × b₂) :=
+instance liftPair {a₁ : Type ua₁} {a₂ : Type ub₂} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT a₁ a₂]
+    [HasLiftT b₁ b₂] : HasLift (a₁ × b₁) (a₂ × b₂) :=
   ⟨fun p => Prod.casesOn p fun x y => (↑x, ↑y)⟩
 #align lift_pair liftPair
 
-instance liftPair₁ {a₁ : Type ua₁} {a₂ : Type ua₂} {b : Type ub} [HasLiftT a₁ a₂] : HasLift (a₁ × b) (a₂ × b) :=
+instance liftPair₁ {a₁ : Type ua₁} {a₂ : Type ua₂} {b : Type ub} [HasLiftT a₁ a₂] :
+    HasLift (a₁ × b) (a₂ × b) :=
   ⟨fun p => Prod.casesOn p fun x y => (↑x, y)⟩
 #align lift_pair₁ liftPair₁
 
-instance liftPair₂ {a : Type ua} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT b₁ b₂] : HasLift (a × b₁) (a × b₂) :=
+instance liftPair₂ {a : Type ua} {b₁ : Type ub₁} {b₂ : Type ub₂} [HasLiftT b₁ b₂] :
+    HasLift (a × b₁) (a × b₂) :=
   ⟨fun p => Prod.casesOn p fun x y => (x, ↑y)⟩
 #align lift_pair₂ liftPair₂
 

@@ -32,7 +32,8 @@ end Specification
 
 open Specification
 
-/-- Returns the difference between 1.0 and the next representable value of the given floating-point type.
+/--
+Returns the difference between 1.0 and the next representable value of the given floating-point type.
     Reference: https://en.cppreference.com/w/cpp/types/numeric_limits/epsilon
  -/
 unsafe axiom epsilon : float
@@ -80,7 +81,8 @@ The exponent `e` of the float in the base given by `radix`. `emin ≤ e ≤ emax
 unsafe axiom exponent : float → Option Int
 #align native.float.exponent native.float.exponent
 
-/-- Decompose the number `f` in to `(s,e)` where `0.5 ≤ s < 1.0` and `emin ≤ e ≤ emax` such that `f = s * 2 ^ e`. -/
+/--
+Decompose the number `f` in to `(s,e)` where `0.5 ≤ s < 1.0` and `emin ≤ e ≤ emax` such that `f = s * 2 ^ e`. -/
 unsafe axiom frexp : float → float × Int
 #align native.float.frexp native.float.frexp
 

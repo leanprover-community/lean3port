@@ -91,8 +91,8 @@ unsafe def introsI (p : parse ident_*) : tactic Unit :=
 
 /-- Used to add typeclasses to the context so that they can
 be used in typeclass inference. The syntax is the same as `have`. -/
-unsafe def haveI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse (tk ":=" *> texpr)?) : tactic Unit :=
-  do
+unsafe def haveI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
+    (q₂ : parse (tk ":=" *> texpr)?) : tactic Unit := do
   let h ←
     match h with
       | none => get_unused_name "_inst"
@@ -105,8 +105,8 @@ unsafe def haveI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : p
 
 /-- Used to add typeclasses to the context so that they can
 be used in typeclass inference. The syntax is the same as `let`. -/
-unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?) (q₂ : parse <| (tk ":=" *> texpr)?) : tactic Unit :=
-  do
+unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
+    (q₂ : parse <| (tk ":=" *> texpr)?) : tactic Unit := do
   let h ←
     match h with
       | none => get_unused_name "_inst"

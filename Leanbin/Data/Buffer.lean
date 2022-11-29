@@ -59,11 +59,12 @@ def write' : Buffer α → Nat → α → Buffer α
   | ⟨n, a⟩, i, v => ⟨n, a.write' i v⟩
 #align buffer.write' Buffer.write'
 
-theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) : read b ⟨i, h⟩ = read' b i := by
-  cases b <;> unfold read read' <;> simp [Array'.read_eq_read']
+theorem read_eq_read' [Inhabited α] (b : Buffer α) (i : Nat) (h : i < b.size) :
+    read b ⟨i, h⟩ = read' b i := by cases b <;> unfold read read' <;> simp [Array'.read_eq_read']
 #align buffer.read_eq_read' Buffer.read_eq_read'
 
-theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) : write b ⟨i, h⟩ v = write' b i v := by
+theorem write_eq_write' (b : Buffer α) (i : Nat) (h : i < b.size) (v : α) :
+    write b ⟨i, h⟩ v = write' b i v := by
   cases b <;> unfold write write' <;> simp [Array'.write_eq_write']
 #align buffer.write_eq_write' Buffer.write_eq_write'
 
@@ -98,7 +99,8 @@ theorem lt_aux_3 {n i} (h : i + 1 < n) : n - 2 - i < n :=
   lt_of_le_of_lt (Nat.sub_le _ _) this
 #align buffer.lt_aux_3 Buffer.lt_aux_3
 
-def appendArray {α : Type u} {n : Nat} (nz : 0 < n) : Buffer α → Array' n α → ∀ i : Nat, i < n → Buffer α
+def appendArray {α : Type u} {n : Nat} (nz : 0 < n) :
+    Buffer α → Array' n α → ∀ i : Nat, i < n → Buffer α
   | ⟨m, b⟩, a, 0, _ =>
     let i : Fin n := ⟨n - 1, lt_aux_2 nz⟩
     ⟨m + 1, b.pushBack (a.read i)⟩

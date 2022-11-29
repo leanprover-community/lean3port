@@ -38,8 +38,8 @@ open InteractionMonad.Result
 /-- Make a tactic component from some init, update, views which are expecting a tactic.
 The tactic_state never mutates.
 -/
-unsafe def mk_simple [DecidableEq π] (β σ : Type) (init : π → tactic σ) (update : π → σ → β → tactic (σ × Option α))
-    (view : π → σ → tactic (List (html β))) : tc π α :=
+unsafe def mk_simple [DecidableEq π] (β σ : Type) (init : π → tactic σ)
+    (update : π → σ → β → tactic (σ × Option α)) (view : π → σ → tactic (List (html β))) : tc π α :=
   (component.with_should_update fun ⟨_, old_p⟩ ⟨_, new_p⟩ => old_p ≠ new_p) <|
     @component.stateful (tactic_state × π) α β (interaction_monad.result tactic_state σ)
       (fun ⟨ts, p⟩ last =>

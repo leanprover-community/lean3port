@@ -267,25 +267,29 @@ theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
 /- The following four lemmas could not be automatically generated when the
    structures were declared, so we prove them manually here. -/
 theorem Prod.mk.inj {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
-    (x₁, y₁) = (x₂, y₂) → And (x₁ = x₂) (y₁ = y₂) := fun h => Prod.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
+    (x₁, y₁) = (x₂, y₂) → And (x₁ = x₂) (y₁ = y₂) := fun h =>
+  Prod.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
 #align prod.mk.inj Prod.mk.inj
 -/
 
 #print Prod.mk.injArrow /-
 def Prod.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
-    (x₁, y₁) = (x₂, y₂) → ∀ ⦃P : Sort w⦄, (x₁ = x₂ → y₁ = y₂ → P) → P := fun h₁ _ h₂ => Prod.noConfusion h₁ h₂
+    (x₁, y₁) = (x₂, y₂) → ∀ ⦃P : Sort w⦄, (x₁ = x₂ → y₁ = y₂ → P) → P := fun h₁ _ h₂ =>
+  Prod.noConfusion h₁ h₂
 #align prod.mk.inj_arrow Prod.mk.injArrow
 -/
 
 #print PProd.mk.inj /-
 theorem PProd.mk.inj {α : Sort u} {β : Sort v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
-    PProd.mk x₁ y₁ = PProd.mk x₂ y₂ → And (x₁ = x₂) (y₁ = y₂) := fun h => PProd.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
+    PProd.mk x₁ y₁ = PProd.mk x₂ y₂ → And (x₁ = x₂) (y₁ = y₂) := fun h =>
+  PProd.noConfusion h fun h₁ h₂ => ⟨h₁, h₂⟩
 #align pprod.mk.inj PProd.mk.inj
 -/
 
 #print PProd.mk.injArrow /-
 def PProd.mk.injArrow {α : Type u} {β : Type v} {x₁ : α} {y₁ : β} {x₂ : α} {y₂ : β} :
-    (x₁, y₁) = (x₂, y₂) → ∀ ⦃P : Sort w⦄, (x₁ = x₂ → y₁ = y₂ → P) → P := fun h₁ _ h₂ => Prod.noConfusion h₁ h₂
+    (x₁, y₁) = (x₂, y₂) → ∀ ⦃P : Sort w⦄, (x₁ = x₂ → y₁ = y₂ → P) → P := fun h₁ _ h₂ =>
+  Prod.noConfusion h₁ h₂
 #align pprod.mk.inj_arrow PProd.mk.injArrow
 -/
 
@@ -355,7 +359,8 @@ inductive Bool : Type
 -/
 
 #print Subtype /-
-/-- Remark: subtype must take a Sort instead of Type because of the axiom strong_indefinite_description. -/
+/--
+Remark: subtype must take a Sort instead of Type because of the axiom strong_indefinite_description. -/
 structure Subtype {α : Sort u} (p : α → Prop) where
   val : α
   property : p val
@@ -654,7 +659,8 @@ attribute [match_pattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 export Insert (insert)
 
 #print IsLawfulSingleton /-
-class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] : Prop where
+class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] :
+  Prop where
   insert_emptyc_eq : ∀ x : α, (insert x ∅ : β) = {x}
 #align is_lawful_singleton IsLawfulSingleton
 -/
@@ -806,14 +812,16 @@ protected def PSum.sizeof {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : 
 instance (α : Type u) (β : Type v) [SizeOf α] [SizeOf β] : SizeOf (PSum α β) :=
   ⟨PSum.sizeof⟩
 
-protected def Sigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : Sigma β → Nat
+protected def Sigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] :
+    Sigma β → Nat
   | ⟨a, b⟩ => 1 + SizeOf.sizeOf a + SizeOf.sizeOf b
 #align sigma.sizeof Sigma.sizeof
 
 instance (α : Type u) (β : α → Type v) [SizeOf α] [∀ a, SizeOf (β a)] : SizeOf (Sigma β) :=
   ⟨Sigma.sizeof⟩
 
-protected def PSigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] : PSigma β → Nat
+protected def PSigma.sizeof {α : Type u} {β : α → Type v} [SizeOf α] [∀ a, SizeOf (β a)] :
+    PSigma β → Nat
   | ⟨a, b⟩ => 1 + SizeOf.sizeOf a + SizeOf.sizeOf b
 #align psigma.sizeof PSigma.sizeof
 

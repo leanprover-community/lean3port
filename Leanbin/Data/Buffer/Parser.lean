@@ -11,7 +11,8 @@ inductive ParseResult (α : Type)
   | fail (pos : ℕ) (expected : Dlist String) : ParseResult
 #align parse_result ParseResult
 
-/-- The parser monad. If you are familiar with the Parsec library in Haskell, you will understand this.  -/
+/--
+The parser monad. If you are familiar with the Parsec library in Haskell, you will understand this.  -/
 def Parser (α : Type) :=
   ∀ (input : CharBuffer) (start : ℕ), ParseResult α
 #align parser Parser
@@ -30,27 +31,24 @@ protected def pure (a : α) : Parser α := fun input pos => ParseResult.done Pos
 #align parser.pure Parser.pure
 
 private theorem parser.id_map (p : Parser α) : Parser.bind p Parser.pure = p := by
-  apply funext
-  intro input
-  apply funext
-  intro pos
+  apply funext; intro input
+  apply funext; intro pos
   dsimp only [Parser.bind]
   cases p input Pos <;> exact rfl
 #align parser.parser.id_map parser.parser.id_map
 
 private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β → Parser γ) :
     Parser.bind (Parser.bind p q) r = Parser.bind p fun a => Parser.bind (q a) r := by
-  apply funext
-  intro input
-  apply funext
-  intro pos
+  apply funext; intro input
+  apply funext; intro pos
   dsimp only [Parser.bind]
   cases p input Pos <;> try dsimp only [bind]
   cases q result input pos_1 <;> try dsimp only [bind]
   all_goals rfl
 #align parser.parser.bind_assoc parser.parser.bind_assoc
 
-protected def fail (msg : String) : Parser α := fun _ pos => ParseResult.fail Pos (Dlist.singleton msg)
+protected def fail (msg : String) : Parser α := fun _ pos =>
+  ParseResult.fail Pos (Dlist.singleton msg)
 #align parser.fail Parser.fail
 
 instance : Monad Parser where
@@ -158,7 +156,7 @@ def remaining : Parser ℕ := fun input pos => ParseResult.done Pos (input.size 
 
 /-- Matches the end of the input. -/
 def eof : Parser Unit :=
-  decorateError "<end-of-file>" <| do
+  (decorateError "<end-of-file>") do
     let rem ← remaining
     guard <| rem = 0
 #align parser.eof Parser.eof
@@ -233,7 +231,7 @@ def fixCore (F : Parser α → Parser α) : ∀ max_depth : ℕ, Parser α
 
 /-- Matches a digit (0-9). -/
 def digit : Parser Nat :=
-  decorateError "<digit>" <| do
+  (decorateError "<digit>") do
     let c ← sat fun c => '0' ≤ c ∧ c ≤ '9'
     pure <| c - '0'.toNat
 #align parser.digit Parser.digit
@@ -241,13 +239,16 @@ def digit : Parser Nat :=
 /-- Matches a natural number. Large numbers may cause performance issues, so
 don't run this parser on untrusted input. -/
 def nat : Parser Nat :=
-  decorateError "<natural>" <| do
+  (decorateError "<natural>") do
     let digits ← many1 digit
-    pure <| Prod.fst <| digits (fun digit ⟨Sum, magnitude⟩ => ⟨Sum + digit * magnitude, magnitude * 10⟩) ⟨0, 1⟩
+    pure <|
+        Prod.fst <|
+          digits (fun digit ⟨Sum, magnitude⟩ => ⟨Sum + digit * magnitude, magnitude * 10⟩) ⟨0, 1⟩
 #align parser.nat Parser.nat
 
 /-- Fixpoint combinator satisfying `fix F = F (fix F)`. -/
-def fix (F : Parser α → Parser α) : Parser α := fun input pos => fixCore F (input.size - Pos + 1) input Pos
+def fix (F : Parser α → Parser α) : Parser α := fun input pos =>
+  fixCore F (input.size - Pos + 1) input Pos
 #align parser.fix Parser.fix
 
 private def make_monospaced : Char → Char
@@ -260,7 +261,8 @@ private def make_monospaced : Char → Char
 def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Dlist String) : CharBuffer :=
   let left_ctx := (input.take Pos).takeRight 10
   let right_ctx := (input.drop Pos).take 10
-  (left_ctx.map makeMonospaced ++ right_ctx.map makeMonospaced ++ "\n".toCharBuffer ++ left_ctx.map fun _ => ' ') ++
+  (left_ctx.map makeMonospaced ++ right_ctx.map makeMonospaced ++ "\n".toCharBuffer ++
+              left_ctx.map fun _ => ' ') ++
             "^\n".toCharBuffer ++
           "\n".toCharBuffer ++
         "expected: ".toCharBuffer ++

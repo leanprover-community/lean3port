@@ -31,11 +31,12 @@ protected theorem Equiv.refl (f : ∀ x : α, β x) : f ~ f := fun x => rfl
 protected theorem Equiv.symm {f₁ f₂ : ∀ x : α, β x} : f₁ ~ f₂ → f₂ ~ f₁ := fun h x => Eq.symm (h x)
 #align function.equiv.symm Function.Equiv.symm
 
-protected theorem Equiv.trans {f₁ f₂ f₃ : ∀ x : α, β x} : f₁ ~ f₂ → f₂ ~ f₃ → f₁ ~ f₃ := fun h₁ h₂ x =>
-  Eq.trans (h₁ x) (h₂ x)
+protected theorem Equiv.trans {f₁ f₂ f₃ : ∀ x : α, β x} : f₁ ~ f₂ → f₂ ~ f₃ → f₁ ~ f₃ :=
+  fun h₁ h₂ x => Eq.trans (h₁ x) (h₂ x)
 #align function.equiv.trans Function.Equiv.trans
 
-protected theorem Equiv.is_equivalence (α : Sort u) (β : α → Sort v) : Equivalence (@Function.Equiv α β) :=
+protected theorem Equiv.is_equivalence (α : Sort u) (β : α → Sort v) :
+    Equivalence (@Function.Equiv α β) :=
   Equivalence.mk (@Function.Equiv α β) (@Equiv.refl α β) (@Equiv.symm α β) (@Equiv.trans α β)
 #align function.equiv.is_equivalence Function.Equiv.is_equivalence
 
@@ -56,7 +57,8 @@ def funToExtfun (f : ∀ x : α, β x) : Extfun α β :=
 #align function.fun_to_extfun Function.funToExtfun
 
 /-- From an element of `extfun` we can retrieve an actual function. -/
-def extfunApp (f : Extfun α β) : ∀ x : α, β x := fun x => Quot.liftOn f (fun f : ∀ x : α, β x => f x) fun f₁ f₂ h => h x
+def extfunApp (f : Extfun α β) : ∀ x : α, β x := fun x =>
+  Quot.liftOn f (fun f : ∀ x : α, β x => f x) fun f₁ f₂ h => h x
 #align function.extfun_app Function.extfunApp
 
 end Function

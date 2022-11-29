@@ -95,11 +95,7 @@ theorem le.dest_sub {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, b - a = n :=
 #print Int.le.dest /-
 theorem le.dest {a b : ℤ} (h : a ≤ b) : ∃ n : ℕ, a + n = b :=
   match le.dest_sub h with
-  | ⟨n, h₁⟩ =>
-    Exists.intro n
-      (by
-        rw [← h₁, Int.add_comm]
-        simp)
+  | ⟨n, h₁⟩ => Exists.intro n (by rw [← h₁, Int.add_comm]; simp)
 #align int.le.dest Int.le.dest
 -/
 
@@ -122,11 +118,7 @@ protected theorem le_total (a b : ℤ) : a ≤ b ∨ b ≤ a :=
 #print Int.ofNat_le_ofNat_of_le /-
 theorem ofNat_le_ofNat_of_le {m n : ℕ} (h : m ≤ n) : (↑m : ℤ) ≤ ↑n :=
   match Nat.le.dest h with
-  | ⟨k, (hk : m + k = n)⟩ =>
-    le.intro
-      (by
-        rw [← hk]
-        rfl)
+  | ⟨k, (hk : m + k = n)⟩ => le.intro (by rw [← hk]; rfl)
 #align int.coe_nat_le_coe_nat_of_le Int.ofNat_le_ofNat_of_le
 -/
 
@@ -183,10 +175,7 @@ theorem lt.intro {a b : ℤ} {n : ℕ} (h : a + Nat.succ n = b) : a < b :=
 #print Int.lt.dest /-
 theorem lt.dest {a b : ℤ} (h : a < b) : ∃ n : ℕ, a + ↑(Nat.succ n) = b :=
   le.elim h fun n => fun hn : a + 1 + n = b =>
-    Exists.intro n
-      (by
-        rw [← hn, Int.add_assoc, Int.add_comm 1]
-        rfl)
+    Exists.intro n (by rw [← hn, Int.add_assoc, Int.add_comm 1]; rfl)
 #align int.lt.dest Int.lt.dest
 -/
 
@@ -198,8 +187,7 @@ theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, a + ↑(Na
 
 #print Int.ofNat_lt /-
 theorem ofNat_lt (n m : ℕ) : (↑n : ℤ) < ↑m ↔ n < m := by
-  rw [lt_iff_add_one_le, ← Int.ofNat_succ, coe_nat_le_coe_nat_iff]
-  rfl
+  rw [lt_iff_add_one_le, ← Int.ofNat_succ, coe_nat_le_coe_nat_iff]; rfl
 #align int.coe_nat_lt_coe_nat_iff Int.ofNat_lt
 -/
 
@@ -227,10 +215,7 @@ protected theorem le_refl (a : ℤ) : a ≤ a :=
 #print Int.le_trans /-
 protected theorem le_trans {a b c : ℤ} (h₁ : a ≤ b) (h₂ : b ≤ c) : a ≤ c :=
   le.elim h₁ fun n => fun hn : a + n = b =>
-    le.elim h₂ fun m => fun hm : b + m = c => by
-      apply le.intro
-      rw [← hm, ← hn, Int.add_assoc]
-      rfl
+    le.elim h₂ fun m => fun hm : b + m = c => by apply le.intro; rw [← hm, ← hn, Int.add_assoc]; rfl
 #align int.le_trans Int.le_trans
 -/
 
@@ -257,11 +242,7 @@ protected theorem lt_irrefl (a : ℤ) : ¬a < a := fun this : a < a =>
 
 #print Int.ne_of_lt /-
 protected theorem ne_of_lt {a b : ℤ} (h : a < b) : a ≠ b := fun this : a = b =>
-  absurd
-    (by
-      rw [this] at h
-      exact h)
-    (Int.lt_irrefl b)
+  absurd (by rw [this] at h; exact h) (Int.lt_irrefl b)
 #align int.ne_of_lt Int.ne_of_lt
 -/
 
@@ -276,11 +257,9 @@ protected theorem lt_iff_le_and_ne (a b : ℤ) : a < b ↔ a ≤ b ∧ a ≠ b :
   Iff.intro (fun h => ⟨le_of_lt h, Int.ne_of_lt h⟩) fun ⟨aleb, aneb⟩ =>
     le.elim aleb fun n => fun hn : a + n = b =>
       have : n ≠ 0 := fun this : n = 0 => aneb (by rw [← hn, this, Int.ofNat_zero, Int.add_zero])
-      have : n = Nat.succ (Nat.pred n) := Eq.symm (Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero this))
-      lt.intro
-        (by
-          rw [this] at hn
-          exact hn)
+      have : n = Nat.succ (Nat.pred n) :=
+        Eq.symm (Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero this))
+      lt.intro (by rw [this] at hn; exact hn)
 #align int.lt_iff_le_and_ne Int.lt_iff_le_and_ne
 -/
 
@@ -292,7 +271,8 @@ theorem lt_succ (a : ℤ) : a < a + 1 :=
 
 #print Int.add_le_add_left /-
 protected theorem add_le_add_left {a b : ℤ} (h : a ≤ b) (c : ℤ) : c + a ≤ c + b :=
-  le.elim h fun n => fun hn : a + n = b => le.intro (show c + a + n = c + b by rw [Int.add_assoc, hn])
+  le.elim h fun n => fun hn : a + n = b =>
+    le.intro (show c + a + n = c + b by rw [Int.add_assoc, hn])
 #align int.add_le_add_left Int.add_le_add_left
 -/
 
@@ -300,10 +280,7 @@ protected theorem add_le_add_left {a b : ℤ} (h : a ≤ b) (c : ℤ) : c + a �
 protected theorem add_lt_add_left {a b : ℤ} (h : a < b) (c : ℤ) : c + a < c + b :=
   Iff.mpr (Int.lt_iff_le_and_ne _ _)
     (And.intro (Int.add_le_add_left (le_of_lt h) _) fun heq =>
-      Int.lt_irrefl b
-        (by
-          rw [Int.add_left_cancel HEq] at h
-          exact h))
+      Int.lt_irrefl b (by rw [Int.add_left_cancel HEq] at h; exact h))
 #align int.add_lt_add_left Int.add_lt_add_left
 -/
 
@@ -311,10 +288,7 @@ protected theorem add_lt_add_left {a b : ℤ} (h : a < b) (c : ℤ) : c + a < c 
 protected theorem mul_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b :=
   le.elim ha fun n => fun hn =>
     le.elim hb fun m => fun hm =>
-      le.intro
-        (show 0 + ↑n * ↑m = a * b by
-          rw [← hn, ← hm]
-          simp [Int.zero_add])
+      le.intro (show 0 + ↑n * ↑m = a * b by rw [← hn, ← hm]; simp [Int.zero_add])
 #align int.mul_nonneg Int.mul_nonneg
 -/
 
@@ -324,10 +298,8 @@ protected theorem mul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
     lt.elim hb fun m => fun hm =>
       lt.intro
         (show 0 + ↑(Nat.succ (Nat.succ n * m + n)) = a * b by
-          rw [← hn, ← hm]
-          simp [Int.ofNat_zero]
-          rw [← Int.ofNat_mul]
-          simp [Nat.mul_succ, Nat.add_succ, Nat.succ_add])
+          rw [← hn, ← hm]; simp [Int.ofNat_zero]
+          rw [← Int.ofNat_mul]; simp [Nat.mul_succ, Nat.add_succ, Nat.succ_add])
 #align int.mul_pos Int.mul_pos
 -/
 
@@ -339,8 +311,7 @@ protected theorem zero_lt_one : (0 : ℤ) < 1 :=
 
 #print Int.lt_iff_le_not_le /-
 protected theorem lt_iff_le_not_le {a b : ℤ} : a < b ↔ a ≤ b ∧ ¬b ≤ a := by
-  simp [Int.lt_iff_le_and_ne]
-  constructor <;> intro h
+  simp [Int.lt_iff_le_and_ne]; constructor <;> intro h
   · cases' h with hab hn
     constructor
     · assumption
@@ -382,7 +353,8 @@ theorem eq_natAbs_of_zero_le {a : ℤ} (h : 0 ≤ a) : a = natAbs a := by
 
 #print Int.le_natAbs /-
 theorem le_natAbs {a : ℤ} : a ≤ natAbs a :=
-  Or.elim (le_total 0 a) (fun h => by rw [eq_nat_abs_of_zero_le h] <;> rfl) fun h => le_trans h (ofNat_zero_le _)
+  Or.elim (le_total 0 a) (fun h => by rw [eq_nat_abs_of_zero_le h] <;> rfl) fun h =>
+    le_trans h (ofNat_zero_le _)
 #align int.le_nat_abs Int.le_natAbs
 -/
 
@@ -604,18 +576,14 @@ protected theorem lt_add_of_pos_left (a : ℤ) {b : ℤ} (h : 0 < b) : a < b + a
 #print Int.le_of_add_le_add_right /-
 protected theorem le_of_add_le_add_right {a b c : ℤ} (h : a + b ≤ c + b) : a ≤ c :=
   Int.le_of_add_le_add_left
-    (show b + a ≤ b + c by
-      rw [Int.add_comm b a, Int.add_comm b c]
-      assumption)
+    (show b + a ≤ b + c by rw [Int.add_comm b a, Int.add_comm b c]; assumption)
 #align int.le_of_add_le_add_right Int.le_of_add_le_add_right
 -/
 
 #print Int.lt_of_add_lt_add_right /-
 protected theorem lt_of_add_lt_add_right {a b c : ℤ} (h : a + b < c + b) : a < c :=
   Int.lt_of_add_lt_add_left
-    (show b + a < b + c by
-      rw [Int.add_comm b a, Int.add_comm b c]
-      assumption)
+    (show b + a < b + c by rw [Int.add_comm b a, Int.add_comm b c]; assumption)
 #align int.lt_of_add_lt_add_right Int.lt_of_add_lt_add_right
 -/
 
@@ -702,9 +670,7 @@ protected theorem neg_le_neg {a b : ℤ} (h : a ≤ b) : -b ≤ -a := by
 
 #print Int.le_of_neg_le_neg /-
 protected theorem le_of_neg_le_neg {a b : ℤ} (h : -b ≤ -a) : a ≤ b :=
-  suffices - -a ≤ - -b by
-    simp [Int.neg_neg] at this
-    assumption
+  suffices - -a ≤ - -b by simp [Int.neg_neg] at this; assumption
   Int.neg_le_neg h
 #align int.le_of_neg_le_neg Int.le_of_neg_le_neg
 -/
@@ -1186,13 +1152,15 @@ protected theorem sub_lt_sub {a b c d : ℤ} (hab : a < b) (hcd : c < d) : a - d
 -/
 
 #print Int.sub_lt_sub_of_le_of_lt /-
-protected theorem sub_lt_sub_of_le_of_lt {a b c d : ℤ} (hab : a ≤ b) (hcd : c < d) : a - d < b - c :=
+protected theorem sub_lt_sub_of_le_of_lt {a b c d : ℤ} (hab : a ≤ b) (hcd : c < d) :
+    a - d < b - c :=
   Int.add_lt_add_of_le_of_lt hab (Int.neg_lt_neg hcd)
 #align int.sub_lt_sub_of_le_of_lt Int.sub_lt_sub_of_le_of_lt
 -/
 
 #print Int.sub_lt_sub_of_lt_of_le /-
-protected theorem sub_lt_sub_of_lt_of_le {a b c d : ℤ} (hab : a < b) (hcd : c ≤ d) : a - d < b - c :=
+protected theorem sub_lt_sub_of_lt_of_le {a b c d : ℤ} (hab : a < b) (hcd : c ≤ d) :
+    a - d < b - c :=
   Int.add_lt_add_of_lt_of_le hab (Int.neg_le_neg hcd)
 #align int.sub_lt_sub_of_lt_of_le Int.sub_lt_sub_of_lt_of_le
 -/
@@ -1218,8 +1186,8 @@ protected theorem sub_lt_self (a : ℤ) {b : ℤ} (h : 0 < b) : a - b < a :=
 -/
 
 #print Int.add_le_add_three /-
-protected theorem add_le_add_three {a b c d e f : ℤ} (h₁ : a ≤ d) (h₂ : b ≤ e) (h₃ : c ≤ f) : a + b + c ≤ d + e + f :=
-  by
+protected theorem add_le_add_three {a b c d e f : ℤ} (h₁ : a ≤ d) (h₂ : b ≤ e) (h₃ : c ≤ f) :
+    a + b + c ≤ d + e + f := by
   apply le_trans
   apply Int.add_le_add
   apply Int.add_le_add
@@ -1243,7 +1211,8 @@ protected theorem mul_lt_mul_of_pos_left {a b c : ℤ} (h₁ : a < b) (h₂ : 0 
 -/
 
 #print Int.mul_lt_mul_of_pos_right /-
-protected theorem mul_lt_mul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : a * c < b * c := by
+protected theorem mul_lt_mul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : a * c < b * c :=
+  by
   have : 0 < b - a := Int.sub_pos_of_lt h₁
   have : 0 < (b - a) * c := Int.mul_pos this h₂
   rw [Int.sub_mul] at this
@@ -1252,32 +1221,39 @@ protected theorem mul_lt_mul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ : 0
 -/
 
 #print Int.mul_le_mul_of_nonneg_left /-
-protected theorem mul_le_mul_of_nonneg_left {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : c * a ≤ c * b := by
-  by_cases hba : b ≤ a
+protected theorem mul_le_mul_of_nonneg_left {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : c * a ≤ c * b :=
+  by
+  by_cases hba : b ≤ a;
   · simp [le_antisymm hba h₁]
     
-  by_cases hc0 : c ≤ 0
+  by_cases hc0 : c ≤ 0;
   · simp [le_antisymm hc0 h₂, Int.zero_mul]
     
-  exact (le_not_le_of_lt (Int.mul_lt_mul_of_pos_left (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
+  exact
+    (le_not_le_of_lt
+        (Int.mul_lt_mul_of_pos_left (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
 #align int.mul_le_mul_of_nonneg_left Int.mul_le_mul_of_nonneg_left
 -/
 
 #print Int.mul_le_mul_of_nonneg_right /-
-protected theorem mul_le_mul_of_nonneg_right {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : a * c ≤ b * c := by
-  by_cases hba : b ≤ a
+protected theorem mul_le_mul_of_nonneg_right {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) :
+    a * c ≤ b * c := by
+  by_cases hba : b ≤ a;
   · simp [le_antisymm hba h₁]
     
-  by_cases hc0 : c ≤ 0
+  by_cases hc0 : c ≤ 0;
   · simp [le_antisymm hc0 h₂, Int.mul_zero]
     
-  exact (le_not_le_of_lt (Int.mul_lt_mul_of_pos_right (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
+  exact
+    (le_not_le_of_lt
+        (Int.mul_lt_mul_of_pos_right (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
 #align int.mul_le_mul_of_nonneg_right Int.mul_le_mul_of_nonneg_right
 -/
 
 #print Int.mul_le_mul /-
 -- TODO: there are four variations, depending on which variables we assume to be nonneg
-protected theorem mul_le_mul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (nn_b : 0 ≤ b) (nn_c : 0 ≤ c) : a * b ≤ c * d :=
+protected theorem mul_le_mul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (nn_b : 0 ≤ b)
+    (nn_c : 0 ≤ c) : a * b ≤ c * d :=
   calc
     a * b ≤ c * b := Int.mul_le_mul_of_nonneg_right hac nn_b
     _ ≤ c * d := Int.mul_le_mul_of_nonneg_left hbd nn_c
@@ -1286,21 +1262,24 @@ protected theorem mul_le_mul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (nn
 -/
 
 #print Int.mul_nonpos_of_nonneg_of_nonpos /-
-protected theorem mul_nonpos_of_nonneg_of_nonpos {a b : ℤ} (ha : 0 ≤ a) (hb : b ≤ 0) : a * b ≤ 0 := by
+protected theorem mul_nonpos_of_nonneg_of_nonpos {a b : ℤ} (ha : 0 ≤ a) (hb : b ≤ 0) : a * b ≤ 0 :=
+  by
   have h : a * b ≤ a * 0 := Int.mul_le_mul_of_nonneg_left hb ha
   rwa [Int.mul_zero] at h
 #align int.mul_nonpos_of_nonneg_of_nonpos Int.mul_nonpos_of_nonneg_of_nonpos
 -/
 
 #print Int.mul_nonpos_of_nonpos_of_nonneg /-
-protected theorem mul_nonpos_of_nonpos_of_nonneg {a b : ℤ} (ha : a ≤ 0) (hb : 0 ≤ b) : a * b ≤ 0 := by
+protected theorem mul_nonpos_of_nonpos_of_nonneg {a b : ℤ} (ha : a ≤ 0) (hb : 0 ≤ b) : a * b ≤ 0 :=
+  by
   have h : a * b ≤ 0 * b := Int.mul_le_mul_of_nonneg_right ha hb
   rwa [Int.zero_mul] at h
 #align int.mul_nonpos_of_nonpos_of_nonneg Int.mul_nonpos_of_nonpos_of_nonneg
 -/
 
 #print Int.mul_lt_mul /-
-protected theorem mul_lt_mul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b) (nn_c : 0 ≤ c) : a * b < c * d :=
+protected theorem mul_lt_mul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b)
+    (nn_c : 0 ≤ c) : a * b < c * d :=
   calc
     a * b < c * b := Int.mul_lt_mul_of_pos_right hac pos_b
     _ ≤ c * d := Int.mul_le_mul_of_nonneg_left hbd nn_c
@@ -1309,7 +1288,8 @@ protected theorem mul_lt_mul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_
 -/
 
 #print Int.mul_lt_mul' /-
-protected theorem mul_lt_mul' {a b c d : ℤ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 ≤ b) (h4 : 0 < c) : a * b < c * d :=
+protected theorem mul_lt_mul' {a b c d : ℤ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 ≤ b) (h4 : 0 < c) :
+    a * b < c * d :=
   calc
     a * b ≤ c * b := Int.mul_le_mul_of_nonneg_right h1 h3
     _ < c * d := Int.mul_lt_mul_of_pos_left h2 h4
@@ -1341,7 +1321,8 @@ protected theorem mul_le_mul_of_nonpos_right {a b c : ℤ} (h : b ≤ a) (hc : c
 -/
 
 #print Int.mul_nonneg_of_nonpos_of_nonpos /-
-protected theorem mul_nonneg_of_nonpos_of_nonpos {a b : ℤ} (ha : a ≤ 0) (hb : b ≤ 0) : 0 ≤ a * b := by
+protected theorem mul_nonneg_of_nonpos_of_nonpos {a b : ℤ} (ha : a ≤ 0) (hb : b ≤ 0) : 0 ≤ a * b :=
+  by
   have : 0 * b ≤ a * b := Int.mul_le_mul_of_nonpos_right ha hb
   rwa [Int.zero_mul] at this
 #align int.mul_nonneg_of_nonpos_of_nonpos Int.mul_nonneg_of_nonpos_of_nonpos
@@ -1527,9 +1508,9 @@ theorem sign_eq_zero_iff_zero (a : ℤ) : sign a = 0 ↔ a = 0 :=
 
 /- warning: int.eq_zero_or_eq_zero_of_mul_eq_zero -> Int.eq_zero_or_eq_zero_of_mul_eq_zero is a dubious translation:
 lean 3 declaration is
-  forall {a : Int} {b : Int}, (Eq.{1} Int (HMul.hMul.{0 0 0} Int Int Int (instHMul.{0} Int Int.hasMul) a b) (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))) -> (Or (Eq.{1} Int a (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))) (Eq.{1} Int b (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))))
+  forall {a : Int} {b : Int}, (Eq.{1} Int (HMul.hMul.{0, 0, 0} Int Int Int (instHMul.{0} Int Int.hasMul) a b) (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))) -> (Or (Eq.{1} Int a (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))) (Eq.{1} Int b (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))))
 but is expected to have type
-  forall {n : Nat} {m : Nat}, (Eq.{1} Nat (HMul.hMul.{0 0 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) n m) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) -> (Or (Eq.{1} Nat n (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (Eq.{1} Nat m (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))))
+  forall {n : Nat} {m : Nat}, (Eq.{1} Nat (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) n m) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) -> (Or (Eq.{1} Nat n (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (Eq.{1} Nat m (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))))
 Case conversion may be inaccurate. Consider using '#align int.eq_zero_or_eq_zero_of_mul_eq_zero Int.eq_zero_or_eq_zero_of_mul_eq_zeroₓ'. -/
 protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) : a = 0 ∨ b = 0 :=
   match lt_trichotomy 0 a with

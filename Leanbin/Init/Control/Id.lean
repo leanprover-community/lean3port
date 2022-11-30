@@ -16,7 +16,7 @@ def idBind {α β : Type u} (x : α) (f : α → id β) : id β :=
 #align id_bind idBind
 
 @[inline]
-instance : Monad.{u, u} id where
+instance : Monad.{u, u} id where 
   pure := @id
   bind := @idBind
 

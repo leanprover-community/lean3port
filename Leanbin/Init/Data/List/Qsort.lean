@@ -42,7 +42,7 @@ theorem qsort_cons {α} (lt : α → α → Bool) (h t) :
     qsort lt (h :: t) =
       let (large, small) := partition (fun x => lt h x = tt) t
       qsort lt small ++ h :: qsort lt large :=
-  by
+  by 
   rw [qsort, WellFounded.fix_eq, qsort.F]
   induction' e : partition (fun x => lt h x = tt) t with large small
   simp [e]; rw [e]

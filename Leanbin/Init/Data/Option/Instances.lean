@@ -10,7 +10,8 @@ import Leanbin.Init.Control.Lawful
 
 universe u v
 
-instance : LawfulMonad Option where
+instance : LawfulMonad
+      Option where 
   id_map α x := Option.rec rfl (fun x => rfl) x
   pure_bind α β x f := rfl
   bind_assoc α β γ x f g := Option.rec rfl (fun x => rfl) x

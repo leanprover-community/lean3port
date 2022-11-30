@@ -58,11 +58,9 @@ private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n :=
   cases' b with b
   · simp [mod_zero]
     assumption
-    
   · have h : a % succ b < succ b
     apply Nat.mod_lt _ (Nat.zero_lt_succ _)
     exact lt_trans h h₂
-    
 #align fin.modlt fin.modlt
 
 #print Fin.mod /-
@@ -165,7 +163,7 @@ theorem val_zero : (0 : Fin (succ n)).val = 0 :=
 def pred {n : Nat} : ∀ i : Fin (succ n), i ≠ 0 → Fin n
   | ⟨a, h₁⟩, h₂ =>
     ⟨a.pred,
-      haveI : a ≠ 0 := by
+      haveI : a ≠ 0 := by 
         have aux₁ := vne_of_ne h₂
         dsimp at aux₁
         rw [val_zero] at aux₁

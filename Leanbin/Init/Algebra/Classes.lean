@@ -200,7 +200,7 @@ class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α 
 #print is_total_preorder_is_preorder /-
 /-- Every total pre-order is a pre-order. -/
 instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] :
-    IsPreorder α r where
+    IsPreorder α r where 
   trans := s.trans
   refl a := Or.elim (@IsTotal.total _ r _ a a) id id
 #align is_total_preorder_is_preorder is_total_preorder_is_preorder
@@ -273,7 +273,8 @@ class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrich
 
 #print eq_is_equiv /-
 /-- Equality is an equivalence relation. -/
-instance eq_is_equiv (α : Type u) : IsEquiv α (· = ·) where
+instance eq_is_equiv (α : Type u) :
+    IsEquiv α (· = ·) where 
   symm := @Eq.symm _
   trans := @Eq.trans _
   refl := Eq.refl
@@ -441,7 +442,7 @@ theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
 theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
 #align strict_weak_order.not_lt_of_equiv' StrictWeakOrder.not_lt_of_equiv'
 
-instance is_equiv : IsEquiv α equiv where
+instance is_equiv : IsEquiv α equiv where 
   refl := erefl
   trans := @etrans
   symm := @esymm

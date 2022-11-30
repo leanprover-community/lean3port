@@ -270,7 +270,7 @@ theorem Bool.of_decide_false {p : Prop} [Decidable p] : decide p = ff → ¬p :=
 
 #print Bool.decide_congr /-
 theorem Bool.decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) :
-    decide p = decide q := by
+    decide p = decide q := by 
   induction' h' : to_bool q with
   exact Bool.decide_false (mt h.1 <| Bool.of_decide_false h')
   exact Bool.decide_true (h.2 <| Bool.of_decide_true h')

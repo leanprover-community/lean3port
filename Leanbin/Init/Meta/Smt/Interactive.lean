@@ -42,7 +42,8 @@ unsafe def execute_with (cfg : SmtConfig) (tac : smt_tactic Unit) : tactic Unit 
   using_smt tac cfg
 #align smt_tactic.execute_with smt_tactic.execute_with
 
-unsafe instance : interactive.executor smt_tactic where
+unsafe instance :
+    interactive.executor smt_tactic where 
   config_type := SmtConfig
   Inhabited := ⟨{  }⟩
   execute_with cfg tac := using_smt tac cfg

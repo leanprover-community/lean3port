@@ -58,7 +58,7 @@ protected def toOption {α : Type v} : Except ε α → Option α
 #align except.to_option Except.toOption
 -/
 
-instance : Monad (Except ε) where
+instance : Monad (Except ε) where 
   pure := @return
   bind := @bind
 
@@ -118,7 +118,7 @@ protected def monadMap {m'} [Monad m'] {α} (f : ∀ {α}, m α → m' α) :
 instance (m') [Monad m'] : MonadFunctor m m' (ExceptT ε m) (ExceptT ε m') :=
   ⟨@monad_map m' _⟩
 
-instance : Monad (ExceptT ε m) where
+instance : Monad (ExceptT ε m) where 
   pure := @return
   bind := @bind
 
@@ -157,7 +157,9 @@ end MonadExcept
 
 export MonadExcept (throw catch)
 
-instance (m ε) [Monad m] : MonadExcept ε (ExceptT ε m) where
+instance (m ε) [Monad m] :
+    MonadExcept ε
+      (ExceptT ε m) where 
   throw α := ExceptT.mk ∘ pure ∘ Except.error
   catch := @ExceptT.catch ε _ _
 

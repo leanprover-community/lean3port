@@ -218,13 +218,15 @@ end
 end StateT
 
 instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (σ : Type u) :
-    LawfulMonad (StateT σ m) where
+    LawfulMonad
+      (StateT σ
+        m) where 
   id_map := by intros <;> apply StateT.ext <;> intro <;> simp <;> erw [id_map]
-  pure_bind := by
+  pure_bind := by 
     intros
     apply StateT.ext
     simp
-  bind_assoc := by
+  bind_assoc := by 
     intros
     apply StateT.ext
     simp [bind_assoc]
@@ -272,16 +274,18 @@ theorem run_monad_map {m' n n'} [Monad m'] [MonadFunctorT n n' m m'] (f : ∀ {�
 end ExceptT
 
 instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (ε : Type u) :
-    LawfulMonad (ExceptT ε m) where
-  id_map := by
+    LawfulMonad
+      (ExceptT ε
+        m) where 
+  id_map := by 
     intros ; apply ExceptT.ext; simp only [ExceptT.run_map]
     rw [map_ext_congr, id_map]
     intro a; cases a <;> rfl
-  bind_pure_comp_eq_map := by
+  bind_pure_comp_eq_map := by 
     intros ; apply ExceptT.ext; simp only [ExceptT.run_map, ExceptT.run_bind]
     rw [bind_ext_congr, bind_pure_comp_eq_map]
     intro a; cases a <;> rfl
-  bind_assoc := by
+  bind_assoc := by 
     intros ; apply ExceptT.ext; simp only [ExceptT.run_bind, bind_assoc]
     rw [bind_ext_congr]
     intro a; cases a <;> simp [ExceptT.bindCont]
@@ -342,7 +346,9 @@ end
 end ReaderT
 
 instance (ρ : Type u) (m : Type u → Type v) [Monad m] [LawfulMonad m] :
-    LawfulMonad (ReaderT ρ m) where
+    LawfulMonad
+      (ReaderT ρ
+        m) where 
   id_map := by intros <;> apply ReaderT.ext <;> intro <;> simp
   pure_bind := by intros <;> apply ReaderT.ext <;> intro <;> simp
   bind_assoc := by intros <;> apply ReaderT.ext <;> intro <;> simp [bind_assoc]
@@ -389,12 +395,15 @@ theorem run_monad_map {m' n n'} [Monad m'] [MonadFunctorT n n' m m'] (f : ∀ {�
 
 end OptionT
 
-instance (m : Type u → Type v) [Monad m] [LawfulMonad m] : LawfulMonad (OptionT m) where
-  id_map := by
+instance (m : Type u → Type v) [Monad m] [LawfulMonad m] :
+    LawfulMonad
+      (OptionT
+        m) where 
+  id_map := by 
     intros ; apply OptionT.ext; simp only [OptionT.run_map]
     rw [map_ext_congr, id_map]
     intro a; cases a <;> rfl
-  bind_assoc := by
+  bind_assoc := by 
     intros ; apply OptionT.ext; simp only [OptionT.run_bind, bind_assoc]
     rw [bind_ext_congr]
     intro a; cases a <;> simp [OptionT.bindCont]

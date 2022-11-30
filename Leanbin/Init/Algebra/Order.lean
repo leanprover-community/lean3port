@@ -296,15 +296,19 @@ section LinearOrder
 -/
 
 
+#print maxDefault /-
 /-- Default definition of `max`. -/
 def maxDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
   if a ≤ b then b else a
 #align max_default maxDefault
+-/
 
+#print minDefault /-
 /-- Default definition of `min`. -/
 def minDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → Prop)] (a b : α) :=
   if a ≤ b then a else b
 #align min_default minDefault
+-/
 
 #print LinearOrder /-
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
@@ -462,7 +466,8 @@ theorem eq_or_lt_of_not_lt {a b : α} (h : ¬a < b) : a = b ∨ b < a :=
 #align eq_or_lt_of_not_lt eq_or_lt_of_not_lt
 -/
 
-instance : IsTotalPreorder α (· ≤ ·) where
+instance : IsTotalPreorder α (· ≤
+        ·) where 
   trans := @le_trans _ _
   Total := le_total
 
@@ -486,7 +491,7 @@ def ltByCases (x y : α) {P : Sort _} (h₁ : x < y → P) (h₂ : x = y → P) 
 lean 3 declaration is
   forall {α : Type.{u}} [_inst_1 : LinearOrder.{u} α] {β : Type.{u_1}} [_inst_2 : Preorder.{u} α] [_inst_3 : LinearOrder.{u_1} β] {a : α} {b : α} {c : β} {d : β}, ((LT.lt.{u_1} β (Preorder.toLT.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β _inst_3))) d c) -> (LT.lt.{u} α (Preorder.toLT.{u} α _inst_2) b a)) -> (LE.le.{u} α (Preorder.toLE.{u} α _inst_2) a b) -> (LE.le.{u_1} β (Preorder.toLE.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β _inst_3))) c d)
 but is expected to have type
-  forall {α : Type.{u}} {β : Type.{u_1}} [inst._@.Mathlib.Init.Algebra.Order._hyg.3454 : Preorder.{u} α] [inst._@.Mathlib.Init.Algebra.Order._hyg.3457 : LinearOrder.{u_1} β] {a : α} {b : α} {c : β} {d : β}, ((LT.lt.{u_1} β (Preorder.toLT.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β inst._@.Mathlib.Init.Algebra.Order._hyg.3457))) d c) -> (LT.lt.{u} α (Preorder.toLT.{u} α inst._@.Mathlib.Init.Algebra.Order._hyg.3454) b a)) -> (LE.le.{u} α (Preorder.toLE.{u} α inst._@.Mathlib.Init.Algebra.Order._hyg.3454) a b) -> (LE.le.{u_1} β (Preorder.toLE.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β inst._@.Mathlib.Init.Algebra.Order._hyg.3457))) c d)
+  forall {α : Type.{u}} {β : Type.{u_1}} [inst._@.Mathlib.Init.Algebra.Order._hyg.3598 : Preorder.{u} α] [inst._@.Mathlib.Init.Algebra.Order._hyg.3601 : LinearOrder.{u_1} β] {a : α} {b : α} {c : β} {d : β}, ((LT.lt.{u_1} β (Preorder.toLT.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β inst._@.Mathlib.Init.Algebra.Order._hyg.3601))) d c) -> (LT.lt.{u} α (Preorder.toLT.{u} α inst._@.Mathlib.Init.Algebra.Order._hyg.3598) b a)) -> (LE.le.{u} α (Preorder.toLE.{u} α inst._@.Mathlib.Init.Algebra.Order._hyg.3598) a b) -> (LE.le.{u_1} β (Preorder.toLE.{u_1} β (PartialOrder.toPreorder.{u_1} β (LinearOrder.toPartialOrder.{u_1} β inst._@.Mathlib.Init.Algebra.Order._hyg.3601))) c d)
 Case conversion may be inaccurate. Consider using '#align le_imp_le_of_lt_imp_lt le_imp_le_of_lt_imp_ltₓ'. -/
 theorem le_imp_le_of_lt_imp_lt {β} [Preorder α] [LinearOrder β] {a b : α} {c d : β}
     (H : d < c → b < a) (h : a ≤ b) : c ≤ d :=

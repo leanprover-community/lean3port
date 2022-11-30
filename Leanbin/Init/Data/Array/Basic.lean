@@ -120,10 +120,8 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     by_cases hji : j = i
     · subst hji
       exact h₂'.1
-      
     · have j_lt_i : j < i := lt_of_le_of_ne (Nat.le_of_lt_succ h₃) hji
       exact ih j j_lt_i
-      
 #align d_array.of_beq_aux_eq_tt DArray.of_beq_aux_eq_tt
 
 theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b := by
@@ -146,7 +144,6 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     · exists i
       exists Nat.lt_succ_self _
       exact h
-      
     · have h₁' : i ≤ n := le_of_lt h₁
       have ih :
         ∃ (j : Nat)(h' : j < i),
@@ -157,7 +154,6 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exists j
       exists Nat.lt_succ_of_lt h'
       exact ih
-      
 #align d_array.of_beq_aux_eq_ff DArray.of_beq_aux_eq_ff
 
 theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b := by

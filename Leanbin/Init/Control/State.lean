@@ -46,7 +46,7 @@ protected def bind (x : StateT σ m α) (f : α → StateT σ m β) : StateT σ 
     (f a).run s'⟩
 #align state_t.bind StateTₓ.bind
 
-instance : Monad (StateT σ m) where
+instance : Monad (StateT σ m) where 
   pure := @StateT.pure _ _ _
   bind := @StateT.bind _ _ _
 
@@ -58,7 +58,8 @@ protected def failure [Alternative m] {α : Type u} : StateT σ m α :=
   ⟨fun s => failure⟩
 #align state_t.failure StateTₓ.failure
 
-instance [Alternative m] : Alternative (StateT σ m) where
+instance [Alternative m] :
+    Alternative (StateT σ m) where 
   failure := @StateT.failure _ _ _ _
   orelse := @StateT.orelse _ _ _ _
 
@@ -102,7 +103,8 @@ protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monad m] 
     pure (a, join st' ctx)⟩
 #align state_t.adapt StateTₓ.adapt
 
-instance (ε) [MonadExcept ε m] : MonadExcept ε (StateT σ m) where
+instance (ε) [MonadExcept ε m] :
+    MonadExcept ε (StateT σ m) where 
   throw α := StateT.lift ∘ throw
   catch α x c := ⟨fun s => catch (x.run s) fun e => StateT.run (c e) s⟩
 

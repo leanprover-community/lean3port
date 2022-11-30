@@ -31,10 +31,16 @@ def ofList (l : List α) : Dlist α :=
   ⟨append l, ♯⟩
 #align dlist.of_list Dlist.ofList
 
+/- warning: dlist.lazy_of_list -> Std.DList.lazy_ofList is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u}}, (Thunkₓ.{u} (List.{u} α)) -> (Dlist.{u} α)
+but is expected to have type
+  forall {α : Type.{u_1}}, (Thunk.{u_1} (List.{u_1} α)) -> (Std.DList.{u_1} α)
+Case conversion may be inaccurate. Consider using '#align dlist.lazy_of_list Std.DList.lazy_ofListₓ'. -/
 /-- Convert a lazily-evaluated list to a dlist -/
-def lazyOfList (l : Thunk (List α)) : Dlist α :=
+def Std.DList.lazy_ofList (l : Thunk (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
-#align dlist.lazy_of_list Dlist.lazyOfList
+#align dlist.lazy_of_list Std.DList.lazy_ofList
 
 /-- Convert a dlist to a list -/
 def toList : Dlist α → List α
@@ -69,7 +75,7 @@ def concat (x : α) : Dlist α → Dlist α
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
   | ⟨xs, h₁⟩, ⟨ys, h₂⟩ =>
-    ⟨xs ∘ ys, by
+    ⟨xs ∘ ys, by 
       intros
       simp
       rw [h₂, h₁, h₁ (ys List.nil)]
@@ -86,7 +92,7 @@ theorem to_list_of_list (l : List α) : toList (ofList l) = l := by cases l <;> 
 
 theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
   cases' l with xs
-  have h : append (xs []) = xs := by
+  have h : append (xs []) = xs := by 
     intros
     funext x
     simp [l_invariant x]

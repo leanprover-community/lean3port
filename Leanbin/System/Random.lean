@@ -71,7 +71,7 @@ def stdSplit : StdGen → StdGen × StdGen
     (left_g, right_g)
 #align std_split stdSplitₓ
 
-instance : RandomGen StdGen where
+instance : RandomGen StdGen where 
   range _ := stdRange
   next := stdNext
   split := stdSplit
@@ -103,7 +103,6 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
       · rw [h]
         simp
         apply Nat.zero_lt_succ
-        
       · have : (r + 1) / gen_mag > 0 := Nat.pos_of_ne_zero h
         have h₁ : (r + 1) / gen_mag - 1 < (r + 1) / gen_mag := by
           apply Nat.sub_lt
@@ -112,7 +111,6 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
             tactic.comp_val
         have h₂ : (r + 1) / gen_mag ≤ r + 1 := by apply Nat.div_le_self
         exact lt_of_lt_of_le h₁ h₂
-        
     rand_nat_aux (r' / gen_mag - 1) v' g'
 #align rand_nat_aux rand_nat_aux
 

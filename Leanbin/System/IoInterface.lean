@@ -124,7 +124,9 @@ instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] :
     MonadFail (m Io.Error) where fail α s := MonadIo.fail _ _ (Io.Error.other s)
 #align monad_io_is_monad_fail monadIoIsMonadFail
 
-instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternative (m Io.Error) where
+instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] :
+    Alternative
+      (m Io.Error) where 
   orelse α a b := MonadIo.catch _ _ _ a fun _ => b
   failure α := MonadIo.fail _ _ (Io.Error.other "failure")
 #align monad_io_is_alternative monadIoIsAlternative

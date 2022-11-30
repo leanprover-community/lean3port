@@ -63,10 +63,7 @@ theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
   induction s
   · show length t = 0 + length t
     · rw [Nat.zero_add]
-      
-    
   · simp [*, Nat.add_comm, Nat.add_left_comm]
-    
 #align list.length_append List.length_append
 -/
 
@@ -268,15 +265,12 @@ theorem ball_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.el
 #align list.ball_nil List.ball_nil
 
 theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
-  ⟨fun ⟨x, h, px⟩ => by
+  ⟨fun ⟨x, h, px⟩ => by 
     simp at h
     cases' h with h h
     · cases h
       exact Or.inl px
-      
-    · exact Or.inr ⟨x, h, px⟩
-      ,
-    fun o =>
+    · exact Or.inr ⟨x, h, px⟩, fun o =>
     o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 #align list.bex_cons List.bex_cons
 
@@ -395,7 +389,7 @@ theorem length_remove_nth :
     ∀ (l : List α) (i : ℕ), i < length l → length (removeNth l i) = length l - 1
   | [], _, h => rfl
   | x :: xs, 0, h => by simp [remove_nth]
-  | x :: xs, i + 1, h => by
+  | x :: xs, i + 1, h => by 
     have : i < length xs := lt_of_succ_lt_succ h
     dsimp [remove_nth] <;>
         rw [length_remove_nth xs i this,

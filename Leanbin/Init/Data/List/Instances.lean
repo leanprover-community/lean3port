@@ -12,27 +12,27 @@ universe u v
 
 attribute [local simp] join List.ret
 
-instance : Monad List where
+instance : Monad List where 
   pure := @List.ret
   map := @List.map
   bind := @List.bind
 
-instance : LawfulMonad List where
-  bind_pure_comp_eq_map := by
+instance :
+    LawfulMonad
+      List where 
+  bind_pure_comp_eq_map := by 
     intro α β f l
     induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
   id_map := @List.map_id
-  pure_bind := by
+  pure_bind := by 
     intros
     simp [pure, (· >>= ·)]
-  bind_assoc := by
+  bind_assoc := by 
     intro α β γ l f g
     induction' l with x l ih
     · simp [(· >>= ·)]
-      
     · simp [(· >>= ·)] at ih
       simp [(· >>= ·), ih]
-      
 
 instance : Alternative List :=
   { List.monad with failure := @List.nil, orelse := @List.append }
@@ -53,20 +53,18 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
       match decidable_bex xs with
       | is_true h₂ =>
         isTrue
-          (by
+          (by 
             cases' h₂ with y h; cases' h with hm hp
             exact ⟨y, mem_cons_of_mem _ hm, hp⟩)
       | is_false h₂ =>
         isFalse
-          (by
+          (by 
             intro h; cases' h with y h; cases' h with hm hp
             cases eq_or_mem_of_mem_cons hm
             · rw [h] at hp
               contradiction
-              
             · refine' absurd _ h₂
-              exact ⟨y, h, hp⟩
-              )
+              exact ⟨y, h, hp⟩)
 #align list.decidable_bex List.decidableBex
 
 instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=

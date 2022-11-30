@@ -66,7 +66,7 @@ unsafe def fail (f : format) : exceptional α :=
 
 end Exceptional
 
-unsafe instance : Monad exceptional where
+unsafe instance : Monad exceptional where 
   pure := @exceptional.return
   bind := @exceptional.bind
 

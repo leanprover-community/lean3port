@@ -19,7 +19,7 @@ theorem of_nat_eq_of_not_is_valid {n : Nat} : ¬IsValidChar n → ofNat n = ofNa
 #align char.of_nat_eq_of_not_is_valid Char.of_nat_eq_of_not_is_valid
 
 theorem of_nat_ne_of_ne {n₁ n₂ : Nat} (h₁ : n₁ ≠ n₂) (h₂ : IsValidChar n₁) (h₃ : IsValidChar n₂) :
-    ofNat n₁ ≠ ofNat n₂ := by
+    ofNat n₁ ≠ ofNat n₂ := by 
   apply ne_of_vne
   rw [val_of_nat_eq_of_is_valid h₂, val_of_nat_eq_of_is_valid h₃]
   assumption

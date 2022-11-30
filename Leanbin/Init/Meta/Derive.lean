@@ -26,7 +26,8 @@ unsafe def derive_handler :=
 #align derive_handler derive_handler
 
 @[user_attribute]
-unsafe def derive_handler_attr : user_attribute where
+unsafe def derive_handler_attr :
+    user_attribute where 
   Name := `derive_handler
   descr := "register a definition of type `derive_handler` for use in the [derive] attribute"
 #align derive_handler_attr derive_handler_attr
@@ -39,7 +40,8 @@ private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler →
 #align try_handlers try_handlers
 
 @[user_attribute]
-unsafe def derive_attr : user_attribute Unit (List pexpr) where
+unsafe def derive_attr :
+    user_attribute Unit (List pexpr) where 
   Name := `derive
   descr := "automatically derive typeclass instances"
   parser := pexpr_list_or_texpr

@@ -210,7 +210,8 @@ theorem sizeof_measure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure
   measure_wf SizeOf.sizeOf
 #align sizeof_measure_wf sizeof_measure_wf
 
-instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : WellFoundedRelation α where
+instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] :
+    WellFoundedRelation α where 
   R := SizeofMeasure α
   wf := sizeof_measure_wf α
 #align has_well_founded_of_has_sizeof hasWellFoundedOfHasSizeof
@@ -284,7 +285,8 @@ theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (RPro
 end
 
 instance hasWellFounded {α : Type u} {β : Type v} [s₁ : WellFoundedRelation α]
-    [s₂ : WellFoundedRelation β] : WellFoundedRelation (α × β) where
+    [s₂ : WellFoundedRelation β] :
+    WellFoundedRelation (α × β) where 
   R := Lex s₁.R s₂.R
   wf := lex_wf s₁.wf s₂.wf
 #align prod.has_well_founded Prod.hasWellFounded

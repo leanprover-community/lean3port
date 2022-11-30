@@ -92,7 +92,8 @@ unsafe def interaction_monad_seq (t₁ : m α) (t₂ : m β) : m β :=
   interaction_monad_bind t₁ fun a => t₂
 #align interaction_monad_seq interaction_monad_seq
 
-unsafe instance interaction_monad.monad : Monad m where
+unsafe instance interaction_monad.monad :
+    Monad m where 
   map := @interaction_monad_fmap
   pure := @interaction_monad_return
   bind := @interaction_monad_bind

@@ -55,7 +55,7 @@ protected def bind (x : ReaderT ρ m α) (f : α → ReaderT ρ m β) : ReaderT 
     (f a).run r⟩
 #align reader_t.bind ReaderTₓ.bind
 
-instance : Monad (ReaderT ρ m) where
+instance : Monad (ReaderT ρ m) where 
   pure := @ReaderT.pure _ _ _
   bind := @ReaderT.bind _ _ _
 
@@ -88,11 +88,15 @@ protected def failure [Alternative m] {α : Type u} : ReaderT ρ m α :=
   ⟨fun s => failure⟩
 #align reader_t.failure ReaderTₓ.failure
 
-instance [Alternative m] : Alternative (ReaderT ρ m) where
+instance [Alternative m] :
+    Alternative (ReaderT ρ
+        m) where 
   failure := @ReaderT.failure _ _ _ _
   orelse := @ReaderT.orelse _ _ _ _
 
-instance (ε) [Monad m] [MonadExcept ε m] : MonadExcept ε (ReaderT ρ m) where
+instance (ε) [Monad m] [MonadExcept ε m] :
+    MonadExcept ε (ReaderT ρ
+        m) where 
   throw α := ReaderT.lift ∘ throw
   catch α x c := ⟨fun r => catch (x.run r) fun e => (c e).run r⟩
 

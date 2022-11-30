@@ -387,13 +387,11 @@ theorem subNatNat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ 
       cases' Nat.le.dest (Nat.le_of_sub_eq_zero e) with k h
       rw [h.symm, Nat.add_sub_cancel_left]
       apply hp
-      
     · intro heq
       have h : m ≤ n := Nat.le_of_lt (Nat.lt_of_sub_eq_succ HEq)
       rw [Nat.sub_eq_iff_eq_add h] at heq
       rw [HEq, Nat.add_comm]
       apply hn
-      
   delta sub_nat_nat
   exact H _ rfl
 #align int.sub_nat_nat_elim Int.subNatNat_elim
@@ -676,7 +674,6 @@ theorem subNatNat_add (m n k : ℕ) : subNatNat (m + n) k = ofNat m + subNatNat 
     rw [sub_nat_nat_of_le h₂]
     simp
     rw [Nat.add_sub_assoc h']
-    
   rw [sub_nat_nat_of_lt h']; simp; rw [succ_pred_eq_of_pos (Nat.sub_pos_of_lt h')]
   trans; rw [← Nat.sub_add_cancel (le_of_lt h')]
   apply sub_nat_nat_add_add
@@ -690,7 +687,6 @@ theorem subNatNat_add_negSucc (m n k : ℕ) : subNatNat m n + -[k+1] = subNatNat
   · rw [sub_nat_nat_of_le h']
     simp
     rw [sub_nat_nat_sub h', Nat.add_comm]
-    
   have h₂ : m < n + succ k := Nat.lt_of_lt_of_le h' (Nat.le_add_right _ _)
   have h₃ : m ≤ n + k := le_of_succ_le_succ h₂
   rw [sub_nat_nat_of_lt h', sub_nat_nat_of_lt h₂]
@@ -845,12 +841,10 @@ theorem ofNat_mul_subNatNat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat 
       rw [← neg_of_nat_of_succ, Nat.mul_sub_left_distrib]
       rw [← succ_pred_eq_of_pos (Nat.sub_pos_of_lt h')]
       rfl
-      
     have h' : m * k ≤ m * n := Nat.mul_le_mul_left _ h
     rw [sub_nat_nat_of_le h, sub_nat_nat_of_le h']
     simp
     rw [Nat.mul_sub_left_distrib]
-    
   have h₂ : of_nat 0 = 0 := rfl
   subst h₀
   simp [h₂, Int.zero_mul, Nat.zero_mul]
@@ -863,14 +857,11 @@ theorem negOfNat_add (m n : ℕ) : negOfNat m + negOfNat n = negOfNat (m + n) :=
   · cases n
     · simp
       rfl
-      
     simp [Nat.zero_add]
     rfl
-    
   cases n
   · simp
     rfl
-    
   simp [Nat.succ_add]; rfl
 #align int.neg_of_nat_add Int.negOfNat_add
 -/
@@ -883,7 +874,6 @@ theorem negSucc_mul_subNatNat (m n k : ℕ) :
   · have h' : succ m * n < succ m * k := Nat.mul_lt_mul_of_pos_left h (Nat.succ_pos m)
     rw [sub_nat_nat_of_lt h, sub_nat_nat_of_le (le_of_lt h')]
     simp [succ_pred_eq_of_pos (Nat.sub_pos_of_lt h), Nat.mul_sub_left_distrib]
-    
   have h' : n > k ∨ k = n := Decidable.lt_or_eq_of_le h
   cases' h' with h' h'
   · have h₁ : succ m * n > succ m * k := Nat.mul_lt_mul_of_pos_left h' (Nat.succ_pos m)
@@ -892,7 +882,6 @@ theorem negSucc_mul_subNatNat (m n k : ℕ) :
     rw [Nat.mul_comm k, Nat.mul_comm n, ← succ_pred_eq_of_pos (Nat.sub_pos_of_lt h₁), ←
       neg_of_nat_of_succ]
     rfl
-    
   subst h'
   simp
   rfl
@@ -1031,11 +1020,11 @@ protected theorem mul_one (a : ℤ) : a * 1 = a := by rw [Int.mul_comm, Int.one_
 protected theorem neg_eq_neg_one_mul : ∀ a : ℤ, -a = -1 * a
   | of_nat 0 => rfl
   | of_nat (n + 1) =>
-    show _ = -[1 * n + 0+1] by
+    show _ = -[1 * n + 0+1] by 
       rw [Nat.one_mul]
       rfl
   | -[n+1] =>
-    show _ = ofNat _ by
+    show _ = ofNat _ by 
       rw [Nat.one_mul]
       rfl
 #align int.neg_eq_neg_one_mul Int.neg_eq_neg_one_mul

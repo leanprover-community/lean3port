@@ -159,7 +159,9 @@ theorem mk_skip_left {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β
 end
 
 instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : WellFoundedRelation α]
-    [s₂ : ∀ a, WellFoundedRelation (β a)] : WellFoundedRelation (PSigma β) where
+    [s₂ : ∀ a, WellFoundedRelation (β a)] :
+    WellFoundedRelation (PSigma
+        β) where 
   R := Lex s₁.R fun a => (s₂ a).R
   wf := lex_wf s₁.wf fun a => (s₂ a).wf
 #align psigma.has_well_founded PSigma.hasWellFounded

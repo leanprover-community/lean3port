@@ -145,7 +145,7 @@ unsafe axiom vm_core.ret {α : Type} : α → vm_core α
 unsafe axiom vm_core.bind {α β : Type} : vm_core α → (α → vm_core β) → vm_core β
 #align vm_core.bind vm_core.bind
 
-unsafe instance : Monad vm_core where
+unsafe instance : Monad vm_core where 
   map := @vm_core.map
   pure := @vm_core.ret
   bind := @vm_core.bind

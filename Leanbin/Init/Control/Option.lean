@@ -34,7 +34,7 @@ protected def pure (a : α) : OptionT m α :=
   ⟨pure (some a)⟩
 #align option_t.pure OptionTₓ.pure
 
-instance : Monad (OptionT m) where
+instance : Monad (OptionT m) where 
   pure := @OptionT.pure _ _
   bind := @OptionT.bind _ _
 
@@ -81,7 +81,8 @@ protected def catch (ma : OptionT m α) (handle : Unit → OptionT m α) : Optio
     pure a⟩
 #align option_t.catch OptionTₓ.catch
 
-instance : MonadExcept Unit (OptionT m) where
+instance : MonadExcept Unit
+      (OptionT m) where 
   throw _ _ := OptionT.fail
   catch := @OptionT.catch _ _
 

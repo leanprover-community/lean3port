@@ -86,7 +86,7 @@ theorem map_id {α} : (Option.map id : Option α → Option α) = id :=
 #align option.map_id Option.map_id
 -/
 
-instance : Monad Option where
+instance : Monad Option where 
   pure := @some
   bind := @Option.bind
   map := @Option.map
@@ -97,7 +97,7 @@ protected def orelse {α : Type u} : Option α → Option α → Option α
   | none, none => none
 #align option.orelse Option.orelse
 
-instance : Alternative Option where
+instance : Alternative Option where 
   failure := @none
   orelse := @Option.orelse
 

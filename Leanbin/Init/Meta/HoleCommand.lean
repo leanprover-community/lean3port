@@ -27,7 +27,7 @@ unsafe structure hole_command where
 open Tactic
 
 @[hole_command]
-unsafe def infer_type_cmd : hole_command where
+unsafe def infer_type_cmd : hole_command where 
   Name := "Infer"
   descr := "Infer type of the expression in the hole"
   action ps := do
@@ -40,7 +40,7 @@ unsafe def infer_type_cmd : hole_command where
 #align infer_type_cmd infer_type_cmd
 
 @[hole_command]
-unsafe def show_goal_cmd : hole_command where
+unsafe def show_goal_cmd : hole_command where 
   Name := "Show"
   descr := "Show the current goal"
   action _ := do
@@ -49,7 +49,7 @@ unsafe def show_goal_cmd : hole_command where
 #align show_goal_cmd show_goal_cmd
 
 @[hole_command]
-unsafe def use_cmd : hole_command where
+unsafe def use_cmd : hole_command where 
   Name := "Use"
   descr := "Try to fill the hole using the given argument"
   action ps := do

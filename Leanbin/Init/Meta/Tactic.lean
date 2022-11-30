@@ -164,7 +164,8 @@ unsafe def executor.execute_with_explicit (m : Type → Type u) [Monad m] [execu
 #align interactive.executor.execute_with_explicit interactive.executor.execute_with_explicit
 
 /-- Default `executor` instance for `tactic`s themselves -/
-unsafe instance executor_tactic : executor tactic where
+unsafe instance executor_tactic :
+    executor tactic where 
   config_type := Unit
   Inhabited := ⟨()⟩
   execute_with _ := id
@@ -2287,12 +2288,13 @@ unsafe def order_laws_tac :=
 #align order_laws_tac order_laws_tac
 
 unsafe def monad_from_pure_bind {m : Type u → Type v} (pure : ∀ {α : Type u}, α → m α)
-    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) : Monad m where
+    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) :
+    Monad m where 
   pure := @pure
   bind := @bind
 #align monad_from_pure_bind monad_from_pure_bind
 
-unsafe instance : Monad task where
+unsafe instance : Monad task where 
   map := @task.map
   bind := @task.bind
   pure := @task.pure

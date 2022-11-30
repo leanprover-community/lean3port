@@ -49,18 +49,14 @@ theorem cmp_using_eq_lt (a b : α) : (cmpUsing lt a b = Ordering.lt) = lt a b :=
 
 @[simp]
 theorem cmp_using_eq_gt [IsStrictOrder α lt] (a b : α) : (cmpUsing lt a b = Ordering.gt) = lt b a :=
-  by
+  by 
   simp; apply propext; apply Iff.intro
   · exact fun h => h.2
-    
   · intro hba
     constructor
     · intro hab
       exact absurd (trans hab hba) (irrefl a)
-      
     · assumption
-      
-    
 #align cmp_using_eq_gt cmp_using_eq_gt
 
 @[simp]

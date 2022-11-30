@@ -24,7 +24,7 @@ structure State where
   activeBps : List (Nat × Name)
 #align debugger.state Debugger.State
 
-def initState : State where
+def initState : State where 
   md := Mode.init
   csz := 0
   fnBps := []
@@ -277,7 +277,7 @@ unsafe def step_fn (s : State) : vm State := do
 #align debugger.step_fn debugger.step_fn
 
 @[vm_monitor]
-unsafe def monitor : vm_monitor State where
+unsafe def monitor : vm_monitor State where 
   init := initState
   step := step_fn
 #align debugger.monitor debugger.monitor

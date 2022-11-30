@@ -51,11 +51,11 @@ protected def fail (msg : String) : Parser α := fun _ pos =>
   ParseResult.fail Pos (Dlist.singleton msg)
 #align parser.fail Parser.fail
 
-instance : Monad Parser where
+instance : Monad Parser where 
   pure := @Parser.pure
   bind := @Parser.bind
 
-instance : LawfulMonad Parser where
+instance : LawfulMonad Parser where 
   id_map := @Parser.id_map
   pure_bind _ _ _ _ := rfl
   bind_assoc := @Parser.bind_assoc
@@ -83,7 +83,7 @@ protected def orelse (p q : Parser α) : Parser α := fun input pos =>
   | ok => ok
 #align parser.orelse Parser.orelse
 
-instance : Alternative Parser where
+instance : Alternative Parser where 
   failure := @Parser.failure
   orelse := @Parser.orelse
 
@@ -93,7 +93,7 @@ instance : Inhabited (Parser α) :=
 /-- Overrides the expected token name, and does not consume input on failure. -/
 def decorateErrors (msgs : Thunk (List String)) (p : Parser α) : Parser α := fun input pos =>
   match p input Pos with
-  | ParseResult.fail _ expected => ParseResult.fail Pos (Dlist.lazyOfList (msgs ()))
+  | ParseResult.fail _ expected => ParseResult.fail Pos (Std.DList.lazy_ofList (msgs ()))
   | ok => ok
 #align parser.decorate_errors Parser.decorateErrors
 

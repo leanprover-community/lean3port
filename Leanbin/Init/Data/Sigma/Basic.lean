@@ -11,9 +11,9 @@ universe u v
 
 /- warning: ex_of_psig -> ex_of_psig is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {p : α -> Prop}, (PSigma.{succ u, 0} α (fun (x : α) => p x)) -> (Exists.{succ u} α (fun (x : α) => p x))
+  forall {α : Type.{u1}} {p : α -> Prop}, (PSigma.{succ u1, 0} α (fun (x : α) => p x)) -> (Exists.{succ u1} α (fun (x : α) => p x))
 but is expected to have type
-  forall {α : Sort.{u_1}} {p : α -> Prop}, (PSigma.{u_1, 0} α (fun (x : α) => p x)) -> (Exists.{u_1} α (fun (x : α) => p x))
+  forall {α : Sort.{u1}} {p : α -> Prop}, (PSigma.{u1, 0} α (fun (x : α) => p x)) -> (Exists.{u1} α (fun (x : α) => p x))
 Case conversion may be inaccurate. Consider using '#align ex_of_psig ex_of_psigₓ'. -/
 theorem ex_of_psig {α : Type u} {p : α → Prop} : (Σ'x, p x) → ∃ x, p x
   | ⟨x, hx⟩ => ⟨x, hx⟩

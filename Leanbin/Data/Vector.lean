@@ -81,9 +81,9 @@ def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
 
 /- warning: vector.elim -> Vector.elim is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u_1}} {C : forall {n : Nat}, (Vector.{u_1} α n) -> Sort.{u}}, (forall (l : List.{u_1} α), C (List.length.{u_1} α l) (Subtype.mk.{succ u_1} (List.{u_1} α) (fun (l_1 : List.{u_1} α) => Eq.{1} Nat (List.length.{u_1} α l_1) (List.length.{u_1} α l)) l (Vector.Elim._proof_1.{u_1} α l))) -> (forall {n : Nat} (v : Vector.{u_1} α n), C n v)
+  forall {α : Type.{u2}} {C : forall {n : Nat}, (Vector.{u2} α n) -> Sort.{u1}}, (forall (l : List.{u2} α), C (List.length.{u2} α l) (Subtype.mk.{succ u2} (List.{u2} α) (fun (l_1 : List.{u2} α) => Eq.{1} Nat (List.length.{u2} α l_1) (List.length.{u2} α l)) l (Vector.Elim._proof_1.{u2} α l))) -> (forall {n : Nat} (v : Vector.{u2} α n), C n v)
 but is expected to have type
-  forall {α : Type.{_aux_param_0}} {C : forall {n : Nat}, (Vector.{_aux_param_0} α n) -> Sort.{u}}, (forall (l : List.{_aux_param_0} α), C (List.length.{_aux_param_0} α l) (Subtype.mk.{succ _aux_param_0} (List.{_aux_param_0} α) (fun (l_1 : List.{_aux_param_0} α) => Eq.{1} Nat (List.length.{_aux_param_0} α l_1) (List.length.{_aux_param_0} α l)) l (rfl.{1} Nat (List.length.{_aux_param_0} α l)))) -> (forall {n : Nat} (v : Vector.{_aux_param_0} α n), C n v)
+  forall {α : Type.{u1}} {C : forall {n : Nat}, (Vector.{u1} α n) -> Sort.{u2}}, (forall (l : List.{u1} α), C (List.length.{u1} α l) (Subtype.mk.{succ u1} (List.{u1} α) (fun (l_1 : List.{u1} α) => Eq.{1} Nat (List.length.{u1} α l_1) (List.length.{u1} α l)) l (rfl.{1} Nat (List.length.{u1} α l)))) -> (forall {n : Nat} (v : Vector.{u1} α n), C n v)
 Case conversion may be inaccurate. Consider using '#align vector.elim Vector.elimₓ'. -/
 @[elab_as_elim]
 def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} :

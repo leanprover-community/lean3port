@@ -19,7 +19,10 @@ private unsafe def relation_tactic (md : Transparency) (op_for : environment →
   match op_for env (const_name r) with
     | some refl => do
       let r ← mk_const refl
-      apply_core r { md, NewGoals := new_goals.non_dep_only } >> return ()
+      apply_core r
+            { md
+              NewGoals := new_goals.non_dep_only } >>
+          return ()
     | none =>
       fail <|
         tac_name ++

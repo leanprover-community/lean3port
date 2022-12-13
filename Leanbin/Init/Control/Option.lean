@@ -56,7 +56,9 @@ def ofOption : Option α → OptionT m α
 #align option_t.of_option OptionTₓ.ofOption
 
 instance : Alternative (OptionT m) :=
-  { OptionT.monad with failure := @OptionT.fail m _, orelse := @OptionT.orelse m _ }
+  { OptionT.monad with 
+    failure := @OptionT.fail m _
+    orelse := @OptionT.orelse m _ }
 
 @[inline]
 protected def lift (ma : m α) : OptionT m α :=

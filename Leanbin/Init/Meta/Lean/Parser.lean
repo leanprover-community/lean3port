@@ -158,7 +158,9 @@ unsafe def parser_orelse (p₁ p₂ : parser α) : parser α := fun s =>
 #align lean.parser.parser_orelse lean.parser.parser_orelse
 
 unsafe instance : Alternative parser :=
-  { interaction_monad.monad with failure := @interaction_monad.failed _, orelse := @parser_orelse }
+  { interaction_monad.monad with 
+    failure := @interaction_monad.failed _
+    orelse := @parser_orelse }
 
 -- TODO: move
 unsafe def many.{u, v} {f : Type u → Type v} [Monad f] [Alternative f] {a : Type u} :

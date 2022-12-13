@@ -27,7 +27,7 @@ def List.mapM {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u} (f :
 lean 3 declaration is
   forall {m : Type -> Type.{v}} [_inst_1 : Monad.{0, v} m] {α : Type.{u}} {β : Type}, (α -> (m β)) -> (List.{u} α) -> (m Unit)
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_3}} {β : Type.{u_1}} [inst._@.Std.Data.List.Init.Lemmas._hyg.3669 : Monad.{u_1, u_2} m], (α -> (m β)) -> (List.{u_3} α) -> (m (List.{u_1} β))
+  forall {m : Type.{u_1} -> Type.{u_2}} {_inst_1 : Type.{u_3}} {α : Type.{u_1}} [β : Monad.{u_1, u_2} m], (_inst_1 -> (m α)) -> (List.{u_3} _inst_1) -> (m (List.{u_1} α))
 Case conversion may be inaccurate. Consider using '#align list.mmap' List.mapM'ₓ'. -/
 def List.mapM' {m : Type → Type v} [Monad m] {α : Type u} {β : Type} (f : α → m β) : List α → m Unit
   | [] => return ()
@@ -111,7 +111,7 @@ def mapM :=
 lean 3 declaration is
   forall {m : Type -> Type.{u_1}} [_inst_1 : Monad.{0, u_1} m] {α : Type.{u_2}} {β : Type}, (α -> (m β)) -> (List.{u_2} α) -> (m Unit)
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_3}} {β : Type.{u_1}} [inst._@.Std.Data.List.Init.Lemmas._hyg.3669 : Monad.{u_1, u_2} m], (α -> (m β)) -> (List.{u_3} α) -> (m (List.{u_1} β))
+  forall {m : Type.{u_1} -> Type.{u_2}} {_inst_1 : Type.{u_3}} {α : Type.{u_1}} [β : Monad.{u_1, u_2} m], (_inst_1 -> (m α)) -> (List.{u_3} _inst_1) -> (m (List.{u_1} α))
 Case conversion may be inaccurate. Consider using '#align monad.mapm' Monad.mapM'ₓ'. -/
 def mapM' :=
   @mapM'

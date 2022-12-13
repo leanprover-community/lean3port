@@ -318,7 +318,8 @@ unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tacti
   do
   let (c, new_e) ←
     dsimplify_core () (fun c e => failed) unfold e
-        { maxSteps := cfg.maxSteps, canonizeInstances := cfg.visitInstances }
+        { maxSteps := cfg.maxSteps
+          canonizeInstances := cfg.visitInstances }
   return new_e
 #align tactic.delta tactic.delta
 
@@ -538,7 +539,8 @@ unsafe def to_simp_lemmas : simp_lemmas → List Name → tactic simp_lemmas
 unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tactic := do
   let t := q(user_attribute simp_lemmas)
   let v :=
-    q(({ Name := attr_name, descr := "simplifier attribute",
+    q(({  Name := attr_name
+          descr := "simplifier attribute"
           cache_cfg :=
             { mk_cache := fun ns => do
                 let s ← tactic.to_simp_lemmas simp_lemmas.mk ns
@@ -548,7 +550,7 @@ unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tacti
                         let ns ← attribute.get_instances attr_name
                         to_simp_lemmas s ns)
                       s
-                return s,
+                return s
               dependencies := `reducibility :: attr_deps } } :
         user_attribute simp_lemmas))
   let n := mk_simp_attr_decl_name attr_name
@@ -739,7 +741,11 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
             let new_fact_pr := mk_tagged_proof new_h_type new_fact_pr `` id_tag.simp
             let new_es ← update_simp_lemmas es new_fact_pr
             let new_r ← update_simp_lemmas r new_fact_pr
-            let new_r := { e with new_type := new_h_type, pr := new_pr } :: new_r
+            let new_r :=
+              { e with 
+                  new_type := new_h_type
+                  pr := new_pr } ::
+                new_r
             let new_s ← s new_fact_pr ff
             let new_lms ← loop new_es new_r new_s tt
             return (new_lms lms fun n ns => name_set.insert ns n)

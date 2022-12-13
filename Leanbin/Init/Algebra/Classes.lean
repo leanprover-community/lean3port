@@ -467,8 +467,8 @@ theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α 
       have nca : ¬le c a := fun hca : le c a =>
         have hcb : le c b := trans_of le hca hab
         absurd hcb ncb
-      Iff.mpr (h _ _) nca,
-    irrefl := fun a hlt => absurd (refl_of le a) (Iff.mp (h _ _) hlt),
+      Iff.mpr (h _ _) nca
+    irrefl := fun a hlt => absurd (refl_of le a) (Iff.mp (h _ _) hlt)
     incomp_trans := fun a b c ⟨nab, nba⟩ ⟨nbc, ncb⟩ =>
       have hba : le b a := Decidable.of_not_not (Iff.mp (not_congr (h _ _)) nab)
       have hab : le a b := Decidable.of_not_not (Iff.mp (not_congr (h _ _)) nba)

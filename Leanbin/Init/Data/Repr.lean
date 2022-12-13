@@ -40,9 +40,9 @@ class Repr (α : Type u) where
 
 /- warning: repr -> repr is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} [_inst_1 : Repr.{u} α], α -> String
+  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], α -> String
 but is expected to have type
-  forall {α : Type.{u_1}} [inst._@.Init.Data.Repr._hyg.17 : Repr.{u_1} α], α -> Std.Format
+  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], α -> Std.Format
 Case conversion may be inaccurate. Consider using '#align repr reprₓ'. -/
 /--
 `repr` is similar to `to_string` except that we should have the property `eval (repr x) = x` for most sensible datatypes.
@@ -66,9 +66,9 @@ protected def List.reprAux {α : Type u} [Repr α] : Bool → List α → String
 
 /- warning: list.repr -> List.repr is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} [_inst_1 : Repr.{u} α], (List.{u} α) -> String
+  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], (List.{u1} α) -> String
 but is expected to have type
-  forall {α : Type.{u_1}} [inst._@.Init.Data.Repr._hyg.2104 : Repr.{u_1} α], (List.{u_1} α) -> Nat -> Std.Format
+  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], (List.{u1} α) -> Nat -> Std.Format
 Case conversion may be inaccurate. Consider using '#align list.repr List.reprₓ'. -/
 protected def List.repr {α : Type u} [Repr α] : List α → String
   | [] => "[]"

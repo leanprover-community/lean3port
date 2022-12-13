@@ -1555,7 +1555,7 @@ theorem div_eq_of_lt {a b : ℕ} (h₀ : a < b) : a / b = 0 := by
 lean 3 declaration is
   forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) k) -> (Iff (LE.le.{0} Nat Nat.hasLe x (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) y k)) (LE.le.{0} Nat Nat.hasLe (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat Nat.hasMul) x k) y))
 but is expected to have type
-  forall {k : Nat} {x : Nat} {y : Nat}, (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) k) -> (Iff (LE.le.{0} Nat instLENat x (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) y k)) (LE.le.{0} Nat instLENat (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) x k) y))
+  forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) x) -> (Iff (LE.le.{0} Nat instLENat y (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) k x)) (LE.le.{0} Nat instLENat (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) y x) k))
 Case conversion may be inaccurate. Consider using '#align nat.le_div_iff_mul_le Nat.le_div_iff_mul_leₓ'. -/
 -- this is a Galois connection
 --   f x ≤ y ↔ x ≤ g y
@@ -1594,7 +1594,7 @@ theorem le_div_iff_mul_le {x y k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ x * k ≤
 lean 3 declaration is
   forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) k) -> (Iff (LT.lt.{0} Nat Nat.hasLt (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) x k) y) (LT.lt.{0} Nat Nat.hasLt x (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat Nat.hasMul) y k)))
 but is expected to have type
-  forall {k : Nat} {x : Nat} {y : Nat}, (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) k) -> (Iff (LT.lt.{0} Nat instLTNat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) x k) y) (LT.lt.{0} Nat instLTNat x (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) y k)))
+  forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) x) -> (Iff (LT.lt.{0} Nat instLTNat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) y x) k) (LT.lt.{0} Nat instLTNat y (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) k x)))
 Case conversion may be inaccurate. Consider using '#align nat.div_lt_iff_lt_mul Nat.div_lt_iff_lt_mulₓ'. -/
 theorem div_lt_iff_lt_mul {x y k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y * k := by
   rw [← not_le, not_congr (le_div_iff_mul_le Hk), not_le]

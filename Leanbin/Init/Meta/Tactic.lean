@@ -112,7 +112,8 @@ infixl:2 " >>=[tactic] " => interaction_monad_bind
 infixl:2 " >>[tactic] " => interaction_monad_seq
 
 unsafe instance : Alternative tactic :=
-  { interaction_monad.monad with failure := @interaction_monad.failed _,
+  { interaction_monad.monad with 
+    failure := @interaction_monad.failed _
     orelse := @interaction_monad_orelse _ }
 
 unsafe def tactic.up.{u₁, u₂} {α : Type u₂} (t : tactic α) : tactic (ULift.{u₁} α) := fun s =>

@@ -35,7 +35,9 @@ instance :
       simp [(· >>= ·), ih]
 
 instance : Alternative List :=
-  { List.monad with failure := @List.nil, orelse := @List.append }
+  { List.monad with 
+    failure := @List.nil
+    orelse := @List.append }
 
 namespace List
 

@@ -131,9 +131,11 @@ unsafe def get_attribute_cache_dyn {α : Type} [reflected _ α] (attr_decl_name 
 unsafe def mk_name_set_attr (attr_name : Name) : Tactic := do
   let t := q(user_attribute name_set)
   let v :=
-    q(({ Name := attr_name, descr := "name_set attribute",
+    q(({  Name := attr_name
+          descr := "name_set attribute"
           cache_cfg :=
-            { mk_cache := fun ns => return (name_set.of_list ns), dependencies := [] } } :
+            { mk_cache := fun ns => return (name_set.of_list ns)
+              dependencies := [] } } :
         user_attribute name_set))
   add_meta_definition attr_name [] t v
   register_attribute attr_name

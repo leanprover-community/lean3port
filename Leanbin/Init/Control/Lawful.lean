@@ -61,9 +61,9 @@ attribute [simp] map_pure seq_pure
 
 /- warning: pure_id_seq -> pure_id_seq is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {f : Type.{u} -> Type.{v}} [_inst_1 : Applicative.{u, v} f] [_inst_2 : LawfulApplicative.{u, v} f _inst_1] (x : f α), Eq.{succ v} (f α) (Seq.seq.{u, v} f (Applicative.toHasSeq.{u, v} f _inst_1) α α (Pure.pure.{u, v} f (Applicative.toHasPure.{u, v} f _inst_1) (α -> α) (id.{succ u} α)) x) x
+  forall {α : Type.{u1}} {f : Type.{u1} -> Type.{u2}} [_inst_1 : Applicative.{u1, u2} f] [_inst_2 : LawfulApplicative.{u1, u2} f _inst_1] (x : f α), Eq.{succ u2} (f α) (Seq.seq.{u1, u2} f (Applicative.toHasSeq.{u1, u2} f _inst_1) α α (Pure.pure.{u1, u2} f (Applicative.toHasPure.{u1, u2} f _inst_1) (α -> α) (id.{succ u1} α)) x) x
 but is expected to have type
-  forall {f : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Control.Lawful._hyg.579 : Applicative.{u_1, u_2} f] [inst._@.Init.Control.Lawful._hyg.582 : LawfulApplicative.{u_1, u_2} f inst._@.Init.Control.Lawful._hyg.579] (x : f α), Eq.{succ u_2} (f α) (Seq.seq.{u_1, u_2} f (Applicative.toSeq.{u_1, u_2} f inst._@.Init.Control.Lawful._hyg.579) α α (Pure.pure.{u_1, u_2} f (Applicative.toPure.{u_1, u_2} f inst._@.Init.Control.Lawful._hyg.579) (α -> α) (id.{succ u_1} α)) (fun (x._@.Init.Control.Lawful._hyg.600 : Unit) => x)) x
+  forall {α : Type.{u2} -> Type.{u1}} {f : Type.{u2}} [_inst_1 : Applicative.{u2, u1} α] [_inst_2 : LawfulApplicative.{u2, u1} α _inst_1] (x : α f), Eq.{succ u1} (α f) (Seq.seq.{u2, u1} α (Applicative.toSeq.{u2, u1} α _inst_1) f f (Pure.pure.{u2, u1} α (Applicative.toPure.{u2, u1} α _inst_1) (f -> f) (id.{succ u2} f)) (fun (x._@.Init.Control.Lawful._hyg.600 : Unit) => x)) x
 Case conversion may be inaccurate. Consider using '#align pure_id_seq pure_id_seqₓ'. -/
 -- applicative "law" derivable from other laws
 @[simp]
@@ -99,9 +99,9 @@ attribute [simp] pure_bind
 
 /- warning: bind_pure -> bind_pure is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}} {m : Type.{u} -> Type.{v}} [_inst_1 : Monad.{u, v} m] [_inst_2 : LawfulMonad.{u, v} m _inst_1] (x : m α), Eq.{succ v} (m α) (Bind.bind.{u, v} m (Monad.toHasBind.{u, v} m _inst_1) α α x (Pure.pure.{u, v} m (Applicative.toHasPure.{u, v} m (Monad.toApplicative.{u, v} m _inst_1)) α)) x
+  forall {α : Type.{u1}} {m : Type.{u1} -> Type.{u2}} [_inst_1 : Monad.{u1, u2} m] [_inst_2 : LawfulMonad.{u1, u2} m _inst_1] (x : m α), Eq.{succ u2} (m α) (Bind.bind.{u1, u2} m (Monad.toHasBind.{u1, u2} m _inst_1) α α x (Pure.pure.{u1, u2} m (Applicative.toHasPure.{u1, u2} m (Monad.toApplicative.{u1, u2} m _inst_1)) α)) x
 but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {α : Type.{u_1}} [inst._@.Init.Control.Lawful._hyg.871 : Monad.{u_1, u_2} m] [inst._@.Init.Control.Lawful._hyg.874 : LawfulMonad.{u_1, u_2} m inst._@.Init.Control.Lawful._hyg.871] (x : m α), Eq.{succ u_2} (m α) (Bind.bind.{u_1, u_2} m (Monad.toBind.{u_1, u_2} m inst._@.Init.Control.Lawful._hyg.871) α α x (Pure.pure.{u_1, u_2} m (Applicative.toPure.{u_1, u_2} m (Monad.toApplicative.{u_1, u_2} m inst._@.Init.Control.Lawful._hyg.871)) α)) x
+  forall {α : Type.{u2} -> Type.{u1}} {m : Type.{u2}} [_inst_1 : Monad.{u2, u1} α] [_inst_2 : LawfulMonad.{u2, u1} α _inst_1] (x : α m), Eq.{succ u1} (α m) (Bind.bind.{u2, u1} α (Monad.toBind.{u2, u1} α _inst_1) m m x (Pure.pure.{u2, u1} α (Applicative.toPure.{u2, u1} α (Monad.toApplicative.{u2, u1} α _inst_1)) m)) x
 Case conversion may be inaccurate. Consider using '#align bind_pure bind_pureₓ'. -/
 -- monad "law" derivable from other laws
 @[simp]

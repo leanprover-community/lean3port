@@ -77,7 +77,12 @@ theorem zero_lt_d800 : 0 < 55296 :=
 #print Char.ofNat /-
 @[match_pattern]
 def ofNat (n : Nat) : Char :=
-  if h : IsValidChar n then { val := n, valid := h } else { val := 0, valid := Or.inl zero_lt_d800 }
+  if h : IsValidChar n then
+    { val := n
+      valid := h }
+  else
+    { val := 0
+      valid := Or.inl zero_lt_d800 }
 #align char.of_nat Char.ofNat
 -/
 

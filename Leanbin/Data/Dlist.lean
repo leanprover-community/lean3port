@@ -33,9 +33,9 @@ def ofList (l : List α) : Dlist α :=
 
 /- warning: dlist.lazy_of_list -> Std.DList.lazy_ofList is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u}}, (Thunkₓ.{u} (List.{u} α)) -> (Dlist.{u} α)
+  forall {α : Type.{u1}}, (Thunkₓ.{u1} (List.{u1} α)) -> (Dlist.{u1} α)
 but is expected to have type
-  forall {α : Type.{u_1}}, (Thunk.{u_1} (List.{u_1} α)) -> (Std.DList.{u_1} α)
+  forall {α : Type.{u1}}, (Thunk.{u1} (List.{u1} α)) -> (Std.DList.{u1} α)
 Case conversion may be inaccurate. Consider using '#align dlist.lazy_of_list Std.DList.lazy_ofListₓ'. -/
 /-- Convert a lazily-evaluated list to a dlist -/
 def Std.DList.lazy_ofList (l : Thunk (List α)) : Dlist α :=

@@ -31,9 +31,9 @@ attribute [elab_as_elim] lift ind
 
 /- warning: quot.lift_beta -> Quot.lift_mk is a dubious translation:
 lean 3 declaration is
-  forall {α : Sort.{u}} {r : α -> α -> Prop} {β : Sort.{v}} (f : α -> β) (c : forall (a : α) (b : α), (r a b) -> (Eq.{v} β (f a) (f b))) (a : α), Eq.{v} β (Quot.lift.{u, v} α (fun (a : α) (b : α) => r a b) β f c (Quot.mk.{u} α r a)) (f a)
+  forall {α : Sort.{u1}} {r : α -> α -> Prop} {β : Sort.{u2}} (f : α -> β) (c : forall (a : α) (b : α), (r a b) -> (Eq.{u2} β (f a) (f b))) (a : α), Eq.{u2} β (Quot.lift.{u1, u2} α (fun (a : α) (b : α) => r a b) β f c (Quot.mk.{u1} α r a)) (f a)
 but is expected to have type
-  forall {α : Sort.{u_2}} {γ : Sort.{u_1}} {r : α -> α -> Prop} (f : α -> γ) (h : forall (a₁ : α) (a₂ : α), (r a₁ a₂) -> (Eq.{u_1} γ (f a₁) (f a₂))) (a : α), Eq.{u_1} γ (Quot.lift.{u_2, u_1} α (fun (a : α) (b : α) => r a b) γ f h (Quot.mk.{u_2} α r a)) (f a)
+  forall {α : Sort.{u1}} {r : Sort.{u2}} {β : α -> α -> Prop} (f : α -> r) (c : forall (a : α) (b : α), (β a b) -> (Eq.{u2} r (f a) (f b))) (a : α), Eq.{u2} r (Quot.lift.{u1, u2} α (fun (a : α) (b : α) => β a b) r f c (Quot.mk.{u1} α β a)) (f a)
 Case conversion may be inaccurate. Consider using '#align quot.lift_beta Quot.lift_mkₓ'. -/
 protected theorem lift_mk {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β)
     (c : ∀ a b, r a b → f a = f b) (a : α) : lift f c (Quot.mk r a) = f a :=

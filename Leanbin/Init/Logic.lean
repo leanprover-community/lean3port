@@ -707,7 +707,7 @@ theorem eq_comm {α : Sort u} {a b : α} : a = b ↔ b = a :=
 lean 3 declaration is
   forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (a -> c) -> (b -> d) -> (And a b) -> (And c d)
 but is expected to have type
-  forall {a : Prop} {c : Prop} {b : Prop} {d : Prop}, (a -> c) -> (b -> d) -> (And a b) -> (And c d)
+  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (a -> b) -> (c -> d) -> (And a c) -> (And b d)
 Case conversion may be inaccurate. Consider using '#align and.imp And.impₓ'. -/
 theorem And.imp (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
 #align and.imp And.imp
@@ -720,7 +720,7 @@ theorem and_implies (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d :=
 lean 3 declaration is
   forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a c) -> (Iff b d) -> (Iff (And a b) (And c d))
 but is expected to have type
-  forall {a : Prop} {c : Prop} {b : Prop} {d : Prop}, (Iff a c) -> (Iff b d) -> (Iff (And a b) (And c d))
+  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a b) -> (Iff c d) -> (Iff (And a c) (And b d))
 Case conversion may be inaccurate. Consider using '#align and_congr and_congrₓ'. -/
 @[congr]
 theorem and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∧ b ↔ c ∧ d :=
@@ -845,7 +845,7 @@ theorem Or.imp_right (h : a → b) : c ∨ a → c ∨ b :=
 lean 3 declaration is
   forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a c) -> (Iff b d) -> (Iff (Or a b) (Or c d))
 but is expected to have type
-  forall {a : Prop} {c : Prop} {b : Prop} {d : Prop}, (Iff a c) -> (Iff b d) -> (Iff (Or a b) (Or c d))
+  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a b) -> (Iff c d) -> (Iff (Or a c) (Or b d))
 Case conversion may be inaccurate. Consider using '#align or_congr or_congrₓ'. -/
 @[congr]
 theorem or_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∨ b ↔ c ∨ d :=
@@ -1767,9 +1767,9 @@ theorem let_value_eq {α : Sort u} {β : Sort v} {a₁ a₂ : α} (b : α → β
 
 /- warning: let_value_heq -> let_value_heq is a dubious translation:
 lean 3 declaration is
-  forall {α : Sort.{v}} {β : α -> Sort.{u}} {a₁ : α} {a₂ : α} (b : forall (x : α), β x), (Eq.{v} α a₁ a₂) -> (HEq.{u} (β a₁) (let x : α := a₁; b x) (β a₂) (let x : α := a₂; b x))
+  forall {α : Sort.{u2}} {β : α -> Sort.{u1}} {a₁ : α} {a₂ : α} (b : forall (x : α), β x), (Eq.{u2} α a₁ a₂) -> (HEq.{u1} (β a₁) (let x : α := a₁; b x) (β a₂) (let x : α := a₂; b x))
 but is expected to have type
-  forall {α : Sort.{v}} {β : α -> Sort.{u}} {a₁ : α} {a₂ : α} (b : forall (x : α), β x), (Eq.{v} α a₁ a₂) -> (HEq.{u} (β a₁) (let x : α := a₁; b x) (β a₂) (let x : α := a₂; b x))
+  forall {α : Sort.{u1}} {β : α -> Sort.{u2}} {a₁ : α} {a₂ : α} (b : forall (x : α), β x), (Eq.{u1} α a₁ a₂) -> (HEq.{u2} (β a₁) (let x : α := a₁; b x) (β a₂) (let x : α := a₂; b x))
 Case conversion may be inaccurate. Consider using '#align let_value_heq let_value_heqₓ'. -/
 theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : ∀ x : α, β x) :
     a₁ = a₂ →
@@ -1783,9 +1783,9 @@ theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : �
 
 /- warning: let_body_eq -> let_body_eq is a dubious translation:
 lean 3 declaration is
-  forall {α : Sort.{v}} {β : α -> Sort.{u}} (a : α) {b₁ : forall (x : α), β x} {b₂ : forall (x : α), β x}, (forall (x : α), Eq.{u} (β x) (b₁ x) (b₂ x)) -> (Eq.{u} (β a) (let x : α := a; b₁ x) (let x : α := a; b₂ x))
+  forall {α : Sort.{u2}} {β : α -> Sort.{u1}} (a : α) {b₁ : forall (x : α), β x} {b₂ : forall (x : α), β x}, (forall (x : α), Eq.{u1} (β x) (b₁ x) (b₂ x)) -> (Eq.{u1} (β a) (let x : α := a; b₁ x) (let x : α := a; b₂ x))
 but is expected to have type
-  forall {α : Sort.{v}} {β : α -> Sort.{u}} (a : α) {b₁ : forall (x : α), β x} {b₂ : forall (x : α), β x}, (forall (x : α), Eq.{u} (β x) (b₁ x) (b₂ x)) -> (Eq.{u} (let x : α := a; β x) (let x : α := a; b₁ x) (let x : α := a; b₂ x))
+  forall {α : Sort.{u1}} {β : α -> Sort.{u2}} (a : α) {b₁ : forall (x : α), β x} {b₂ : forall (x : α), β x}, (forall (x : α), Eq.{u2} (β x) (b₁ x) (b₂ x)) -> (Eq.{u2} (let x : α := a; β x) (let x : α := a; b₁ x) (let x : α := a; b₂ x))
 Case conversion may be inaccurate. Consider using '#align let_body_eq let_body_eqₓ'. -/
 theorem let_body_eq {α : Sort v} {β : α → Sort u} (a : α) {b₁ b₂ : ∀ x : α, β x} :
     (∀ x, b₁ x = b₂ x) →
@@ -1798,9 +1798,9 @@ theorem let_body_eq {α : Sort v} {β : α → Sort u} (a : α) {b₁ b₂ : ∀
 
 /- warning: let_eq -> let_eq is a dubious translation:
 lean 3 declaration is
-  forall {α : Sort.{v}} {β : Sort.{u}} {a₁ : α} {a₂ : α} {b₁ : α -> β} {b₂ : α -> β}, (Eq.{v} α a₁ a₂) -> (forall (x : α), Eq.{u} β (b₁ x) (b₂ x)) -> (Eq.{u} β (let x : α := a₁; b₁ x) (let x : α := a₂; b₂ x))
+  forall {α : Sort.{u2}} {β : Sort.{u1}} {a₁ : α} {a₂ : α} {b₁ : α -> β} {b₂ : α -> β}, (Eq.{u2} α a₁ a₂) -> (forall (x : α), Eq.{u1} β (b₁ x) (b₂ x)) -> (Eq.{u1} β (let x : α := a₁; b₁ x) (let x : α := a₂; b₂ x))
 but is expected to have type
-  forall {α : Sort.{v}} {β : Sort.{u}} {a₁ : α} {a₂ : α} {b₁ : α -> β} {b₂ : α -> β}, (Eq.{v} α a₁ a₂) -> (forall (x : α), Eq.{u} β (b₁ x) (b₂ x)) -> (Eq.{u} β (let x : α := a₁; b₁ x) (let x : α := a₂; b₂ x))
+  forall {α : Sort.{u1}} {β : Sort.{u2}} {a₁ : α} {a₂ : α} {b₁ : α -> β} {b₂ : α -> β}, (Eq.{u1} α a₁ a₂) -> (forall (x : α), Eq.{u2} β (b₁ x) (b₂ x)) -> (Eq.{u2} β (let x : α := a₁; b₁ x) (let x : α := a₂; b₂ x))
 Case conversion may be inaccurate. Consider using '#align let_eq let_eqₓ'. -/
 theorem let_eq {α : Sort v} {β : Sort u} {a₁ a₂ : α} {b₁ b₂ : α → β} :
     a₁ = a₂ →

@@ -106,8 +106,13 @@ unsafe def find (p : parse parser.pexpr) (c : itactic) : conv Unit := do
   let (found_result, new_lhs, pr) ←
     tactic.ext_simplify_core
         (success false st)-- loop counter
-        { zeta := false, beta := false, singlePass := true, eta := false, proj := false,
-          failIfUnchanged := false, memoize := false }
+        { zeta := false
+          beta := false
+          singlePass := true
+          eta := false
+          proj := false
+          failIfUnchanged := false
+          memoize := false }
         s (fun u => return u)
         (fun found_result s r p e => do
           let found ← tactic.unwrap found_result
@@ -138,8 +143,13 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
   let (found_result, new_lhs, pr) ←
     tactic.ext_simplify_core
         (success 1 st)-- loop counter, and whether the conversion tactic failed
-        { zeta := false, beta := false, singlePass := true, eta := false, proj := false,
-          failIfUnchanged := false, memoize := false }
+        { zeta := false
+          beta := false
+          singlePass := true
+          eta := false
+          proj := false
+          failIfUnchanged := false
+          memoize := false }
         s (fun u => return u)
         (fun found_result s r p e => do
           let i ← tactic.unwrap found_result

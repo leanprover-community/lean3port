@@ -1550,7 +1550,10 @@ unsafe def simp (use_iota_eqn : parse <| (tk "!")?) (trace_lemmas : parse <| (tk
     | none, none => cfg
     | some _, none => { cfg with iotaEqn := true }
     | none, some _ => { cfg with traceLemmas := true }
-    | some _, some _ => { cfg with iotaEqn := true, traceLemmas := true }
+    | some _, some _ =>
+      { cfg with 
+        iotaEqn := true
+        traceLemmas := true }
   propagate_tags do
     let lms ← simp_core cfg.toSimpConfig cfg.discharger no_dflt hs attr_names locat
     if cfg then trace (↑"Try this: simp only " ++ to_fmt lms) else skip
@@ -2024,7 +2027,9 @@ protected unsafe def apply_inj_lemma : tactic Unit := do
   let expr.const C _ ← return lhs.get_app_fn
   -- We disable auto_param and opt_param support to address issue #1943
       applyc
-      (Name.mk_string "inj" C) { autoParam := ff, optParam := ff }
+      (Name.mk_string "inj" C)
+      { autoParam := ff
+        optParam := ff }
   assumption
 #align tactic.apply_inj_lemma tactic.apply_inj_lemma
 

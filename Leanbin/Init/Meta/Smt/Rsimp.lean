@@ -46,7 +46,8 @@ unsafe def mk_hinst_lemma_attr_from_simp_attr (attr_decl_name attr_name : Name)
     (simp_attr_name : Name) (ex_attr_name : Name) : Tactic := do
   let t := q(user_attribute hinst_lemmas)
   let v :=
-    q(({ Name := attr_name, descr := s! "hinst_lemma attribute derived from '{simp_attr_name}'",
+    q(({  Name := attr_name
+          descr := s! "hinst_lemma attribute derived from '{simp_attr_name}'"
           cache_cfg :=
             { mk_cache := fun ns =>
                 let aux := simp_attr_name
@@ -55,7 +56,7 @@ unsafe def mk_hinst_lemma_attr_from_simp_attr (attr_decl_name attr_name : Name)
                 let hs ← to_hinst_lemmas reducible mk_name_set ns hinst_lemmas.mk
                 let ss ← attribute.get_instances aux
                 let ex ← get_name_set_for_attr ex_attr
-                to_hinst_lemmas reducible ex ss hs,
+                to_hinst_lemmas reducible ex ss hs
               dependencies := [`reducibility, simp_attr_name] } } :
         user_attribute hinst_lemmas))
   add_decl (declaration.defn attr_decl_name [] t v ReducibilityHints.abbrev ff)

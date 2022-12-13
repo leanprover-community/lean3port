@@ -138,7 +138,7 @@ theorem sub_def (a b : Fin n) : (a - b).val = (a.val + (n - b.val)) % n := by
 lean 3 declaration is
   forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} Nat (Fin.val n (HMod.hMod.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMod.{0} (Fin n) (Fin.hasMod n)) a b)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (Fin.val n a) (Fin.val n b))
 but is expected to have type
-  forall {n : Nat} (a : Fin n) (m : Fin n), Eq.{1} (Fin n) (HMod.hMod.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMod.{0} (Fin n) (Fin.instModFin n)) a m) (Fin.mk n (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (Fin.val n a) (Fin.val n m)) n) (Nat.mod_lt (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (Fin.val n a) (Fin.val n m)) n (Fin.size_positive n a)))
+  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} (Fin n) (HMod.hMod.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMod.{0} (Fin n) (Fin.instModFin n)) a b) (Fin.mk n (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (Fin.val n a) (Fin.val n b)) n) (Nat.mod_lt (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (Fin.val n a) (Fin.val n b)) n (Fin.size_positive n a)))
 Case conversion may be inaccurate. Consider using '#align fin.mod_def Fin.mod_defₓ'. -/
 theorem mod_def (a b : Fin n) : (a % b).val = a.val % b.val :=
   show (Fin.mod a b).val = a.val % b.val by cases a <;> cases b <;> simp [Fin.mod]

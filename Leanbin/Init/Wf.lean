@@ -46,9 +46,9 @@ structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro 
 
 /- warning: has_well_founded -> WellFoundedRelation is a dubious translation:
 lean 3 declaration is
-  Sort.{u} -> Type.{u}
+  Sort.{u1} -> Type.{u1}
 but is expected to have type
-  Sort.{u} -> Sort.{max 1 u}
+  Sort.{u1} -> Sort.{max 1 u1}
 Case conversion may be inaccurate. Consider using '#align has_well_founded WellFoundedRelationₓ'. -/
 class WellFoundedRelation (α : Sort u) : Type u where
   R : α → α → Prop

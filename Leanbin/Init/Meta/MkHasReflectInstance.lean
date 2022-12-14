@@ -4,6 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 
 Helper tactic for constructing a has_reflect instance.
+
+! This file was ported from Lean 3 source module init.meta.mk_has_reflect_instance
+! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! Please do not edit these lines, except to modify the commit id
+! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.RecUtil

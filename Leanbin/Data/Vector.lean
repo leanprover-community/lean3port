@@ -5,6 +5,11 @@ Author: Leonardo de Moura
 
 Tuples are lists of a fixed size.
 It is implemented as a subtype.
+
+! This file was ported from Lean 3 source module data.vector
+! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! Please do not edit these lines, except to modify the commit id
+! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.List.Default

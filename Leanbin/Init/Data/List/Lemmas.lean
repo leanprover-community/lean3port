@@ -72,10 +72,12 @@ theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
 #align list.length_append List.length_append
 -/
 
+#print List.length_repeat /-
 @[simp]
 theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by
   induction n <;> simp [*] <;> rfl
 #align list.length_repeat List.length_repeat
+-/
 
 #print List.length_tail /-
 @[simp]
@@ -365,6 +367,12 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
 #align list.ne_nil_of_length_eq_succ List.ne_nil_of_length_eq_succ
 -/
 
+/- warning: list.length_map₂ -> List.length_map₂ is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {β : Type.{u2}} {γ : Type.{u3}} (f : α -> β -> γ) (l₁ : List.{u1} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u3} γ (List.map₂.{u1, u2, u3} α β γ f l₁ l₂)) (LinearOrder.min.{0} Nat Nat.linearOrder (List.length.{u1} α l₁) (List.length.{u2} β l₂))
+but is expected to have type
+  forall {α : Type.{u3}} {β : Type.{u2}} {γ : Type.{u1}} (f : α -> β -> γ) (l₁ : List.{u3} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u1} γ (List.map₂.{u3, u2, u1} α β γ f l₁ l₂)) (Min.min.{0} Nat Nat.instMinNat (List.length.{u3} α l₁) (List.length.{u2} β l₂))
+Case conversion may be inaccurate. Consider using '#align list.length_map₂ List.length_map₂ₓ'. -/
 @[simp]
 theorem length_map₂ (f : α → β → γ) (l₁) :
     ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
@@ -475,6 +483,12 @@ section MapAccumr
 
 variable {φ : Type w₁} {σ : Type w₂}
 
+/- warning: list.map_accumr -> List.mapAccumr is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {β : Type.{u2}} {σ : Type.{u3}}, (α -> σ -> (Prod.{u3, u2} σ β)) -> (List.{u1} α) -> σ -> (Prod.{u3, u2} σ (List.{u2} β))
+but is expected to have type
+  forall {α : Type.{u1}} {β : Type.{u2}} {σ : Type.{u3}}, (β -> α -> (Prod.{u1, u3} α σ)) -> (List.{u2} β) -> α -> (Prod.{u1, u3} α (List.{u3} σ))
+Case conversion may be inaccurate. Consider using '#align list.map_accumr List.mapAccumrₓ'. -/
 -- This runs a function over a list returning the intermediate results and a
 -- a final result.
 def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
@@ -485,12 +499,18 @@ def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
     (z.1, z.2 :: r.2)
 #align list.map_accumr List.mapAccumr
 
+/- warning: list.length_map_accumr -> List.length_mapAccumr is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {β : Type.{u2}} {σ : Type.{u3}} (f : α -> σ -> (Prod.{u3, u2} σ β)) (x : List.{u1} α) (s : σ), Eq.{1} Nat (List.length.{u2} β (Prod.snd.{u3, u2} σ (List.{u2} β) (List.mapAccumr.{u1, u2, u3} α β σ f x s))) (List.length.{u1} α x)
+but is expected to have type
+  forall {α : Type.{u3}} {β : Type.{u2}} {σ : Type.{u1}} (f : β -> α -> (Prod.{u3, u1} α σ)) (x : List.{u2} β) (s : α), Eq.{1} Nat (List.length.{u1} σ (Prod.snd.{u3, u1} α (List.{u1} σ) (List.mapAccumr.{u3, u2, u1} α β σ f x s))) (List.length.{u2} β x)
+Case conversion may be inaccurate. Consider using '#align list.length_map_accumr List.length_mapAccumrₓ'. -/
 @[simp]
-theorem length_map_accumr :
+theorem length_mapAccumr :
     ∀ (f : α → σ → σ × β) (x : List α) (s : σ), length (mapAccumr f x s).2 = length x
   | f, a :: x, s => congr_arg succ (length_map_accumr f x s)
   | f, [], s => rfl
-#align list.length_map_accumr List.length_map_accumr
+#align list.length_map_accumr List.length_mapAccumr
 
 end MapAccumr
 
@@ -498,6 +518,12 @@ section MapAccumr₂
 
 variable {φ : Type w₁} {σ : Type w₂}
 
+/- warning: list.map_accumr₂ -> List.mapAccumr₂ is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {β : Type.{u2}} {φ : Type.{u3}} {σ : Type.{u4}}, (α -> β -> σ -> (Prod.{u4, u3} σ φ)) -> (List.{u1} α) -> (List.{u2} β) -> σ -> (Prod.{u4, u3} σ (List.{u3} φ))
+but is expected to have type
+  forall {α : Type.{u1}} {β : Type.{u2}} {φ : Type.{u3}} {σ : Type.{u4}}, (φ -> σ -> β -> (Prod.{u2, u1} β α)) -> (List.{u3} φ) -> (List.{u4} σ) -> β -> (Prod.{u2, u1} β (List.{u1} α))
+Case conversion may be inaccurate. Consider using '#align list.map_accumr₂ List.mapAccumr₂ₓ'. -/
 -- This runs a function over two lists returning the intermediate results and a
 -- a final result.
 def mapAccumr₂ (f : α → β → σ → σ × φ) : List α → List β → σ → σ × List φ
@@ -509,8 +535,14 @@ def mapAccumr₂ (f : α → β → σ → σ × φ) : List α → List β → �
     (q.1, q.2 :: r.2)
 #align list.map_accumr₂ List.mapAccumr₂
 
+/- warning: list.length_map_accumr₂ -> List.length_mapAccumr₂ is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {β : Type.{u2}} {φ : Type.{u3}} {σ : Type.{u4}} (f : α -> β -> σ -> (Prod.{u4, u3} σ φ)) (x : List.{u1} α) (y : List.{u2} β) (c : σ), Eq.{1} Nat (List.length.{u3} φ (Prod.snd.{u4, u3} σ (List.{u3} φ) (List.mapAccumr₂.{u1, u2, u3, u4} α β φ σ f x y c))) (LinearOrder.min.{0} Nat Nat.linearOrder (List.length.{u1} α x) (List.length.{u2} β y))
+but is expected to have type
+  forall {α : Type.{u3}} {β : Type.{u4}} {φ : Type.{u2}} {σ : Type.{u1}} (f : φ -> σ -> β -> (Prod.{u4, u3} β α)) (x : List.{u2} φ) (y : List.{u1} σ) (c : β), Eq.{1} Nat (List.length.{u3} α (Prod.snd.{u4, u3} β (List.{u3} α) (List.mapAccumr₂.{u3, u4, u2, u1} α β φ σ f x y c))) (Min.min.{0} Nat Nat.instMinNat (List.length.{u2} φ x) (List.length.{u1} σ y))
+Case conversion may be inaccurate. Consider using '#align list.length_map_accumr₂ List.length_mapAccumr₂ₓ'. -/
 @[simp]
-theorem length_map_accumr₂ :
+theorem length_mapAccumr₂ :
     ∀ (f : α → β → σ → σ × φ) (x y c), length (mapAccumr₂ f x y c).2 = min (length x) (length y)
   | f, a :: x, b :: y, c =>
     calc
@@ -521,7 +553,7 @@ theorem length_map_accumr₂ :
   | f, a :: x, [], c => rfl
   | f, [], b :: y, c => rfl
   | f, [], [], c => rfl
-#align list.length_map_accumr₂ List.length_map_accumr₂
+#align list.length_map_accumr₂ List.length_mapAccumr₂
 
 end MapAccumr₂
 

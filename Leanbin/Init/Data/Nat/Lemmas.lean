@@ -140,7 +140,7 @@ private unsafe def sort_add :=
   sorry
 #align nat.sort_add nat.sort_add
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic _private.285555777.sort_add -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.succ_mul /-
 theorem succ_mul : ∀ n m : ℕ, succ n * m = n * m + m
   | n, 0 => rfl
@@ -151,7 +151,7 @@ theorem succ_mul : ∀ n m : ℕ, succ n * m = n * m + m
 #align nat.succ_mul Nat.succ_mul
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic _private.285555777.sort_add -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.right_distrib /-
 protected theorem right_distrib : ∀ n m k : ℕ, (n + m) * k = n * k + m * k
   | n, m, 0 => rfl
@@ -161,7 +161,7 @@ protected theorem right_distrib : ∀ n m k : ℕ, (n + m) * k = n * k + m * k
 #align nat.right_distrib Nat.right_distrib
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic _private.285555777.sort_add -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.left_distrib /-
 protected theorem left_distrib : ∀ n m k : ℕ, n * (m + k) = n * m + n * k
   | 0, m, k => by simp [Nat.zero_mul]
@@ -201,12 +201,14 @@ theorem succ_add_eq_succ_add (n m : ℕ) : succ n + m = n + succ m := by simp [s
 #align nat.succ_add_eq_succ_add Nat.succ_add_eq_succ_add
 -/
 
+#print Nat.eq_zero_of_mul_eq_zero /-
 theorem eq_zero_of_mul_eq_zero : ∀ {n m : ℕ}, n * m = 0 → n = 0 ∨ m = 0
   | 0, m => fun h => Or.inl rfl
   | succ n, m => by 
     rw [succ_mul]; intro h
     exact Or.inr (Nat.eq_zero_of_add_eq_zero_left h)
 #align nat.eq_zero_of_mul_eq_zero Nat.eq_zero_of_mul_eq_zero
+-/
 
 /-! properties of inequality -/
 
@@ -1273,11 +1275,17 @@ private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
 #align nat.mod_core_congr nat.mod_core_congr
 
-theorem mod_def (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x := by
+/- warning: nat.mod_def -> Nat.mod_eq is a dubious translation:
+lean 3 declaration is
+  forall (x : Nat) (y : Nat), Eq.{1} Nat (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) x y) (ite.{1} Nat (And (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x)) (And.decidable (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x) (Nat.decidableLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (Nat.decidableLe y x)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) x y) y) x)
+but is expected to have type
+  forall (x : Nat) (y : Nat), Eq.{1} Nat (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) x y) (ite.{1} Nat (And (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x)) (instDecidableAnd (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x) (Nat.decLt (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (Nat.decLe y x)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) x y) y) x)
+Case conversion may be inaccurate. Consider using '#align nat.mod_def Nat.mod_eqₓ'. -/
+theorem mod_eq (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x := by
   cases x; · cases y <;> rfl
   cases y; · rfl
   refine' if_congr Iff.rfl (mod_core_congr _ _) rfl <;> simp [Nat.sub_le]
-#align nat.mod_def Nat.mod_def
+#align nat.mod_def Nat.mod_eq
 
 #print Nat.mod_zero /-
 @[simp]
@@ -1471,12 +1479,18 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
 #align nat.div_core_congr nat.div_core_congr
 
-theorem div_def (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 else 0 := by
+/- warning: nat.div_def -> Nat.div_eq is a dubious translation:
+lean 3 declaration is
+  forall (x : Nat) (y : Nat), Eq.{1} Nat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) x y) (ite.{1} Nat (And (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x)) (And.decidable (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x) (Nat.decidableLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (Nat.decidableLe y x)) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat Nat.hasAdd) (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) x y) y) (OfNat.ofNat.{0} Nat 1 (OfNat.mk.{0} Nat 1 (One.one.{0} Nat Nat.hasOne)))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))))
+but is expected to have type
+  forall (x : Nat) (y : Nat), Eq.{1} Nat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) x y) (ite.{1} Nat (And (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x)) (instDecidableAnd (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x) (Nat.decLt (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (Nat.decLe y x)) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) x y) y) (OfNat.ofNat.{0} Nat 1 (instOfNatNat 1))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)))
+Case conversion may be inaccurate. Consider using '#align nat.div_def Nat.div_eqₓ'. -/
+theorem div_eq (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 else 0 := by
   cases x; · cases y <;> rfl
   cases y; · rfl
   refine' if_congr Iff.rfl (congr_arg (· + 1) _) rfl
   refine' div_core_congr _ _ <;> simp [Nat.sub_le]
-#align nat.div_def Nat.div_def
+#align nat.div_def Nat.div_eq
 
 #print Nat.mod_add_div /-
 theorem mod_add_div (m k : ℕ) : m % k + k * (m / k) = m := by
@@ -1513,7 +1527,7 @@ protected theorem div_zero (n : ℕ) : n / 0 = 0 := by rw [div_def]; simp [lt_ir
 #print Nat.zero_div /-
 @[simp]
 protected theorem zero_div (b : ℕ) : 0 / b = 0 :=
-  Eq.trans (div_def 0 b) <| if_neg (And.ndrec not_le_of_gt)
+  Eq.trans (div_eq 0 b) <| if_neg (And.ndrec not_le_of_gt)
 #align nat.zero_div Nat.zero_div
 -/
 

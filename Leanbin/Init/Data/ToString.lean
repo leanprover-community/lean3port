@@ -47,13 +47,11 @@ instance {p : Prop} : ToString (Decidable p) :=
   ⟨-- Remark: type class inference will not consider local instance `b` in the new elaborator
   fun b : Decidable p => @ite _ p b "tt" "ff"⟩
 
-#print List.toStringAux /-
 protected def List.toStringAux {α : Type u} [ToString α] : Bool → List α → String
   | b, [] => ""
   | tt, x :: xs => toString x ++ List.toStringAux false xs
   | ff, x :: xs => ", " ++ toString x ++ List.toStringAux false xs
 #align list.to_string_aux List.toStringAux
--/
 
 #print List.toString /-
 protected def List.toString {α : Type u} [ToString α] : List α → String

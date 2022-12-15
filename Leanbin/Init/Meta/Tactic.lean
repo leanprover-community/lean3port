@@ -453,7 +453,7 @@ unsafe def trace {α : Type u} [has_to_tactic_format α] (a : α) : tactic Unit 
   return <| _root_.trace_fmt fmt fun u => ()
 #align tactic.trace tactic.trace
 
-unsafe def trace_call_stack : tactic Unit := fun state => traceCallStack (success () state)
+unsafe def trace_call_stack : tactic Unit := fun state => traceCallStack (success () StateM)
 #align tactic.trace_call_stack tactic.trace_call_stack
 
 unsafe def timetac {α : Type u} (desc : String) (t : Thunk (tactic α)) : tactic α := fun s =>

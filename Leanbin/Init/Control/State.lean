@@ -24,10 +24,12 @@ structure StateT (σ : Type u) (m : Type u → Type v) (α : Type u) : Type max 
 
 attribute [pp_using_anonymous_constructor] StateT
 
+#print StateM /-
 @[reducible]
-def State (σ α : Type u) : Type u :=
+def StateM (σ α : Type u) : Type u :=
   StateT σ id α
-#align state State
+#align state StateM
+-/
 
 namespace StateT
 
@@ -133,7 +135,7 @@ An implementation of [MonadState](https://hackage.haskell.org/package/mtl-2.2.2/
     equivalent because the only way to obtain an `m` is through `pure`.
     -/
 class MonadState (σ : outParam (Type u)) (m : Type u → Type v) where
-  lift {α : Type u} : State σ α → m α
+  lift {α : Type u} : StateM σ α → m α
 #align monad_state MonadState
 -/
 

@@ -47,9 +47,9 @@ private unsafe def mk_reflect : Name → Name → List Name → Nat → tactic (
   | I_name, F_name, [], num_rec => return []
   | I_name, F_name, fname :: fnames, num_rec => do
     let field ← get_local fname
-    let rec ← is_type_app_of field I_name
+    let rec ← is_type_app_of Field I_name
     let quote ←
-      if rec then mk_brec_on_rec_value F_name num_rec else mk_has_reflect_instance_for field
+      if rec then mk_brec_on_rec_value F_name num_rec else mk_has_reflect_instance_for Field
     let quotes ← mk_reflect I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (quote :: quotes)
 #align tactic.mk_reflect tactic.mk_reflect

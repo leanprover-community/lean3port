@@ -2070,69 +2070,69 @@ end Tactic
 
 universe u v
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Sum.inl.inj_eq {α : Type u} (β : Type v) (a₁ a₂ : α) :
     (@Sum.inl α β a₁ = Sum.inl a₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 #align sum.inl.inj_eq Sum.inl.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Sum.inr.inj_eq (α : Type u) {β : Type v} (b₁ b₂ : β) :
     (@Sum.inr α β b₁ = Sum.inr b₂) = (b₁ = b₂) := by
   run_tac
     tactic.mk_inj_eq
 #align sum.inr.inj_eq Sum.inr.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem PSum.inl.inj_eq {α : Sort u} (β : Sort v) (a₁ a₂ : α) :
     (@PSum.inl α β a₁ = PSum.inl a₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 #align psum.inl.inj_eq PSum.inl.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem PSum.inr.inj_eq (α : Sort u) {β : Sort v} (b₁ b₂ : β) :
     (@PSum.inr α β b₁ = PSum.inr b₂) = (b₁ = b₂) := by
   run_tac
     tactic.mk_inj_eq
 #align psum.inr.inj_eq PSum.inr.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Sigma.mk.inj_eq {α : Type u} {β : α → Type v} (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) :
     (Sigma.mk a₁ b₁ = Sigma.mk a₂ b₂) = (a₁ = a₂ ∧ HEq b₁ b₂) := by
   run_tac
     tactic.mk_inj_eq
 #align sigma.mk.inj_eq Sigma.mk.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem PSigma.mk.inj_eq {α : Sort u} {β : α → Sort v} (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) :
     (PSigma.mk a₁ b₁ = PSigma.mk a₂ b₂) = (a₁ = a₂ ∧ HEq b₁ b₂) := by
   run_tac
     tactic.mk_inj_eq
 #align psigma.mk.inj_eq PSigma.mk.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Subtype.mk.inj_eq {α : Sort u} {p : α → Prop} (a₁ : α) (h₁ : p a₁) (a₂ : α) (h₂ : p a₂) :
     (Subtype.mk a₁ h₁ = Subtype.mk a₂ h₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 #align subtype.mk.inj_eq Subtype.mk.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Option.some.inj_eq {α : Type u} (a₁ a₂ : α) : (some a₁ = some a₂) = (a₁ = a₂) := by
   run_tac
     tactic.mk_inj_eq
 #align option.some.inj_eq Option.some.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem List.cons.inj_eq {α : Type u} (h₁ : α) (t₁ : List α) (h₂ : α) (t₂ : List α) :
     (List.cons h₁ t₁ = List.cons h₂ t₂) = (h₁ = h₂ ∧ t₁ = t₂) := by
   run_tac
     tactic.mk_inj_eq
 #align list.cons.inj_eq List.cons.inj_eq
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_inj_eq -/
 theorem Nat.succ.inj_eq (n₁ n₂ : Nat) : (Nat.succ n₁ = Nat.succ n₂) = (n₁ = n₂) := by
   run_tac
     tactic.mk_inj_eq

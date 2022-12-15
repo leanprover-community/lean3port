@@ -334,7 +334,7 @@ theorem bitwise_zero (f : Bool → Bool → Bool) : bitwise f 0 0 = 0 := by
   rw [bitwise_zero_left] <;> cases f ff tt <;> rfl
 #align nat.bitwise_zero Nat.bitwise_zero
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.swap -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.swap -/
 @[simp]
 theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = ff) (a m b n) :
     bitwise f (bit a m) (bit b n) = bit (f a b) (bitwise f m n) := by

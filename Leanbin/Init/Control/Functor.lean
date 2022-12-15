@@ -27,10 +27,12 @@ class Functor (f : Type u → Type v) : Type max (u + 1) v where
 -- mathport name: «expr <$ »
 infixr:100 " <$ " => Functor.mapConst
 
+#print Functor.mapConstRev /-
 @[reducible]
 def Functor.mapConstRev {f : Type u → Type v} [Functor f] {α β : Type u} : f β → α → f α :=
   fun a b => b <$ a
 #align functor.map_const_rev Functor.mapConstRev
+-/
 
 -- mathport name: «expr $> »
 infixr:100 " $> " => Functor.mapConstRev

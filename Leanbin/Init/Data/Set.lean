@@ -36,10 +36,12 @@ instance hasMem : Membership α (Set α) :=
   ⟨fun x s => s x⟩
 #align set.has_mem Set.hasMem
 
+#print Set.mem_setOf_eq /-
 @[simp]
-theorem mem_set_of_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
+theorem mem_setOf_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
   rfl
-#align set.mem_set_of_eq Set.mem_set_of_eq
+#align set.mem_set_of_eq Set.mem_setOf_eq
+-/
 
 instance : EmptyCollection (Set α) :=
   ⟨{ x | False }⟩

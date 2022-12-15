@@ -108,19 +108,23 @@ def empty : List α → Bool
 
 open Option Nat
 
+#print List.nth /-
 @[simp]
 def nth : List α → Nat → Option α
   | [], n => none
   | a :: l, 0 => some a
   | a :: l, n + 1 => nth l n
 #align list.nth List.nth
+-/
 
+#print List.nthLe /-
 @[simp]
 def nthLe : ∀ (l : List α) (n), n < l.length → α
   | [], n, h => absurd h n.not_lt_zero
   | a :: l, 0, h => a
   | a :: l, n + 1, h => nth_le l n (le_of_succ_le_succ h)
 #align list.nth_le List.nthLe
+-/
 
 @[simp]
 def head [Inhabited α] : List α → α
@@ -154,23 +158,29 @@ def map (f : α → β) : List α → List β
 #align list.map List.map
 -/
 
+#print List.map₂ /-
 @[simp]
 def map₂ (f : α → β → γ) : List α → List β → List γ
   | [], _ => []
   | _, [] => []
   | x :: xs, y :: ys => f x y :: map₂ xs ys
 #align list.map₂ List.map₂
+-/
 
+#print List.mapWithIndexCore /-
 def mapWithIndexCore (f : ℕ → α → β) : ℕ → List α → List β
   | k, [] => []
   | k, a :: as => f k a :: map_with_index_core (k + 1) as
 #align list.map_with_index_core List.mapWithIndexCore
+-/
 
+#print List.mapWithIndex /-
 /-- Given a function `f : ℕ → α → β` and `as : list α`, `as = [a₀, a₁, ...]`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`. -/
 def mapWithIndex (f : ℕ → α → β) (as : List α) : List β :=
   mapWithIndexCore f 0 as
 #align list.map_with_index List.mapWithIndex
+-/
 
 #print List.join /-
 def join : List (List α) → List α
@@ -228,10 +238,12 @@ def span (p : α → Prop) [DecidablePred p] : List α → List α × List α
     else ([], a :: xs)
 #align list.span List.spanₓ
 
+#print List.findIndex /-
 def findIndex (p : α → Prop) [DecidablePred p] : List α → Nat
   | [] => 0
   | a :: l => if p a then 0 else succ (find_index l)
 #align list.find_index List.findIndex
+-/
 
 def indexOf [DecidableEq α] (a : α) : List α → Nat :=
   findIndex (Eq a)
@@ -241,11 +253,13 @@ def removeAll [DecidableEq α] (xs ys : List α) : List α :=
   filter (· ∉ ys) xs
 #align list.remove_all List.removeAllₓ
 
+#print List.updateNth /-
 def updateNth : List α → ℕ → α → List α
   | x :: xs, 0, a => a :: xs
   | x :: xs, i + 1, a => x :: update_nth xs i a
   | [], _, _ => []
 #align list.update_nth List.updateNth
+-/
 
 #print List.removeNth /-
 def removeNth : List α → ℕ → List α
@@ -301,13 +315,17 @@ def all (l : List α) (p : α → Bool) : Bool :=
 #align list.all List.all
 -/
 
+#print List.bor /-
 def bor (l : List Bool) : Bool :=
   any l id
 #align list.bor List.bor
+-/
 
+#print List.band /-
 def band (l : List Bool) : Bool :=
   all l id
 #align list.band List.band
+-/
 
 #print List.zipWith /-
 def zipWith (f : α → β → γ) : List α → List β → List γ
@@ -364,11 +382,13 @@ protected def inter [DecidableEq α] (l₁ l₂ : List α) : List α :=
 instance [DecidableEq α] : Inter (List α) :=
   ⟨List.inter⟩
 
+#print List.repeat /-
 @[simp]
 def repeat (a : α) : ℕ → List α
   | 0 => []
   | succ n => a :: repeat n
 #align list.repeat List.repeat
+-/
 
 def rangeCore : ℕ → List ℕ → List ℕ
   | 0, l => l
@@ -401,25 +421,31 @@ def enum : List α → List (ℕ × α) :=
 #align list.enum List.enum
 -/
 
+#print List.last /-
 @[simp]
 def last : ∀ l : List α, l ≠ [] → α
   | [], h => absurd rfl h
   | [a], h => a
   | a :: b :: l, h => last (b :: l) fun h => List.noConfusion h
 #align list.last List.last
+-/
 
+#print List.ilast /-
 def ilast [Inhabited α] : List α → α
   | [] => Inhabited.default α
   | [a] => a
   | [a, b] => b
   | a :: b :: l => ilast l
 #align list.ilast List.ilast
+-/
 
+#print List.init /-
 def init : List α → List α
   | [] => []
   | [a] => []
   | a :: l => a :: init l
 #align list.init List.init
+-/
 
 #print List.intersperse /-
 def intersperse (sep : α) : List α → List α
@@ -442,10 +468,12 @@ protected def bind {α : Type u} {β : Type v} (a : List α) (b : α → List β
 #align list.bind List.bind
 -/
 
+#print List.ret /-
 @[inline]
 protected def ret {α : Type u} (a : α) : List α :=
   [a]
 #align list.ret List.ret
+-/
 
 #print List.lt /-
 protected def lt [LT α] : List α → List α → Prop
@@ -490,8 +518,10 @@ instance hasDecidableLe [LT α] [h : DecidableRel ((· < ·) : α → α → Pro
     ∀ l₁ l₂ : List α, Decidable (l₁ ≤ l₂) := fun a b => Not.decidable
 #align list.has_decidable_le List.hasDecidableLe
 
+#print List.le_eq_not_gt /-
 theorem le_eq_not_gt [LT α] : ∀ l₁ l₂ : List α, (l₁ ≤ l₂) = ¬l₂ < l₁ := fun l₁ l₂ => rfl
 #align list.le_eq_not_gt List.le_eq_not_gt
+-/
 
 theorem lt_eq_not_ge [LT α] [DecidableRel ((· < ·) : α → α → Prop)] :
     ∀ l₁ l₂ : List α, (l₁ < l₂) = ¬l₂ ≤ l₁ := fun l₁ l₂ =>

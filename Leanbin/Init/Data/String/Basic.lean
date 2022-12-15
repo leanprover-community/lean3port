@@ -231,7 +231,7 @@ namespace String
 
 #print String.str /-
 def str : String → Char → String :=
-  push
+  Push
 #align string.str String.str
 -/
 

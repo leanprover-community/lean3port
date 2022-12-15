@@ -48,10 +48,10 @@ private unsafe def mk_sizeof : Bool → Name → Name → List Name → Nat → 
   | use_default, I_name, F_name, [], num_rec => return []
   | use_default, I_name, F_name, fname :: fnames, num_rec => do
     let field ← get_local fname
-    let rec ← is_type_app_of field I_name
+    let rec ← is_type_app_of Field I_name
     let sz ←
       if rec then mk_brec_on_rec_value F_name num_rec
-        else mk_has_sizeof_instance_for field use_default
+        else mk_has_sizeof_instance_for Field use_default
     let szs ← mk_sizeof use_default I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (sz :: szs)
 #align tactic.mk_sizeof tactic.mk_sizeof

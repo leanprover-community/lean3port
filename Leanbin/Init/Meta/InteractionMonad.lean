@@ -28,8 +28,8 @@ import Leanbin.Init.Data.ToString
 universe u v
 
 unsafe inductive interaction_monad.result (state : Type) (α : Type u)
-  | success : α → state → interaction_monad.result
-  | exception : Option (Unit → format) → Option Pos → state → interaction_monad.result
+  | success : α → StateM → interaction_monad.result
+  | exception : Option (Unit → format) → Option Pos → StateM → interaction_monad.result
 #align interaction_monad.result interaction_monad.result
 
 open InteractionMonad.Result
@@ -40,20 +40,20 @@ variable {state : Type} {α : Type u}
 
 variable [ToString α]
 
-unsafe def interaction_monad.result_to_string : result state α → String
+unsafe def interaction_monad.result_to_string : result StateM α → String
   | success a s => toString a
   | exception (some t) ref s => "Exception: " ++ toString (t ())
   | exception none ref s => "[silent exception]"
 #align interaction_monad.result_to_string interaction_monad.result_to_string
 
-unsafe instance interaction_monad.result_has_string : ToString (result state α) :=
+unsafe instance interaction_monad.result_has_string : ToString (result StateM α) :=
   ⟨interaction_monad.result_to_string⟩
 #align interaction_monad.result_has_string interaction_monad.result_has_string
 
 end
 
 unsafe def interaction_monad.result.clamp_pos {state : Type} {α : Type u} (line0 line col : ℕ) :
-    result state α → result state α
+    result StateM α → result StateM α
   | success a s => success a s
   | exception msg (some p) s => exception msg (some <| if p.line < line0 then ⟨line, col⟩ else p) s
   | exception msg none s => exception msg (some ⟨line, col⟩) s
@@ -61,7 +61,7 @@ unsafe def interaction_monad.result.clamp_pos {state : Type} {α : Type u} (line
 
 @[reducible]
 unsafe def interaction_monad (state : Type) (α : Type u) :=
-  state → result state α
+  StateM → result StateM α
 #align interaction_monad interaction_monad
 
 section
@@ -71,7 +71,7 @@ parameter {state : Type}
 variable {α : Type u} {β : Type v}
 
 -- mathport name: exprm
-local notation "m" => interaction_monad state
+local notation "m" => interaction_monad StateM
 
 @[inline]
 unsafe def interaction_monad_fmap (f : α → β) (t : m α) : m β := fun s =>
@@ -105,7 +105,7 @@ unsafe instance interaction_monad.monad :
 #align interaction_monad.monad interaction_monad.monad
 
 unsafe def interaction_monad.mk_exception {α : Type u} {β : Type v} [has_to_format β] (msg : β)
-    (ref : Option expr) (s : state) : result state α :=
+    (ref : Option expr) (s : StateM) : result StateM α :=
   exception (some fun _ => to_fmt msg) none s
 #align interaction_monad.mk_exception interaction_monad.mk_exception
 

@@ -179,7 +179,7 @@ unsafe
           mk_dec_eq_instance_core
 #align tactic.mk_dec_eq_instance tactic.mk_dec_eq_instance
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:61:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
 unsafe instance binder_info.has_decidable_eq : DecidableEq BinderInfo := by
   run_tac
     mk_dec_eq_instance

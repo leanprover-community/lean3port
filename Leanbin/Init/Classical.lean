@@ -231,18 +231,18 @@ theorem cases_on (a : Prop) {p : Prop → Prop} (h1 : p True) (h2 : p False) : p
 #align classical.cases_on Classical.cases_on
 -/
 
-#print Classical.by_cases /-
+#print by_cases /-
 -- this supercedes by_cases in decidable
 theorem by_cases {p q : Prop} (hpq : p → q) (hnpq : ¬p → q) : q :=
   Decidable.byCases hpq hnpq
-#align classical.by_cases Classical.by_cases
+#align classical.by_cases by_cases
 -/
 
-#print Classical.by_contradiction /-
+#print by_contradiction /-
 -- this supercedes by_contradiction in decidable
 theorem by_contradiction {p : Prop} (h : ¬p → False) : p :=
   Decidable.by_contradiction h
-#align classical.by_contradiction Classical.by_contradiction
+#align classical.by_contradiction by_contradiction
 -/
 
 #print Classical.eq_false_or_eq_true /-

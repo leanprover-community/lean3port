@@ -1764,11 +1764,9 @@ protected theorem div_div_eq_div_mul (m n k : ℕ) : m / n / k = m / (n * k) := 
 #align nat.div_div_eq_div_mul Nat.div_div_eq_div_mul
 -/
 
-#print Nat.mul_div_mul /-
 protected theorem mul_div_mul {m : ℕ} (n k : ℕ) (H : 0 < m) : m * n / (m * k) = n / k := by
   rw [← Nat.div_div_eq_div_mul, Nat.mul_div_cancel_left _ H]
 #align nat.mul_div_mul Nat.mul_div_mul
--/
 
 #print Nat.div_lt_self /-
 theorem div_lt_self {n m : Nat} : 0 < n → 1 < m → n / m < n := by

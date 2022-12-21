@@ -185,10 +185,10 @@ theorem neg_of_nat_zero : -ofNat 0 = 0 :=
   rfl
 #align int.neg_of_nat_zero Int.neg_of_nat_zero
 
-#print Int.neg_ofNat_of_succ /-
-theorem neg_ofNat_of_succ (n : ℕ) : -ofNat (succ n) = -[n+1] :=
+#print Int.neg_ofNat_succ /-
+theorem neg_ofNat_succ (n : ℕ) : -ofNat (succ n) = -[n+1] :=
   rfl
-#align int.neg_of_nat_of_succ Int.neg_ofNat_of_succ
+#align int.neg_of_nat_of_succ Int.neg_ofNat_succ
 -/
 
 #print Int.neg_negSucc /-

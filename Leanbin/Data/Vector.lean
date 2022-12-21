@@ -223,45 +223,45 @@ theorem toList_mk (v : List α) (P : List.length v = n) : toList (Subtype.mk v P
 #align vector.to_list_mk Vector.toList_mk
 -/
 
-#print Vector.to_list_nil /-
+#print Vector.toList_nil /-
 @[simp]
-theorem to_list_nil : toList nil = @List.nil α :=
+theorem toList_nil : toList nil = @List.nil α :=
   rfl
-#align vector.to_list_nil Vector.to_list_nil
+#align vector.to_list_nil Vector.toList_nil
 -/
 
-#print Vector.to_list_length /-
+#print Vector.toList_length /-
 @[simp]
-theorem to_list_length (v : Vector α n) : (toList v).length = n :=
+theorem toList_length (v : Vector α n) : (toList v).length = n :=
   v.2
-#align vector.to_list_length Vector.to_list_length
+#align vector.to_list_length Vector.toList_length
 -/
 
-#print Vector.to_list_cons /-
+#print Vector.toList_cons /-
 @[simp]
-theorem to_list_cons (a : α) (v : Vector α n) : toList (cons a v) = a :: toList v := by cases v; rfl
-#align vector.to_list_cons Vector.to_list_cons
+theorem toList_cons (a : α) (v : Vector α n) : toList (cons a v) = a :: toList v := by cases v; rfl
+#align vector.to_list_cons Vector.toList_cons
 -/
 
-#print Vector.to_list_append /-
+#print Vector.toList_append /-
 @[simp]
-theorem to_list_append {n m : Nat} (v : Vector α n) (w : Vector α m) :
+theorem toList_append {n m : Nat} (v : Vector α n) (w : Vector α m) :
     toList (append v w) = toList v ++ toList w := by cases v; cases w; rfl
-#align vector.to_list_append Vector.to_list_append
+#align vector.to_list_append Vector.toList_append
 -/
 
-#print Vector.to_list_drop /-
+#print Vector.toList_drop /-
 @[simp]
-theorem to_list_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.drop n (toList v) := by
+theorem toList_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.drop n (toList v) := by
   cases v; rfl
-#align vector.to_list_drop Vector.to_list_drop
+#align vector.to_list_drop Vector.toList_drop
 -/
 
-#print Vector.to_list_take /-
+#print Vector.toList_take /-
 @[simp]
-theorem to_list_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.take n (toList v) := by
+theorem toList_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.take n (toList v) := by
   cases v; rfl
-#align vector.to_list_take Vector.to_list_take
+#align vector.to_list_take Vector.toList_take
 -/
 
 end Vector

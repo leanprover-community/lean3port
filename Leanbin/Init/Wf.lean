@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.wf
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -215,8 +215,8 @@ theorem sizeof_measure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure
   measure_wf SizeOf.sizeOf
 #align sizeof_measure_wf sizeof_measure_wf
 
-instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] :
-    WellFoundedRelation α where 
+instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : WellFoundedRelation α
+    where
   R := SizeofMeasure α
   wf := sizeof_measure_wf α
 #align has_well_founded_of_has_sizeof hasWellFoundedOfHasSizeof
@@ -290,8 +290,8 @@ theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (RPro
 end
 
 instance hasWellFounded {α : Type u} {β : Type v} [s₁ : WellFoundedRelation α]
-    [s₂ : WellFoundedRelation β] :
-    WellFoundedRelation (α × β) where 
+    [s₂ : WellFoundedRelation β] : WellFoundedRelation (α × β)
+    where
   R := Lex s₁.R s₂.R
   wf := lex_wf s₁.wf s₂.wf
 #align prod.has_well_founded Prod.hasWellFounded

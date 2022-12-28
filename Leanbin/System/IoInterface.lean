@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module system.io_interface
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -125,13 +125,12 @@ instance monadIoIsMonad (m : Type → Type → Type) (e : Type) [MonadIo m] : Mo
   MonadIo.monad e
 #align monad_io_is_monad monadIoIsMonad
 
-instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] :
-    MonadFail (m Io.Error) where fail α s := MonadIo.fail _ _ (Io.Error.other s)
+instance monadIoIsMonadFail (m : Type → Type → Type) [MonadIo m] : MonadFail (m Io.Error)
+    where fail α s := MonadIo.fail _ _ (Io.Error.other s)
 #align monad_io_is_monad_fail monadIoIsMonadFail
 
-instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] :
-    Alternative
-      (m Io.Error) where 
+instance monadIoIsAlternative (m : Type → Type → Type) [MonadIo m] : Alternative (m Io.Error)
+    where
   orelse α a b := MonadIo.catch _ _ _ a fun _ => b
   failure α := MonadIo.fail _ _ (Io.Error.other "failure")
 #align monad_io_is_alternative monadIoIsAlternative

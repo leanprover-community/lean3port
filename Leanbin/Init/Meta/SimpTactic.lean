@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.simp_tactic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -208,7 +208,7 @@ end Tactic
 
    The list `u` contains defintions to be delta-reduced, and projections to be reduced.-/
 unsafe axiom simp_lemmas.dsimplify (s : simp_lemmas) (u : List Name := []) (e : expr)
-    (cfg : Tactic.DsimpConfig := {  }) : tactic expr
+    (cfg : Tactic.DsimpConfig := { }) : tactic expr
 #align simp_lemmas.dsimplify simp_lemmas.dsimplify
 
 namespace Tactic
@@ -229,7 +229,7 @@ unsafe axiom dsimplify_core
          The output is similar to (pre a e), but the 'flag' indicates whether
          the new expression should be revisited or not. -/
     (post : α → expr → tactic (α × expr × Bool))
-    (e : expr) (cfg : DsimpConfig := {  }) : tactic (α × expr)
+    (e : expr) (cfg : DsimpConfig := { }) : tactic (α × expr)
 #align tactic.dsimplify_core tactic.dsimplify_core
 
 unsafe def dsimplify (pre : expr → tactic (expr × Bool)) (post : expr → tactic (expr × Bool)) :
@@ -252,14 +252,14 @@ unsafe def get_simp_lemmas_or_default : Option simp_lemmas → tactic simp_lemma
 #align tactic.get_simp_lemmas_or_default tactic.get_simp_lemmas_or_default
 
 unsafe def dsimp_target (s : Option simp_lemmas := none) (u : List Name := [])
-    (cfg : DsimpConfig := {  }) : tactic Unit := do
+    (cfg : DsimpConfig := { }) : tactic Unit := do
   let s ← get_simp_lemmas_or_default s
   let t ← target >>= instantiate_mvars
   s u t cfg >>= unsafe_change
 #align tactic.dsimp_target tactic.dsimp_target
 
 unsafe def dsimp_hyp (h : expr) (s : Option simp_lemmas := none) (u : List Name := [])
-    (cfg : DsimpConfig := {  }) : tactic Unit := do
+    (cfg : DsimpConfig := { }) : tactic Unit := do
   let s ← get_simp_lemmas_or_default s
   revert_and_transform (fun e => s u e cfg) h
 #align tactic.dsimp_hyp tactic.dsimp_hyp
@@ -282,15 +282,15 @@ structure DunfoldConfig extends DsimpConfig where
    performance reasons. -/
 
 
-unsafe axiom dunfold (cs : List Name) (e : expr) (cfg : DunfoldConfig := {  }) : tactic expr
+unsafe axiom dunfold (cs : List Name) (e : expr) (cfg : DunfoldConfig := { }) : tactic expr
 #align tactic.dunfold tactic.dunfold
 
-unsafe def dunfold_target (cs : List Name) (cfg : DunfoldConfig := {  }) : tactic Unit := do
+unsafe def dunfold_target (cs : List Name) (cfg : DunfoldConfig := { }) : tactic Unit := do
   let t ← target
   dunfold cs t cfg >>= unsafe_change
 #align tactic.dunfold_target tactic.dunfold_target
 
-unsafe def dunfold_hyp (cs : List Name) (h : expr) (cfg : DunfoldConfig := {  }) : tactic Unit :=
+unsafe def dunfold_hyp (cs : List Name) (h : expr) (cfg : DunfoldConfig := { }) : tactic Unit :=
   revert_and_transform (fun e => dunfold cs e cfg) h
 #align tactic.dunfold_hyp tactic.dunfold_hyp
 
@@ -311,7 +311,7 @@ private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
 #align tactic.is_delta_target tactic.is_delta_target
 
 /-- Delta reduce the given constant names -/
-unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tactic expr :=
+unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := { }) : tactic expr :=
   let unfold (u : Unit) (e : expr) : tactic (Unit × expr × Bool) := do
     guard (is_delta_target e cs)
     let expr.const f_name f_lvls ← return e.get_app_fn
@@ -328,12 +328,12 @@ unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := {  }) : tacti
   return new_e
 #align tactic.delta tactic.delta
 
-unsafe def delta_target (cs : List Name) (cfg : DeltaConfig := {  }) : tactic Unit := do
+unsafe def delta_target (cs : List Name) (cfg : DeltaConfig := { }) : tactic Unit := do
   let t ← target
   delta cs t cfg >>= unsafe_change
 #align tactic.delta_target tactic.delta_target
 
-unsafe def delta_hyp (cs : List Name) (h : expr) (cfg : DeltaConfig := {  }) : tactic Unit :=
+unsafe def delta_hyp (cs : List Name) (h : expr) (cfg : DeltaConfig := { }) : tactic Unit :=
   revert_and_transform (fun e => delta cs e cfg) h
 #align tactic.delta_hyp tactic.delta_hyp
 
@@ -345,7 +345,7 @@ structure UnfoldProjConfig extends DsimpConfig where
 unsafe axiom unfold_proj (e : expr) (md := Transparency.instances) : tactic expr
 #align tactic.unfold_proj tactic.unfold_proj
 
-unsafe def unfold_projs (e : expr) (cfg : UnfoldProjConfig := {  }) : tactic expr :=
+unsafe def unfold_projs (e : expr) (cfg : UnfoldProjConfig := { }) : tactic expr :=
   let unfold (changed : Bool) (e : expr) : tactic (Bool × expr × Bool) := do
     let new_e ← unfold_proj e cfg.md
     return (tt, new_e, tt)
@@ -355,12 +355,12 @@ unsafe def unfold_projs (e : expr) (cfg : UnfoldProjConfig := {  }) : tactic exp
   return new_e
 #align tactic.unfold_projs tactic.unfold_projs
 
-unsafe def unfold_projs_target (cfg : UnfoldProjConfig := {  }) : tactic Unit := do
+unsafe def unfold_projs_target (cfg : UnfoldProjConfig := { }) : tactic Unit := do
   let t ← target
   unfold_projs t cfg >>= unsafe_change
 #align tactic.unfold_projs_target tactic.unfold_projs_target
 
-unsafe def unfold_projs_hyp (h : expr) (cfg : UnfoldProjConfig := {  }) : tactic Unit :=
+unsafe def unfold_projs_hyp (h : expr) (cfg : UnfoldProjConfig := { }) : tactic Unit :=
   revert_and_transform (fun e => unfold_projs e cfg) h
 #align tactic.unfold_projs_hyp tactic.unfold_projs_hyp
 
@@ -394,11 +394,11 @@ structure SimpConfig where
    and projection applications that should be unfolded.
 -/
 unsafe axiom simplify (s : simp_lemmas) (to_unfold : List Name := []) (e : expr)
-    (cfg : SimpConfig := {  }) (r : Name := `eq) (discharger : tactic Unit := failed) :
+    (cfg : SimpConfig := { }) (r : Name := `eq) (discharger : tactic Unit := failed) :
     tactic (expr × expr × name_set)
 #align tactic.simplify tactic.simplify
 
-unsafe def simp_target (s : simp_lemmas) (to_unfold : List Name := []) (cfg : SimpConfig := {  })
+unsafe def simp_target (s : simp_lemmas) (to_unfold : List Name := []) (cfg : SimpConfig := { })
     (discharger : tactic Unit := failed) : tactic name_set := do
   let t ← target >>= instantiate_mvars
   let (new_t, pr, lms) ← simplify s to_unfold t cfg `eq discharger
@@ -407,7 +407,7 @@ unsafe def simp_target (s : simp_lemmas) (to_unfold : List Name := []) (cfg : Si
 #align tactic.simp_target tactic.simp_target
 
 unsafe def simp_hyp (s : simp_lemmas) (to_unfold : List Name := []) (h : expr)
-    (cfg : SimpConfig := {  }) (discharger : tactic Unit := failed) : tactic (expr × name_set) := do
+    (cfg : SimpConfig := { }) (discharger : tactic Unit := failed) : tactic (expr × name_set) := do
   when (expr.is_local_constant h = ff)
       (fail "tactic simp_at failed, the given expression is not a hypothesis")
   let htype ← infer_type h
@@ -518,7 +518,7 @@ unsafe def simp_intros_aux (cfg : SimpConfig) (use_hyps : Bool) (to_unfold : Lis
 #align tactic.simp_intros_aux tactic.simp_intros_aux
 
 unsafe def simp_intros (s : simp_lemmas) (to_unfold : List Name := []) (ids : List Name := [])
-    (cfg : SimpIntrosConfig := {  }) : tactic Unit :=
+    (cfg : SimpIntrosConfig := { }) : tactic Unit :=
   step <| simp_intros_aux cfg.toSimpConfig cfg.useHyps to_unfold s (not ids.Empty) ids
 #align tactic.simp_intros tactic.simp_intros
 
@@ -594,7 +594,7 @@ unsafe def join_user_simp_lemmas (no_dflt : Bool) (attrs : List Name) : tactic s
 #align tactic.join_user_simp_lemmas tactic.join_user_simp_lemmas
 
 unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × expr × expr)) (e : expr)
-    (cfg : SimpConfig := {  }) : tactic (α × expr × expr) :=
+    (cfg : SimpConfig := { }) : tactic (α × expr × expr) :=
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← pre a e
@@ -603,7 +603,7 @@ unsafe def simplify_top_down {α} (a : α) (pre : α → expr → tactic (α × 
     (fun _ _ _ _ _ => failed) `eq e
 #align tactic.simplify_top_down tactic.simplify_top_down
 
-unsafe def simp_top_down (pre : expr → tactic (expr × expr)) (cfg : SimpConfig := {  }) :
+unsafe def simp_top_down (pre : expr → tactic (expr × expr)) (cfg : SimpConfig := { }) :
     tactic Unit := do
   let t ← target
   let (_, new_target, pr) ←
@@ -616,7 +616,7 @@ unsafe def simp_top_down (pre : expr → tactic (expr × expr)) (cfg : SimpConfi
 #align tactic.simp_top_down tactic.simp_top_down
 
 unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α × expr × expr)) (e : expr)
-    (cfg : SimpConfig := {  }) : tactic (α × expr × expr) :=
+    (cfg : SimpConfig := { }) : tactic (α × expr × expr) :=
   ext_simplify_core a cfg simp_lemmas.mk (fun _ => failed) (fun _ _ _ _ _ => failed)
     (fun a _ _ _ e => do
       let (new_a, new_e, pr) ← post a e
@@ -625,7 +625,7 @@ unsafe def simplify_bottom_up {α} (a : α) (post : α → expr → tactic (α �
     `eq e
 #align tactic.simplify_bottom_up tactic.simplify_bottom_up
 
-unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpConfig := {  }) :
+unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpConfig := { }) :
     tactic Unit := do
   let t ← target
   let (_, new_target, pr) ←
@@ -747,7 +747,7 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
             let new_es ← update_simp_lemmas es new_fact_pr
             let new_r ← update_simp_lemmas r new_fact_pr
             let new_r :=
-              { e with 
+              { e with
                   new_type := new_h_type
                   pr := new_pr } ::
                 new_r
@@ -756,7 +756,7 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
             return (new_lms lms fun n ns => name_set.insert ns n)
 #align tactic.loop tactic.loop
 
-unsafe def simp_all (s : simp_lemmas) (to_unfold : List Name) (cfg : SimpConfig := {  })
+unsafe def simp_all (s : simp_lemmas) (to_unfold : List Name) (cfg : SimpConfig := { })
     (discharger : tactic Unit := failed) : tactic name_set := do
   let hs ← non_dep_prop_hyps
   let (s, es) ← init s hs

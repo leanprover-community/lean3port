@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.option.instances
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -15,8 +15,8 @@ import Leanbin.Init.Control.Lawful
 
 universe u v
 
-instance : LawfulMonad
-      Option where 
+instance : LawfulMonad Option
+    where
   id_map α x := Option.rec rfl (fun x => rfl) x
   pure_bind α β x f := rfl
   bind_assoc α β γ x f g := Option.rec rfl (fun x => rfl) x

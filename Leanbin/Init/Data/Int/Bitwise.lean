@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Mario Carneiro
 
 ! This file was ported from Lean 3 source module init.data.int.bitwise
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -53,30 +53,30 @@ def lnot : ℤ → ℤ
 
 def lor : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.lor m n
-  | (m : ℕ), -[n+1] => -[Nat.ldiff n m+1]
-  | -[m+1], (n : ℕ) => -[Nat.ldiff m n+1]
+  | (m : ℕ), -[n+1] => -[Nat.ldiff' n m+1]
+  | -[m+1], (n : ℕ) => -[Nat.ldiff' m n+1]
   | -[m+1], -[n+1] => -[Nat.land m n+1]
 #align int.lor Int.lor
 
 def land : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.land m n
-  | (m : ℕ), -[n+1] => Nat.ldiff m n
-  | -[m+1], (n : ℕ) => Nat.ldiff n m
+  | (m : ℕ), -[n+1] => Nat.ldiff' m n
+  | -[m+1], (n : ℕ) => Nat.ldiff' n m
   | -[m+1], -[n+1] => -[Nat.lor m n+1]
 #align int.land Int.land
 
 def ldiff : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.ldiff m n
+  | (m : ℕ), (n : ℕ) => Nat.ldiff' m n
   | (m : ℕ), -[n+1] => Nat.land m n
   | -[m+1], (n : ℕ) => -[Nat.lor m n+1]
-  | -[m+1], -[n+1] => Nat.ldiff n m
+  | -[m+1], -[n+1] => Nat.ldiff' n m
 #align int.ldiff Int.ldiff
 
 def lxor : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.lxor m n
-  | (m : ℕ), -[n+1] => -[Nat.lxor m n+1]
-  | -[m+1], (n : ℕ) => -[Nat.lxor m n+1]
-  | -[m+1], -[n+1] => Nat.lxor m n
+  | (m : ℕ), (n : ℕ) => Nat.lxor' m n
+  | (m : ℕ), -[n+1] => -[Nat.lxor' m n+1]
+  | -[m+1], (n : ℕ) => -[Nat.lxor' m n+1]
+  | -[m+1], -[n+1] => Nat.lxor' m n
 #align int.lxor Int.lxor
 
 def shiftl : ℤ → ℤ → ℤ

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jannis Limperg
 
 ! This file was ported from Lean 3 source module init.meta.interactive
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -496,20 +496,20 @@ private unsafe def rw_core (rs : parse rw_rules) (loca : parse location) (cfg : 
 
 `rewrite e at l` rewrites `e` at location(s) `l`, where `l` is either `*` or a list of hypotheses in the local context. In the latter case, a turnstile `⊢` or `|-` can also be used, to signify the target of the goal.
 -/
-unsafe def rewrite (q : parse rw_rules) (l : parse location) (cfg : RewriteCfg := {  }) :
+unsafe def rewrite (q : parse rw_rules) (l : parse location) (cfg : RewriteCfg := { }) :
     tactic Unit :=
   propagate_tags (rw_core q l cfg)
 #align tactic.interactive.rewrite tactic.interactive.rewrite
 
 /-- An abbreviation for `rewrite`.
 -/
-unsafe def rw (q : parse rw_rules) (l : parse location) (cfg : RewriteCfg := {  }) : tactic Unit :=
+unsafe def rw (q : parse rw_rules) (l : parse location) (cfg : RewriteCfg := { }) : tactic Unit :=
   propagate_tags (rw_core q l cfg)
 #align tactic.interactive.rw tactic.interactive.rw
 
 /-- `rewrite` followed by `assumption`.
 -/
-unsafe def rwa (q : parse rw_rules) (l : parse location) (cfg : RewriteCfg := {  }) : tactic Unit :=
+unsafe def rwa (q : parse rw_rules) (l : parse location) (cfg : RewriteCfg := { }) : tactic Unit :=
   rewrite q l cfg >> try assumption
 #align tactic.interactive.rwa tactic.interactive.rwa
 
@@ -1549,14 +1549,14 @@ The `simp` tactic uses lemmas and hypotheses to simplify the main goal target or
 -/
 unsafe def simp (use_iota_eqn : parse <| (tk "!")?) (trace_lemmas : parse <| (tk "?")?)
     (no_dflt : parse only_flag) (hs : parse simp_arg_list) (attr_names : parse with_ident_list)
-    (locat : parse location) (cfg : simp_config_ext := {  }) : tactic Unit :=
+    (locat : parse location) (cfg : simp_config_ext := { }) : tactic Unit :=
   let cfg :=
     match use_iota_eqn, trace_lemmas with
     | none, none => cfg
     | some _, none => { cfg with iotaEqn := true }
     | none, some _ => { cfg with traceLemmas := true }
     | some _, some _ =>
-      { cfg with 
+      { cfg with
         iotaEqn := true
         traceLemmas := true }
   propagate_tags do
@@ -1578,7 +1578,7 @@ unsafe def trace_simp_set (no_dflt : parse only_flag) (hs : parse simp_arg_list)
 As with `simp`, a list of simplification lemmas can be provided. The modifiers `only` and `with` behave as with `simp`.
 -/
 unsafe def simp_intros (ids : parse ident_*) (no_dflt : parse only_flag) (hs : parse simp_arg_list)
-    (attr_names : parse with_ident_list) (cfg : SimpIntrosConfig := {  }) : tactic Unit := do
+    (attr_names : parse with_ident_list) (cfg : SimpIntrosConfig := { }) : tactic Unit := do
   let (s, u) ← mk_simp_set no_dflt attr_names hs
   when (¬u) (fail s! "simp_intros tactic does not support {u}")
   tactic.simp_intros s u ids cfg
@@ -1592,7 +1592,7 @@ private unsafe def to_simp_arg_list (symms : List Bool) (es : List pexpr) : List
 /-- `dsimp` is similar to `simp`, except that it only uses definitional equalities.
 -/
 unsafe def dsimp (no_dflt : parse only_flag) (es : parse simp_arg_list)
-    (attr_names : parse with_ident_list) (l : parse location) (cfg : DsimpConfig := {  }) :
+    (attr_names : parse with_ident_list) (l : parse location) (cfg : DsimpConfig := { }) :
     tactic Unit := do
   let (s, u) ← mk_simp_set no_dflt attr_names es
   match l with
@@ -1705,7 +1705,7 @@ private unsafe def to_qualified_names : List Name → tactic (List Name)
 
 /-- Similar to `unfold`, but only uses definitional equalities.
 -/
-unsafe def dunfold (cs : parse ident*) (l : parse location) (cfg : DunfoldConfig := {  }) :
+unsafe def dunfold (cs : parse ident*) (l : parse location) (cfg : DunfoldConfig := { }) :
     tactic Unit :=
   match l with
   | loc.wildcard => do
@@ -1739,7 +1739,7 @@ unsafe def delta : parse ident* → parse location → tactic Unit
     l (delta_hyp new_cs) (delta_target new_cs)
 #align tactic.interactive.delta tactic.interactive.delta
 
-private unsafe def unfold_projs_hyps (cfg : UnfoldProjConfig := {  }) (hs : List Name) :
+private unsafe def unfold_projs_hyps (cfg : UnfoldProjConfig := { }) (hs : List Name) :
     tactic Bool :=
   hs.mfoldl
     (fun r h => do
@@ -1750,7 +1750,7 @@ private unsafe def unfold_projs_hyps (cfg : UnfoldProjConfig := {  }) (hs : List
 
 /-- This tactic unfolds all structure projections.
 -/
-unsafe def unfold_projs (l : parse location) (cfg : UnfoldProjConfig := {  }) : tactic Unit :=
+unsafe def unfold_projs (l : parse location) (cfg : UnfoldProjConfig := { }) : tactic Unit :=
   match l with
   | loc.wildcard => do
     let ls ← local_context
@@ -1793,7 +1793,7 @@ Given defined constants `e₁ ... eₙ`, `unfold e₁ ... eₙ` iteratively unfo
 
 As with `simp`, the `at` modifier can be used to specify locations for the unfolding.
 -/
-unsafe def unfold (cs : parse ident*) (locat : parse location) (cfg : UnfoldConfig := {  }) :
+unsafe def unfold (cs : parse ident*) (locat : parse location) (cfg : UnfoldConfig := { }) :
     tactic Unit := do
   let es ← ids_to_simp_arg_list "unfold" cs
   let no_dflt := true

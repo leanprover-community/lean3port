@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.constructor_tactic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -31,7 +31,7 @@ private unsafe def try_constructors (cfg : ApplyCfg) : List Name → tactic (Lis
   | c :: cs => (mk_const c >>= fun e => apply e cfg) <|> try_constructors cs
 #align tactic.try_constructors tactic.try_constructors
 
-unsafe def constructor (cfg : ApplyCfg := {  }) : tactic (List (Name × expr)) :=
+unsafe def constructor (cfg : ApplyCfg := { }) : tactic (List (Name × expr)) :=
   target' >>= get_constructors_for >>= try_constructors cfg
 #align tactic.constructor tactic.constructor
 

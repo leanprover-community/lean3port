@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.smt.congruence_closure
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -127,11 +127,11 @@ unsafe axiom cc_state.proof_for_false : cc_state → tactic expr
 namespace CcState
 
 unsafe def mk : cc_state :=
-  cc_state.mk_core {  }
+  cc_state.mk_core { }
 #align cc_state.mk cc_state.mk
 
 unsafe def mk_using_hs : tactic cc_state :=
-  cc_state.mk_using_hs_core {  }
+  cc_state.mk_using_hs_core { }
 #align cc_state.mk_using_hs cc_state.mk_using_hs
 
 unsafe def roots (s : cc_state) : List expr :=
@@ -207,7 +207,7 @@ unsafe def tactic.cc_core (cfg : CcConfig) : tactic Unit := do
 #align tactic.cc_core tactic.cc_core
 
 unsafe def tactic.cc : tactic Unit :=
-  tactic.cc_core {  }
+  tactic.cc_core { }
 #align tactic.cc tactic.cc
 
 unsafe def tactic.cc_dbg_core (cfg : CcConfig) : tactic Unit :=
@@ -215,7 +215,7 @@ unsafe def tactic.cc_dbg_core (cfg : CcConfig) : tactic Unit :=
 #align tactic.cc_dbg_core tactic.cc_dbg_core
 
 unsafe def tactic.cc_dbg : tactic Unit :=
-  tactic.cc_dbg_core {  }
+  tactic.cc_dbg_core { }
 #align tactic.cc_dbg tactic.cc_dbg
 
 unsafe def tactic.ac_refl : tactic Unit := do

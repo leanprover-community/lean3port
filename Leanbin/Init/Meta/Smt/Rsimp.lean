@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.smt.rsimp
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -169,8 +169,8 @@ private def tagged_proof.rsimp : Unit :=
   ()
 #align rsimp.tagged_proof.rsimp rsimp.tagged_proof.rsimp
 
-unsafe def collect_implied_eqs (cfg : Config := {  }) (extra := hinst_lemmas.mk) :
-    tactic cc_state := do
+unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) : tactic cc_state :=
+  do
   focus1 <|
       (using_smt_with { emAttr := cfg }) do
         add_lemmas_from_facts
@@ -203,12 +203,12 @@ open Rsimp
 
 namespace Tactic
 
-unsafe def rsimp (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
+unsafe def rsimp (cfg : Config := { }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
   try <| rsimplify_goal ccs
 #align tactic.rsimp tactic.rsimp
 
-unsafe def rsimp_at (h : expr) (cfg : Config := {  }) (extra := hinst_lemmas.mk) : tactic Unit := do
+unsafe def rsimp_at (h : expr) (cfg : Config := { }) (extra := hinst_lemmas.mk) : tactic Unit := do
   let ccs ← collect_implied_eqs cfg extra
   try <| rsimplify_at ccs h
 #align tactic.rsimp_at tactic.rsimp_at

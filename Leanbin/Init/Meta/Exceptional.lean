@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.exceptional
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -71,7 +71,8 @@ unsafe def fail (f : format) : exceptional α :=
 
 end Exceptional
 
-unsafe instance : Monad exceptional where 
+unsafe instance : Monad exceptional
+    where
   pure := @exceptional.return
   bind := @exceptional.bind
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.bool.lemmas
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -275,7 +275,7 @@ theorem Bool.of_decide_false {p : Prop} [Decidable p] : decide p = ff → ¬p :=
 
 #print Bool.decide_congr /-
 theorem Bool.decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q) :
-    decide p = decide q := by 
+    decide p = decide q := by
   induction' h' : to_bool q with
   exact Bool.decide_false (mt h.1 <| Bool.of_decide_false h')
   exact Bool.decide_true (h.2 <| Bool.of_decide_true h')

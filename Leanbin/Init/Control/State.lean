@@ -6,7 +6,7 @@ Authors: Leonardo de Moura, Sebastian Ullrich
 The state monad transformer.
 
 ! This file was ported from Lean 3 source module init.control.state
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -53,7 +53,7 @@ protected def bind (x : StateT σ m α) (f : α → StateT σ m β) : StateT σ 
     (f a).run s'⟩
 #align state_t.bind StateTₓ.bind
 
-instance : Monad (StateT σ m) where 
+instance : Monad (StateT σ m) where
   pure := @StateT.pure _ _ _
   bind := @StateT.bind _ _ _
 
@@ -65,8 +65,8 @@ protected def failure [Alternative m] {α : Type u} : StateT σ m α :=
   ⟨fun s => failure⟩
 #align state_t.failure StateTₓ.failure
 
-instance [Alternative m] :
-    Alternative (StateT σ m) where 
+instance [Alternative m] : Alternative (StateT σ m)
+    where
   failure := @StateT.failure _ _ _ _
   orelse := @StateT.orelse _ _ _ _
 
@@ -110,8 +110,8 @@ protected def adapt {σ σ' σ'' α : Type u} {m : Type u → Type v} [Monad m] 
     pure (a, join st' ctx)⟩
 #align state_t.adapt StateTₓ.adapt
 
-instance (ε) [MonadExcept ε m] :
-    MonadExcept ε (StateT σ m) where 
+instance (ε) [MonadExcept ε m] : MonadExcept ε (StateT σ m)
+    where
   throw α := StateT.lift ∘ throw
   catch α x c := ⟨fun s => catch (x.run s) fun e => StateT.run (c e) s⟩
 

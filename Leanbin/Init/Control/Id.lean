@@ -6,7 +6,7 @@ Authors: Sebastian Ullrich
 The identity monad.
 
 ! This file was ported from Lean 3 source module init.control.id
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -21,7 +21,7 @@ def idBind {α β : Type u} (x : α) (f : α → id β) : id β :=
 #align id_bind idBind
 
 @[inline]
-instance : Monad.{u, u} id where 
+instance : Monad.{u, u} id where
   pure := @id
   bind := @idBind
 

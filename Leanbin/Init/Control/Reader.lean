@@ -6,7 +6,7 @@ Authors: Sebastian Ullrich
 The reader monad transformer for passing immutable state.
 
 ! This file was ported from Lean 3 source module init.control.reader
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -60,7 +60,7 @@ protected def bind (x : ReaderT ρ m α) (f : α → ReaderT ρ m β) : ReaderT 
     (f a).run r⟩
 #align reader_t.bind ReaderTₓ.bind
 
-instance : Monad (ReaderT ρ m) where 
+instance : Monad (ReaderT ρ m) where
   pure := @ReaderT.pure _ _ _
   bind := @ReaderT.bind _ _ _
 
@@ -93,15 +93,13 @@ protected def failure [Alternative m] {α : Type u} : ReaderT ρ m α :=
   ⟨fun s => failure⟩
 #align reader_t.failure ReaderTₓ.failure
 
-instance [Alternative m] :
-    Alternative (ReaderT ρ
-        m) where 
+instance [Alternative m] : Alternative (ReaderT ρ m)
+    where
   failure := @ReaderT.failure _ _ _ _
   orelse := @ReaderT.orelse _ _ _ _
 
-instance (ε) [Monad m] [MonadExcept ε m] :
-    MonadExcept ε (ReaderT ρ
-        m) where 
+instance (ε) [Monad m] [MonadExcept ε m] : MonadExcept ε (ReaderT ρ m)
+    where
   throw α := ReaderT.lift ∘ throw
   catch α x c := ⟨fun r => catch (x.run r) fun e => (c e).run r⟩
 

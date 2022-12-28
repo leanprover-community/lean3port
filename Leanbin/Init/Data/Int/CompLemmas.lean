@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.int.comp_lemmas
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -25,7 +25,8 @@ protected theorem ne_neg_of_ne {a b : ℤ} : a ≠ b → -a ≠ -b := fun h₁ h
   absurd (Int.neg_eq_neg h₂) h₁
 #align int.ne_neg_of_ne Int.ne_neg_of_ne
 
-protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ => by
+protected theorem neg_ne_zero_of_ne {a : ℤ} : a ≠ 0 → -a ≠ 0 := fun h₁ h₂ =>
+  by
   have : -a = -0 := by rwa [Int.neg_zero]
   have : a = 0 := Int.neg_eq_neg this
   contradiction
@@ -35,7 +36,8 @@ protected theorem zero_ne_neg_of_ne {a : ℤ} (h : 0 ≠ a) : 0 ≠ -a :=
   Ne.symm (Int.neg_ne_zero_of_ne (Ne.symm h))
 #align int.zero_ne_neg_of_ne Int.zero_ne_neg_of_ne
 
-protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b := fun h₁ h₂ h => by
+protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b := fun h₁ h₂ h =>
+  by
   rw [← h] at h₂
   change 0 < a at h₁
   have := le_of_lt h₁
@@ -98,7 +100,8 @@ theorem of_nat_nat_abs_eq_of_nonneg : ∀ {a : ℤ}, 0 ≤ a → ofNat (natAbs a
 #align int.of_nat_nat_abs_eq_of_nonneg Int.of_nat_nat_abs_eq_of_nonneg
 
 theorem ne_of_nat_abs_ne_nat_abs_of_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (h : natAbs a ≠ natAbs b) : a ≠ b := fun h => by
+    (h : natAbs a ≠ natAbs b) : a ≠ b := fun h =>
+  by
   have : ofNat (natAbs a) = ofNat (natAbs b) := by
     rwa [of_nat_nat_abs_eq_of_nonneg ha, of_nat_nat_abs_eq_of_nonneg hb]
   injection this
@@ -125,7 +128,8 @@ theorem nat_abs_of_neg_succ_of_nat (n : ℕ) : natAbs (negSucc n) = Nat.succ n :
 
 protected theorem nat_abs_add_nonneg :
     ∀ {a b : Int}, 0 ≤ a → 0 ≤ b → natAbs (a + b) = natAbs a + natAbs b
-  | of_nat n, of_nat m, h₁, h₂ => by
+  | of_nat n, of_nat m, h₁, h₂ =>
+    by
     have : ofNat n + ofNat m = ofNat (n + m) := rfl
     simp [nat_abs_of_nat_core, this]
   | _, neg_succ_of_nat m, h₁, h₂ => absurd (neg_succ_of_nat_lt_zero m) (not_lt_of_ge h₂)
@@ -134,7 +138,8 @@ protected theorem nat_abs_add_nonneg :
 
 protected theorem nat_abs_add_neg :
     ∀ {a b : Int}, a < 0 → b < 0 → natAbs (a + b) = natAbs a + natAbs b
-  | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ => by
+  | neg_succ_of_nat n, neg_succ_of_nat m, h₁, h₂ =>
+    by
     have : -[n+1] + -[m+1] = -[Nat.succ (n + m)+1] := rfl
     simp [nat_abs_of_neg_succ_of_nat, this, Nat.succ_add, Nat.add_succ]
 #align int.nat_abs_add_neg Int.nat_abs_add_neg

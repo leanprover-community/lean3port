@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 Converter monad for building simplifiers.
 
 ! This file was ported from Lean 3 source module init.meta.converter.interactive
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -62,7 +62,7 @@ unsafe def whnf : conv Unit :=
 #align conv.interactive.whnf conv.interactive.whnf
 
 unsafe def dsimp (no_dflt : parse only_flag) (es : parse tactic.simp_arg_list)
-    (attr_names : parse with_ident_list) (cfg : Tactic.DsimpConfig := {  }) : conv Unit := do
+    (attr_names : parse with_ident_list) (cfg : Tactic.DsimpConfig := { }) : conv Unit := do
   let (s, u) ← tactic.mk_simp_set no_dflt attr_names es
   conv.dsimp (some s) u cfg
 #align conv.interactive.dsimp conv.interactive.dsimp
@@ -176,7 +176,7 @@ unsafe def for (p : parse parser.pexpr) (occs : parse (list_of small_nat)) (c : 
 #align conv.interactive.for conv.interactive.for
 
 unsafe def simp (no_dflt : parse only_flag) (hs : parse tactic.simp_arg_list)
-    (attr_names : parse with_ident_list) (cfg : tactic.simp_config_ext := {  }) : conv Unit := do
+    (attr_names : parse with_ident_list) (cfg : tactic.simp_config_ext := { }) : conv Unit := do
   let (s, u) ← tactic.mk_simp_set no_dflt attr_names hs
   let (r, lhs, rhs) ← tactic.target_lhs_rhs
   let (new_lhs, pr, lms) ← tactic.simplify s u lhs cfg.toSimpConfig r cfg.discharger
@@ -216,11 +216,11 @@ private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
         (eq_lemmas eq_lemmas.empty)
 #align conv.interactive.rw_core conv.interactive.rw_core
 
-unsafe def rewrite (q : parse rw_rules) (cfg : RewriteCfg := {  }) : conv Unit :=
+unsafe def rewrite (q : parse rw_rules) (cfg : RewriteCfg := { }) : conv Unit :=
   rw_core q.rules cfg
 #align conv.interactive.rewrite conv.interactive.rewrite
 
-unsafe def rw (q : parse rw_rules) (cfg : RewriteCfg := {  }) : conv Unit :=
+unsafe def rw (q : parse rw_rules) (cfg : RewriteCfg := { }) : conv Unit :=
   rw_core q.rules cfg
 #align conv.interactive.rw conv.interactive.rw
 

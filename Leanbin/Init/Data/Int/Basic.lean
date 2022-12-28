@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad
 
 ! This file was ported from Lean 3 source module init.data.int.basic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -384,8 +384,10 @@ protected theorem sub_eq_add_neg {a b : ℤ} : a - b = a + -b :=
 
 #print Int.subNatNat_elim /-
 theorem subNatNat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ i n, P (n + i) n (ofNat i))
-    (hn : ∀ i m, P m (m + i + 1) -[i+1]) : P m n (subNatNat m n) := by
-  have H : ∀ k, n - m = k → P m n (Nat.casesOn k (of_nat (m - n)) fun a => -[a+1]) := by
+    (hn : ∀ i m, P m (m + i + 1) -[i+1]) : P m n (subNatNat m n) :=
+  by
+  have H : ∀ k, n - m = k → P m n (Nat.casesOn k (of_nat (m - n)) fun a => -[a+1]) :=
+    by
     intro k
     cases k
     · intro e
@@ -403,7 +405,8 @@ theorem subNatNat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ 
 -/
 
 #print Int.subNatNat_add_left /-
-theorem subNatNat_add_left {m n : ℕ} : subNatNat (m + n) m = ofNat n := by
+theorem subNatNat_add_left {m n : ℕ} : subNatNat (m + n) m = ofNat n :=
+  by
   dsimp only [sub_nat_nat]
   rw [Nat.sub_eq_zero_of_le]
   dsimp only [sub_nat_nat._match_1]
@@ -427,11 +430,13 @@ theorem subNatNat_add_right {m n : ℕ} : subNatNat m (m + n + 1) = negSucc n :=
 #print Int.subNatNat_add_add /-
 theorem subNatNat_add_add (m n k : ℕ) : subNatNat (m + k) (n + k) = subNatNat m n :=
   subNatNat_elim m n (fun m n i => subNatNat (m + k) (n + k) = i)
-    (fun i n => by
+    (fun i n =>
+      by
       have : n + i + k = n + k + i := by simp [Nat.add_comm, Nat.add_left_comm]
       rw [this]
       exact sub_nat_nat_add_left)
-    fun i m => by
+    fun i m =>
+    by
     have : m + i + 1 + k = m + k + i + 1 := by simp [Nat.add_comm, Nat.add_left_comm]
     rw [this]
     exact sub_nat_nat_add_right
@@ -445,7 +450,8 @@ theorem subNatNat_of_le {m n : ℕ} (h : n ≤ m) : subNatNat m n = ofNat (m - n
 -/
 
 #print Int.subNatNat_of_lt /-
-theorem subNatNat_of_lt {m n : ℕ} (h : m < n) : subNatNat m n = -[pred (n - m)+1] := by
+theorem subNatNat_of_lt {m n : ℕ} (h : m < n) : subNatNat m n = -[pred (n - m)+1] :=
+  by
   have : n - m = succ (pred (n - m)) := Eq.symm (succ_pred_eq_of_pos (Nat.sub_pos_of_lt h))
   rw [sub_nat_nat_of_sub_eq_succ this]
 #align int.sub_nat_nat_of_lt Int.subNatNat_of_lt
@@ -502,7 +508,8 @@ theorem natAbs_mul_self : ∀ {a : ℤ}, ↑(natAbs a * natAbs a) = a * a
 
 #print Int.natAbs_neg /-
 @[simp]
-theorem natAbs_neg (a : ℤ) : natAbs (-a) = natAbs a := by
+theorem natAbs_neg (a : ℤ) : natAbs (-a) = natAbs a :=
+  by
   cases' a with n n
   cases n <;> rfl
   rfl
@@ -671,7 +678,8 @@ theorem subNatNat_sub {m n : ℕ} (h : n ≤ m) (k : ℕ) : subNatNat (m - n) k 
 #align int.sub_nat_nat_sub Int.subNatNat_subₓ
 
 #print Int.subNatNat_add /-
-theorem subNatNat_add (m n k : ℕ) : subNatNat (m + n) k = ofNat m + subNatNat n k := by
+theorem subNatNat_add (m n k : ℕ) : subNatNat (m + n) k = ofNat m + subNatNat n k :=
+  by
   have h := le_or_lt k n
   cases' h with h' h'
   · rw [sub_nat_nat_of_le h']
@@ -686,7 +694,8 @@ theorem subNatNat_add (m n k : ℕ) : subNatNat (m + n) k = ofNat m + subNatNat 
 -/
 
 #print Int.subNatNat_add_negSucc /-
-theorem subNatNat_add_negSucc (m n k : ℕ) : subNatNat m n + -[k+1] = subNatNat m (n + succ k) := by
+theorem subNatNat_add_negSucc (m n k : ℕ) : subNatNat m n + -[k+1] = subNatNat m (n + succ k) :=
+  by
   have h := le_or_lt n m
   cases' h with h' h'
   · rw [sub_nat_nat_of_le h']
@@ -834,7 +843,8 @@ theorem negOfNat_eq_subNatNat_zero : ∀ n, negOfNat n = subNatNat 0 n
 -/
 
 #print Int.ofNat_mul_subNatNat /-
-theorem ofNat_mul_subNatNat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat (m * n) (m * k) := by
+theorem ofNat_mul_subNatNat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat (m * n) (m * k) :=
+  by
   have h₀ : m > 0 ∨ 0 = m := Decidable.lt_or_eq_of_le m.zero_le
   cases' h₀ with h₀ h₀
   · have h := Nat.lt_or_ge n k
@@ -857,7 +867,8 @@ theorem ofNat_mul_subNatNat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat 
 -/
 
 #print Int.negOfNat_add /-
-theorem negOfNat_add (m n : ℕ) : negOfNat m + negOfNat n = negOfNat (m + n) := by
+theorem negOfNat_add (m n : ℕ) : negOfNat m + negOfNat n = negOfNat (m + n) :=
+  by
   cases m
   · cases n
     · simp
@@ -873,7 +884,8 @@ theorem negOfNat_add (m n : ℕ) : negOfNat m + negOfNat n = negOfNat (m + n) :=
 
 #print Int.negSucc_mul_subNatNat /-
 theorem negSucc_mul_subNatNat (m n k : ℕ) :
-    -[m+1] * subNatNat n k = subNatNat (succ m * k) (succ m * n) := by
+    -[m+1] * subNatNat n k = subNatNat (succ m * k) (succ m * n) :=
+  by
   have h := Nat.lt_or_ge n k
   cases' h with h h
   · have h' : succ m * n < succ m * k := Nat.mul_lt_mul_of_pos_left h (Nat.succ_pos m)
@@ -898,10 +910,12 @@ attribute [local simp] of_nat_mul_sub_nat_nat neg_of_nat_add neg_succ_of_nat_mul
 #print Int.mul_add /-
 protected theorem mul_add : ∀ a b c : ℤ, a * (b + c) = a * b + a * c
   | of_nat m, of_nat n, of_nat k => by simp [Nat.left_distrib]
-  | of_nat m, of_nat n, -[k+1] => by
+  | of_nat m, of_nat n, -[k+1] =>
+    by
     simp [neg_of_nat_eq_sub_nat_nat_zero]
     rw [← sub_nat_nat_add]; rfl
-  | of_nat m, -[n+1], of_nat k => by
+  | of_nat m, -[n+1], of_nat k =>
+    by
     simp [neg_of_nat_eq_sub_nat_nat_zero]
     rw [Int.add_comm, ← sub_nat_nat_add]; rfl
   | of_nat m, -[n+1], -[k+1] => by simp; rw [← Nat.left_distrib, add_succ, succ_add]
@@ -944,7 +958,8 @@ protected theorem add_left_comm (a b c : ℤ) : a + (b + c) = b + (a + c) := by
 -/
 
 #print Int.add_left_cancel /-
-protected theorem add_left_cancel {a b c : ℤ} (h : a + b = a + c) : b = c := by
+protected theorem add_left_cancel {a b c : ℤ} (h : a + b = a + c) : b = c :=
+  by
   have : -a + (a + b) = -a + (a + c) := by rw [h]
   rwa [← Int.add_assoc, ← Int.add_assoc, Int.add_left_neg, Int.zero_add, Int.zero_add] at this
 #align int.add_left_cancel Int.add_left_cancel
@@ -953,7 +968,8 @@ protected theorem add_left_cancel {a b c : ℤ} (h : a + b = a + c) : b = c := b
 #print Int.neg_add /-
 protected theorem neg_add {a b : ℤ} : -(a + b) = -a + -b :=
   calc
-    -(a + b) = -(a + b) + (a + b) + -a + -b := by
+    -(a + b) = -(a + b) + (a + b) + -a + -b :=
+      by
       rw [Int.add_assoc, Int.add_comm (-a), Int.add_assoc, Int.add_assoc, ← Int.add_assoc b]
       rw [Int.add_right_neg, Int.zero_add, Int.add_right_neg, Int.add_zero]
     _ = -a + -b := by rw [Int.add_left_neg, Int.zero_add]
@@ -977,7 +993,8 @@ attribute [local simp] Int.sub_eq_add_neg
 #print Int.subNatNat_eq_coe /-
 protected theorem subNatNat_eq_coe {m n : ℕ} : subNatNat m n = ↑m - ↑n :=
   subNatNat_elim m n (fun m n i => i = ↑m - ↑n)
-    (fun i n => by
+    (fun i n =>
+      by
       simp [Int.ofNat_add, Int.add_left_comm, Int.add_assoc, Int.add_right_neg]
       rfl)
     fun i n => by
@@ -1025,11 +1042,11 @@ protected theorem mul_one (a : ℤ) : a * 1 = a := by rw [Int.mul_comm, Int.one_
 protected theorem neg_eq_neg_one_mul : ∀ a : ℤ, -a = -1 * a
   | of_nat 0 => rfl
   | of_nat (n + 1) =>
-    show _ = -[1 * n + 0+1] by 
+    show _ = -[1 * n + 0+1] by
       rw [Nat.one_mul]
       rfl
   | -[n+1] =>
-    show _ = ofNat _ by 
+    show _ = ofNat _ by
       rw [Nat.one_mul]
       rfl
 #align int.neg_eq_neg_one_mul Int.neg_eq_neg_one_mul

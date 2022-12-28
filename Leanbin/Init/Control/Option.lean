@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Sebastian Ullrich
 
 ! This file was ported from Lean 3 source module init.control.option
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -39,7 +39,7 @@ protected def pure (a : α) : OptionT m α :=
   ⟨pure (some a)⟩
 #align option_t.pure OptionTₓ.pure
 
-instance : Monad (OptionT m) where 
+instance : Monad (OptionT m) where
   pure := @OptionT.pure _ _
   bind := @OptionT.bind _ _
 
@@ -61,7 +61,7 @@ def ofOption : Option α → OptionT m α
 #align option_t.of_option OptionTₓ.ofOption
 
 instance : Alternative (OptionT m) :=
-  { OptionT.monad with 
+  { OptionT.monad with
     failure := @OptionT.fail m _
     orelse := @OptionT.orelse m _ }
 
@@ -88,8 +88,8 @@ protected def catch (ma : OptionT m α) (handle : Unit → OptionT m α) : Optio
     pure a⟩
 #align option_t.catch OptionTₓ.catch
 
-instance : MonadExcept Unit
-      (OptionT m) where 
+instance : MonadExcept Unit (OptionT m)
+    where
   throw _ _ := OptionT.fail
   catch := @OptionT.catch _ _
 

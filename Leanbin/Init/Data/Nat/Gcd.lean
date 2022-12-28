@@ -5,7 +5,7 @@ Authors: Jeremy Avigad, Leonardo de Moura, Mario Carneiro
 
 
 ! This file was ported from Lean 3 source module init.data.nat.gcd
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -78,7 +78,7 @@ theorem gcd_rec (m n : ℕ) : gcd m n = gcd (n % m) m := by cases m <;> simp [gc
 theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n)
     (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) : P m n :=
   @induction _ _ lt_wfRel (fun m => ∀ n, P m n) m
-    (fun k IH => by 
+    (fun k IH => by
       induction' k with k ih
       exact H0
       exact fun n => H1 _ _ (succ_pos _) (IH _ (mod_lt _ (succ_pos _)) _))

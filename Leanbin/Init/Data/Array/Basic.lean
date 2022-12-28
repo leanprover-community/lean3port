@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Mario Carneiro
 
 ! This file was ported from Lean 3 source module init.data.array.basic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -34,8 +34,8 @@ def read (a : DArray n α) (i : Fin n) : α i :=
 #align d_array.read DArray.read
 
 /-- `write a i v` sets the `i`th member of `a` to be `v`. Has builtin VM implementation. -/
-def write (a : DArray n α) (i : Fin n) (v : α i) :
-    DArray n α where data j := if h : i = j then Eq.recOn h v else a.read j
+def write (a : DArray n α) (i : Fin n) (v : α i) : DArray n α
+    where data j := if h : i = j then Eq.recOn h v else a.read j
 #align d_array.write DArray.write
 
 def iterateAux (a : DArray n α) (f : ∀ i : Fin n, α i → β → β) : ∀ i : Nat, i ≤ n → β → β
@@ -113,8 +113,10 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       DArray.beqAux a b i h = tt →
         ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ = b.read ⟨j, lt_of_lt_of_le h' h⟩
   | 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zero _)
-  | i + 1, h₁, h₂, j, h₃ => by
-    have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
+  | i + 1, h₁, h₂, j, h₃ =>
+    by
+    have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt :=
+      by
       simp [DArray.beqAux] at h₂
       assumption
     have h₁' : i ≤ n := le_of_lt h₁
@@ -129,7 +131,8 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact ih j j_lt_i
 #align d_array.of_beq_aux_eq_tt DArray.of_beq_aux_eq_tt
 
-theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b := by
+theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b :=
+  by
   unfold DArray.beq
   intro h
   have : ∀ (j : Nat) (h : j < n), a.read ⟨j, h⟩ = b.read ⟨j, h⟩ := of_beq_aux_eq_tt n (le_refl _) h
@@ -141,8 +144,10 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       DArray.beqAux a b i h = ff →
         ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
   | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂; contradiction
-  | i + 1, h₁, h₂ => by
-    have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
+  | i + 1, h₁, h₂ =>
+    by
+    have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff :=
+      by
       simp [DArray.beqAux] at h₂
       assumption
     cases' h₂' with h h
@@ -161,7 +166,8 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact ih
 #align d_array.of_beq_aux_eq_ff DArray.of_beq_aux_eq_ff
 
-theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b := by
+theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b :=
+  by
   unfold DArray.beq
   intro h hne
   have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ :=
@@ -249,9 +255,8 @@ theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
 #align array.push_back_idx Array'.push_back_idx
 
 /-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/
-def pushBack (a : Array' n α) (v : α) :
-    Array' (n + 1)
-      α where data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
+def pushBack (a : Array' n α) (v : α) : Array' (n + 1) α
+    where data := fun ⟨j, h₁⟩ => if h₂ : j = n then v else a.read ⟨j, push_back_idx h₁ h₂⟩
 #align array.push_back Array'.pushBack
 
 theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
@@ -259,8 +264,8 @@ theorem pop_back_idx {j n} (h : j < n) : j < n + 1 :=
 #align array.pop_back_idx Array'.pop_back_idx
 
 /-- Discard _last_ element in the array. Has builtin VM implementation. -/
-def popBack (a : Array' (n + 1) α) :
-    Array' n α where data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
+def popBack (a : Array' (n + 1) α) : Array' n α
+    where data := fun ⟨j, h⟩ => a.read ⟨j, pop_back_idx h⟩
 #align array.pop_back Array'.popBack
 
 /-- Auxilliary function for monadically mapping a function over an array. -/

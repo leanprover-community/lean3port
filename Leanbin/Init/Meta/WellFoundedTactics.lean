@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.well_founded_tactics
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -18,14 +18,14 @@ import Leanbin.Init.Data.List.Qsort
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer. 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
-  show a + 0 < a + b by 
+  show a + 0 < a + b by
     apply Nat.add_lt_add_left
     assumption
 #align nat.lt_add_of_zero_lt_left Nat.lt_add_of_zero_lt_left
 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
-  suffices 0 < a + 1 by 
+  suffices 0 < a + 1 by
     simp [Nat.add_comm]
     assumption
   Nat.zero_lt_succ _
@@ -72,10 +72,10 @@ unsafe def default_rel_tac (e : expr) (eqns : List expr) : tactic Unit := do
   let tgt ← target
   let rel ← mk_instance tgt
   exact <|
-      match e, rel with
+      match e, Rel with
       | expr.local_const _ (Name.mk_string "_mutual" _) _ _,
         expr.app (e@q(@hasWellFoundedOfHasSizeof _)) sz => e (mk_alt_sizeof sz)
-      | _, _ => rel
+      | _, _ => Rel
 #align well_founded_tactics.default_rel_tac well_founded_tactics.default_rel_tac
 
 private unsafe def clear_wf_rec_goal_aux : List expr → tactic Unit

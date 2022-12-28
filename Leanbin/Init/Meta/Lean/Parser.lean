@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 
 ! This file was ported from Lean 3 source module init.meta.lean.parser
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -163,7 +163,7 @@ unsafe def parser_orelse (p₁ p₂ : parser α) : parser α := fun s =>
 #align lean.parser.parser_orelse lean.parser.parser_orelse
 
 unsafe instance : Alternative parser :=
-  { interaction_monad.monad with 
+  { interaction_monad.monad with
     failure := @interaction_monad.failed _
     orelse := @parser_orelse }
 
@@ -199,8 +199,8 @@ namespace Reflectable
 unsafe instance cast (p : lean.parser (reflected_value α)) : reflectable (val p) where full := p
 #align lean.parser.reflectable.cast lean.parser.reflectable.cast
 
-unsafe instance has_reflect [r : has_reflect α] (p : lean.parser α) :
-    reflectable p where full := do
+unsafe instance has_reflect [r : has_reflect α] (p : lean.parser α) : reflectable p
+    where full := do
     let rp ← p
     return ⟨rp⟩
 #align lean.parser.reflectable.has_reflect lean.parser.reflectable.has_reflect

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.rewrite_tactic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -40,24 +40,24 @@ structure RewriteCfg extends ApplyCfg where
     even the assigned ones.
 
     TODO(Leo): improve documentation and explain symm/occs -/
-unsafe axiom rewrite_core (h : expr) (e : expr) (cfg : RewriteCfg := {  }) :
+unsafe axiom rewrite_core (h : expr) (e : expr) (cfg : RewriteCfg := { }) :
     tactic (expr × expr × List expr)
 #align tactic.rewrite_core tactic.rewrite_core
 
-unsafe def rewrite (h : expr) (e : expr) (cfg : RewriteCfg := {  }) :
+unsafe def rewrite (h : expr) (e : expr) (cfg : RewriteCfg := { }) :
     tactic (expr × expr × List expr) := do
   let (new_t, prf, metas) ← rewrite_core h e cfg
   try_apply_opt_auto_param cfg metas
   return (new_t, prf, metas)
 #align tactic.rewrite tactic.rewrite
 
-unsafe def rewrite_target (h : expr) (cfg : RewriteCfg := {  }) : tactic Unit := do
+unsafe def rewrite_target (h : expr) (cfg : RewriteCfg := { }) : tactic Unit := do
   let t ← target
   let (new_t, prf, _) ← rewrite h t cfg
   replace_target new_t prf `` id_tag.rw
 #align tactic.rewrite_target tactic.rewrite_target
 
-unsafe def rewrite_hyp (h : expr) (hyp : expr) (cfg : RewriteCfg := {  }) : tactic expr := do
+unsafe def rewrite_hyp (h : expr) (hyp : expr) (cfg : RewriteCfg := { }) : tactic expr := do
   let hyp_type ← infer_type hyp
   let (new_hyp_type, prf, _) ← rewrite h hyp_type cfg
   replace_hyp hyp new_hyp_type prf `` id_tag.rw

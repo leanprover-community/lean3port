@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.sigma.lex
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -57,7 +57,8 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) :
             (fun (a₁ : α) (b₁ : β a₁) (a₂ : α) (b₂ : β a₂) (h : r a₁ a₂) (eq₂ : a₂ = xa)
                 (eq₃ : HEq b₂ xb) =>
               by subst eq₂; exact iha a₁ h b₁)
-            fun (a : α) (b₁ b₂ : β a) (h : s a b₁ b₂) (eq₂ : a = xa) (eq₃ : HEq b₂ xb) => by
+            fun (a : α) (b₁ b₂ : β a) (h : s a b₁ b₂) (eq₂ : a = xa) (eq₃ : HEq b₂ xb) =>
+            by
             subst eq₂
             have new_eq₃ := eq_of_heq eq₃
             subst new_eq₃
@@ -164,9 +165,8 @@ theorem mk_skip_left {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β
 end
 
 instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : WellFoundedRelation α]
-    [s₂ : ∀ a, WellFoundedRelation (β a)] :
-    WellFoundedRelation (PSigma
-        β) where 
+    [s₂ : ∀ a, WellFoundedRelation (β a)] : WellFoundedRelation (PSigma β)
+    where
   R := Lex s₁.R fun a => (s₂ a).R
   wf := lex_wf s₁.wf fun a => (s₂ a).wf
 #align psigma.has_well_founded PSigma.hasWellFounded

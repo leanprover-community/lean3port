@@ -6,7 +6,7 @@ Authors: Sebastian Ullrich
 Attribute that can automatically derive typeclass instances.
 
 ! This file was ported from Lean 3 source module init.meta.derive
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -31,8 +31,8 @@ unsafe def derive_handler :=
 #align derive_handler derive_handler
 
 @[user_attribute]
-unsafe def derive_handler_attr :
-    user_attribute where 
+unsafe def derive_handler_attr : user_attribute
+    where
   Name := `derive_handler
   descr := "register a definition of type `derive_handler` for use in the [derive] attribute"
 #align derive_handler_attr derive_handler_attr
@@ -45,8 +45,8 @@ private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler →
 #align try_handlers try_handlers
 
 @[user_attribute]
-unsafe def derive_attr :
-    user_attribute Unit (List pexpr) where 
+unsafe def derive_attr : user_attribute Unit (List pexpr)
+    where
   Name := `derive
   descr := "automatically derive typeclass instances"
   parser := pexpr_list_or_texpr

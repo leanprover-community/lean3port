@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 Converter monad for building simplifiers.
 
 ! This file was ported from Lean 3 source module init.meta.converter.conv
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -47,7 +47,7 @@ Applies the conversion `c`. Returns `(rhs,p)` where `p : r lhs rhs`. Throws away
 unsafe def convert (c : conv Unit) (lhs : expr) (rel : Name := `eq) : tactic (expr × expr) := do
   let lhs_type ← infer_type lhs
   let rhs ← mk_meta_var lhs_type
-  let new_target ← mk_app rel [lhs, rhs]
+  let new_target ← mk_app Rel [lhs, rhs]
   let new_g ← mk_meta_var new_target
   let gs ← get_goals
   set_goals [new_g]
@@ -98,8 +98,8 @@ unsafe def whnf : conv Unit :=
 #align conv.whnf conv.whnf
 
 /-- dsimp the LHS. -/
-unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := [])
-    (cfg : DsimpConfig := {  }) : conv Unit := do
+unsafe def dsimp (s : Option simp_lemmas := none) (u : List Name := []) (cfg : DsimpConfig := { }) :
+    conv Unit := do
   let s ←
     match s with
       | some s => return s

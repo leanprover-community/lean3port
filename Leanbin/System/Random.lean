@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module system.random
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -50,8 +50,8 @@ def stdRange :=
 #align std_range stdRange
 -/
 
-instance :
-    Repr StdGen where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
+instance : Repr StdGen
+    where repr := fun ⟨s1, s2⟩ => "⟨" ++ toString s1 ++ ", " ++ toString s2 ++ "⟩"
 
 def stdNext : StdGen → Nat × StdGen
   | ⟨s1, s2⟩ =>
@@ -76,7 +76,7 @@ def stdSplit : StdGen → StdGen × StdGen
     (left_g, right_g)
 #align std_split stdSplitₓ
 
-instance : RandomGen StdGen where 
+instance : RandomGen StdGen where
   range _ := stdRange
   next := stdNext
   split := stdSplit
@@ -103,13 +103,15 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
   | r'@(r + 1), v, g =>
     let (x, g') := RandomGen.next g
     let v' := v * gen_mag + (x - gen_lo)
-    have : r' / gen_mag - 1 < r' := by
+    have : r' / gen_mag - 1 < r' :=
+      by
       by_cases h : (r + 1) / gen_mag = 0
       · rw [h]
         simp
         apply Nat.zero_lt_succ
       · have : (r + 1) / gen_mag > 0 := Nat.pos_of_ne_zero h
-        have h₁ : (r + 1) / gen_mag - 1 < (r + 1) / gen_mag := by
+        have h₁ : (r + 1) / gen_mag - 1 < (r + 1) / gen_mag :=
+          by
           apply Nat.sub_lt
           assumption
           run_tac

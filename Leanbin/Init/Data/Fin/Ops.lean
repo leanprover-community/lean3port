@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.fin.ops
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -59,7 +59,8 @@ protected def sub : Fin n → Fin n → Fin n
 #align fin.sub Fin.sub
 -/
 
-private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n := by
+private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n :=
+  by
   cases' b with b
   · simp [mod_zero]
     assumption
@@ -168,7 +169,7 @@ theorem val_zero : (0 : Fin (succ n)).val = 0 :=
 def pred {n : Nat} : ∀ i : Fin (succ n), i ≠ 0 → Fin n
   | ⟨a, h₁⟩, h₂ =>
     ⟨a.pred,
-      haveI : a ≠ 0 := by 
+      haveI : a ≠ 0 := by
         have aux₁ := vne_of_ne h₂
         dsimp at aux₁
         rw [val_zero] at aux₁

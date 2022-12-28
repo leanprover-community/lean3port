@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.option.basic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -91,7 +91,7 @@ theorem map_id {α} : (Option.map id : Option α → Option α) = id :=
 #align option.map_id Option.map_id
 -/
 
-instance : Monad Option where 
+instance : Monad Option where
   pure := @some
   bind := @Option.bind
   map := @Option.map
@@ -102,7 +102,7 @@ protected def orelse {α : Type u} : Option α → Option α → Option α
   | none, none => none
 #align option.orelse Option.orelse
 
-instance : Alternative Option where 
+instance : Alternative Option where
   failure := @none
   orelse := @Option.orelse
 

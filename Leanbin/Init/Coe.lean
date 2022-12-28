@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.coe
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -139,11 +139,11 @@ instance liftBase {a : Sort u} {b : Sort v} [HasLift a b] : HasLiftT a b :=
 
 instance coeTrans {a : Sort u₁} {b : Sort u₂} {c : Sort u₃} [CoeTC b c] [Coe a b] : CoeTC a c :=
   ⟨fun x => coeT (coeB x : b)⟩
-#align coe_trans coeTransₓ
+#align coe_trans coeTrans
 
 instance coeBase {a : Sort u} {b : Sort v} [Coe a b] : CoeTC a b :=
   ⟨coeB⟩
-#align coe_base coeBaseₓ
+#align coe_base coeBase
 
 /-- We add this instance directly into `has_coe_t` to avoid non-termination.
 

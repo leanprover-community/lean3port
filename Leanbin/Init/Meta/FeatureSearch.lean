@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Gabriel Ebner
 
 ! This file was ported from Lean 3 source module init.meta.feature_search
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -63,10 +63,10 @@ unsafe axiom feature_vec : Type
 
 namespace FeatureVec
 
-unsafe axiom of_expr (env : environment) (e : expr) (cfg : FeatureCfg := {  }) : feature_vec
+unsafe axiom of_expr (env : environment) (e : expr) (cfg : FeatureCfg := { }) : feature_vec
 #align feature_search.feature_vec.of_expr feature_search.feature_vec.of_expr
 
-unsafe axiom of_exprs (env : environment) (es : List expr) (cfg : FeatureCfg := {  }) :
+unsafe axiom of_exprs (env : environment) (es : List expr) (cfg : FeatureCfg := { }) :
     List feature_vec
 #align feature_search.feature_vec.of_exprs feature_search.feature_vec.of_exprs
 
@@ -82,13 +82,13 @@ protected unsafe axiom isect (a b : feature_vec) : feature_vec
 unsafe instance : Inter feature_vec :=
   ⟨feature_vec.isect⟩
 
-unsafe def of_proof (prf : expr) (cfg : FeatureCfg := {  }) : tactic feature_vec := do
+unsafe def of_proof (prf : expr) (cfg : FeatureCfg := { }) : tactic feature_vec := do
   let ty ← infer_type prf
   let env ← get_env
   pure <| of_expr env ty cfg
 #align feature_search.feature_vec.of_proof feature_search.feature_vec.of_proof
 
-unsafe def of_thm (n : Name) (cfg : FeatureCfg := {  }) : tactic feature_vec := do
+unsafe def of_thm (n : Name) (cfg : FeatureCfg := { }) : tactic feature_vec := do
   let decl ← get_decl n
   let env ← get_env
   pure <| of_expr env decl cfg
@@ -174,6 +174,6 @@ end FeatureSearch
 
 open FeatureSearch
 
-unsafe axiom environment.mk_predictor (env : environment) (cfg : PredictorCfg := {  }) : predictor
+unsafe axiom environment.mk_predictor (env : environment) (cfg : PredictorCfg := { }) : predictor
 #align environment.mk_predictor environment.mk_predictor
 

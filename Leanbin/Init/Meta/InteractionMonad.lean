@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Sebastian Ullrich
 
 ! This file was ported from Lean 3 source module init.meta.interaction_monad
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -97,8 +97,8 @@ unsafe def interaction_monad_seq (t₁ : m α) (t₂ : m β) : m β :=
   interaction_monad_bind t₁ fun a => t₂
 #align interaction_monad_seq interaction_monad_seq
 
-unsafe instance interaction_monad.monad :
-    Monad m where 
+unsafe instance interaction_monad.monad : Monad m
+    where
   map := @interaction_monad_fmap
   pure := @interaction_monad_return
   bind := @interaction_monad_bind

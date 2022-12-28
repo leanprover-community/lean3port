@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad, Floris van Doorn
 
 ! This file was ported from Lean 3 source module init.logic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -1461,10 +1461,10 @@ protected theorem Nonempty.elim {α : Sort u} {p : Prop} (h₁ : Nonempty α) (h
 #align nonempty.elim Nonempty.elim
 -/
 
-#print nonempty_of_inhabited /-
-instance (priority := 100) nonempty_of_inhabited {α : Sort u} [Inhabited α] : Nonempty α :=
+#print instNonempty /-
+instance (priority := 100) instNonempty {α : Sort u} [Inhabited α] : Nonempty α :=
   ⟨default⟩
-#align nonempty_of_inhabited nonempty_of_inhabited
+#align nonempty_of_inhabited instNonempty
 -/
 
 #print nonempty_of_exists /-

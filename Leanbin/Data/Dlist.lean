@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module data.dlist
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -80,7 +80,7 @@ def concat (x : α) : Dlist α → Dlist α
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
   | ⟨xs, h₁⟩, ⟨ys, h₂⟩ =>
-    ⟨xs ∘ ys, by 
+    ⟨xs ∘ ys, by
       intros
       simp
       rw [h₂, h₁, h₁ (ys List.nil)]
@@ -95,9 +95,10 @@ attribute [local simp] of_list to_list Empty singleton cons concat Dlist.append
 theorem to_list_of_list (l : List α) : toList (ofList l) = l := by cases l <;> simp
 #align dlist.to_list_of_list Dlist.to_list_of_list
 
-theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l := by
+theorem of_list_to_list (l : Dlist α) : ofList (toList l) = l :=
+  by
   cases' l with xs
-  have h : append (xs []) = xs := by 
+  have h : append (xs []) = xs := by
     intros
     funext x
     simp [l_invariant x]

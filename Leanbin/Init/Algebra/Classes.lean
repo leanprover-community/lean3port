@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.algebra.classes
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -205,7 +205,7 @@ class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α 
 #print is_total_preorder_is_preorder /-
 /-- Every total pre-order is a pre-order. -/
 instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] :
-    IsPreorder α r where 
+    IsPreorder α r where
   trans := s.trans
   refl a := Or.elim (@IsTotal.total _ r _ a a) id id
 #align is_total_preorder_is_preorder is_total_preorder_is_preorder
@@ -276,15 +276,13 @@ class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrich
 #align is_strict_total_order IsStrictTotalOrder
 -/
 
-#print eq_is_equiv /-
 /-- Equality is an equivalence relation. -/
-instance eq_is_equiv (α : Type u) :
-    IsEquiv α (· = ·) where 
+instance eq_is_equiv (α : Type u) : IsEquiv α (· = ·)
+    where
   symm := @Eq.symm _
   trans := @Eq.trans _
   refl := Eq.refl
 #align eq_is_equiv eq_is_equiv
--/
 
 section
 
@@ -447,7 +445,7 @@ theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
 theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
 #align strict_weak_order.not_lt_of_equiv' StrictWeakOrder.not_lt_of_equiv'
 
-instance is_equiv : IsEquiv α equiv where 
+instance is_equiv : IsEquiv α equiv where
   refl := erefl
   trans := @etrans
   symm := @esymm

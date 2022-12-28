@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.list.basic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -126,11 +126,13 @@ def nthLe : ∀ (l : List α) (n), n < l.length → α
 #align list.nth_le List.nthLe
 -/
 
+#print List.headI /-
 @[simp]
-def head [Inhabited α] : List α → α
+def headI [Inhabited α] : List α → α
   | [] => default
   | a :: l => a
-#align list.head List.headₓ
+#align list.head List.headI
+-/
 
 #print List.tail /-
 @[simp]

@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 
 ! This file was ported from Lean 3 source module init.meta.json
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -81,7 +81,8 @@ unsafe instance : ToString json :=
 unsafe instance : Repr json :=
   ⟨json.unparse⟩
 
-unsafe instance : DecidableEq json := fun j₁ j₂ => by
+unsafe instance : DecidableEq json := fun j₁ j₂ =>
+  by
   cases j₁ <;> cases j₂ <;> simp <;> try apply Decidable.false
   -- do this explicitly casewise to be extra sure we don't recurse unintentionally, as meta code
   -- doesn't protect against this.

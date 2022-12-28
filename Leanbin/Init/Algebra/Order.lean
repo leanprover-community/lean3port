@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.algebra.order
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -471,8 +471,8 @@ theorem eq_or_lt_of_not_lt {a b : α} (h : ¬a < b) : a = b ∨ b < a :=
 #align eq_or_lt_of_not_lt eq_or_lt_of_not_lt
 -/
 
-instance : IsTotalPreorder α (· ≤
-        ·) where 
+instance : IsTotalPreorder α (· ≤ ·)
+    where
   trans := @le_trans _ _
   Total := le_total
 
@@ -482,8 +482,8 @@ instance is_strict_weak_order_of_linear_order : IsStrictWeakOrder α (· < ·) :
 #align is_strict_weak_order_of_linear_order is_strict_weak_order_of_linear_order
 
 -- TODO(Leo): decide whether we should keep this instance or not
-instance is_strict_total_order_of_linear_order :
-    IsStrictTotalOrder α (· < ·) where trichotomous := lt_trichotomy
+instance is_strict_total_order_of_linear_order : IsStrictTotalOrder α (· < ·)
+    where trichotomous := lt_trichotomy
 #align is_strict_total_order_of_linear_order is_strict_total_order_of_linear_order
 
 /-- Perform a case-split on the ordering of `x` and `y` in a decidable linear order. -/

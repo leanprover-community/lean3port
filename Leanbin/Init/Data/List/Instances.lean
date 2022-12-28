@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.list.instances
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -17,22 +17,21 @@ universe u v
 
 attribute [local simp] join List.ret
 
-instance : Monad List where 
+instance : Monad List where
   pure := @List.ret
   map := @List.map
   bind := @List.bind
 
-instance :
-    LawfulMonad
-      List where 
-  bind_pure_comp_eq_map := by 
+instance : LawfulMonad List
+    where
+  bind_pure_comp_eq_map := by
     intro α β f l
     induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
   id_map := @List.map_id
-  pure_bind := by 
+  pure_bind := by
     intros
     simp [pure, (· >>= ·)]
-  bind_assoc := by 
+  bind_assoc := by
     intro α β γ l f g
     induction' l with x l ih
     · simp [(· >>= ·)]
@@ -40,7 +39,7 @@ instance :
       simp [(· >>= ·), ih]
 
 instance : Alternative List :=
-  { List.monad with 
+  { List.monad with
     failure := @List.nil
     orelse := @List.append }
 
@@ -60,12 +59,12 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
       match decidable_bex xs with
       | is_true h₂ =>
         isTrue
-          (by 
+          (by
             cases' h₂ with y h; cases' h with hm hp
             exact ⟨y, mem_cons_of_mem _ hm, hp⟩)
       | is_false h₂ =>
         isFalse
-          (by 
+          (by
             intro h; cases' h with y h; cases' h with hm hp
             cases eq_or_mem_of_mem_cons hm
             · rw [h] at hp

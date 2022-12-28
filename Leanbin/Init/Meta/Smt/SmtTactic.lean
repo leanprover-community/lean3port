@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.smt.smt_tactic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -44,9 +44,9 @@ structure SmtPreConfig where
 - em_attr: is the attribute name for the hinst_lemmas
   that are used for ematching -/
 structure SmtConfig where
-  ccCfg : CcConfig := {  }
-  emCfg : EmatchConfig := {  }
-  preCfg : SmtPreConfig := {  }
+  ccCfg : CcConfig := { }
+  emCfg : EmatchConfig := { }
+  preCfg : SmtPreConfig := { }
   emAttr : Name := `ematch
 #align smt_config SmtConfig
 
@@ -523,7 +523,7 @@ end SmtTactic
 
 open SmtTactic
 
-unsafe def using_smt {α} (t : smt_tactic α) (cfg : SmtConfig := {  }) : tactic α := do
+unsafe def using_smt {α} (t : smt_tactic α) (cfg : SmtConfig := { }) : tactic α := do
   let ss ← smt_state.mk cfg
   let (a, _) ←
     (do

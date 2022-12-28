@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.default
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -32,7 +32,8 @@ import Leanbin.Init.Meta.Widget.Default
 import Leanbin.Init.Meta.FeatureSearch
 
 @[user_attribute]
-unsafe def debugger.attr : user_attribute where 
+unsafe def debugger.attr : user_attribute
+    where
   Name := `breakpoint
   descr := "breakpoint for debugger"
 #align debugger.attr debugger.attr

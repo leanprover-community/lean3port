@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gabriel Ebner
 
 ! This file was ported from Lean 3 source module data.buffer.parser
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -35,7 +35,8 @@ protected def bind (p : Parser α) (f : α → Parser β) : Parser β := fun inp
 protected def pure (a : α) : Parser α := fun input pos => ParseResult.done Pos a
 #align parser.pure Parser.pure
 
-private theorem parser.id_map (p : Parser α) : Parser.bind p Parser.pure = p := by
+private theorem parser.id_map (p : Parser α) : Parser.bind p Parser.pure = p :=
+  by
   apply funext; intro input
   apply funext; intro pos
   dsimp only [Parser.bind]
@@ -43,7 +44,8 @@ private theorem parser.id_map (p : Parser α) : Parser.bind p Parser.pure = p :=
 #align parser.parser.id_map parser.parser.id_map
 
 private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β → Parser γ) :
-    Parser.bind (Parser.bind p q) r = Parser.bind p fun a => Parser.bind (q a) r := by
+    Parser.bind (Parser.bind p q) r = Parser.bind p fun a => Parser.bind (q a) r :=
+  by
   apply funext; intro input
   apply funext; intro pos
   dsimp only [Parser.bind]
@@ -56,11 +58,11 @@ protected def fail (msg : String) : Parser α := fun _ pos =>
   ParseResult.fail Pos (Dlist.singleton msg)
 #align parser.fail Parser.fail
 
-instance : Monad Parser where 
+instance : Monad Parser where
   pure := @Parser.pure
   bind := @Parser.bind
 
-instance : LawfulMonad Parser where 
+instance : LawfulMonad Parser where
   id_map := @Parser.id_map
   pure_bind _ _ _ _ := rfl
   bind_assoc := @Parser.bind_assoc
@@ -88,7 +90,7 @@ protected def orelse (p q : Parser α) : Parser α := fun input pos =>
   | ok => ok
 #align parser.orelse Parser.orelse
 
-instance : Alternative Parser where 
+instance : Alternative Parser where
   failure := @Parser.failure
   orelse := @Parser.orelse
 

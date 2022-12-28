@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 
 ! This file was ported from Lean 3 source module init.control.lawful
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -26,26 +26,35 @@ unsafe def control_laws_tac :=
   (whnf_target >> intros) >> to_expr ``(rfl) >>= exact
 #align control_laws_tac control_laws_tac
 
-class IsLawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
-  map_const_eq : ∀ {α β : Type u}, ((· <$ ·) : α → f β → f α) = (· <$> ·) ∘ const β := by
+#print LawfulFunctor /-
+class LawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
+  map_const_eq :
+    ∀ {α β : Type u},
+      ((· <$ ·) : α → f β → f α) =
+        (· <$> ·) ∘ const β := by
     intros
     rfl
   -- `functor` is indeed a categorical functor
   id_map : ∀ {α : Type u} (x : f α), id <$> x = x
   comp_map : ∀ {α β γ : Type u} (g : α → β) (h : β → γ) (x : f α), (h ∘ g) <$> x = h <$> g <$> x
-#align is_lawful_functor IsLawfulFunctor
+#align is_lawful_functor LawfulFunctor
+-/
 
-export IsLawfulFunctor (map_const_eq id_map comp_map)
+export LawfulFunctor (map_const_eq id_map comp_map)
 
 attribute [simp] id_map
 
 #print LawfulApplicative /-
 -- `comp_map` does not make a good simp lemma
-class LawfulApplicative (f : Type u → Type v) [Applicative f] extends IsLawfulFunctor f : Prop where
-  seq_left_eq : ∀ {α β : Type u} (a : f α) (b : f β), a <* b = const β <$> a <*> b := by
+class LawfulApplicative (f : Type u → Type v) [Applicative f] extends LawfulFunctor f : Prop where
+  seq_left_eq :
+    ∀ {α β : Type u} (a : f α) (b : f β),
+      a <* b = const β <$> a <*> b := by
     intros
     rfl
-  seq_right_eq : ∀ {α β : Type u} (a : f α) (b : f β), a *> b = const α id <$> a <*> b := by
+  seq_right_eq :
+    ∀ {α β : Type u} (a : f α) (b : f β),
+      a *> b = const α id <$> a <*> b := by
     intros
     rfl
   -- applicative laws
@@ -56,7 +65,7 @@ class LawfulApplicative (f : Type u → Type v) [Applicative f] extends IsLawful
     ∀ {α β γ : Type u} (x : f α) (g : f (α → β)) (h : f (β → γ)),
       h <*> (g <*> x) = @comp α β γ <$> h <*> g <*> x
   -- default functor law
-  comp_map := by intros <;> simp [(pure_seq_eq_map _ _).symm, seq_assoc, map_pure, seq_pure]
+  comp_map := (by intros <;> simp [(pure_seq_eq_map _ _).symm, seq_assoc, map_pure, seq_pure])
 #align is_lawful_applicative LawfulApplicative
 -/
 
@@ -78,10 +87,14 @@ theorem pure_id_seq {α : Type u} {f : Type u → Type v} [Applicative f] [Lawfu
 
 #print LawfulMonad /-
 class LawfulMonad (m : Type u → Type v) [Monad m] extends LawfulApplicative m : Prop where
-  bind_pure_comp_eq_map : ∀ {α β : Type u} (f : α → β) (x : m α), x >>= pure ∘ f = f <$> x := by
+  bind_pure_comp_eq_map :
+    ∀ {α β : Type u} (f : α → β) (x : m α),
+      x >>= pure ∘ f = f <$> x := by
     intros
     rfl
-  bind_map_eq_seq : ∀ {α β : Type u} (f : m (α → β)) (x : m α), f >>= (· <$> x) = f <*> x := by
+  bind_map_eq_seq :
+    ∀ {α β : Type u} (f : m (α → β)) (x : m α),
+      f >>= (· <$> x) = f <*> x := by
     intros
     rfl
   -- monad laws
@@ -89,12 +102,13 @@ class LawfulMonad (m : Type u → Type v) [Monad m] extends LawfulApplicative m 
   bind_assoc :
     ∀ {α β γ : Type u} (x : m α) (f : α → m β) (g : β → m γ),
       x >>= f >>= g = x >>= fun x => f x >>= g
-  pure_seq_eq_map := by intros <;> rw [← bind_map_eq_seq] <;> simp [pure_bind]
-  map_pure := by intros <;> rw [← bind_pure_comp_eq_map] <;> simp [pure_bind]
-  seq_pure := by intros <;> rw [← bind_map_eq_seq] <;> simp [map_pure, bind_pure_comp_eq_map]
-  seq_assoc := by
-    intros <;>
-      simp [(bind_pure_comp_eq_map _ _).symm, (bind_map_eq_seq _ _).symm, bind_assoc, pure_bind]
+  pure_seq_eq_map := (by intros <;> rw [← bind_map_eq_seq] <;> simp [pure_bind])
+  map_pure := (by intros <;> rw [← bind_pure_comp_eq_map] <;> simp [pure_bind])
+  seq_pure := (by intros <;> rw [← bind_map_eq_seq] <;> simp [map_pure, bind_pure_comp_eq_map])
+  seq_assoc :=
+    (by
+      intros <;>
+        simp [(bind_pure_comp_eq_map _ _).symm, (bind_map_eq_seq _ _).symm, bind_assoc, pure_bind])
 #align is_lawful_monad LawfulMonad
 -/
 
@@ -178,7 +192,8 @@ theorem run_bind (f : α → StateT σ m β) :
 
 @[simp]
 theorem run_map (f : α → β) [LawfulMonad m] :
-    (f <$> x).run st = (fun p : α × σ => (f (Prod.fst p), Prod.snd p)) <$> x.run st := by
+    (f <$> x).run st = (fun p : α × σ => (f (Prod.fst p), Prod.snd p)) <$> x.run st :=
+  by
   rw [← bind_pure_comp_eq_map _ (x.run st)]
   change (x >>= pure ∘ f).run st = _
   simp
@@ -222,16 +237,14 @@ end
 
 end StateT
 
-instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (σ : Type u) :
-    LawfulMonad
-      (StateT σ
-        m) where 
+instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (σ : Type u) : LawfulMonad (StateT σ m)
+    where
   id_map := by intros <;> apply StateT.ext <;> intro <;> simp <;> erw [id_map]
-  pure_bind := by 
+  pure_bind := by
     intros
     apply StateT.ext
     simp
-  bind_assoc := by 
+  bind_assoc := by
     intros
     apply StateT.ext
     simp [bind_assoc]
@@ -257,7 +270,8 @@ theorem run_bind (f : α → ExceptT ε m β) : (x >>= f).run = x.run >>= Except
 #align except_t.run_bind ExceptTₓ.run_bind
 
 @[simp]
-theorem run_map (f : α → β) [LawfulMonad m] : (f <$> x).run = Except.map f <$> x.run := by
+theorem run_map (f : α → β) [LawfulMonad m] : (f <$> x).run = Except.map f <$> x.run :=
+  by
   rw [← bind_pure_comp_eq_map _ x.run]
   change x.run >>= ExceptT.bindCont (pure ∘ f) = _
   apply bind_ext_congr
@@ -278,19 +292,17 @@ theorem run_monad_map {m' n n'} [Monad m'] [MonadFunctorT n n' m m'] (f : ∀ {�
 
 end ExceptT
 
-instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (ε : Type u) :
-    LawfulMonad
-      (ExceptT ε
-        m) where 
-  id_map := by 
+instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (ε : Type u) : LawfulMonad (ExceptT ε m)
+    where
+  id_map := by
     intros ; apply ExceptT.ext; simp only [ExceptT.run_map]
     rw [map_ext_congr, id_map]
     intro a; cases a <;> rfl
-  bind_pure_comp_eq_map := by 
+  bind_pure_comp_eq_map := by
     intros ; apply ExceptT.ext; simp only [ExceptT.run_map, ExceptT.run_bind]
     rw [bind_ext_congr, bind_pure_comp_eq_map]
     intro a; cases a <;> rfl
-  bind_assoc := by 
+  bind_assoc := by
     intros ; apply ExceptT.ext; simp only [ExceptT.run_bind, bind_assoc]
     rw [bind_ext_congr]
     intro a; cases a <;> simp [ExceptT.bindCont]
@@ -350,10 +362,8 @@ end
 
 end ReaderT
 
-instance (ρ : Type u) (m : Type u → Type v) [Monad m] [LawfulMonad m] :
-    LawfulMonad
-      (ReaderT ρ
-        m) where 
+instance (ρ : Type u) (m : Type u → Type v) [Monad m] [LawfulMonad m] : LawfulMonad (ReaderT ρ m)
+    where
   id_map := by intros <;> apply ReaderT.ext <;> intro <;> simp
   pure_bind := by intros <;> apply ReaderT.ext <;> intro <;> simp
   bind_assoc := by intros <;> apply ReaderT.ext <;> intro <;> simp [bind_assoc]
@@ -379,7 +389,8 @@ theorem run_bind (f : α → OptionT m β) : (x >>= f).run = x.run >>= OptionT.b
 #align option_t.run_bind OptionTₓ.run_bind
 
 @[simp]
-theorem run_map (f : α → β) [LawfulMonad m] : (f <$> x).run = Option.map f <$> x.run := by
+theorem run_map (f : α → β) [LawfulMonad m] : (f <$> x).run = Option.map f <$> x.run :=
+  by
   rw [← bind_pure_comp_eq_map _ x.run]
   change x.run >>= OptionT.bindCont (pure ∘ f) = _
   apply bind_ext_congr
@@ -400,15 +411,13 @@ theorem run_monad_map {m' n n'} [Monad m'] [MonadFunctorT n n' m m'] (f : ∀ {�
 
 end OptionT
 
-instance (m : Type u → Type v) [Monad m] [LawfulMonad m] :
-    LawfulMonad
-      (OptionT
-        m) where 
-  id_map := by 
+instance (m : Type u → Type v) [Monad m] [LawfulMonad m] : LawfulMonad (OptionT m)
+    where
+  id_map := by
     intros ; apply OptionT.ext; simp only [OptionT.run_map]
     rw [map_ext_congr, id_map]
     intro a; cases a <;> rfl
-  bind_assoc := by 
+  bind_assoc := by
     intros ; apply OptionT.ext; simp only [OptionT.run_bind, bind_assoc]
     rw [bind_ext_congr]
     intro a; cases a <;> simp [OptionT.bindCont]

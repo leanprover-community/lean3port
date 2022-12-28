@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Parikshit Khanna, Jeremy Avigad, Leonardo de Moura, Floris van Doorn
 
 ! This file was ported from Lean 3 source module init.data.list.lemmas
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -64,7 +64,8 @@ theorem length_cons (a : α) (l : List α) : length (a :: l) = length l + 1 :=
 
 #print List.length_append /-
 @[simp]
-theorem length_append (s t : List α) : length (s ++ t) = length s + length t := by
+theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
+  by
   induction s
   · show length t = 0 + length t
     · rw [Nat.zero_add]
@@ -272,7 +273,7 @@ theorem ball_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.el
 #align list.ball_nil List.ball_nil
 
 theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
-  ⟨fun ⟨x, h, px⟩ => by 
+  ⟨fun ⟨x, h, px⟩ => by
     simp at h
     cases' h with h h
     · cases h
@@ -354,7 +355,8 @@ theorem subset_cons_of_subset (a : α) {l₁ l₂ : List α} : l₁ ⊆ l₂ →
 -/
 
 #print List.eq_nil_of_length_eq_zero /-
-theorem eq_nil_of_length_eq_zero {l : List α} : length l = 0 → l = [] := by
+theorem eq_nil_of_length_eq_zero {l : List α} : length l = 0 → l = [] :=
+  by
   induction l <;> intros
   rfl
   contradiction
@@ -402,7 +404,7 @@ theorem length_remove_nth :
     ∀ (l : List α) (i : ℕ), i < length l → length (removeNth l i) = length l - 1
   | [], _, h => rfl
   | x :: xs, 0, h => by simp [remove_nth]
-  | x :: xs, i + 1, h => by 
+  | x :: xs, i + 1, h => by
     have : i < length xs := lt_of_succ_lt_succ h
     dsimp [remove_nth] <;>
         rw [length_remove_nth xs i this,

@@ -6,7 +6,7 @@ Author: Leonardo de Moura
 Quotient types.
 
 ! This file was ported from Lean 3 source module init.data.quot
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -365,7 +365,7 @@ variable (r : α → α → Prop)
 
 #print EqvGen /-
 inductive EqvGen : α → α → Prop
-  | rel : ∀ x y, r x y → EqvGen x y
+  | Rel : ∀ x y, r x y → EqvGen x y
   | refl : ∀ x, EqvGen x x
   | symm : ∀ x y, EqvGen x y → EqvGen y x
   | trans : ∀ x y z, EqvGen x y → EqvGen y z → EqvGen x z

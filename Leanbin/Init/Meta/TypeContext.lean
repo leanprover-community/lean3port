@@ -31,7 +31,8 @@ protected unsafe def failure : type_context α :=
   type_context.fail ""
 #align tactic.unsafe.type_context.failure tactic.unsafe.type_context.failure
 
-unsafe instance : Monad type_context where 
+unsafe instance : Monad type_context
+    where
   bind := @type_context.bind
   pure := @type_context.pure
 
@@ -196,8 +197,8 @@ unsafe def orelse {α : Type} : type_context α → type_context α → type_con
   | x, y => try x >>= fun x => Option.rec y pure x
 #align tactic.unsafe.type_context.orelse tactic.unsafe.type_context.orelse
 
-unsafe instance type_context_alternative :
-    Alternative type_context where 
+unsafe instance type_context_alternative : Alternative type_context
+    where
   failure α := type_context.fail "failed"
   orelse α x y := type_context.orelse x y
 #align

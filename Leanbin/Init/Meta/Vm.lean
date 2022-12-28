@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.vm
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -150,7 +150,7 @@ unsafe axiom vm_core.ret {α : Type} : α → vm_core α
 unsafe axiom vm_core.bind {α β : Type} : vm_core α → (α → vm_core β) → vm_core β
 #align vm_core.bind vm_core.bind
 
-unsafe instance : Monad vm_core where 
+unsafe instance : Monad vm_core where
   map := @vm_core.map
   pure := @vm_core.ret
   bind := @vm_core.bind

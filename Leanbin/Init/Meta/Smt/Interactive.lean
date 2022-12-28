@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.smt.interactive
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -47,10 +47,10 @@ unsafe def execute_with (cfg : SmtConfig) (tac : smt_tactic Unit) : tactic Unit 
   using_smt tac cfg
 #align smt_tactic.execute_with smt_tactic.execute_with
 
-unsafe instance :
-    interactive.executor smt_tactic where 
+unsafe instance : interactive.executor smt_tactic
+    where
   config_type := SmtConfig
-  Inhabited := ⟨{  }⟩
+  Inhabited := ⟨{ }⟩
   execute_with cfg tac := using_smt tac cfg
 
 namespace Interactive
@@ -328,8 +328,8 @@ open Tactic
 
 /-- Simplify the target type of the main goal. -/
 unsafe def simp (use_iota_eqn : parse <| (tk "!")?) (no_dflt : parse only_flag)
-    (hs : parse simp_arg_list) (attr_names : parse with_ident_list)
-    (cfg : simp_config_ext := {  }) : smt_tactic Unit :=
+    (hs : parse simp_arg_list) (attr_names : parse with_ident_list) (cfg : simp_config_ext := { }) :
+    smt_tactic Unit :=
   tactic.interactive.simp use_iota_eqn none no_dflt hs attr_names (Loc.ns [none]) cfg
 #align smt_tactic.interactive.simp smt_tactic.interactive.simp
 

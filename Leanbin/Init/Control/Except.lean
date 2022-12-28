@@ -6,7 +6,7 @@ Authors: Jared Roesch, Sebastian Ullrich
 The except monad transformer.
 
 ! This file was ported from Lean 3 source module init.control.except
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -63,7 +63,7 @@ protected def toOption {α : Type v} : Except ε α → Option α
 #align except.to_option Except.toOption
 -/
 
-instance : Monad (Except ε) where 
+instance : Monad (Except ε) where
   pure := @return
   bind := @bind
 
@@ -123,7 +123,7 @@ protected def monadMap {m'} [Monad m'] {α} (f : ∀ {α}, m α → m' α) :
 instance (m') [Monad m'] : MonadFunctor m m' (ExceptT ε m) (ExceptT ε m') :=
   ⟨@monad_map m' _⟩
 
-instance : Monad (ExceptT ε m) where 
+instance : Monad (ExceptT ε m) where
   pure := @return
   bind := @bind
 
@@ -162,9 +162,8 @@ end MonadExcept
 
 export MonadExcept (throw catch)
 
-instance (m ε) [Monad m] :
-    MonadExcept ε
-      (ExceptT ε m) where 
+instance (m ε) [Monad m] : MonadExcept ε (ExceptT ε m)
+    where
   throw α := ExceptT.mk ∘ pure ∘ Except.error
   catch := @ExceptT.catch ε _ _
 

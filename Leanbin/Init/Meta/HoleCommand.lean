@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.hole_command
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -32,7 +32,8 @@ unsafe structure hole_command where
 open Tactic
 
 @[hole_command]
-unsafe def infer_type_cmd : hole_command where 
+unsafe def infer_type_cmd : hole_command
+    where
   Name := "Infer"
   descr := "Infer type of the expression in the hole"
   action ps := do
@@ -45,7 +46,8 @@ unsafe def infer_type_cmd : hole_command where
 #align infer_type_cmd infer_type_cmd
 
 @[hole_command]
-unsafe def show_goal_cmd : hole_command where 
+unsafe def show_goal_cmd : hole_command
+    where
   Name := "Show"
   descr := "Show the current goal"
   action _ := do
@@ -54,7 +56,7 @@ unsafe def show_goal_cmd : hole_command where
 #align show_goal_cmd show_goal_cmd
 
 @[hole_command]
-unsafe def use_cmd : hole_command where 
+unsafe def use_cmd : hole_command where
   Name := "Use"
   descr := "Try to fill the hole using the given argument"
   action ps := do

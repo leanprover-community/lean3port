@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.list.qsort
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -19,9 +19,11 @@ namespace List
 def Qsort.f {α} (lt : α → α → Bool) :
     ∀ x : List α, (∀ y : List α, length y < length x → List α) → List α
   | [], IH => []
-  | h :: t, IH => by
+  | h :: t, IH =>
+    by
     induction' e : partition (fun x => lt h x = tt) t with large small
-    have : length Small < length (h :: t) ∧ length large < length (h :: t) := by
+    have : length Small < length (h :: t) ∧ length large < length (h :: t) :=
+      by
       rw [partition_eq_filter_filter] at e
       injection e
       subst large
@@ -47,7 +49,7 @@ theorem qsort_cons {α} (lt : α → α → Bool) (h t) :
     qsort lt (h :: t) =
       let (large, Small) := partition (fun x => lt h x = tt) t
       qsort lt Small ++ h :: qsort lt large :=
-  by 
+  by
   rw [qsort, WellFounded.fix_eq, qsort.F]
   induction' e : partition (fun x => lt h x = tt) t with large small
   simp [e]; rw [e]

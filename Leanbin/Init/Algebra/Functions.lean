@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad, Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.algebra.functions
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -145,7 +145,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u1}} [_inst_1 : LinearOrder.{u1} α] (a : α) (b : α) (c : α), Eq.{succ u1} α (Min.min.{u1} α (LinearOrder.toMin.{u1} α _inst_1) (Min.min.{u1} α (LinearOrder.toMin.{u1} α _inst_1) a b) c) (Min.min.{u1} α (LinearOrder.toMin.{u1} α _inst_1) a (Min.min.{u1} α (LinearOrder.toMin.{u1} α _inst_1) b c))
 Case conversion may be inaccurate. Consider using '#align min_assoc min_assocₓ'. -/
-theorem min_assoc (a b c : α) : min (min a b) c = min a (min b c) := by
+theorem min_assoc (a b c : α) : min (min a b) c = min a (min b c) :=
+  by
   apply eq_min
   · apply le_trans
     apply min_le_left
@@ -234,7 +235,8 @@ lean 3 declaration is
 but is expected to have type
   forall {α : Type.{u1}} [_inst_1 : LinearOrder.{u1} α] (a : α) (b : α) (c : α), Eq.{succ u1} α (Max.max.{u1} α (LinearOrder.toMax.{u1} α _inst_1) (Max.max.{u1} α (LinearOrder.toMax.{u1} α _inst_1) a b) c) (Max.max.{u1} α (LinearOrder.toMax.{u1} α _inst_1) a (Max.max.{u1} α (LinearOrder.toMax.{u1} α _inst_1) b c))
 Case conversion may be inaccurate. Consider using '#align max_assoc max_assocₓ'. -/
-theorem max_assoc (a b c : α) : max (max a b) c = max a (max b c) := by
+theorem max_assoc (a b c : α) : max (max a b) c = max a (max b c) :=
+  by
   apply eq_max
   · apply le_trans
     apply le_max_left a b

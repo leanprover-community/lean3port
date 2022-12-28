@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.tactic
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -117,7 +117,7 @@ infixl:2 " >>=[tactic] " => interaction_monad_bind
 infixl:2 " >>[tactic] " => interaction_monad_seq
 
 unsafe instance : Alternative tactic :=
-  { interaction_monad.monad with 
+  { interaction_monad.monad with
     failure := @interaction_monad.failed _
     orelse := @interaction_monad_orelse _ }
 
@@ -170,8 +170,8 @@ unsafe def executor.execute_with_explicit (m : Type → Type u) [Monad m] [execu
 #align interactive.executor.execute_with_explicit interactive.executor.execute_with_explicit
 
 /-- Default `executor` instance for `tactic`s themselves -/
-unsafe instance executor_tactic :
-    executor tactic where 
+unsafe instance executor_tactic : executor tactic
+    where
   config_type := Unit
   Inhabited := ⟨()⟩
   execute_with _ := id
@@ -766,7 +766,7 @@ Apply the expression `e` to the main goal, the unification is performed using th
     If `cfg.instances` is `tt`, then use type class resolution to instantiate unassigned meta-variables.
     The fields `cfg.auto_param` and `cfg.opt_param` are ignored by this tactic (See `tactic.apply`).
     It returns a list of all introduced meta variables and the parameter name associated with them, even the assigned ones. -/
-unsafe axiom apply_core (e : expr) (cfg : ApplyCfg := {  }) : tactic (List (Name × expr))
+unsafe axiom apply_core (e : expr) (cfg : ApplyCfg := { }) : tactic (List (Name × expr))
 #align tactic.apply_core tactic.apply_core
 
 /-- Create a fresh meta universe variable. -/
@@ -1729,7 +1729,7 @@ unsafe def try_apply_opt_auto_param_for_apply (cfg : ApplyCfg) (ms : List (Name 
     set_goals gs
 #align tactic.try_apply_opt_auto_param_for_apply tactic.try_apply_opt_auto_param_for_apply
 
-unsafe def apply (e : expr) (cfg : ApplyCfg := {  }) : tactic (List (Name × expr)) := do
+unsafe def apply (e : expr) (cfg : ApplyCfg := { }) : tactic (List (Name × expr)) := do
   let r ← apply_core e cfg
   try_apply_opt_auto_param_for_apply cfg r
   return r
@@ -1772,7 +1772,7 @@ unsafe def mk_const (c : Name) : tactic expr := do
 #align tactic.mk_const tactic.mk_const
 
 /-- Apply the constant `c` -/
-unsafe def applyc (c : Name) (cfg : ApplyCfg := {  }) : tactic Unit := do
+unsafe def applyc (c : Name) (cfg : ApplyCfg := { }) : tactic Unit := do
   let c ← mk_const c
   apply c cfg
   skip
@@ -2294,13 +2294,13 @@ unsafe def order_laws_tac :=
 #align order_laws_tac order_laws_tac
 
 unsafe def monad_from_pure_bind {m : Type u → Type v} (pure : ∀ {α : Type u}, α → m α)
-    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) :
-    Monad m where 
+    (bind : ∀ {α β : Type u}, m α → (α → m β) → m β) : Monad m
+    where
   pure := @pure
   bind := @bind
 #align monad_from_pure_bind monad_from_pure_bind
 
-unsafe instance : Monad task where 
+unsafe instance : Monad task where
   map := @task.map
   bind := @task.bind
   pure := @task.pure

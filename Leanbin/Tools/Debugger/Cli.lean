@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 Simple command line interface for debugging Lean programs and tactics.
 
 ! This file was ported from Lean 3 source module tools.debugger.cli
-! leanprover-community/lean commit 53e8520d8964c7632989880372d91ba0cecbaf00
+! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -29,7 +29,7 @@ structure State where
   activeBps : List (Nat × Name)
 #align debugger.state Debugger.State
 
-def initState : State where 
+def initState : State where
   md := Mode.init
   csz := 0
   fnBps := []
@@ -282,7 +282,7 @@ unsafe def step_fn (s : State) : vm State := do
 #align debugger.step_fn debugger.step_fn
 
 @[vm_monitor]
-unsafe def monitor : vm_monitor State where 
+unsafe def monitor : vm_monitor State where
   init := initState
   step := step_fn
 #align debugger.monitor debugger.monitor

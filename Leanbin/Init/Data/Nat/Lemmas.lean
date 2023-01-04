@@ -2037,6 +2037,7 @@ private def wf_lbp : WellFounded lbp :=
         | _, ⟨rfl, a⟩ => IH _ (by rw [Nat.add_right_comm] <;> exact kn)⟩⟩
 #align nat.wf_lbp nat.wf_lbp
 
+#print Nat.findX /-
 protected def findX : { n // p n ∧ ∀ m < n, ¬p m } :=
   @WellFounded.fix _ (fun k => (∀ n < k, ¬p n) → { n // p n ∧ ∀ m < n, ¬p m }) lbp wf_lbp
     (fun m IH al =>
@@ -2047,6 +2048,7 @@ protected def findX : { n // p n ∧ ∀ m < n, ¬p m } :=
         IH _ ⟨rfl, this⟩ fun n h => this n <| Nat.le_of_succ_le_succ h)
     0 fun n h => absurd h (Nat.not_lt_zero _)
 #align nat.find_x Nat.findX
+-/
 
 #print Nat.find /-
 /-- If `p` is a (decidable) predicate on `ℕ` and `hp : ∃ (n : ℕ), p n` is a proof that

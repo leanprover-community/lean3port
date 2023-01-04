@@ -39,11 +39,9 @@ class IsCommutative (α : Type u) (op : α → α → α) : Prop where
 #align is_commutative IsCommutative
 -/
 
-#print is_symm_op_of_is_commutative /-
 instance (priority := 100) is_symm_op_of_is_commutative (α : Type u) (op : α → α → α)
     [IsCommutative α op] : IsSymmOp α α op where symm_op := IsCommutative.comm
 #align is_symm_op_of_is_commutative is_symm_op_of_is_commutative
--/
 
 #print IsAssociative /-
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
@@ -152,12 +150,10 @@ class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
 #align is_symm IsSymm
 -/
 
-#print is_symm_op_of_is_symm /-
 /-- The opposite of a symmetric relation is symmetric. -/
 instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] :
     IsSymmOp α Prop r where symm_op a b := propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
 #align is_symm_op_of_is_symm is_symm_op_of_is_symm
--/
 
 #print IsAsymm /-
 /-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
@@ -202,14 +198,12 @@ class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α 
 #align is_total_preorder IsTotalPreorder
 -/
 
-#print is_total_preorder_is_preorder /-
 /-- Every total pre-order is a pre-order. -/
 instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] :
     IsPreorder α r where
   trans := s.trans
   refl a := Or.elim (@IsTotal.total _ r _ a a) id id
 #align is_total_preorder_is_preorder is_total_preorder_is_preorder
--/
 
 #print IsPartialOrder /-
 /-- `is_partial_order X r` means that the binary relation `r` on `X` is a partial order, that is,
@@ -339,12 +333,10 @@ theorem incomp_trans [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a →
 #align incomp_trans incomp_trans
 -/
 
-#print is_asymm_of_is_trans_of_is_irrefl /-
 instance (priority := 90) is_asymm_of_is_trans_of_is_irrefl [IsTrans α r] [IsIrrefl α r] :
     IsAsymm α r :=
   ⟨fun a b h₁ h₂ => absurd (trans h₁ h₂) (irrefl a)⟩
 #align is_asymm_of_is_trans_of_is_irrefl is_asymm_of_is_trans_of_is_irrefl
--/
 
 section ExplicitRelationVariants
 
@@ -459,7 +451,6 @@ a " ≈[" lt "]" b:50 => @Equiv _ lt a b
 
 end StrictWeakOrder
 
-#print is_strict_weak_order_of_is_total_preorder /-
 theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α → Prop}
     {lt : α → α → Prop} [DecidableRel le] [s : IsTotalPreorder α le] (h : ∀ a b, lt a b ↔ ¬le b a) :
     IsStrictWeakOrder α lt :=
@@ -481,7 +472,6 @@ theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α 
       have hca : le c a := trans_of le hcb hba
       And.intro (fun n => absurd hca (Iff.mp (h _ _) n)) fun n => absurd hac (Iff.mp (h _ _) n) }
 #align is_strict_weak_order_of_is_total_preorder is_strict_weak_order_of_is_total_preorder
--/
 
 #print lt_of_lt_of_incomp /-
 theorem lt_of_lt_of_incomp {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt]

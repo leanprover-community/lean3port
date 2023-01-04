@@ -299,13 +299,13 @@ def lxor' : ℕ → ℕ → ℕ :=
 #align nat.lxor Nat.lxor'
 -/
 
-#print Nat.binary_rec_zero /-
+#print Nat.binaryRec_zero /-
 @[simp]
-theorem binary_rec_zero {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) :
+theorem binaryRec_zero {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) :
     binaryRec z f 0 = z := by
   rw [binary_rec]
   rfl
-#align nat.binary_rec_zero Nat.binary_rec_zero
+#align nat.binary_rec_zero Nat.binaryRec_zero
 -/
 
 /-! bitwise ops -/
@@ -360,25 +360,25 @@ theorem shiftl_sub : ∀ (m) {n k}, k ≤ n → shiftl m (n - k) = shiftr (shift
 #align nat.shiftl_sub Nat.shiftl_sub
 -/
 
-#print Nat.test_bit_zero /-
+#print Nat.testBit_zero /-
 @[simp]
-theorem test_bit_zero (b n) : testBit (bit b n) 0 = b :=
+theorem testBit_zero (b n) : testBit (bit b n) 0 = b :=
   bodd_bit _ _
-#align nat.test_bit_zero Nat.test_bit_zero
+#align nat.test_bit_zero Nat.testBit_zero
 -/
 
-#print Nat.test_bit_succ /-
-theorem test_bit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m :=
+#print Nat.testBit_succ /-
+theorem testBit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m :=
   by
   have : bodd (shiftr (shiftr (bit b n) 1) m) = bodd (shiftr n m) := by
     dsimp [shiftr] <;> rw [div2_bit]
   rw [← shiftr_add, Nat.add_comm] at this <;> exact this
-#align nat.test_bit_succ Nat.test_bit_succ
+#align nat.test_bit_succ Nat.testBit_succ
 -/
 
 /- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:145:2: warning: unsupported: with_cases -/
-#print Nat.binary_rec_eq /-
-theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)}
+#print Nat.binaryRec_eq /-
+theorem binaryRec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)}
     (h : f false 0 z = z) (b n) : binaryRec z f (bit b n) = f b n (binaryRec z f n) :=
   by
   rw [binary_rec]
@@ -399,7 +399,7 @@ theorem binary_rec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bi
     revert e
     rw [bodd_bit, div2_bit]
     intros ; rfl
-#align nat.binary_rec_eq Nat.binary_rec_eq
+#align nat.binary_rec_eq Nat.binaryRec_eq
 -/
 
 #print Nat.bitwise'_bit_aux /-
@@ -534,14 +534,14 @@ theorem lxor'_bit : ∀ a m b n, lxor' (bit a m) (bit b n) = bit (xor a b) (lxor
 #align nat.lxor_bit Nat.lxor'_bit
 -/
 
-/- warning: nat.test_bit_bitwise -> Nat.test_bit_bitwise' is a dubious translation:
+/- warning: nat.test_bit_bitwise -> Nat.testBit_bitwise' is a dubious translation:
 lean 3 declaration is
   forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.bitwise f m n) k) (f (Nat.testBit m k) (Nat.testBit n k)))
 but is expected to have type
   forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.bitwise' f m n) k) (f (Nat.testBit m k) (Nat.testBit n k)))
-Case conversion may be inaccurate. Consider using '#align nat.test_bit_bitwise Nat.test_bit_bitwise'ₓ'. -/
+Case conversion may be inaccurate. Consider using '#align nat.test_bit_bitwise Nat.testBit_bitwise'ₓ'. -/
 @[simp]
-theorem test_bit_bitwise' {f : Bool → Bool → Bool} (h : f false false = ff) (m n k) :
+theorem testBit_bitwise' {f : Bool → Bool → Bool} (h : f false false = ff) (m n k) :
     testBit (bitwise f m n) k = f (testBit m k) (testBit n k) :=
   by
   revert m n <;> induction' k with k IH <;> intro m n <;> apply bit_cases_on m <;> intro a m' <;>
@@ -550,42 +550,42 @@ theorem test_bit_bitwise' {f : Bool → Bool → Bool} (h : f false false = ff) 
     rw [bitwise_bit h]
   · simp [test_bit_zero]
   · simp [test_bit_succ, IH]
-#align nat.test_bit_bitwise Nat.test_bit_bitwise'
+#align nat.test_bit_bitwise Nat.testBit_bitwise'
 
-/- warning: nat.test_bit_lor -> Nat.test_bit_lor' is a dubious translation:
+/- warning: nat.test_bit_lor -> Nat.testBit_lor' is a dubious translation:
 lean 3 declaration is
   forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.lor m n) k) (or (Nat.testBit m k) (Nat.testBit n k))
 but is expected to have type
   forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.lor' m n) k) (or (Nat.testBit m k) (Nat.testBit n k))
-Case conversion may be inaccurate. Consider using '#align nat.test_bit_lor Nat.test_bit_lor'ₓ'. -/
+Case conversion may be inaccurate. Consider using '#align nat.test_bit_lor Nat.testBit_lor'ₓ'. -/
 @[simp]
-theorem test_bit_lor' : ∀ m n k, testBit (lor m n) k = (testBit m k || testBit n k) :=
-  test_bit_bitwise' rfl
-#align nat.test_bit_lor Nat.test_bit_lor'
+theorem testBit_lor' : ∀ m n k, testBit (lor m n) k = (testBit m k || testBit n k) :=
+  testBit_bitwise' rfl
+#align nat.test_bit_lor Nat.testBit_lor'
 
-/- warning: nat.test_bit_land -> Nat.test_bit_land' is a dubious translation:
+/- warning: nat.test_bit_land -> Nat.testBit_land' is a dubious translation:
 lean 3 declaration is
   forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.land m n) k) (and (Nat.testBit m k) (Nat.testBit n k))
 but is expected to have type
   forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.land' m n) k) (and (Nat.testBit m k) (Nat.testBit n k))
-Case conversion may be inaccurate. Consider using '#align nat.test_bit_land Nat.test_bit_land'ₓ'. -/
+Case conversion may be inaccurate. Consider using '#align nat.test_bit_land Nat.testBit_land'ₓ'. -/
 @[simp]
-theorem test_bit_land' : ∀ m n k, testBit (land m n) k = (testBit m k && testBit n k) :=
-  test_bit_bitwise' rfl
-#align nat.test_bit_land Nat.test_bit_land'
+theorem testBit_land' : ∀ m n k, testBit (land m n) k = (testBit m k && testBit n k) :=
+  testBit_bitwise' rfl
+#align nat.test_bit_land Nat.testBit_land'
 
-#print Nat.test_bit_ldiff' /-
+#print Nat.testBit_ldiff' /-
 @[simp]
-theorem test_bit_ldiff' : ∀ m n k, testBit (ldiff' m n) k = (testBit m k && not (testBit n k)) :=
-  test_bit_bitwise' rfl
-#align nat.test_bit_ldiff Nat.test_bit_ldiff'
+theorem testBit_ldiff' : ∀ m n k, testBit (ldiff' m n) k = (testBit m k && not (testBit n k)) :=
+  testBit_bitwise' rfl
+#align nat.test_bit_ldiff Nat.testBit_ldiff'
 -/
 
-#print Nat.test_bit_lxor' /-
+#print Nat.testBit_lxor' /-
 @[simp]
-theorem test_bit_lxor' : ∀ m n k, testBit (lxor' m n) k = xor (testBit m k) (testBit n k) :=
-  test_bit_bitwise' rfl
-#align nat.test_bit_lxor Nat.test_bit_lxor'
+theorem testBit_lxor' : ∀ m n k, testBit (lxor' m n) k = xor (testBit m k) (testBit n k) :=
+  testBit_bitwise' rfl
+#align nat.test_bit_lxor Nat.testBit_lxor'
 -/
 
 end Nat

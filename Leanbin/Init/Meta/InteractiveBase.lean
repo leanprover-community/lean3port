@@ -117,23 +117,356 @@ unsafe def ident_ : parser Name :=
   ident <|> tk "_" *> return `_
 #align interactive.types.ident_ interactive.types.ident_
 
-unsafe def using_ident :=
-  (tk "using" *> ident)?
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `using_ident [])
+      (Command.optDeclSig [] [])
+      (Command.declValSimple
+       ":="
+       (Init.Meta.InteractiveBase.term_?
+        («term_*>_» (Term.app `tk [(str "\"using\"")]) "*>" `ident)
+        "?")
+       [])
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.InteractiveBase.term_?
+       («term_*>_» (Term.app `tk [(str "\"using\"")]) "*>" `ident)
+       "?")
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.InteractiveBase.term_?', expected 'Init.Meta.InteractiveBase.term_?._@.Init.Meta.InteractiveBase._hyg.9'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe def using_ident := tk "using" *> ident ?
 #align interactive.types.using_ident interactive.types.using_ident
 
-unsafe def with_ident_list :=
-  tk "with" *> ident_* <|> return []
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `with_ident_list [])
+      (Command.optDeclSig [] [])
+      (Command.declValSimple
+       ":="
+       («term_<|>_»
+        («term_*>_»
+         (Term.app `tk [(str "\"with\"")])
+         "*>"
+         (Init.Meta.InteractiveBase.«term_*» `ident_ "*"))
+        "<|>"
+        (Term.app `return [(«term[_]» "[" [] "]")]))
+       [])
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|>_»
+       («term_*>_»
+        (Term.app `tk [(str "\"with\"")])
+        "*>"
+        (Init.Meta.InteractiveBase.«term_*» `ident_ "*"))
+       "<|>"
+       (Term.app `return [(«term[_]» "[" [] "]")]))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `return [(«term[_]» "[" [] "]")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term[_]» "[" [] "]")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `return
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 20 >? 1022, (some 1023,
+     term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 20, term))
+      («term_*>_»
+       (Term.app `tk [(str "\"with\"")])
+       "*>"
+       (Init.Meta.InteractiveBase.«term_*» `ident_ "*"))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.InteractiveBase.«term_*» `ident_ "*")
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.InteractiveBase.«term_*»', expected 'Init.Meta.InteractiveBase.term_*._@.Init.Meta.InteractiveBase._hyg.54'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe def with_ident_list := tk "with" *> ident_ * <|> return [ ]
 #align interactive.types.with_ident_list interactive.types.with_ident_list
 
-unsafe def without_ident_list :=
-  tk "without" *> ident* <|> return []
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `without_ident_list [])
+      (Command.optDeclSig [] [])
+      (Command.declValSimple
+       ":="
+       («term_<|>_»
+        («term_*>_»
+         (Term.app `tk [(str "\"without\"")])
+         "*>"
+         (Init.Meta.InteractiveBase.«term_*» `ident "*"))
+        "<|>"
+        (Term.app `return [(«term[_]» "[" [] "]")]))
+       [])
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|>_»
+       («term_*>_»
+        (Term.app `tk [(str "\"without\"")])
+        "*>"
+        (Init.Meta.InteractiveBase.«term_*» `ident "*"))
+       "<|>"
+       (Term.app `return [(«term[_]» "[" [] "]")]))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `return [(«term[_]» "[" [] "]")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term[_]» "[" [] "]")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `return
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 20 >? 1022, (some 1023,
+     term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 20, term))
+      («term_*>_»
+       (Term.app `tk [(str "\"without\"")])
+       "*>"
+       (Init.Meta.InteractiveBase.«term_*» `ident "*"))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.InteractiveBase.«term_*» `ident "*")
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.InteractiveBase.«term_*»', expected 'Init.Meta.InteractiveBase.term_*._@.Init.Meta.InteractiveBase._hyg.54'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe def without_ident_list := tk "without" *> ident * <|> return [ ]
 #align interactive.types.without_ident_list interactive.types.without_ident_list
 
-unsafe def location :=
-  tk "at" *>
-      (tk "*" *> return Loc.wildcard <|>
-        loc.ns <$> ((with_desc "⊢" <| tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
-    return (Loc.ns [none])
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `location [])
+      (Command.optDeclSig [] [])
+      (Command.declValSimple
+       ":="
+       («term_<|>_»
+        («term_*>_»
+         (Term.app `tk [(str "\"at\"")])
+         "*>"
+         («term_<|>_»
+          («term_*>_» (Term.app `tk [(str "\"*\"")]) "*>" (Term.app `return [`Loc.wildcard]))
+          "<|>"
+          («term_<$>_»
+           `loc.ns
+           "<$>"
+           (Init.Meta.InteractiveBase.«term_*»
+            («term_<|>_»
+             («term_*>_»
+              («term_<|_»
+               (Term.app `with_desc [(str "\"⊢\"")])
+               "<|"
+               («term_<|>_» (Term.app `tk [(str "\"⊢\"")]) "<|>" (Term.app `tk [(str "\"|-\"")])))
+              "*>"
+              (Term.app `return [`none]))
+             "<|>"
+             («term_<$>_» `some "<$>" `ident))
+            "*"))))
+        "<|>"
+        (Term.app `return [(Term.app `Loc.ns [(«term[_]» "[" [`none] "]")])]))
+       [])
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|>_»
+       («term_*>_»
+        (Term.app `tk [(str "\"at\"")])
+        "*>"
+        («term_<|>_»
+         («term_*>_» (Term.app `tk [(str "\"*\"")]) "*>" (Term.app `return [`Loc.wildcard]))
+         "<|>"
+         («term_<$>_»
+          `loc.ns
+          "<$>"
+          (Init.Meta.InteractiveBase.«term_*»
+           («term_<|>_»
+            («term_*>_»
+             («term_<|_»
+              (Term.app `with_desc [(str "\"⊢\"")])
+              "<|"
+              («term_<|>_» (Term.app `tk [(str "\"⊢\"")]) "<|>" (Term.app `tk [(str "\"|-\"")])))
+             "*>"
+             (Term.app `return [`none]))
+            "<|>"
+            («term_<$>_» `some "<$>" `ident))
+           "*"))))
+       "<|>"
+       (Term.app `return [(Term.app `Loc.ns [(«term[_]» "[" [`none] "]")])]))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `return [(Term.app `Loc.ns [(«term[_]» "[" [`none] "]")])])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.app', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.app', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `Loc.ns [(«term[_]» "[" [`none] "]")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term[_]» "[" [`none] "]")
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `none
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `Loc.ns
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1022, (some 1023,
+     term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesized: (Term.paren
+     "("
+     (Term.app `Loc.ns [(«term[_]» "[" [`none] "]")])
+     ")")
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `return
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 20 >? 1022, (some 1023,
+     term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 20, term))
+      («term_*>_»
+       (Term.app `tk [(str "\"at\"")])
+       "*>"
+       («term_<|>_»
+        («term_*>_» (Term.app `tk [(str "\"*\"")]) "*>" (Term.app `return [`Loc.wildcard]))
+        "<|>"
+        («term_<$>_»
+         `loc.ns
+         "<$>"
+         (Init.Meta.InteractiveBase.«term_*»
+          («term_<|>_»
+           («term_*>_»
+            («term_<|_»
+             (Term.app `with_desc [(str "\"⊢\"")])
+             "<|"
+             («term_<|>_» (Term.app `tk [(str "\"⊢\"")]) "<|>" (Term.app `tk [(str "\"|-\"")])))
+            "*>"
+            (Term.app `return [`none]))
+           "<|>"
+           («term_<$>_» `some "<$>" `ident))
+          "*"))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|>_»
+       («term_*>_» (Term.app `tk [(str "\"*\"")]) "*>" (Term.app `return [`Loc.wildcard]))
+       "<|>"
+       («term_<$>_»
+        `loc.ns
+        "<$>"
+        (Init.Meta.InteractiveBase.«term_*»
+         («term_<|>_»
+          («term_*>_»
+           («term_<|_»
+            (Term.app `with_desc [(str "\"⊢\"")])
+            "<|"
+            («term_<|>_» (Term.app `tk [(str "\"⊢\"")]) "<|>" (Term.app `tk [(str "\"|-\"")])))
+           "*>"
+           (Term.app `return [`none]))
+          "<|>"
+          («term_<$>_» `some "<$>" `ident))
+         "*")))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<$>_»
+       `loc.ns
+       "<$>"
+       (Init.Meta.InteractiveBase.«term_*»
+        («term_<|>_»
+         («term_*>_»
+          («term_<|_»
+           (Term.app `with_desc [(str "\"⊢\"")])
+           "<|"
+           («term_<|>_» (Term.app `tk [(str "\"⊢\"")]) "<|>" (Term.app `tk [(str "\"|-\"")])))
+          "*>"
+          (Term.app `return [`none]))
+         "<|>"
+         («term_<$>_» `some "<$>" `ident))
+        "*"))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.InteractiveBase.«term_*»
+       («term_<|>_»
+        («term_*>_»
+         («term_<|_»
+          (Term.app `with_desc [(str "\"⊢\"")])
+          "<|"
+          («term_<|>_» (Term.app `tk [(str "\"⊢\"")]) "<|>" (Term.app `tk [(str "\"|-\"")])))
+         "*>"
+         (Term.app `return [`none]))
+        "<|>"
+        («term_<$>_» `some "<$>" `ident))
+       "*")
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.InteractiveBase.«term_*»', expected 'Init.Meta.InteractiveBase.term_*._@.Init.Meta.InteractiveBase._hyg.54'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe
+  def
+    location
+    :=
+      tk "at"
+          *>
+          tk "*" *> return Loc.wildcard
+            <|>
+            loc.ns <$> with_desc "⊢" <| tk "⊢" <|> tk "|-" *> return none <|> some <$> ident *
+        <|>
+        return Loc.ns [ none ]
 #align interactive.types.location interactive.types.location
 
 unsafe def pexpr_list :=

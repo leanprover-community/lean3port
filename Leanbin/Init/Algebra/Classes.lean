@@ -286,50 +286,539 @@ variable {α : Type u} {r : α → α → Prop}
 local infixl:50 "≺" => r
 
 #print irrefl /-
-theorem irrefl [IsIrrefl α r] (a : α) : ¬a≺a :=
-  IsIrrefl.irrefl a
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `irrefl [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsIrrefl [`α `r]) "]")
+        (Term.explicitBinder "(" [`a] [":" `α] [] ")")]
+       (Term.typeSpec ":" («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `a))))
+      (Command.declValSimple ":=" (Term.app `IsIrrefl.irrefl [`a]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsIrrefl.irrefl [`a])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsIrrefl.irrefl
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `a "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem irrefl [ IsIrrefl α r ] ( a : α ) : ¬ a ≺ a := IsIrrefl.irrefl a
 #align irrefl irrefl
 -/
 
 #print refl /-
-theorem refl [IsRefl α r] (a : α) : a≺a :=
-  IsRefl.refl a
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `refl [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsRefl [`α `r]) "]")
+        (Term.explicitBinder "(" [`a] [":" `α] [] ")")]
+       (Term.typeSpec ":" (Init.Algebra.Classes.«term_≺_» `a "≺" `a)))
+      (Command.declValSimple ":=" (Term.app `IsRefl.refl [`a]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsRefl.refl [`a])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsRefl.refl
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `a "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem refl [ IsRefl α r ] ( a : α ) : a ≺ a := IsRefl.refl a
 #align refl refl
 -/
 
 #print trans /-
-theorem trans [IsTrans α r] {a b c : α} : a≺b → b≺c → a≺c :=
-  IsTrans.trans _ _ _
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `trans [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsTrans [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b `c] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         (Term.arrow
+          (Init.Algebra.Classes.«term_≺_» `b "≺" `c)
+          "→"
+          (Init.Algebra.Classes.«term_≺_» `a "≺" `c)))))
+      (Command.declValSimple
+       ":="
+       (Term.app `IsTrans.trans [(Term.hole "_") (Term.hole "_") (Term.hole "_")])
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsTrans.trans [(Term.hole "_") (Term.hole "_") (Term.hole "_")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsTrans.trans
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       (Term.arrow
+        (Init.Algebra.Classes.«term_≺_» `b "≺" `c)
+        "→"
+        (Init.Algebra.Classes.«term_≺_» `a "≺" `c)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `b "≺" `c)
+       "→"
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `a "≺" `c)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem trans [ IsTrans α r ] { a b c : α } : a ≺ b → b ≺ c → a ≺ c := IsTrans.trans _ _ _
 #align trans trans
 -/
 
 #print symm /-
-theorem symm [IsSymm α r] {a b : α} : a≺b → b≺a :=
-  IsSymm.symm _ _
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `symm [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsSymm [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))
+      (Command.declValSimple ":=" (Term.app `IsSymm.symm [(Term.hole "_") (Term.hole "_")]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsSymm.symm [(Term.hole "_") (Term.hole "_")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsSymm.symm
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem symm [ IsSymm α r ] { a b : α } : a ≺ b → b ≺ a := IsSymm.symm _ _
 #align symm symm
 -/
 
 #print antisymm /-
-theorem antisymm [IsAntisymm α r] {a b : α} : a≺b → b≺a → a = b :=
-  IsAntisymm.antisymm _ _
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `antisymm [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsAntisymm [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         (Term.arrow (Init.Algebra.Classes.«term_≺_» `b "≺" `a) "→" («term_=_» `a "=" `b)))))
+      (Command.declValSimple
+       ":="
+       (Term.app `IsAntisymm.antisymm [(Term.hole "_") (Term.hole "_")])
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsAntisymm.antisymm [(Term.hole "_") (Term.hole "_")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsAntisymm.antisymm
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       (Term.arrow (Init.Algebra.Classes.«term_≺_» `b "≺" `a) "→" («term_=_» `a "=" `b)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.arrow (Init.Algebra.Classes.«term_≺_» `b "≺" `a) "→" («term_=_» `a "=" `b))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_=_» `a "=" `b)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `b
+[PrettyPrinter.parenthesize] ...precedences are 51 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 50, term))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 51 >? 1024, (none, [anonymous]) <=? (some 50, term)
+[PrettyPrinter.parenthesize] ...precedences are 25 >? 50, (some 51, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 25, term))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem antisymm [ IsAntisymm α r ] { a b : α } : a ≺ b → b ≺ a → a = b := IsAntisymm.antisymm _ _
 #align antisymm antisymm
 -/
 
 #print asymm /-
-theorem asymm [IsAsymm α r] {a b : α} : a≺b → ¬b≺a :=
-  IsAsymm.asymm _ _
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `asymm [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsAsymm [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))))
+      (Command.declValSimple ":=" (Term.app `IsAsymm.asymm [(Term.hole "_") (Term.hole "_")]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsAsymm.asymm [(Term.hole "_") (Term.hole "_")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsAsymm.asymm
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem asymm [ IsAsymm α r ] { a b : α } : a ≺ b → ¬ b ≺ a := IsAsymm.asymm _ _
 #align asymm asymm
 -/
 
 #print trichotomous /-
-theorem trichotomous [IsTrichotomous α r] : ∀ a b : α, a≺b ∨ a = b ∨ b≺a :=
-  IsTrichotomous.trichotomous
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `trichotomous [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsTrichotomous [`α `r]) "]")]
+       (Term.typeSpec
+        ":"
+        (Term.forall
+         "∀"
+         [`a `b]
+         [(Term.typeSpec ":" `α)]
+         ","
+         («term_∨_»
+          (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+          "∨"
+          («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))))
+      (Command.declValSimple ":=" `IsTrichotomous.trichotomous [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `IsTrichotomous.trichotomous
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.forall
+       "∀"
+       [`a `b]
+       [(Term.typeSpec ":" `α)]
+       ","
+       («term_∨_»
+        (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+        "∨"
+        («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∨_»
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "∨"
+       («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem
+  trichotomous
+  [ IsTrichotomous α r ] : ∀ a b : α , a ≺ b ∨ a = b ∨ b ≺ a
+  := IsTrichotomous.trichotomous
 #align trichotomous trichotomous
 -/
 
 #print incomp_trans /-
-theorem incomp_trans [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a → ¬b≺c ∧ ¬c≺b → ¬a≺c ∧ ¬c≺a :=
-  IsIncompTrans.incomp_trans _ _ _
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `incomp_trans [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsIncompTrans [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b `c] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         («term_∧_»
+          («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+          "∧"
+          («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+         "→"
+         (Term.arrow
+          («term_∧_»
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `c))
+           "∧"
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `b)))
+          "→"
+          («term_∧_»
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+           "∧"
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a)))))))
+      (Command.declValSimple
+       ":="
+       (Term.app `IsIncompTrans.incomp_trans [(Term.hole "_") (Term.hole "_") (Term.hole "_")])
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsIncompTrans.incomp_trans [(Term.hole "_") (Term.hole "_") (Term.hole "_")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsIncompTrans.incomp_trans
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       («term_∧_»
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+        "∧"
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+       "→"
+       (Term.arrow
+        («term_∧_»
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `c))
+         "∧"
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `b)))
+        "→"
+        («term_∧_»
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+         "∧"
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a)))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.arrow
+       («term_∧_»
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `c))
+        "∧"
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `b)))
+       "→"
+       («term_∧_»
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+        "∧"
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∧_»
+       («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+       "∧"
+       («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `c "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem
+  incomp_trans
+  [ IsIncompTrans α r ] { a b c : α } : ¬ a ≺ b ∧ ¬ b ≺ a → ¬ b ≺ c ∧ ¬ c ≺ b → ¬ a ≺ c ∧ ¬ c ≺ a
+  := IsIncompTrans.incomp_trans _ _ _
 #align incomp_trans incomp_trans
 -/
 
@@ -343,58 +832,520 @@ section ExplicitRelationVariants
 variable (r)
 
 #print irrefl_of /-
-@[elab_without_expected_type]
-theorem irrefl_of [IsIrrefl α r] (a : α) : ¬a≺a :=
-  irrefl a
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `irrefl_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsIrrefl [`α `r]) "]")
+        (Term.explicitBinder "(" [`a] [":" `α] [] ")")]
+       (Term.typeSpec ":" («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `a))))
+      (Command.declValSimple ":=" (Term.app `irrefl [`a]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `irrefl [`a])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `irrefl
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `a "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ] theorem irrefl_of [ IsIrrefl α r ] ( a : α ) : ¬ a ≺ a := irrefl a
 #align irrefl_of irrefl_of
 -/
 
 #print refl_of /-
-@[elab_without_expected_type]
-theorem refl_of [IsRefl α r] (a : α) : a≺a :=
-  refl a
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `refl_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsRefl [`α `r]) "]")
+        (Term.explicitBinder "(" [`a] [":" `α] [] ")")]
+       (Term.typeSpec ":" (Init.Algebra.Classes.«term_≺_» `a "≺" `a)))
+      (Command.declValSimple ":=" (Term.app `refl [`a]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `refl [`a])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `refl
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `a "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ] theorem refl_of [ IsRefl α r ] ( a : α ) : a ≺ a := refl a
 #align refl_of refl_of
 -/
 
 #print trans_of /-
-@[elab_without_expected_type]
-theorem trans_of [IsTrans α r] {a b c : α} : a≺b → b≺c → a≺c :=
-  trans
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `trans_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsTrans [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b `c] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         (Term.arrow
+          (Init.Algebra.Classes.«term_≺_» `b "≺" `c)
+          "→"
+          (Init.Algebra.Classes.«term_≺_» `a "≺" `c)))))
+      (Command.declValSimple ":=" `trans [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `trans
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       (Term.arrow
+        (Init.Algebra.Classes.«term_≺_» `b "≺" `c)
+        "→"
+        (Init.Algebra.Classes.«term_≺_» `a "≺" `c)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `b "≺" `c)
+       "→"
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `a "≺" `c)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ]
+  theorem trans_of [ IsTrans α r ] { a b c : α } : a ≺ b → b ≺ c → a ≺ c := trans
 #align trans_of trans_of
 -/
 
 #print symm_of /-
-@[elab_without_expected_type]
-theorem symm_of [IsSymm α r] {a b : α} : a≺b → b≺a :=
-  symm
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `symm_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsSymm [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))
+      (Command.declValSimple ":=" `symm [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `symm
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ] theorem symm_of [ IsSymm α r ] { a b : α } : a ≺ b → b ≺ a := symm
 #align symm_of symm_of
 -/
 
 #print asymm_of /-
-@[elab_without_expected_type]
-theorem asymm_of [IsAsymm α r] {a b : α} : a≺b → ¬b≺a :=
-  asymm
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `asymm_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsAsymm [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "→"
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))))
+      (Command.declValSimple ":=" `asymm [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `asymm
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "→"
+       («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ]
+  theorem asymm_of [ IsAsymm α r ] { a b : α } : a ≺ b → ¬ b ≺ a := asymm
 #align asymm_of asymm_of
 -/
 
 #print total_of /-
-@[elab_without_expected_type]
-theorem total_of [IsTotal α r] (a b : α) : a≺b ∨ b≺a :=
-  IsTotal.total _ _
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `total_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsTotal [`α `r]) "]")
+        (Term.explicitBinder "(" [`a `b] [":" `α] [] ")")]
+       (Term.typeSpec
+        ":"
+        («term_∨_»
+         (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+         "∨"
+         (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))
+      (Command.declValSimple ":=" (Term.app `IsTotal.total [(Term.hole "_") (Term.hole "_")]) [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `IsTotal.total [(Term.hole "_") (Term.hole "_")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.hole', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, term))
+      (Term.hole "_")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (some 1023, term)
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `IsTotal.total
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      («term_∨_»
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "∨"
+       (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ]
+  theorem total_of [ IsTotal α r ] ( a b : α ) : a ≺ b ∨ b ≺ a := IsTotal.total _ _
 #align total_of total_of
 -/
 
 #print trichotomous_of /-
-@[elab_without_expected_type]
-theorem trichotomous_of [IsTrichotomous α r] : ∀ a b : α, a≺b ∨ a = b ∨ b≺a :=
-  trichotomous
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `trichotomous_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsTrichotomous [`α `r]) "]")]
+       (Term.typeSpec
+        ":"
+        (Term.forall
+         "∀"
+         [`a `b]
+         [(Term.typeSpec ":" `α)]
+         ","
+         («term_∨_»
+          (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+          "∨"
+          («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))))
+      (Command.declValSimple ":=" `trichotomous [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `trichotomous
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.forall
+       "∀"
+       [`a `b]
+       [(Term.typeSpec ":" `α)]
+       ","
+       («term_∨_»
+        (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+        "∨"
+        («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∨_»
+       (Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+       "∨"
+       («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∨_» («term_=_» `a "=" `b) "∨" (Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ]
+  theorem trichotomous_of [ IsTrichotomous α r ] : ∀ a b : α , a ≺ b ∨ a = b ∨ b ≺ a := trichotomous
 #align trichotomous_of trichotomous_of
 -/
 
 #print incomp_trans_of /-
-@[elab_without_expected_type]
-theorem incomp_trans_of [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a → ¬b≺c ∧ ¬c≺b → ¬a≺c ∧ ¬c≺a :=
-  incomp_trans
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers
+      []
+      [(Term.attributes
+        "@["
+        [(Term.attrInstance (Term.attrKind []) (Attr.simple `elab_without_expected_type []))]
+        "]")]
+      []
+      []
+      []
+      [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `incomp_trans_of [])
+      (Command.declSig
+       [(Term.instBinder "[" [] (Term.app `IsIncompTrans [`α `r]) "]")
+        (Term.implicitBinder "{" [`a `b `c] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         («term_∧_»
+          («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+          "∧"
+          («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+         "→"
+         (Term.arrow
+          («term_∧_»
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `c))
+           "∧"
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `b)))
+          "→"
+          («term_∧_»
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+           "∧"
+           («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a)))))))
+      (Command.declValSimple ":=" `incomp_trans [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `incomp_trans
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       («term_∧_»
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+        "∧"
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+       "→"
+       (Term.arrow
+        («term_∧_»
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `c))
+         "∧"
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `b)))
+        "→"
+        («term_∧_»
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+         "∧"
+         («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a)))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.arrow
+       («term_∧_»
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `b "≺" `c))
+        "∧"
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `b)))
+       "→"
+       («term_∧_»
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+        "∧"
+        («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∧_»
+       («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `a "≺" `c))
+       "∧"
+       («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (Init.Algebra.Classes.«term_≺_» `c "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Algebra.Classes.«term_≺_» `c "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Algebra.Classes.«term_≺_»', expected 'Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+@[ elab_without_expected_type ]
+  theorem
+    incomp_trans_of
+    [ IsIncompTrans α r ] { a b c : α } : ¬ a ≺ b ∧ ¬ b ≺ a → ¬ b ≺ c ∧ ¬ c ≺ b → ¬ a ≺ c ∧ ¬ c ≺ a
+    := incomp_trans
 #align incomp_trans_of incomp_trans_of
 -/
 
@@ -411,8 +1362,47 @@ parameter {α : Type u}{r : α → α → Prop}
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
-def Equiv (a b : α) : Prop :=
-  ¬a≺b ∧ ¬b≺a
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.def
+      "def"
+      (Command.declId `Equiv [])
+      (Command.optDeclSig
+       [(Term.explicitBinder "(" [`a `b] [":" `α] [] ")")]
+       [(Term.typeSpec ":" (Term.prop "Prop"))])
+      (Command.declValSimple
+       ":="
+       («term_∧_»
+        («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+        "∧"
+        («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+       [])
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_∧_»
+       («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+       "∧"
+       («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'StrictWeakOrder.Init.Algebra.Classes.«term_≺_»', expected 'StrictWeakOrder.Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.68'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.declValEqns'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValSimple', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+def Equiv ( a b : α ) : Prop := ¬ a ≺ b ∧ ¬ b ≺ a
 #align strict_weak_order.equiv StrictWeakOrder.Equiv
 
 parameter [IsStrictWeakOrder α r]
@@ -420,21 +1410,316 @@ parameter [IsStrictWeakOrder α r]
 -- mathport name: equiv
 local infixl:50 " ≈ " => equiv
 
-theorem erefl (a : α) : a ≈ a :=
-  ⟨irrefl a, irrefl a⟩
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `erefl [])
+      (Command.declSig
+       [(Term.explicitBinder "(" [`a] [":" `α] [] ")")]
+       (Term.typeSpec ":" (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `a)))
+      (Command.declValSimple
+       ":="
+       (Term.anonymousCtor "⟨" [(Term.app `irrefl [`a]) "," (Term.app `irrefl [`a])] "⟩")
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.anonymousCtor "⟨" [(Term.app `irrefl [`a]) "," (Term.app `irrefl [`a])] "⟩")
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `irrefl [`a])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `irrefl
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `irrefl [`a])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `a
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `irrefl
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1022, (some 1023, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'StrictWeakOrder.Init.Algebra.Classes.equiv', expected 'StrictWeakOrder.Init.Algebra.Classes.equiv._@.Init.Algebra.Classes._hyg.115'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem erefl ( a : α ) : a ≈ a := ⟨ irrefl a , irrefl a ⟩
 #align strict_weak_order.erefl StrictWeakOrder.erefl
 
-theorem esymm {a b : α} : a ≈ b → b ≈ a := fun ⟨h₁, h₂⟩ => ⟨h₂, h₁⟩
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `esymm [])
+      (Command.declSig
+       [(Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+         "→"
+         (StrictWeakOrder.Init.Algebra.Classes.equiv `b " ≈ " `a))))
+      (Command.declValSimple
+       ":="
+       (Term.fun
+        "fun"
+        (Term.basicFun
+         [(Term.anonymousCtor "⟨" [`h₁ "," `h₂] "⟩")]
+         []
+         "=>"
+         (Term.anonymousCtor "⟨" [`h₂ "," `h₁] "⟩")))
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.fun
+       "fun"
+       (Term.basicFun
+        [(Term.anonymousCtor "⟨" [`h₁ "," `h₂] "⟩")]
+        []
+        "=>"
+        (Term.anonymousCtor "⟨" [`h₂ "," `h₁] "⟩")))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.anonymousCtor "⟨" [`h₂ "," `h₁] "⟩")
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h₁
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h₂
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.anonymousCtor', expected 'Lean.Parser.Term.strictImplicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.anonymousCtor', expected 'Lean.Parser.Term.implicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Term.anonymousCtor', expected 'Lean.Parser.Term.instBinder'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.anonymousCtor "⟨" [`h₁ "," `h₂] "⟩")
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h₂
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h₁
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+       "→"
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `b " ≈ " `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (StrictWeakOrder.Init.Algebra.Classes.equiv `b " ≈ " `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'StrictWeakOrder.Init.Algebra.Classes.equiv', expected 'StrictWeakOrder.Init.Algebra.Classes.equiv._@.Init.Algebra.Classes._hyg.115'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem esymm { a b : α } : a ≈ b → b ≈ a := fun ⟨ h₁ , h₂ ⟩ => ⟨ h₂ , h₁ ⟩
 #align strict_weak_order.esymm StrictWeakOrder.esymm
 
-theorem etrans {a b c : α} : a ≈ b → b ≈ c → a ≈ c :=
-  incomp_trans
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `etrans [])
+      (Command.declSig
+       [(Term.implicitBinder "{" [`a `b `c] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+         "→"
+         (Term.arrow
+          (StrictWeakOrder.Init.Algebra.Classes.equiv `b " ≈ " `c)
+          "→"
+          (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `c)))))
+      (Command.declValSimple ":=" `incomp_trans [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `incomp_trans
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+       "→"
+       (Term.arrow
+        (StrictWeakOrder.Init.Algebra.Classes.equiv `b " ≈ " `c)
+        "→"
+        (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `c)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.arrow
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `b " ≈ " `c)
+       "→"
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `c))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `c)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'StrictWeakOrder.Init.Algebra.Classes.equiv', expected 'StrictWeakOrder.Init.Algebra.Classes.equiv._@.Init.Algebra.Classes._hyg.115'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem etrans { a b c : α } : a ≈ b → b ≈ c → a ≈ c := incomp_trans
 #align strict_weak_order.etrans StrictWeakOrder.etrans
 
-theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `not_lt_of_equiv [])
+      (Command.declSig
+       [(Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+         "→"
+         («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `a "≺" `b)))))
+      (Command.declValSimple
+       ":="
+       (Term.fun "fun" (Term.basicFun [`h] [] "=>" (Term.proj `h "." (fieldIdx "1"))))
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.fun "fun" (Term.basicFun [`h] [] "=>" (Term.proj `h "." (fieldIdx "1"))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.proj `h "." (fieldIdx "1"))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1024, term))
+      `h
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (some 1024, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.strictImplicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.implicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.instBinder'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+       "→"
+       («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `a "≺" `b)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `a "≺" `b))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `a "≺" `b)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'StrictWeakOrder.Init.Algebra.Classes.«term_≺_»', expected 'StrictWeakOrder.Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.68'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem not_lt_of_equiv { a b : α } : a ≈ b → ¬ a ≺ b := fun h => h . 1
 #align strict_weak_order.not_lt_of_equiv StrictWeakOrder.not_lt_of_equiv
 
-theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [] [])
+     (Command.theorem
+      "theorem"
+      (Command.declId `not_lt_of_equiv' [])
+      (Command.declSig
+       [(Term.implicitBinder "{" [`a `b] [":" `α] "}")]
+       (Term.typeSpec
+        ":"
+        (Term.arrow
+         (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+         "→"
+         («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a)))))
+      (Command.declValSimple
+       ":="
+       (Term.fun "fun" (Term.basicFun [`h] [] "=>" (Term.proj `h "." (fieldIdx "2"))))
+       [])
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.def'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.fun "fun" (Term.basicFun [`h] [] "=>" (Term.proj `h "." (fieldIdx "2"))))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.proj `h "." (fieldIdx "2"))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1024, term))
+      `h
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none, [anonymous]) <=? (some 1024, term)
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.strictImplicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.implicitBinder'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'ident', expected 'Lean.Parser.Term.instBinder'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      `h
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] ...precedences are 0 >? 1024, (some 0, term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1023, [anonymous]))
+      (Term.arrow
+       (StrictWeakOrder.Init.Algebra.Classes.equiv `a " ≈ " `b)
+       "→"
+       («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a)))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term¬_» "¬" (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (StrictWeakOrder.Init.Algebra.Classes.«term_≺_» `b "≺" `a)
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'StrictWeakOrder.Init.Algebra.Classes.«term_≺_»', expected 'StrictWeakOrder.Init.Algebra.Classes.term_≺_._@.Init.Algebra.Classes._hyg.68'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.theorem', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+theorem not_lt_of_equiv' { a b : α } : a ≈ b → ¬ b ≺ a := fun h => h . 2
 #align strict_weak_order.not_lt_of_equiv' StrictWeakOrder.not_lt_of_equiv'
 
 instance is_equiv : IsEquiv α equiv where

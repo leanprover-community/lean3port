@@ -184,8 +184,84 @@ local postfix:100 "?" => optional
 -- mathport name: «expr *»
 local postfix:100 "*" => many
 
-unsafe def sep_by : parser Unit → parser α → parser (List α)
-  | s, p => List.cons <$> p <*> (s *> p)* <|> return []
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `sep_by [])
+      (Command.optDeclSig
+       []
+       [(Term.typeSpec
+         ":"
+         (Term.arrow
+          (Term.app `parser [`Unit])
+          "→"
+          (Term.arrow (Term.app `parser [`α]) "→" (Term.app `parser [(Term.app `List [`α])]))))])
+      (Command.declValEqns
+       (Term.matchAltsWhereDecls
+        (Term.matchAlts
+         [(Term.matchAlt
+           "|"
+           [[`s "," `p]]
+           "=>"
+           («term_<|>_»
+            («term_<*>_»
+             («term_<$>_» `List.cons "<$>" `p)
+             "<*>"
+             (Init.Meta.Lean.Parser.«term_*» («term_*>_» `s "*>" `p) "*"))
+            "<|>"
+            (Term.app `return [(«term[_]» "[" [] "]")])))])
+        []))
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|>_»
+       («term_<*>_»
+        («term_<$>_» `List.cons "<$>" `p)
+        "<*>"
+        (Init.Meta.Lean.Parser.«term_*» («term_*>_» `s "*>" `p) "*"))
+       "<|>"
+       (Term.app `return [(«term[_]» "[" [] "]")]))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Term.app `return [(«term[_]» "[" [] "]")])
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.namedArgument'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind '«term[_]»', expected 'Lean.Parser.Term.ellipsis'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term[_]» "[" [] "]")
+[PrettyPrinter.parenthesize] ...precedences are 1023 >? 1024, (none,
+     [anonymous]) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
+      `return
+[PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
+     [anonymous]) <=? (some 1022, term)
+[PrettyPrinter.parenthesize] ...precedences are 20 >? 1022, (some 1023,
+     term) <=? (none, [anonymous])
+[PrettyPrinter.parenthesize] parenthesizing (cont := (some 20, term))
+      («term_<*>_»
+       («term_<$>_» `List.cons "<$>" `p)
+       "<*>"
+       (Init.Meta.Lean.Parser.«term_*» («term_*>_» `s "*>" `p) "*"))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.Lean.Parser.«term_*» («term_*>_» `s "*>" `p) "*")
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Init.Meta.Lean.Parser.«term_*»', expected 'Lean.Parser.Init.Meta.Lean.Parser.term_*._@.Init.Meta.Lean.Parser._hyg.523'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe
+  def
+    sep_by
+    : parser Unit → parser α → parser List α
+    | s , p => List.cons <$> p <*> s *> p * <|> return [ ]
 #align lean.parser.sep_by lean.parser.sep_by
 
 unsafe axiom of_tactic : tactic α → parser α

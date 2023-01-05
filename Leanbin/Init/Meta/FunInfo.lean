@@ -38,15 +38,124 @@ private unsafe def concat_fields (f₁ f₂ : format) : format :=
 -- mathport name: «expr +++ »
 local infixl:65 "+++" => concat_fields
 
-unsafe def param_info.to_format : ParamInfo → format
-  | ParamInfo.mk i ii p d di ds =>
-    group ∘ cbrace <|
-      when i
-                  "implicit"+++when ii
-                  "inst_implicit"+++when p
-                "prop"+++when d
-              "has_fwd_deps"+++when di
-            "is_dec_inst"+++when (length ds > 0) (to_fmt "back_deps := " ++ to_fmt ds)
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `param_info.to_format [])
+      (Command.optDeclSig [] [(Term.typeSpec ":" (Term.arrow `ParamInfo "→" `format))])
+      (Command.declValEqns
+       (Term.matchAltsWhereDecls
+        (Term.matchAlts
+         [(Term.matchAlt
+           "|"
+           [[(Term.app `ParamInfo.mk [`i `ii `p `d `di `ds])]]
+           "=>"
+           («term_<|_»
+            («term_∘_» `group "∘" `cbrace)
+            "<|"
+            (Init.Meta.FunInfo.«term_+++_»
+             (Init.Meta.FunInfo.«term_+++_»
+              (Init.Meta.FunInfo.«term_+++_»
+               (Init.Meta.FunInfo.«term_+++_»
+                (Init.Meta.FunInfo.«term_+++_»
+                 (Term.app `when [`i (str "\"implicit\"")])
+                 "+++"
+                 (Term.app `when [`ii (str "\"inst_implicit\"")]))
+                "+++"
+                (Term.app `when [`p (str "\"prop\"")]))
+               "+++"
+               (Term.app `when [`d (str "\"has_fwd_deps\"")]))
+              "+++"
+              (Term.app `when [`di (str "\"is_dec_inst\"")]))
+             "+++"
+             (Term.app
+              `when
+              [(«term_>_» (Term.app `length [`ds]) ">" (num "0"))
+               («term_++_»
+                (Term.app `to_fmt [(str "\"back_deps := \"")])
+                "++"
+                (Term.app `to_fmt [`ds]))]))))])
+        []))
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|_»
+       («term_∘_» `group "∘" `cbrace)
+       "<|"
+       (Init.Meta.FunInfo.«term_+++_»
+        (Init.Meta.FunInfo.«term_+++_»
+         (Init.Meta.FunInfo.«term_+++_»
+          (Init.Meta.FunInfo.«term_+++_»
+           (Init.Meta.FunInfo.«term_+++_»
+            (Term.app `when [`i (str "\"implicit\"")])
+            "+++"
+            (Term.app `when [`ii (str "\"inst_implicit\"")]))
+           "+++"
+           (Term.app `when [`p (str "\"prop\"")]))
+          "+++"
+          (Term.app `when [`d (str "\"has_fwd_deps\"")]))
+         "+++"
+         (Term.app `when [`di (str "\"is_dec_inst\"")]))
+        "+++"
+        (Term.app
+         `when
+         [(«term_>_» (Term.app `length [`ds]) ">" (num "0"))
+          («term_++_»
+           (Term.app `to_fmt [(str "\"back_deps := \"")])
+           "++"
+           (Term.app `to_fmt [`ds]))])))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.FunInfo.«term_+++_»
+       (Init.Meta.FunInfo.«term_+++_»
+        (Init.Meta.FunInfo.«term_+++_»
+         (Init.Meta.FunInfo.«term_+++_»
+          (Init.Meta.FunInfo.«term_+++_»
+           (Term.app `when [`i (str "\"implicit\"")])
+           "+++"
+           (Term.app `when [`ii (str "\"inst_implicit\"")]))
+          "+++"
+          (Term.app `when [`p (str "\"prop\"")]))
+         "+++"
+         (Term.app `when [`d (str "\"has_fwd_deps\"")]))
+        "+++"
+        (Term.app `when [`di (str "\"is_dec_inst\"")]))
+       "+++"
+       (Term.app
+        `when
+        [(«term_>_» (Term.app `length [`ds]) ">" (num "0"))
+         («term_++_»
+          (Term.app `to_fmt [(str "\"back_deps := \"")])
+          "++"
+          (Term.app `to_fmt [`ds]))]))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.FunInfo.«term_+++_»', expected 'Init.Meta.FunInfo.term_+++_._@.Init.Meta.FunInfo._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe
+  def
+    param_info.to_format
+    : ParamInfo → format
+    |
+      ParamInfo.mk i ii p d di ds
+      =>
+      group ∘ cbrace
+        <|
+        when i "implicit" +++ when ii "inst_implicit" +++ when p "prop" +++ when d "has_fwd_deps"
+            +++
+            when di "is_dec_inst"
+          +++
+          when length ds > 0 to_fmt "back_deps := " ++ to_fmt ds
 #align param_info.to_format param_info.to_format
 
 unsafe instance : has_to_format ParamInfo :=
@@ -57,9 +166,61 @@ structure FunInfo where
   resultDeps : List Nat
 #align fun_info FunInfo
 
--- parameters the result type depends on
-unsafe def fun_info_to_format : FunInfo → format
-  | FunInfo.mk ps ds => group ∘ dcbrace <| ppfield "params" ps+++ppfield "result_deps" ds
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `fun_info_to_format [])
+      (Command.optDeclSig [] [(Term.typeSpec ":" (Term.arrow `FunInfo "→" `format))])
+      (Command.declValEqns
+       (Term.matchAltsWhereDecls
+        (Term.matchAlts
+         [(Term.matchAlt
+           "|"
+           [[(Term.app `FunInfo.mk [`ps `ds])]]
+           "=>"
+           («term_<|_»
+            («term_∘_» `group "∘" `dcbrace)
+            "<|"
+            (Init.Meta.FunInfo.«term_+++_»
+             (Term.app `ppfield [(str "\"params\"") `ps])
+             "+++"
+             (Term.app `ppfield [(str "\"result_deps\"") `ds]))))])
+        []))
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|_»
+       («term_∘_» `group "∘" `dcbrace)
+       "<|"
+       (Init.Meta.FunInfo.«term_+++_»
+        (Term.app `ppfield [(str "\"params\"") `ps])
+        "+++"
+        (Term.app `ppfield [(str "\"result_deps\"") `ds])))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.FunInfo.«term_+++_»
+       (Term.app `ppfield [(str "\"params\"") `ps])
+       "+++"
+       (Term.app `ppfield [(str "\"result_deps\"") `ds]))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.FunInfo.«term_+++_»', expected 'Init.Meta.FunInfo.term_+++_._@.Init.Meta.FunInfo._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe
+  def
+    fun_info_to_format
+    : FunInfo → format
+    | FunInfo.mk ps ds => group ∘ dcbrace <| ppfield "params" ps +++ ppfield "result_deps" ds
 #align fun_info_to_format fun_info_to_format
 
 unsafe instance : has_to_format FunInfo :=
@@ -91,8 +252,61 @@ structure SubsingletonInfo where
   isSubsingleton : Bool
 #align subsingleton_info SubsingletonInfo
 
-unsafe def subsingleton_info_to_format : SubsingletonInfo → format
-  | SubsingletonInfo.mk s ss => group ∘ cbrace <| when s "specialized"+++when ss "subsingleton"
+/- failed to parenthesize: parenthesize: uncaught backtrack exception
+[PrettyPrinter.parenthesize.input] (Command.declaration
+     (Command.declModifiers [] [] [] [] [(Command.unsafe "unsafe")] [])
+     (Command.def
+      "def"
+      (Command.declId `subsingleton_info_to_format [])
+      (Command.optDeclSig [] [(Term.typeSpec ":" (Term.arrow `SubsingletonInfo "→" `format))])
+      (Command.declValEqns
+       (Term.matchAltsWhereDecls
+        (Term.matchAlts
+         [(Term.matchAlt
+           "|"
+           [[(Term.app `SubsingletonInfo.mk [`s `ss])]]
+           "=>"
+           («term_<|_»
+            («term_∘_» `group "∘" `cbrace)
+            "<|"
+            (Init.Meta.FunInfo.«term_+++_»
+             (Term.app `when [`s (str "\"specialized\"")])
+             "+++"
+             (Term.app `when [`ss (str "\"subsingleton\"")]))))])
+        []))
+      []
+      []
+      []))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.abbrev'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.declValSimple'
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      («term_<|_»
+       («term_∘_» `group "∘" `cbrace)
+       "<|"
+       (Init.Meta.FunInfo.«term_+++_»
+        (Term.app `when [`s (str "\"specialized\"")])
+        "+++"
+        (Term.app `when [`ss (str "\"subsingleton\"")])))
+[PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
+      (Init.Meta.FunInfo.«term_+++_»
+       (Term.app `when [`s (str "\"specialized\"")])
+       "+++"
+       (Term.app `when [`ss (str "\"subsingleton\"")]))
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Init.Meta.FunInfo.«term_+++_»', expected 'Init.Meta.FunInfo.term_+++_._@.Init.Meta.FunInfo._hyg.8'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.declValEqns', expected 'Lean.Parser.Command.whereStructInst'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.theorem'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.opaque'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.instance'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.axiom'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.example'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.inductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.classInductive'
+[PrettyPrinter.parenthesize.backtrack] unexpected node kind 'Lean.Parser.Command.def', expected 'Lean.Parser.Command.structure'-/-- failed to format: format: uncaught backtrack exception
+unsafe
+  def
+    subsingleton_info_to_format
+    : SubsingletonInfo → format
+    | SubsingletonInfo.mk s ss => group ∘ cbrace <| when s "specialized" +++ when ss "subsingleton"
 #align subsingleton_info_to_format subsingleton_info_to_format
 
 unsafe instance : has_to_format SubsingletonInfo :=

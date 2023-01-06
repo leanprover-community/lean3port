@@ -279,7 +279,7 @@ unsafe def tactic_view_component {γ} (local_c : tc local_collection γ) (target
     let goal_message : html γ := h "strong" [cn "goal-goals"] [goal_message]
     let goals : html γ :=
       h "ul" [className "list pl0"] <|
-        (List.mapWithIndex fun i x => h "li" [className <| "lh-copy mt2", key i] [x]) <|
+        (List.mapIdx fun i x => h "li" [className <| "lh-copy mt2", key i] [x]) <|
           goal_message :: hs
     pure
         [h "div" [className "fr"]

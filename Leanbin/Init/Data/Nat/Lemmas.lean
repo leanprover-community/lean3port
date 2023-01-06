@@ -874,12 +874,15 @@ theorem exists_eq_succ_of_ne_zero {n : ℕ} (H : n ≠ 0) : ∃ k : ℕ, n = suc
 -/
 
 /- warning: nat.discriminate clashes with [anonymous] -> [anonymous]
+warning: nat.discriminate -> [anonymous] is a dubious translation:
+lean 3 declaration is
+  forall {B : Sort.{u}} {n : Nat}, ((Eq.{1} Nat n (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) -> B) -> (forall (m : Nat), (Eq.{1} Nat n (Nat.succ m)) -> B) -> B
+but is expected to have type
+  forall {B : Type.{u}} {n : Type.{v}}, (Nat -> B -> n) -> Nat -> (List.{u} B) -> (List.{v} n)
 Case conversion may be inaccurate. Consider using '#align nat.discriminate [anonymous]ₓ'. -/
-#print [anonymous] /-
 def [anonymous] {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
   induction' h : n with <;> [exact H1 h, exact H2 _ h]
 #align nat.discriminate[anonymous]
--/
 
 theorem one_succ_zero : 1 = succ 0 :=
   rfl

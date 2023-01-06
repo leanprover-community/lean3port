@@ -220,10 +220,12 @@ theorem mem_cons_self (a : α) (l : List α) : a ∈ a :: l :=
 #align list.mem_cons_self List.mem_cons_self
 -/
 
+#print List.mem_cons /-
 @[simp]
-theorem mem_cons_iff (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :=
+theorem mem_cons (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :=
   Iff.rfl
-#align list.mem_cons_iff List.mem_cons_iff
+#align list.mem_cons_iff List.mem_cons
+-/
 
 @[rsimp]
 theorem mem_cons_eq (a y : α) (l : List α) : (a ∈ y :: l) = (a = y ∨ a ∈ l) :=
@@ -269,8 +271,12 @@ theorem mem_append_right {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l
 theorem not_bex_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
 #align list.not_bex_nil List.not_bex_nil
 
-theorem ball_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.elim
-#align list.ball_nil List.ball_nil
+/- warning: list.ball_nil clashes with list.forall_mem_nil -> List.forall_mem_nil
+Case conversion may be inaccurate. Consider using '#align list.ball_nil List.forall_mem_nilₓ'. -/
+#print List.forall_mem_nil /-
+theorem forall_mem_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.elim
+#align list.ball_nil List.forall_mem_nil
+-/
 
 theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
   ⟨fun ⟨x, h, px⟩ => by
@@ -282,10 +288,11 @@ theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p
     o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 #align list.bex_cons List.bex_cons
 
-theorem ball_cons (p : α → Prop) (a : α) (l : List α) : (∀ x ∈ a :: l, p x) ↔ p a ∧ ∀ x ∈ l, p x :=
+theorem forall_mem_cons (p : α → Prop) (a : α) (l : List α) :
+    (∀ x ∈ a :: l, p x) ↔ p a ∧ ∀ x ∈ l, p x :=
   ⟨fun al => ⟨al a (mem_cons_self _ _), fun x h => al x (mem_cons_of_mem _ h)⟩, fun ⟨pa, al⟩ x o =>
     o.elim (fun e => e.symm ▸ pa) (al x)⟩
-#align list.ball_cons List.ball_cons
+#align list.ball_cons List.forall_mem_consₓ
 
 /-! list subset -/
 
@@ -369,18 +376,18 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
 #align list.ne_nil_of_length_eq_succ List.ne_nil_of_length_eq_succ
 -/
 
-/- warning: list.length_map₂ -> List.length_map₂ is a dubious translation:
+/- warning: list.length_map₂ -> List.length_zipWith is a dubious translation:
 lean 3 declaration is
-  forall {α : Type.{u1}} {β : Type.{u2}} {γ : Type.{u3}} (f : α -> β -> γ) (l₁ : List.{u1} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u3} γ (List.map₂.{u1, u2, u3} α β γ f l₁ l₂)) (LinearOrder.min.{0} Nat Nat.linearOrder (List.length.{u1} α l₁) (List.length.{u2} β l₂))
+  forall {α : Type.{u1}} {β : Type.{u2}} {γ : Type.{u3}} (f : α -> β -> γ) (l₁ : List.{u1} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u3} γ (List.zipWith.{u1, u2, u3} α β γ f l₁ l₂)) (LinearOrder.min.{0} Nat Nat.linearOrder (List.length.{u1} α l₁) (List.length.{u2} β l₂))
 but is expected to have type
-  forall {α : Type.{u3}} {β : Type.{u2}} {γ : Type.{u1}} (f : α -> β -> γ) (l₁ : List.{u3} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u1} γ (List.map₂.{u3, u2, u1} α β γ f l₁ l₂)) (Min.min.{0} Nat Nat.instMinNat (List.length.{u3} α l₁) (List.length.{u2} β l₂))
-Case conversion may be inaccurate. Consider using '#align list.length_map₂ List.length_map₂ₓ'. -/
+  forall {α : Type.{u3}} {β : Type.{u2}} {γ : Type.{u1}} (f : α -> β -> γ) (l₁ : List.{u3} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u1} γ (List.zipWith.{u3, u2, u1} α β γ f l₁ l₂)) (Min.min.{0} Nat Nat.instMinNat (List.length.{u3} α l₁) (List.length.{u2} β l₂))
+Case conversion may be inaccurate. Consider using '#align list.length_map₂ List.length_zipWithₓ'. -/
 @[simp]
-theorem length_map₂ (f : α → β → γ) (l₁) :
-    ∀ l₂, length (map₂ f l₁ l₂) = min (length l₁) (length l₂) := by
+theorem length_zipWith (f : α → β → γ) (l₁) :
+    ∀ l₂, length (zipWith f l₁ l₂) = min (length l₁) (length l₂) := by
   induction l₁ <;> intro l₂ <;> cases l₂ <;>
     simp [*, add_one, min_succ_succ, Nat.zero_min, Nat.min_zero]
-#align list.length_map₂ List.length_map₂
+#align list.length_map₂ List.length_zipWith
 
 /- warning: list.length_take -> List.length_take is a dubious translation:
 lean 3 declaration is
@@ -439,30 +446,56 @@ inductive Sublist : List α → List α → Prop
 -- mathport name: «expr <+ »
 infixl:50 " <+ " => Sublist
 
+#print List.length_le_of_sublist /-
 theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → length l₁ ≤ length l₂
   | _, _, sublist.slnil => le_refl 0
   | _, _, sublist.cons l₁ l₂ a s => le_succ_of_le (length_le_of_sublist s)
   | _, _, sublist.cons2 l₁ l₂ a s => succ_le_succ (length_le_of_sublist s)
 #align list.length_le_of_sublist List.length_le_of_sublist
+-/
 
 /-! filter -/
 
 
+/- warning: list.filter_nil -> List.filter_nil is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} (p : α -> Prop) [h : DecidablePred.{succ u1} α p], Eq.{succ u1} (List.{u1} α) (List.filterₓ.{u1} α p (fun (a : α) => h a) (List.nil.{u1} α)) (List.nil.{u1} α)
+but is expected to have type
+  forall {α : Type.{u1}} (p : α -> Bool), Eq.{succ u1} (List.{u1} α) (List.filter.{u1} α p (List.nil.{u1} α)) (List.nil.{u1} α)
+Case conversion may be inaccurate. Consider using '#align list.filter_nil List.filter_nilₓ'. -/
 @[simp]
 theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter p [] = [] :=
   rfl
 #align list.filter_nil List.filter_nil
 
+/- warning: list.filter_cons_of_pos -> List.filter_cons_of_pos is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {p : α -> Prop} [h : DecidablePred.{succ u1} α p] {a : α} (l : List.{u1} α), (p a) -> (Eq.{succ u1} (List.{u1} α) (List.filterₓ.{u1} α p (fun (a : α) => h a) (List.cons.{u1} α a l)) (List.cons.{u1} α a (List.filterₓ.{u1} α p (fun (a : α) => h a) l)))
+but is expected to have type
+  forall {α : Type.{u1}} {p : α -> Bool} {h : α} (a : List.{u1} α), (Eq.{1} Bool (p h) Bool.true) -> (Eq.{succ u1} (List.{u1} α) (List.filter.{u1} α p (List.cons.{u1} α h a)) (List.cons.{u1} α h (List.filter.{u1} α p a)))
+Case conversion may be inaccurate. Consider using '#align list.filter_cons_of_pos List.filter_cons_of_posₓ'. -/
 @[simp]
 theorem filter_cons_of_pos {p : α → Prop} [h : DecidablePred p] {a : α} :
     ∀ l, p a → filter p (a :: l) = a :: filter p l := fun l pa => if_pos pa
 #align list.filter_cons_of_pos List.filter_cons_of_pos
 
+/- warning: list.filter_cons_of_neg -> List.filter_cons_of_neg is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {p : α -> Prop} [h : DecidablePred.{succ u1} α p] {a : α} (l : List.{u1} α), (Not (p a)) -> (Eq.{succ u1} (List.{u1} α) (List.filterₓ.{u1} α p (fun (a : α) => h a) (List.cons.{u1} α a l)) (List.filterₓ.{u1} α p (fun (a : α) => h a) l))
+but is expected to have type
+  forall {α : Type.{u1}} {p : α -> Bool} {h : α} (a : List.{u1} α), (Not (Eq.{1} Bool (p h) Bool.true)) -> (Eq.{succ u1} (List.{u1} α) (List.filter.{u1} α p (List.cons.{u1} α h a)) (List.filter.{u1} α p a))
+Case conversion may be inaccurate. Consider using '#align list.filter_cons_of_neg List.filter_cons_of_negₓ'. -/
 @[simp]
 theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
     ∀ l, ¬p a → filter p (a :: l) = filter p l := fun l pa => if_neg pa
 #align list.filter_cons_of_neg List.filter_cons_of_neg
 
+/- warning: list.filter_append -> List.filter_append is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {p : α -> Prop} [h : DecidablePred.{succ u1} α p] (l₁ : List.{u1} α) (l₂ : List.{u1} α), Eq.{succ u1} (List.{u1} α) (List.filterₓ.{u1} α p (fun (a : α) => h a) (Append.append.{u1} (List.{u1} α) (List.hasAppend.{u1} α) l₁ l₂)) (Append.append.{u1} (List.{u1} α) (List.hasAppend.{u1} α) (List.filterₓ.{u1} α p (fun (a : α) => h a) l₁) (List.filterₓ.{u1} α p (fun (a : α) => h a) l₂))
+but is expected to have type
+  forall {α : Type.{u1}} {p : α -> Bool} (h : List.{u1} α) (l₁ : List.{u1} α), Eq.{succ u1} (List.{u1} α) (List.filter.{u1} α p (HAppend.hAppend.{u1, u1, u1} (List.{u1} α) (List.{u1} α) (List.{u1} α) (instHAppend.{u1} (List.{u1} α) (List.instAppendList.{u1} α)) h l₁)) (HAppend.hAppend.{u1, u1, u1} (List.{u1} α) (List.{u1} α) (List.{u1} α) (instHAppend.{u1} (List.{u1} α) (List.instAppendList.{u1} α)) (List.filter.{u1} α p h) (List.filter.{u1} α p l₁))
+Case conversion may be inaccurate. Consider using '#align list.filter_append List.filter_appendₓ'. -/
 @[simp]
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
     ∀ l₁ l₂ : List α, filter p (l₁ ++ l₂) = filter p l₁ ++ filter p l₂
@@ -470,6 +503,12 @@ theorem filter_append {p : α → Prop} [h : DecidablePred p] :
   | a :: l₁, l₂ => by by_cases pa : p a <;> simp [pa, filter_append]
 #align list.filter_append List.filter_append
 
+/- warning: list.filter_sublist -> List.filter_sublist is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} {p : α -> Prop} [h : DecidablePred.{succ u1} α p] (l : List.{u1} α), List.Sublist.{u1} α (List.filterₓ.{u1} α p (fun (a : α) => h a) l) l
+but is expected to have type
+  forall {α : Type.{u1}} {p : α -> Bool} (h : List.{u1} α), List.Sublist.{u1} α (List.filter.{u1} α p h) h
+Case conversion may be inaccurate. Consider using '#align list.filter_sublist List.filter_sublistₓ'. -/
 @[simp]
 theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filter p l <+ l
   | [] => Sublist.slnil

@@ -101,20 +101,22 @@ def length : List α → Nat
 #align list.length List.length
 -/
 
-def empty : List α → Bool
+#print List.isEmpty /-
+def isEmpty : List α → Bool
   | [] => true
   | _ :: _ => false
-#align list.empty List.empty
+#align list.empty List.isEmpty
+-/
 
 open Option Nat
 
-#print List.nth /-
+#print List.get? /-
 @[simp]
-def nth : List α → Nat → Option α
+def get? : List α → Nat → Option α
   | [], n => none
   | a :: l, 0 => some a
   | a :: l, n + 1 => nth l n
-#align list.nth List.nth
+#align list.nth List.get?
 -/
 
 #print List.nthLe /-
@@ -142,13 +144,15 @@ def tail : List α → List α
 #align list.tail List.tail
 -/
 
-def reverseCore : List α → List α → List α
+#print List.reverseAux /-
+def reverseAux : List α → List α → List α
   | [], r => r
   | a :: l, r => reverse_core l (a :: r)
-#align list.reverse_core List.reverseCore
+#align list.reverse_core List.reverseAux
+-/
 
 #print List.reverse /-
-def reverse : List α → List α := fun l => reverseCore l []
+def reverse : List α → List α := fun l => reverseAux l []
 #align list.reverse List.reverse
 -/
 
@@ -160,28 +164,30 @@ def map (f : α → β) : List α → List β
 #align list.map List.map
 -/
 
-#print List.map₂ /-
+#print List.zipWith /-
 @[simp]
-def map₂ (f : α → β → γ) : List α → List β → List γ
+def zipWith (f : α → β → γ) : List α → List β → List γ
   | [], _ => []
   | _, [] => []
   | x :: xs, y :: ys => f x y :: map₂ xs ys
-#align list.map₂ List.map₂
+#align list.map₂ List.zipWith
 -/
 
-#print List.mapWithIndexCore /-
-def mapWithIndexCore (f : ℕ → α → β) : ℕ → List α → List β
+/- warning: list.map_with_index_core clashes with [anonymous] -> [anonymous]
+Case conversion may be inaccurate. Consider using '#align list.map_with_index_core [anonymous]ₓ'. -/
+#print [anonymous] /-
+def [anonymous] (f : ℕ → α → β) : ℕ → List α → List β
   | k, [] => []
   | k, a :: as => f k a :: map_with_index_core (k + 1) as
-#align list.map_with_index_core List.mapWithIndexCore
+#align list.map_with_index_core[anonymous]
 -/
 
-#print List.mapWithIndex /-
+#print List.mapIdx /-
 /-- Given a function `f : ℕ → α → β` and `as : list α`, `as = [a₀, a₁, ...]`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`. -/
-def mapWithIndex (f : ℕ → α → β) (as : List α) : List β :=
-  mapWithIndexCore f 0 as
-#align list.map_with_index List.mapWithIndex
+def mapIdx (f : ℕ → α → β) (as : List α) : List β :=
+  [anonymous] f 0 as
+#align list.map_with_index List.mapIdx
 -/
 
 #print List.join /-
@@ -255,12 +261,12 @@ def removeAll [DecidableEq α] (xs ys : List α) : List α :=
   filter (· ∉ ys) xs
 #align list.remove_all List.removeAllₓ
 
-#print List.updateNth /-
-def updateNth : List α → ℕ → α → List α
+#print List.set /-
+def set : List α → ℕ → α → List α
   | x :: xs, 0, a => a :: xs
   | x :: xs, i + 1, a => x :: update_nth xs i a
   | [], _, _ => []
-#align list.update_nth List.updateNth
+#align list.update_nth List.set
 -/
 
 #print List.removeNth /-
@@ -317,18 +323,20 @@ def all (l : List α) (p : α → Bool) : Bool :=
 #align list.all List.all
 -/
 
-#print List.bor /-
-def bor (l : List Bool) : Bool :=
+#print List.or /-
+def or (l : List Bool) : Bool :=
   any l id
-#align list.bor List.bor
+#align list.bor List.or
 -/
 
-#print List.band /-
-def band (l : List Bool) : Bool :=
+#print List.and /-
+def and (l : List Bool) : Bool :=
   all l id
-#align list.band List.band
+#align list.band List.and
 -/
 
+/- warning: list.zip_with clashes with list.map₂ -> List.zipWith
+Case conversion may be inaccurate. Consider using '#align list.zip_with List.zipWithₓ'. -/
 #print List.zipWith /-
 def zipWith (f : α → β → γ) : List α → List β → List γ
   | x :: xs, y :: ys => f x y :: zip_with xs ys
@@ -423,30 +431,30 @@ def enum : List α → List (ℕ × α) :=
 #align list.enum List.enum
 -/
 
-#print List.last /-
+#print List.getLast /-
 @[simp]
-def last : ∀ l : List α, l ≠ [] → α
+def getLast : ∀ l : List α, l ≠ [] → α
   | [], h => absurd rfl h
   | [a], h => a
   | a :: b :: l, h => last (b :: l) fun h => List.noConfusion h
-#align list.last List.last
+#align list.last List.getLast
 -/
 
-#print List.ilast /-
-def ilast [Inhabited α] : List α → α
+#print List.getLastI /-
+def getLastI [Inhabited α] : List α → α
   | [] => Inhabited.default α
   | [a] => a
   | [a, b] => b
   | a :: b :: l => ilast l
-#align list.ilast List.ilast
+#align list.ilast List.getLastI
 -/
 
-#print List.init /-
-def init : List α → List α
+#print List.dropLast /-
+def dropLast : List α → List α
   | [] => []
   | [a] => []
   | a :: l => a :: init l
-#align list.init List.init
+#align list.init List.dropLast
 -/
 
 #print List.intersperse /-

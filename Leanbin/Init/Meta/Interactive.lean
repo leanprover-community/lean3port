@@ -3868,7 +3868,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
                     (Term.app `set_cases_tags [`in_tag])
                     "<|"
                     (Term.app
-                     (Term.explicit "@" `List.map₂)
+                     (Term.explicit "@" `List.zipWith)
                      [(«term_×_»
                        `Name
                        "×"
@@ -4256,7 +4256,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
                    (Term.app `set_cases_tags [`in_tag])
                    "<|"
                    (Term.app
-                    (Term.explicit "@" `List.map₂)
+                    (Term.explicit "@" `List.zipWith)
                     [(«term_×_»
                       `Name
                       "×"
@@ -4627,7 +4627,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
               (Term.app `set_cases_tags [`in_tag])
               "<|"
               (Term.app
-               (Term.explicit "@" `List.map₂)
+               (Term.explicit "@" `List.zipWith)
                [(«term_×_»
                  `Name
                  "×"
@@ -4994,7 +4994,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
             (Term.app `set_cases_tags [`in_tag])
             "<|"
             (Term.app
-             (Term.explicit "@" `List.map₂)
+             (Term.explicit "@" `List.zipWith)
              [(«term_×_»
                `Name
                "×"
@@ -5020,7 +5020,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
        (Term.app `set_cases_tags [`in_tag])
        "<|"
        (Term.app
-        (Term.explicit "@" `List.map₂)
+        (Term.explicit "@" `List.zipWith)
         [(«term_×_»
           `Name
           "×"
@@ -5038,7 +5038,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
          `gen_hyps]))
 [PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
       (Term.app
-       (Term.explicit "@" `List.map₂)
+       (Term.explicit "@" `List.zipWith)
        [(«term_×_»
          `Name
          "×"
@@ -5222,9 +5222,9 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
        (Term.app `List [(Term.paren "(" («term_×_» `Name "×" `expr) ")")])))
      ")")
 [PrettyPrinter.parenthesize] parenthesizing (cont := (some 1022, term))
-      (Term.explicit "@" `List.map₂)
+      (Term.explicit "@" `List.zipWith)
 [PrettyPrinter.parenthesize] parenthesizing (cont := (none, [anonymous]))
-      `List.map₂
+      `List.zipWith
 [PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (none,
      [anonymous]) <=? (none, [anonymous])
 [PrettyPrinter.parenthesize] ...precedences are 1024 >? 1024, (some 1024,
@@ -6653,7 +6653,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
                           pure new_hyps
                 set_cases_tags in_tag
                   <|
-                  @ List.map₂
+                  @ List.zipWith
                     Name × List expr × List Name × expr
                       _
                       Name × List expr

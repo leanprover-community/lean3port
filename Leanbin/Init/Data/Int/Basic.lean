@@ -1021,10 +1021,12 @@ theorem toNat_sub (m n : ℕ) : toNat (m - n) = m - n := by
 #align int.to_nat_sub Int.toNat_sub
 -/
 
+#print Int.natMod /-
 -- Since mod x y is always nonnegative when y ≠ 0, we can make a nat version of it
 def natMod (m n : ℤ) : ℕ :=
   (m % n).toNat
 #align int.nat_mod Int.natMod
+-/
 
 #print Int.one_mul /-
 protected theorem one_mul : ∀ a : ℤ, (1 : ℤ) * a = a

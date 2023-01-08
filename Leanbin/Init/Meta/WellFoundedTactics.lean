@@ -15,6 +15,7 @@ import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.List.Instances
 import Leanbin.Init.Data.List.Qsort
 
+#print Nat.lt_add_of_zero_lt_left /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer. 
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
@@ -22,7 +23,9 @@ theorem Nat.lt_add_of_zero_lt_left (a b : Nat) (h : 0 < b) : a < a + b :=
     apply Nat.add_lt_add_left
     assumption
 #align nat.lt_add_of_zero_lt_left Nat.lt_add_of_zero_lt_left
+-/
 
+#print Nat.zero_lt_one_add /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
   suffices 0 < a + 1 by
@@ -30,6 +33,7 @@ theorem Nat.zero_lt_one_add (a : Nat) : 0 < 1 + a :=
     assumption
   Nat.zero_lt_succ _
 #align nat.zero_lt_one_add Nat.zero_lt_one_add
+-/
 
 #print Nat.lt_add_right /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
@@ -38,10 +42,12 @@ theorem Nat.lt_add_right (a b c : Nat) : a < b → a < b + c := fun h =>
 #align nat.lt_add_right Nat.lt_add_right
 -/
 
+#print Nat.lt_add_left /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer.
 theorem Nat.lt_add_left (a b c : Nat) : a < b → a < c + b := fun h =>
   lt_of_lt_of_le h (Nat.le_add_left _ _)
 #align nat.lt_add_left Nat.lt_add_left
+-/
 
 protected def PSum.Alt.sizeof.{u, v} {α : Type u} {β : Type v} [SizeOf α] [SizeOf β] : PSum α β → ℕ
   | PSum.inl a => SizeOf.sizeOf a

@@ -51,6 +51,12 @@ instance binTreeToList : Coe (BinTree α) (List α) :=
   ⟨BinTree.toList⟩
 #align list.bin_tree_to_list List.binTreeToList
 
+/- warning: list.decidable_bex -> List.decidableBex is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} (p : α -> Prop) [_inst_1 : DecidablePred.{succ u1} α p] (l : List.{u1} α), Decidable (Exists.{succ u1} α (fun (x : α) => Exists.{0} (Membership.Mem.{u1, u1} α (List.{u1} α) (List.hasMem.{u1} α) x l) (fun (H : Membership.Mem.{u1, u1} α (List.{u1} α) (List.hasMem.{u1} α) x l) => p x)))
+but is expected to have type
+  forall {α : Type.{u1}} {p : α -> Prop} [_inst_1 : DecidablePred.{succ u1} α p] (l : List.{u1} α), Decidable (Exists.{succ u1} α (fun (x : α) => And (Membership.mem.{u1, u1} α (List.{u1} α) (List.instMembershipList.{u1} α) x l) (p x)))
+Case conversion may be inaccurate. Consider using '#align list.decidable_bex List.decidableBexₓ'. -/
 instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] => isFalse (by simp [List.not_bex_nil])
   | x :: xs =>
@@ -73,6 +79,7 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
               exact ⟨y, h, hp⟩)
 #align list.decidable_bex List.decidableBex
 
+#print List.decidableBall /-
 instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=
   if h : ∃ x ∈ l, ¬p x then
     is_false <|
@@ -80,6 +87,7 @@ instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=
       fun al => np (al x h)
   else is_true fun x hx => if h' : p x then h' else False.elim <| h ⟨x, hx, h'⟩
 #align list.decidable_ball List.decidableBall
+-/
 
 end List
 

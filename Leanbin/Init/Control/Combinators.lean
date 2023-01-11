@@ -75,13 +75,17 @@ def List.foldrM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} :
 #align list.mfoldr List.foldrM
 -/
 
-#print List.firstM /-
+/- warning: list.mfirst -> List.firstM is a dubious translation:
+lean 3 declaration is
+  forall {m : Type.{u1} -> Type.{u2}} [_inst_1 : Monad.{u1, u2} m] [_inst_2 : Alternative.{u1, u2} m] {α : Type.{u3}} {β : Type.{u1}}, (α -> (m β)) -> (List.{u3} α) -> (m β)
+but is expected to have type
+  forall {m : Type.{u1} -> Type.{u2}} [_inst_1 : Alternative.{u1, u2} m] {_inst_2 : Type.{u3}} {α : Type.{u1}}, (_inst_2 -> (m α)) -> (List.{u3} _inst_2) -> (m α)
+Case conversion may be inaccurate. Consider using '#align list.mfirst List.firstMₓ'. -/
 def List.firstM {m : Type u → Type v} [Monad m] [Alternative m] {α : Type w} {β : Type u}
     (f : α → m β) : List α → m β
   | [] => failure
   | a :: as => f a <|> List.firstM as
 #align list.mfirst List.firstM
--/
 
 #print when /-
 def when {m : Type → Type} [Monad m] (c : Prop) [h : Decidable c] (t : m Unit) : m Unit :=

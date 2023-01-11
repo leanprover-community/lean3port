@@ -400,14 +400,16 @@ def repeat (a : α) : ℕ → List α
 #align list.repeat List.repeat
 -/
 
-def rangeCore : ℕ → List ℕ → List ℕ
+#print List.range.loop /-
+def List.range.loop : ℕ → List ℕ → List ℕ
   | 0, l => l
   | succ n, l => range_core n (n :: l)
-#align list.range_core List.rangeCore
+#align list.range_core List.range.loop
+-/
 
 #print List.range /-
 def range (n : ℕ) : List ℕ :=
-  rangeCore n []
+  List.range.loop n []
 #align list.range List.range
 -/
 

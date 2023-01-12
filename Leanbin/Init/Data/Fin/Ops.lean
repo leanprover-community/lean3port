@@ -162,10 +162,18 @@ theorem le_def (a b : Fin n) : (a ≤ b) = (a.val ≤ b.val) :=
   show Fin.Le a b = (a.val ≤ b.val) by cases a <;> cases b <;> simp [Fin.Le]
 #align fin.le_def Fin.le_def
 
+/- warning: fin.val_zero clashes with fin.coe_zero -> Fin.val_zero
+warning: fin.val_zero -> Fin.val_zero is a dubious translation:
+lean 3 declaration is
+  forall {n : Nat}, Eq.{1} Nat (Fin.val (Nat.succ n) (OfNat.ofNat.{0} (Fin (Nat.succ n)) 0 (OfNat.mk.{0} (Fin (Nat.succ n)) 0 (Zero.zero.{0} (Fin (Nat.succ n)) (Fin.hasZero n))))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
+but is expected to have type
+  forall (n : Nat) [inst._@.Mathlib.Data.Fin.Basic._hyg.2303 : NeZero.{0} Nat (LinearOrderedCommMonoidWithZero.toZero.{0} Nat Nat.linearOrderedCommMonoidWithZero) n], Eq.{1} Nat (Fin.val n (OfNat.ofNat.{0} (Fin n) 0 (Zero.toOfNat0.{0} (Fin n) (Fin.instZeroFin n inst._@.Mathlib.Data.Fin.Basic._hyg.2303)))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
+Case conversion may be inaccurate. Consider using '#align fin.val_zero Fin.val_zeroₓ'. -/
 theorem val_zero : (0 : Fin (succ n)).val = 0 :=
   rfl
 #align fin.val_zero Fin.val_zero
 
+#print Fin.pred /-
 def pred {n : Nat} : ∀ i : Fin (succ n), i ≠ 0 → Fin n
   | ⟨a, h₁⟩, h₂ =>
     ⟨a.pred,
@@ -176,6 +184,7 @@ def pred {n : Nat} : ∀ i : Fin (succ n), i ≠ 0 → Fin n
         exact aux₁
       Nat.pred_lt_pred this h₁⟩
 #align fin.pred Fin.pred
+-/
 
 end Fin
 

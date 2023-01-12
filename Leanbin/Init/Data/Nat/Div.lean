@@ -27,6 +27,12 @@ protected def div (x y : ℕ) : ℕ :=
 instance : Div Nat :=
   ⟨Nat.div⟩
 
+/- warning: nat.mod_core -> Nat.modCore is a dubious translation:
+lean 3 declaration is
+  Nat -> Nat -> Nat -> Nat
+but is expected to have type
+  ([mdata borrowed:1 Nat]) -> ([mdata borrowed:1 Nat]) -> Nat
+Case conversion may be inaccurate. Consider using '#align nat.mod_core Nat.modCoreₓ'. -/
 protected def modCore (y : ℕ) : ℕ → ℕ → ℕ
   | 0, x => x
   | fuel + 1, x => if h : 0 < y ∧ y ≤ x then mod_core fuel (x - y) else x

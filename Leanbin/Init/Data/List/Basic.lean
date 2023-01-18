@@ -392,13 +392,11 @@ protected def inter [DecidableEq α] (l₁ l₂ : List α) : List α :=
 instance [DecidableEq α] : Inter (List α) :=
   ⟨List.inter⟩
 
-#print List.repeat /-
 @[simp]
 def repeat (a : α) : ℕ → List α
   | 0 => []
   | succ n => a :: repeat n
 #align list.repeat List.repeat
--/
 
 #print List.range.loop /-
 def List.range.loop : ℕ → List ℕ → List ℕ

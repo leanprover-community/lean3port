@@ -131,7 +131,7 @@ private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
 #align well_founded_tactics.add_simps well_founded_tactics.add_simps
 
 private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
-  (e.mfold simp_lemmas.mk) fun c d s =>
+  e.mfold simp_lemmas.mk fun c d s =>
     if c.is_constant then
       match c.const_name with
       | Name.mk_string "sizeof" p => do

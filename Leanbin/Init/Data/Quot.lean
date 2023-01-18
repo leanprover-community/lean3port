@@ -58,17 +58,17 @@ protected def liftOn {α : Sort u} {β : Sort v} {r : α → α → Prop} (q : Q
 #align quot.lift_on Quot.liftOn
 -/
 
-#print Quot.induction_on /-
+#print Quot.inductionOn /-
 @[elab_as_elim]
-protected theorem induction_on {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop} (q : Quot r)
+protected theorem inductionOn {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop} (q : Quot r)
     (h : ∀ a, β (Quot.mk r a)) : β q :=
   ind h q
-#align quot.induction_on Quot.induction_on
+#align quot.induction_on Quot.inductionOn
 -/
 
 #print Quot.exists_rep /-
 theorem exists_rep {α : Sort u} {r : α → α → Prop} (q : Quot r) : ∃ a : α, Quot.mk r a = q :=
-  Quot.induction_on q fun a => ⟨a, rfl⟩
+  Quot.inductionOn q fun a => ⟨a, rfl⟩
 #align quot.exists_rep Quot.exists_rep
 -/
 
@@ -109,27 +109,27 @@ protected def rec (f : ∀ a, β ⟦a⟧)
 #align quot.rec Quot.rec
 -/
 
-#print Quot.recOn /-
+#print Quot.recOn' /-
 @[reducible, elab_as_elim]
-protected def recOn (q : Quot r) (f : ∀ a, β ⟦a⟧)
+protected def recOn' (q : Quot r) (f : ∀ a, β ⟦a⟧)
     (h : ∀ (a b : α) (p : r a b), (Eq.ndrec (f a) (sound p) : β ⟦b⟧) = f b) : β q :=
   Quot.rec f h q
-#align quot.rec_on Quot.recOn
+#align quot.rec_on Quot.recOn'
 -/
 
-#print Quot.recOnSubsingleton /-
+#print Quot.recOnSubsingleton' /-
 @[reducible, elab_as_elim]
-protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot r) (f : ∀ a, β ⟦a⟧) :
+protected def recOnSubsingleton' [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quot r) (f : ∀ a, β ⟦a⟧) :
     β q :=
   Quot.rec f (fun a b h => Subsingleton.elim _ (f b)) q
-#align quot.rec_on_subsingleton Quot.recOnSubsingleton
+#align quot.rec_on_subsingleton Quot.recOnSubsingleton'
 -/
 
 #print Quot.hrecOn /-
 @[reducible, elab_as_elim]
 protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) :
     β q :=
-  Quot.recOn q f fun a b p =>
+  Quot.recOn' q f fun a b p =>
     eq_of_heq
       (calc
         HEq (Eq.ndrec (f a) (sound p) : β ⟦b⟧) (f a) := eq_rec_heq (sound p) (f a)
@@ -189,11 +189,13 @@ protected def liftOn {α : Sort u} {β : Sort v} [s : Setoid α] (q : Quotient s
 #align quotient.lift_on Quotient.liftOn
 -/
 
+#print Quotient.inductionOn /-
 @[elab_as_elim]
-protected theorem induction_on {α : Sort u} [s : Setoid α] {β : Quotient s → Prop} (q : Quotient s)
+protected theorem inductionOn {α : Sort u} [s : Setoid α] {β : Quotient s → Prop} (q : Quotient s)
     (h : ∀ a, β ⟦a⟧) : β q :=
-  Quot.induction_on q h
-#align quotient.induction_on Quotient.induction_on
+  Quot.inductionOn q h
+#align quotient.induction_on Quotient.inductionOn
+-/
 
 #print Quotient.exists_rep /-
 theorem exists_rep {α : Sort u} [s : Setoid α] (q : Quotient s) : ∃ a : α, ⟦a⟧ = q :=
@@ -221,7 +223,7 @@ protected def rec (f : ∀ a, β ⟦a⟧)
 @[reducible, elab_as_elim]
 protected def recOn (q : Quotient s) (f : ∀ a, β ⟦a⟧)
     (h : ∀ (a b : α) (p : a ≈ b), (Eq.ndrec (f a) (Quotient.sound p) : β ⟦b⟧) = f b) : β q :=
-  Quot.recOn q f h
+  Quot.recOn' q f h
 #align quotient.rec_on Quotient.recOn
 -/
 
@@ -229,7 +231,7 @@ protected def recOn (q : Quotient s) (f : ∀ a, β ⟦a⟧)
 @[reducible, elab_as_elim]
 protected def recOnSubsingleton [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quotient s) (f : ∀ a, β ⟦a⟧) :
     β q :=
-  @Quot.recOnSubsingleton _ _ _ h q f
+  @Quot.recOnSubsingleton' _ _ _ h q f
 #align quotient.rec_on_subsingleton Quotient.recOnSubsingleton
 -/
 
@@ -319,7 +321,7 @@ private def rel (q₁ q₂ : Quotient s) : Prop :=
 local infixl:50 " ~ " => Rel
 
 private theorem rel.refl : ∀ q : Quotient s, q ~ q := fun q =>
-  Quot.induction_on q fun a => Setoid.refl a
+  Quot.inductionOn q fun a => Setoid.refl a
 #align quotient.rel.refl quotient.rel.refl
 
 private theorem eq_imp_rel {q₁ q₂ : Quotient s} : q₁ = q₂ → q₁ ~ q₂ := fun h =>

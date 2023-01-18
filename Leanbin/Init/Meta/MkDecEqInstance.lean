@@ -161,21 +161,22 @@ unsafe
         let env ← get_env
           let pi x1 i1 d1 ( pi x2 i2 d2 b ) ← target >>= whnf
           let const I_name ls ← return ( get_app_fn d1 )
-          ( when ( is_ginductive env I_name ∧ ¬ is_inductive env I_name ) )
-            do
-              let d1' ← whnf d1
-                let app I_basic_const I_idx ← return d1'
-                let I_idx_type ← infer_type I_idx
-                let
-                  new_goal
-                    ←
-                    to_expr
-                      ` `( ∀ _idx : $ ( I_idx_type ) , DecidableEq ( $ ( I_basic_const ) _idx ) )
-                assert `_basic_dec_eq new_goal
-                swap
-                sorry
-                intro1
-                return ( )
+          when
+            ( is_ginductive env I_name ∧ ¬ is_inductive env I_name )
+              do
+                let d1' ← whnf d1
+                  let app I_basic_const I_idx ← return d1'
+                  let I_idx_type ← infer_type I_idx
+                  let
+                    new_goal
+                      ←
+                      to_expr
+                        ` `( ∀ _idx : $ ( I_idx_type ) , DecidableEq ( $ ( I_basic_const ) _idx ) )
+                  assert `_basic_dec_eq new_goal
+                  swap
+                  sorry
+                  intro1
+                  return ( )
           mk_dec_eq_instance_core
 #align tactic.mk_dec_eq_instance tactic.mk_dec_eq_instance
 

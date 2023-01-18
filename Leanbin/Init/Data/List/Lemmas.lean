@@ -73,12 +73,10 @@ theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
 #align list.length_append List.length_append
 -/
 
-#print List.length_repeat /-
 @[simp]
 theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by
   induction n <;> simp [*] <;> rfl
 #align list.length_repeat List.length_repeat
--/
 
 #print List.length_tail /-
 @[simp]

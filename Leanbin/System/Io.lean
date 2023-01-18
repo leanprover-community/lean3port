@@ -83,7 +83,7 @@ def iterate {e α} (a : α) (f : α → IoCore e (Option α)) : IoCore e α :=
 #align io.iterate Io.iterate
 
 def forever {e} (a : IoCore e Unit) : IoCore e Unit :=
-  (iterate ()) fun _ => a >> return (some ())
+  iterate () fun _ => a >> return (some ())
 #align io.forever Io.forever
 
 -- TODO(Leo): delete after we merge #1881
@@ -249,7 +249,7 @@ def putStrLn (h : Handle) (s : String) : Io Unit :=
 #align io.fs.put_str_ln Io.Fs.putStrLn
 
 def readToEnd (h : Handle) : Io CharBuffer :=
-  (iterate mkBuffer) fun r => do
+  iterate mkBuffer fun r => do
     let done ← isEof h
     if done then return none
       else do

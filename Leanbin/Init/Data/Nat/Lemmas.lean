@@ -1308,7 +1308,7 @@ protected theorem strong_induction_on {p : Nat → Prop} (n : Nat)
 #print Nat.case_strong_induction_on /-
 protected theorem case_strong_induction_on {p : Nat → Prop} (a : Nat) (hz : p 0)
     (hi : ∀ n, (∀ m, m ≤ n → p m) → p (succ n)) : p a :=
-  (Nat.strong_induction_on a) fun n =>
+  Nat.strong_induction_on a fun n =>
     match n with
     | 0 => fun _ => hz
     | n + 1 => fun h₁ => hi n fun m h₂ => h₁ _ (lt_succ_of_le h₂)
@@ -1887,10 +1887,10 @@ protected theorem dvd_add {a b c : ℕ} (h₁ : a ∣ b) (h₂ : a ∣ c) : a �
 #print Nat.dvd_add_iff_right /-
 protected theorem dvd_add_iff_right {k m n : ℕ} (h : k ∣ m) : k ∣ n ↔ k ∣ m + n :=
   ⟨Nat.dvd_add h,
-    (Exists.elim h) fun d hd =>
+    Exists.elim h fun d hd =>
       match m, hd with
       | _, rfl => fun h₂ =>
-        (Exists.elim h₂) fun e he =>
+        Exists.elim h₂ fun e he =>
           ⟨e - d, by rw [Nat.mul_sub_left_distrib, ← he, Nat.add_sub_cancel_left]⟩⟩
 #align nat.dvd_add_iff_right Nat.dvd_add_iff_right
 -/

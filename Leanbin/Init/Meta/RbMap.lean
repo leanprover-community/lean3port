@@ -113,7 +113,7 @@ unsafe def for (m : rb_map key data) (f : data → data') : rb_map key data' :=
 #align native.rb_map.for native.rb_map.for
 
 unsafe def filter (m : rb_map key data) (f : data → Prop) [DecidablePred f] :=
-  (fold m (mk _ _)) fun a b m' => if f b then insert m' a b else m'
+  fold m (mk _ _) fun a b m' => if f b then insert m' a b else m'
 #align native.rb_map.filter native.rb_map.filter
 
 end

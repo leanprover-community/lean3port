@@ -1,6 +1,8 @@
 
+#print Real /-
 axiom Real : Type
 #align real Real
+-/
 
 #print Zero /-
 axiom Zero : Zero Real

@@ -163,7 +163,7 @@ def remaining : Parser ℕ := fun input pos => ParseResult.done Pos (input.size 
 
 /-- Matches the end of the input. -/
 def eof : Parser Unit :=
-  (decorateError "<end-of-file>") do
+  decorateError "<end-of-file>" do
     let rem ← remaining
     guard <| rem = 0
 #align parser.eof Parser.eof
@@ -238,7 +238,7 @@ def fixCore (F : Parser α → Parser α) : ∀ max_depth : ℕ, Parser α
 
 /-- Matches a digit (0-9). -/
 def digit : Parser Nat :=
-  (decorateError "<digit>") do
+  decorateError "<digit>" do
     let c ← sat fun c => '0' ≤ c ∧ c ≤ '9'
     pure <| c - '0'.toNat
 #align parser.digit Parser.digit
@@ -246,7 +246,7 @@ def digit : Parser Nat :=
 /-- Matches a natural number. Large numbers may cause performance issues, so
 don't run this parser on untrusted input. -/
 def nat : Parser Nat :=
-  (decorateError "<natural>") do
+  decorateError "<natural>" do
     let digits ← many1 digit
     pure <|
         Prod.fst <|

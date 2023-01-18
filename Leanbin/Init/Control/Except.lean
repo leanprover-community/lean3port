@@ -149,13 +149,13 @@ namespace MonadExcept
 variable {ε : Type u} {m : Type v → Type w}
 
 protected def orelse [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) : m α :=
-  (catch t₁) fun _ => t₂
+  catch t₁ fun _ => t₂
 #align monad_except.orelse MonadExcept.orelse
 
 /-- Alternative orelse operator that allows to select which exception should be used.
     The default is to use the first exception since the standard `orelse` uses the second. -/
 unsafe def orelse' [MonadExcept ε m] {α : Type v} (t₁ t₂ : m α) (use_first_ex := true) : m α :=
-  (catch t₁) fun e₁ => (catch t₂) fun e₂ => throw (if use_first_ex then e₁ else e₂)
+  catch t₁ fun e₁ => catch t₂ fun e₂ => throw (if use_first_ex then e₁ else e₂)
 #align monad_except.orelse' monad_except.orelse'
 
 end MonadExcept

@@ -150,7 +150,7 @@ theorem le_of_lt : ∀ {a b : α}, a < b → a ≤ b
 theorem lt_of_lt_of_le : ∀ {a b c : α}, a < b → b ≤ c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hab, hba⟩ := le_not_le_of_lt hab
-    (lt_of_le_not_le (le_trans hab hbc)) fun hca => hba (le_trans hbc hca)
+    lt_of_le_not_le (le_trans hab hbc) fun hca => hba (le_trans hbc hca)
 #align lt_of_lt_of_le lt_of_lt_of_le
 -/
 
@@ -159,7 +159,7 @@ theorem lt_of_lt_of_le : ∀ {a b c : α}, a < b → b ≤ c → a < c
 theorem lt_of_le_of_lt : ∀ {a b c : α}, a ≤ b → b < c → a < c
   | a, b, c, hab, hbc =>
     let ⟨hbc, hcb⟩ := le_not_le_of_lt hbc
-    (lt_of_le_not_le (le_trans hab hbc)) fun hca => hcb (le_trans hca hab)
+    lt_of_le_not_le (le_trans hab hbc) fun hca => hcb (le_trans hca hab)
 #align lt_of_le_of_lt lt_of_le_of_lt
 -/
 

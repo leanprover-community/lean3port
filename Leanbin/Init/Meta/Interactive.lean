@@ -123,7 +123,7 @@ unsafe def propagate_tags (tac : itactic) : tactic Unit := do
       focus1 do
         tac
         let gs ← get_goals
-        (when (not gs)) do
+        when (not gs) do
             let new_tag ← get_main_tag
             when new_tag <| with_enable_tags (set_main_tag tag)
 #align tactic.interactive.propagate_tags tactic.interactive.propagate_tags
@@ -441,7 +441,7 @@ private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit 
 #align tactic.interactive.rw_goal tactic.interactive.rw_goal
 
 private unsafe def uses_hyp (e : expr) (h : expr) : Bool :=
-  (e.fold false) fun t _ r => r || decide (t = h)
+  e.fold false fun t _ r => r || decide (t = h)
 #align tactic.interactive.uses_hyp tactic.interactive.uses_hyp
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
@@ -633,7 +633,7 @@ private unsafe def generalize_arg_p : parser (pexpr × Name) :=
 #align tactic.interactive.generalize tactic.interactive.generalize
 
 unsafe def cases_arg_p : parser (Option Name × pexpr) :=
-  (with_desc "(id :)? expr") do
+  with_desc "(id :)? expr" do
     let t ← texpr
     match t with
       | local_const x _ _ _ =>
@@ -2015,7 +2015,7 @@ unsafe def has_dup : tactic Bool := do
 /-- Renames hypotheses with the same name.
 -/
 unsafe def dedup : tactic Unit :=
-  (whenM has_dup) do
+  whenM has_dup do
     let ctx ← local_context
     let n ← revert_lst ctx
     intron n

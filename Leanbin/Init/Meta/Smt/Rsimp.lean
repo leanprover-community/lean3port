@@ -116,7 +116,7 @@ unsafe def explicit_size : expr → tactic Nat
 unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
   let sz ← explicit_size e
   let p ←
-    (ccs.mfold_eqc e (e, sz)) fun p e' =>
+    ccs.mfold_eqc e (e, sz) fun p e' =>
         if p.2 = 1 then return p
         else do
           let sz' ← explicit_size e'
@@ -172,7 +172,7 @@ private def tagged_proof.rsimp : Unit :=
 unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) : tactic cc_state :=
   do
   focus1 <|
-      (using_smt_with { emAttr := cfg }) do
+      using_smt_with { emAttr := cfg } do
         add_lemmas_from_facts
         add_lemmas extra
         iterate_at_most cfg (ematch >> try smt_tactic.close)

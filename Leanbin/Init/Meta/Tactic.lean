@@ -1482,7 +1482,7 @@ private unsafe def focus_aux {α} : List (tactic α) → List expr → List expr
   | [], [], rs => set_goals rs *> pure []
   | t :: ts, [], rs => fail "focus tactic failed, insufficient number of goals"
   | tts, g :: gs, rs =>
-    (condM (is_assigned g) (focus_aux tts gs rs)) do
+    condM (is_assigned g) (focus_aux tts gs rs) do
       set_goals [g]
       let t :: ts ← pure tts |
         fail "focus tactic failed, insufficient number of tactics"
@@ -1504,7 +1504,7 @@ private unsafe def focus'_aux : List (tactic Unit) → List expr → List expr �
   | [], [], rs => set_goals rs
   | t :: ts, [], rs => fail "focus' tactic failed, insufficient number of goals"
   | tts, g :: gs, rs =>
-    (condM (is_assigned g) (focus'_aux tts gs rs)) do
+    condM (is_assigned g) (focus'_aux tts gs rs) do
       set_goals [g]
       let t :: ts ← pure tts |
         fail "focus' tactic failed, insufficient number of tactics"
@@ -1534,7 +1534,7 @@ unsafe def focus1 {α} (tac : tactic α) : tactic α := do
 private unsafe def all_goals_core {α} (tac : tactic α) : List expr → List expr → tactic (List α)
   | [], ac => set_goals ac *> pure []
   | g :: gs, ac =>
-    (condM (is_assigned g) (all_goals_core gs ac)) do
+    condM (is_assigned g) (all_goals_core gs ac) do
       set_goals [g]
       let a ← tac
       let new_gs ← get_goals
@@ -1552,7 +1552,7 @@ unsafe def all_goals {α} (tac : tactic α) : tactic (List α) := do
 private unsafe def all_goals'_core (tac : tactic Unit) : List expr → List expr → tactic Unit
   | [], ac => set_goals ac
   | g :: gs, ac =>
-    (condM (is_assigned g) (all_goals'_core gs ac)) do
+    condM (is_assigned g) (all_goals'_core gs ac) do
       set_goals [g]
       tac
       let new_gs ← get_goals
@@ -1569,7 +1569,7 @@ private unsafe def any_goals_core {α} (tac : tactic α) :
     List expr → List expr → Bool → tactic (List (Option α))
   | [], ac, progress => guard progress *> set_goals ac *> pure []
   | g :: gs, ac, progress =>
-    (condM (is_assigned g) (any_goals_core gs ac progress)) do
+    condM (is_assigned g) (any_goals_core gs ac progress) do
       set_goals [g]
       let res ← try_core tac
       let new_gs ← get_goals
@@ -1589,7 +1589,7 @@ unsafe def any_goals {α} (tac : tactic α) : tactic (List (Option α)) := do
 private unsafe def any_goals'_core (tac : tactic Unit) : List expr → List expr → Bool → tactic Unit
   | [], ac, progress => guard progress >> set_goals ac
   | g :: gs, ac, progress =>
-    (condM (is_assigned g) (any_goals'_core gs ac progress)) do
+    condM (is_assigned g) (any_goals'_core gs ac progress) do
       set_goals [g]
       let succeeded ← try_core tac
       let new_gs ← get_goals
@@ -1703,7 +1703,7 @@ unsafe def has_opt_auto_param (ms : List expr) : tactic Bool :=
 
 unsafe def try_apply_opt_auto_param (cfg : ApplyCfg) (ms : List expr) : tactic Unit :=
   when (cfg.autoParam || cfg.optParam) <|
-    (whenM (has_opt_auto_param ms)) do
+    whenM (has_opt_auto_param ms) do
       let gs ← get_goals
       ms fun m =>
           whenM (not <$> is_assigned m) <|
@@ -1721,7 +1721,7 @@ unsafe def has_opt_auto_param_for_apply (ms : List (Name × expr)) : tactic Bool
 
 unsafe def try_apply_opt_auto_param_for_apply (cfg : ApplyCfg) (ms : List (Name × expr)) :
     tactic Unit :=
-  (whenM (has_opt_auto_param_for_apply ms)) do
+  whenM (has_opt_auto_param_for_apply ms) do
     let gs ← get_goals
     ms fun m =>
         whenM (not <$> is_assigned m.2) <|
@@ -2171,7 +2171,7 @@ unsafe def rename_many (renames : name_map Name) (strict := true) (use_unique_na
   let-- The part of the context after (but including) the first hypthesis that
   -- must be renamed.
   ctx_suffix := ctx.dropWhile fun h => (renames.find <| hyp_name h).isNone
-  (when strict) do
+  when strict do
       let ctx_names := rb_map.set_of_list (ctx_suffix hyp_name)
       let invalid_renames := (renames Prod.fst).filter fun h => ¬ctx_names h
       when ¬invalid_renames <|

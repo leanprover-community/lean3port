@@ -144,11 +144,9 @@ def map₂ (f : α → β → φ) : Vector α n → Vector β n → Vector φ n
 #align vector.map₂ Vector.map₂
 -/
 
-#print Vector.repeat /-
 def repeat (a : α) (n : ℕ) : Vector α n :=
   ⟨List.repeat a n, List.length_repeat a n⟩
 #align vector.repeat Vector.repeat
--/
 
 #print Vector.drop /-
 def drop (i : ℕ) : Vector α n → Vector α (n - i)

@@ -274,8 +274,7 @@ private unsafe def add_hinst_lemma_from_name (md : Transparency) (lhs_lemma : Bo
           try (tactic.save_type_info e ref)
           return <| hs h) <|>
         report_invalid_em_lemma n
-#align
-  smt_tactic.interactive.add_hinst_lemma_from_name smt_tactic.interactive.add_hinst_lemma_from_name
+#align smt_tactic.interactive.add_hinst_lemma_from_name smt_tactic.interactive.add_hinst_lemma_from_name
 
 private unsafe def add_hinst_lemma_from_pexpr (md : Transparency) (lhs_lemma : Bool) (p : pexpr)
     (hs : hinst_lemmas) : smt_tactic hinst_lemmas :=
@@ -286,8 +285,7 @@ private unsafe def add_hinst_lemma_from_pexpr (md : Transparency) (lhs_lemma : B
     let new_e ← to_expr p
     let h ← hinst_lemma.mk_core md new_e lhs_lemma
     return <| hs h
-#align
-  smt_tactic.interactive.add_hinst_lemma_from_pexpr smt_tactic.interactive.add_hinst_lemma_from_pexpr
+#align smt_tactic.interactive.add_hinst_lemma_from_pexpr smt_tactic.interactive.add_hinst_lemma_from_pexpr
 
 private unsafe def add_hinst_lemmas_from_pexprs (md : Transparency) (lhs_lemma : Bool) :
     List pexpr → hinst_lemmas → smt_tactic hinst_lemmas
@@ -295,8 +293,7 @@ private unsafe def add_hinst_lemmas_from_pexprs (md : Transparency) (lhs_lemma :
   | p :: ps, hs => do
     let hs₁ ← add_hinst_lemma_from_pexpr md lhs_lemma p hs
     add_hinst_lemmas_from_pexprs ps hs₁
-#align
-  smt_tactic.interactive.add_hinst_lemmas_from_pexprs smt_tactic.interactive.add_hinst_lemmas_from_pexprs
+#align smt_tactic.interactive.add_hinst_lemmas_from_pexprs smt_tactic.interactive.add_hinst_lemmas_from_pexprs
 
 unsafe def ematch_using (l : parse pexpr_list_or_texpr) : smt_tactic Unit := do
   let hs ← add_hinst_lemmas_from_pexprs reducible false l hinst_lemmas.mk

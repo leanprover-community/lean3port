@@ -277,8 +277,7 @@ def combine : MatchResult → MatchResult → MatchResult
   | fuzzy_match, no_match => no_match
   | fuzzy_match, _ => fuzzy_match
   | no_match, _ => no_match
-#align
-  tactic.interactive.case_tag.match_result.combine Tactic.Interactive.CaseTag.MatchResult.combine
+#align tactic.interactive.case_tag.match_result.combine Tactic.Interactive.CaseTag.MatchResult.combine
 
 end MatchResult
 

@@ -234,8 +234,7 @@ theorem rightInverse_of_injective_of_leftInverse {f : α → β} {g : β → α}
     (lfg : LeftInverse f g) : RightInverse f g := fun x =>
   have h : f (g (f x)) = f x := lfg (f x)
   injf h
-#align
-  function.right_inverse_of_injective_of_left_inverse Function.rightInverse_of_injective_of_leftInverse
+#align function.right_inverse_of_injective_of_left_inverse Function.rightInverse_of_injective_of_leftInverse
 -/
 
 #print Function.RightInverse.surjective /-
@@ -259,8 +258,7 @@ theorem leftInverse_of_surjective_of_rightInverse {f : α → β} {g : β → α
       _ = f x := Eq.symm (rfg x) ▸ rfl
       _ = y := hx
       
-#align
-  function.left_inverse_of_surjective_of_right_inverse Function.leftInverse_of_surjective_of_rightInverse
+#align function.left_inverse_of_surjective_of_right_inverse Function.leftInverse_of_surjective_of_rightInverse
 -/
 
 #print Function.injective_id /-

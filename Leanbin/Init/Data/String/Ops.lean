@@ -34,8 +34,7 @@ theorem zero_lt_length_next_to_string_of_has_next {it : Iterator} :
   cases it <;> cases it_snd <;>
     simp [iterator.has_next, iterator.next_to_string, String.length, Nat.zero_lt_one_add,
       Nat.add_comm, false_imp_iff]
-#align
-  string.iterator.zero_lt_length_next_to_string_of_has_next String.Iterator.zero_lt_length_next_to_string_of_has_next
+#align string.iterator.zero_lt_length_next_to_string_of_has_next String.Iterator.zero_lt_length_next_to_string_of_has_next
 
 end Iterator
 

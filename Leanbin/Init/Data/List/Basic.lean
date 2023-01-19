@@ -179,7 +179,7 @@ Case conversion may be inaccurate. Consider using '#align list.map_with_index_co
 def [anonymous] (f : ℕ → α → β) : ℕ → List α → List β
   | k, [] => []
   | k, a :: as => f k a :: map_with_index_core (k + 1) as
-#align list.map_with_index_core[anonymous]
+#align list.map_with_index_core [anonymous]
 -/
 
 #print List.mapIdx /-

@@ -149,8 +149,7 @@ unsafe def implicit_arg_list (tooltip : tc subexpr Empty) (e : expr) : tactic <|
       h "div" []
         (h "span" [className "bg-blue br3 ma1 ph2 white"] [fn] ::
           List.map (fun a => h "span" [className "bg-gray br3 ma1 ph2 white"] [a]) args)
-#align
-  widget.interactive_expression.implicit_arg_list widget.interactive_expression.implicit_arg_list
+#align widget.interactive_expression.implicit_arg_list widget.interactive_expression.implicit_arg_list
 
 unsafe def type_tooltip : tc subexpr Empty :=
   tc.stateless fun ⟨e, ea⟩ => do

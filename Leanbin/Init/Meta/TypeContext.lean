@@ -125,8 +125,7 @@ unsafe axiom instantiate_mvars : expr → type_context expr
 #align tactic.unsafe.type_context.instantiate_mvars tactic.unsafe.type_context.instantiate_mvars
 
 unsafe axiom level.instantiate_mvars : level → type_context level
-#align
-  tactic.unsafe.type_context.level.instantiate_mvars tactic.unsafe.type_context.level.instantiate_mvars
+#align tactic.unsafe.type_context.level.instantiate_mvars tactic.unsafe.type_context.level.instantiate_mvars
 
 unsafe axiom is_tmp_mvar (mvar : expr) : type_context Bool
 #align tactic.unsafe.type_context.is_tmp_mvar tactic.unsafe.type_context.is_tmp_mvar
@@ -151,12 +150,10 @@ unsafe axiom tmp_get_assignment : Nat → type_context expr
 #align tactic.unsafe.type_context.tmp_get_assignment tactic.unsafe.type_context.tmp_get_assignment
 
 unsafe axiom level.tmp_is_assigned : Nat → type_context Bool
-#align
-  tactic.unsafe.type_context.level.tmp_is_assigned tactic.unsafe.type_context.level.tmp_is_assigned
+#align tactic.unsafe.type_context.level.tmp_is_assigned tactic.unsafe.type_context.level.tmp_is_assigned
 
 unsafe axiom level.tmp_get_assignment : Nat → type_context level
-#align
-  tactic.unsafe.type_context.level.tmp_get_assignment tactic.unsafe.type_context.level.tmp_get_assignment
+#align tactic.unsafe.type_context.level.tmp_get_assignment tactic.unsafe.type_context.level.tmp_get_assignment
 
 /-- Replace each metavariable in the given expression with a temporary metavariable. -/
 unsafe axiom to_tmp_mvars : expr → type_context (expr × List level × List expr)
@@ -201,8 +198,7 @@ unsafe instance type_context_alternative : Alternative type_context
     where
   failure α := type_context.fail "failed"
   orelse α x y := type_context.orelse x y
-#align
-  tactic.unsafe.type_context.type_context_alternative tactic.unsafe.type_context.type_context_alternative
+#align tactic.unsafe.type_context.type_context_alternative tactic.unsafe.type_context.type_context_alternative
 
 /-- Runs the given type_context monad using the type context of the current tactic state.
 You can use this to perform unsafe operations such as direct metavariable assignment and the use of temporary metavariables.

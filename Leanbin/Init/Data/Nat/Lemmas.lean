@@ -882,7 +882,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align nat.discriminate [anonymous]ₓ'. -/
 def [anonymous] {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
   induction' h : n with <;> [exact H1 h, exact H2 _ h]
-#align nat.discriminate[anonymous]
+#align nat.discriminate [anonymous]
 
 theorem one_succ_zero : 1 = succ 0 :=
   rfl

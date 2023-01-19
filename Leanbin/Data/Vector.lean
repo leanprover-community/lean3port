@@ -96,10 +96,10 @@ def toList (v : Vector α n) : List α :=
 #align vector.to_list Vector.toList
 -/
 
-#print Vector.nth /-
-def nth : ∀ v : Vector α n, Fin n → α
+#print Vector.get /-
+def get : ∀ v : Vector α n, Fin n → α
   | ⟨l, h⟩, i => l.nthLe i.1 (by rw [h] <;> exact i.2)
-#align vector.nth Vector.nth
+#align vector.nth Vector.get
 -/
 
 #print Vector.append /-

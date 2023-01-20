@@ -131,8 +131,8 @@ theorem Bool.eq_false_eq_not_eq_true (b : Bool) : (¬b = tt) = (b = ff) := by ca
 -/
 
 @[simp]
-theorem eq_tt_eq_not_eq_ff (b : Bool) : (¬b = ff) = (b = tt) := by cases b <;> simp
-#align eq_tt_eq_not_eq_ff eq_tt_eq_not_eq_ff
+theorem eq_true_eq_not_eq_false (b : Bool) : (¬b = ff) = (b = tt) := by cases b <;> simp
+#align eq_tt_eq_not_eq_ff eq_true_eq_not_eq_false
 
 #print Bool.eq_false_of_not_eq_true /-
 theorem Bool.eq_false_of_not_eq_true {b : Bool} : ¬b = tt → b = ff :=
@@ -142,7 +142,7 @@ theorem Bool.eq_false_of_not_eq_true {b : Bool} : ¬b = tt → b = ff :=
 
 #print Bool.eq_true_of_not_eq_false /-
 theorem Bool.eq_true_of_not_eq_false {b : Bool} : ¬b = ff → b = tt :=
-  Eq.mp (eq_tt_eq_not_eq_ff b)
+  Eq.mp (eq_true_eq_not_eq_false b)
 #align eq_tt_of_not_eq_ff Bool.eq_true_of_not_eq_false
 -/
 

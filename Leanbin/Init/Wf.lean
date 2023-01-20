@@ -93,10 +93,10 @@ def fixF (x : α) (a : Acc r x) : C x :=
 #align well_founded.fix_F WellFounded.fixF
 -/
 
-theorem fix_F_eq (x : α) (acx : Acc r x) :
+theorem fixF_eq (x : α) (acx : Acc r x) :
     fix_F F x acx = F x fun (y : α) (p : y≺x) => fix_F F y (Acc.inv acx p) :=
   Acc.drec (fun x r ih => rfl) acx
-#align well_founded.fix_F_eq WellFounded.fix_F_eq
+#align well_founded.fix_F_eq WellFounded.fixF_eq
 
 end
 
@@ -113,7 +113,7 @@ def fix (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : �
 /-- Well-founded fixpoint satisfies fixpoint equation -/
 theorem fix_eq (hwf : WellFounded r) (F : ∀ x, (∀ y, r y x → C y) → C x) (x : α) :
     fix hwf F x = F x fun y h => fix hwf F y :=
-  fix_F_eq F x (apply hwf x)
+  fixF_eq F x (apply hwf x)
 #align well_founded.fix_eq WellFounded.fix_eq
 -/
 
@@ -211,14 +211,14 @@ def SizeofMeasure (α : Sort u) [SizeOf α] : α → α → Prop :=
   Measure SizeOf.sizeOf
 #align sizeof_measure SizeofMeasure
 
-theorem sizeof_measure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure α) :=
+theorem sizeofMeasure_wf (α : Sort u) [SizeOf α] : WellFounded (SizeofMeasure α) :=
   measure_wf SizeOf.sizeOf
-#align sizeof_measure_wf sizeof_measure_wf
+#align sizeof_measure_wf sizeofMeasure_wf
 
 instance hasWellFoundedOfHasSizeof (α : Sort u) [SizeOf α] : WellFoundedRelation α
     where
   R := SizeofMeasure α
-  wf := sizeof_measure_wf α
+  wf := sizeofMeasure_wf α
 #align has_well_founded_of_has_sizeof hasWellFoundedOfHasSizeof
 
 namespace Prod
@@ -278,14 +278,14 @@ theorem lex_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Lex ra
 #align prod.lex_wf Prod.lex_wf
 
 -- relational product is a subrelation of the lex
-theorem rprod_sub_lex : ∀ a b, RProd ra rb a b → Lex ra rb a b := fun a b h =>
+theorem rProd_sub_lex : ∀ a b, RProd ra rb a b → Lex ra rb a b := fun a b h =>
   Prod.RProd.rec_on h fun a₁ b₁ a₂ b₂ h₁ h₂ => Lex.left b₁ b₂ h₁
-#align prod.rprod_sub_lex Prod.rprod_sub_lex
+#align prod.rprod_sub_lex Prod.rProd_sub_lex
 
 -- The relational product of well founded relations is well-founded
-theorem rprod_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (RProd ra rb) :=
+theorem rProd_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (RProd ra rb) :=
   Subrelation.wf rprod_sub_lex (lex_wf ha hb)
-#align prod.rprod_wf Prod.rprod_wf
+#align prod.rprod_wf Prod.rProd_wf
 
 end
 

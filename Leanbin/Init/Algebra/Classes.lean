@@ -39,9 +39,11 @@ class IsCommutative (α : Type u) (op : α → α → α) : Prop where
 #align is_commutative IsCommutative
 -/
 
-instance (priority := 100) is_symm_op_of_is_commutative (α : Type u) (op : α → α → α)
+#print isSymmOp_of_isCommutative /-
+instance (priority := 100) isSymmOp_of_isCommutative (α : Type u) (op : α → α → α)
     [IsCommutative α op] : IsSymmOp α α op where symm_op := IsCommutative.comm
-#align is_symm_op_of_is_commutative is_symm_op_of_is_commutative
+#align is_symm_op_of_is_commutative isSymmOp_of_isCommutative
+-/
 
 #print IsAssociative /-
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
@@ -150,10 +152,12 @@ class IsSymm (α : Type u) (r : α → α → Prop) : Prop where
 #align is_symm IsSymm
 -/
 
+#print isSymmOp_of_isSymm /-
 /-- The opposite of a symmetric relation is symmetric. -/
-instance (priority := 100) is_symm_op_of_is_symm (α : Type u) (r : α → α → Prop) [IsSymm α r] :
+instance (priority := 100) isSymmOp_of_isSymm (α : Type u) (r : α → α → Prop) [IsSymm α r] :
     IsSymmOp α Prop r where symm_op a b := propext <| Iff.intro (IsSymm.symm a b) (IsSymm.symm b a)
-#align is_symm_op_of_is_symm is_symm_op_of_is_symm
+#align is_symm_op_of_is_symm isSymmOp_of_isSymm
+-/
 
 #print IsAsymm /-
 /-- `is_asymm X r` means that the binary relation `r` on `X` is asymmetric, that is,
@@ -198,12 +202,14 @@ class IsTotalPreorder (α : Type u) (r : α → α → Prop) extends IsTrans α 
 #align is_total_preorder IsTotalPreorder
 -/
 
+#print isTotalPreorder_isPreorder /-
 /-- Every total pre-order is a pre-order. -/
-instance is_total_preorder_is_preorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] :
+instance isTotalPreorder_isPreorder (α : Type u) (r : α → α → Prop) [s : IsTotalPreorder α r] :
     IsPreorder α r where
   trans := s.trans
   refl a := Or.elim (@IsTotal.total _ r _ a a) id id
-#align is_total_preorder_is_preorder is_total_preorder_is_preorder
+#align is_total_preorder_is_preorder isTotalPreorder_isPreorder
+-/
 
 #print IsPartialOrder /-
 /-- `is_partial_order X r` means that the binary relation `r` on `X` is a partial order, that is,
@@ -270,13 +276,15 @@ class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrich
 #align is_strict_total_order IsStrictTotalOrder
 -/
 
+#print eq_isEquiv /-
 /-- Equality is an equivalence relation. -/
-instance eq_is_equiv (α : Type u) : IsEquiv α (· = ·)
+instance eq_isEquiv (α : Type u) : IsEquiv α (· = ·)
     where
   symm := @Eq.symm _
   trans := @Eq.trans _
   refl := Eq.refl
-#align eq_is_equiv eq_is_equiv
+#align eq_is_equiv eq_isEquiv
+-/
 
 section
 
@@ -333,10 +341,12 @@ theorem incomp_trans [IsIncompTrans α r] {a b c : α} : ¬a≺b ∧ ¬b≺a →
 #align incomp_trans incomp_trans
 -/
 
-instance (priority := 90) is_asymm_of_is_trans_of_is_irrefl [IsTrans α r] [IsIrrefl α r] :
+#print isAsymm_of_isTrans_of_isIrrefl /-
+instance (priority := 90) isAsymm_of_isTrans_of_isIrrefl [IsTrans α r] [IsIrrefl α r] :
     IsAsymm α r :=
   ⟨fun a b h₁ h₂ => absurd (trans h₁ h₂) (irrefl a)⟩
-#align is_asymm_of_is_trans_of_is_irrefl is_asymm_of_is_trans_of_is_irrefl
+#align is_asymm_of_is_trans_of_is_irrefl isAsymm_of_isTrans_of_isIrrefl
+-/
 
 section ExplicitRelationVariants
 
@@ -437,11 +447,11 @@ theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
 theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
 #align strict_weak_order.not_lt_of_equiv' StrictWeakOrder.not_lt_of_equiv'
 
-instance is_equiv : IsEquiv α equiv where
+instance isEquiv : IsEquiv α equiv where
   refl := erefl
   trans := @etrans
   symm := @esymm
-#align strict_weak_order.is_equiv StrictWeakOrder.is_equiv
+#align strict_weak_order.is_equiv StrictWeakOrder.isEquiv
 
 end
 
@@ -451,8 +461,9 @@ a " ≈[" lt "]" b:50 => @Equiv _ lt a b
 
 end StrictWeakOrder
 
-theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α → Prop}
-    {lt : α → α → Prop} [DecidableRel le] [s : IsTotalPreorder α le] (h : ∀ a b, lt a b ↔ ¬le b a) :
+#print isStrictWeakOrder_of_isTotalPreorder /-
+theorem isStrictWeakOrder_of_isTotalPreorder {α : Type u} {le : α → α → Prop} {lt : α → α → Prop}
+    [DecidableRel le] [s : IsTotalPreorder α le] (h : ∀ a b, lt a b ↔ ¬le b a) :
     IsStrictWeakOrder α lt :=
   { trans := fun a b c hab hbc =>
       have nba : ¬le b a := Iff.mp (h _ _) hab
@@ -471,7 +482,8 @@ theorem is_strict_weak_order_of_is_total_preorder {α : Type u} {le : α → α 
       have hac : le a c := trans_of le hab hbc
       have hca : le c a := trans_of le hcb hba
       And.intro (fun n => absurd hca (Iff.mp (h _ _) n)) fun n => absurd hac (Iff.mp (h _ _) n) }
-#align is_strict_weak_order_of_is_total_preorder is_strict_weak_order_of_is_total_preorder
+#align is_strict_weak_order_of_is_total_preorder isStrictWeakOrder_of_isTotalPreorder
+-/
 
 #print lt_of_lt_of_incomp /-
 theorem lt_of_lt_of_incomp {α : Type u} {lt : α → α → Prop} [IsStrictWeakOrder α lt]

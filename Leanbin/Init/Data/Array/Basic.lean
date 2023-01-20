@@ -108,7 +108,7 @@ protected def beq [∀ i, DecidableEq (α i)] (a b : DArray n α) : Bool :=
   DArray.beqAux a b n (le_refl _)
 #align d_array.beq DArray.beq
 
-theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
+theorem of_beqAux_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = tt →
         ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ = b.read ⟨j, lt_of_lt_of_le h' h⟩
@@ -129,17 +129,17 @@ theorem of_beq_aux_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact h₂'.1
     · have j_lt_i : j < i := lt_of_le_of_ne (Nat.le_of_lt_succ h₃) hji
       exact ih j j_lt_i
-#align d_array.of_beq_aux_eq_tt DArray.of_beq_aux_eq_tt
+#align d_array.of_beq_aux_eq_tt DArray.of_beqAux_eq_true
 
-theorem of_beq_eq_tt [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b :=
+theorem of_beq_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b :=
   by
   unfold DArray.beq
   intro h
   have : ∀ (j : Nat) (h : j < n), a.read ⟨j, h⟩ = b.read ⟨j, h⟩ := of_beq_aux_eq_tt n (le_refl _) h
   apply DArray.ext' this
-#align d_array.of_beq_eq_tt DArray.of_beq_eq_tt
+#align d_array.of_beq_eq_tt DArray.of_beq_eq_true
 
-theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
+theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = ff →
         ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
@@ -164,9 +164,9 @@ theorem of_beq_aux_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exists j
       exists Nat.lt_succ_of_lt h'
       exact ih
-#align d_array.of_beq_aux_eq_ff DArray.of_beq_aux_eq_ff
+#align d_array.of_beq_aux_eq_ff DArray.of_beqAux_eq_false
 
-theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b :=
+theorem of_beq_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b :=
   by
   unfold DArray.beq
   intro h hne
@@ -176,11 +176,11 @@ theorem of_beq_eq_ff [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.be
   cases' this with h' this
   subst hne
   contradiction
-#align d_array.of_beq_eq_ff DArray.of_beq_eq_ff
+#align d_array.of_beq_eq_ff DArray.of_beq_eq_false
 
 instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) := fun a b =>
-  if h : DArray.beq a b = tt then isTrue (of_beq_eq_tt h)
-  else isFalse (of_beq_eq_ff (Bool.eq_false_of_not_eq_true h))
+  if h : DArray.beq a b = tt then isTrue (of_beq_eq_true h)
+  else isFalse (of_beq_eq_false (Bool.eq_false_of_not_eq_true h))
 
 end DArray
 

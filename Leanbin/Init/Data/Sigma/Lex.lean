@@ -60,7 +60,7 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) :
             fun (a : α) (b₁ b₂ : β a) (h : s a b₁ b₂) (eq₂ : a = xa) (eq₃ : HEq b₂ xb) =>
             by
             subst eq₂
-            have new_eq₃ := eq_of_heq eq₃
+            have new_eq₃ := eq_of_hEq eq₃
             subst new_eq₃
             exact ihb b₁ h
         aux rfl (HEq.refl xb)
@@ -81,10 +81,10 @@ def LexNdep (r : α → α → Prop) (s : β → β → Prop) :=
   Lex r fun a : α => s
 #align psigma.lex_ndep PSigma.LexNdep
 
-theorem lex_ndep_wf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r)
-    (hb : WellFounded s) : WellFounded (lex_ndep r s) :=
+theorem lexNdep_wf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r) (hb : WellFounded s) :
+    WellFounded (lex_ndep r s) :=
   WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
-#align psigma.lex_ndep_wf PSigma.lex_ndep_wf
+#align psigma.lex_ndep_wf PSigma.lexNdep_wf
 
 end
 
@@ -117,8 +117,7 @@ parameter {r : α → α → Prop}{s : β → β → Prop}
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => RevLex r s
 
-theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) :
-    ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=
+theorem revLex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=
   Acc.recOn acb fun xb acb (ihb : ∀ y, s y xb → ∀ a, Acc (RevLex r s) ⟨a, y⟩) => fun a =>
     Acc.recOn (aca a) fun xa aca (iha : ∀ y, r y xa → Acc (RevLex r s) (mk y xb)) =>
       Acc.intro ⟨xa, xb⟩ fun p (lt : p≺⟨xa, xb⟩) =>
@@ -135,11 +134,11 @@ theorem rev_lex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) :
               have s₁ : s b₁ xb := Eq.recOn eq₃ h
               ihb b₁ s₁ a₁
         aux rfl rfl
-#align psigma.rev_lex_accessible PSigma.rev_lex_accessible
+#align psigma.rev_lex_accessible PSigma.revLex_accessible
 
-theorem rev_lex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (RevLex r s) :=
+theorem revLex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (RevLex r s) :=
   WellFounded.intro fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
-#align psigma.rev_lex_wf PSigma.rev_lex_wf
+#align psigma.rev_lex_wf PSigma.revLex_wf
 
 end
 
@@ -152,15 +151,15 @@ def SkipLeft (α : Type u) {β : Type v} (s : β → β → Prop) :
 #align psigma.skip_left PSigma.SkipLeft
 -/
 
-theorem skip_left_wf (α : Type u) {β : Type v} {s : β → β → Prop} (hb : WellFounded s) :
+theorem skipLeft_wf (α : Type u) {β : Type v} {s : β → β → Prop} (hb : WellFounded s) :
     WellFounded (SkipLeft α s) :=
-  rev_lex_wf empty_wf hb
-#align psigma.skip_left_wf PSigma.skip_left_wf
+  revLex_wf empty_wf hb
+#align psigma.skip_left_wf PSigma.skipLeft_wf
 
-theorem mk_skip_left {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β → Prop} (a₁ a₂ : α)
+theorem mk_skipLeft {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β → Prop} (a₁ a₂ : α)
     (h : s b₁ b₂) : SkipLeft α s ⟨a₁, b₁⟩ ⟨a₂, b₂⟩ :=
   RevLex.right _ _ h
-#align psigma.mk_skip_left PSigma.mk_skip_left
+#align psigma.mk_skip_left PSigma.mk_skipLeft
 
 end
 

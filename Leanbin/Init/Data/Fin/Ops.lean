@@ -106,9 +106,9 @@ instance : Mod (Fin n) :=
 instance : Div (Fin n) :=
   ⟨Fin.div⟩
 
-theorem of_nat_zero : @ofNat n 0 = 0 :=
+theorem ofNat_zero : @ofNat n 0 = 0 :=
   rfl
-#align fin.of_nat_zero Fin.of_nat_zero
+#align fin.of_nat_zero Fin.ofNat_zero
 
 /- warning: fin.add_def -> Fin.add_def is a dubious translation:
 lean 3 declaration is

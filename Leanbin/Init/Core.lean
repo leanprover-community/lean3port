@@ -260,13 +260,11 @@ def HEq.rfl {α : Sort u} {a : α} : HEq a a :=
 #align heq.rfl HEq.rfl
 -/
 
-#print eq_of_heq /-
-theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
+theorem eq_of_hEq {α : Sort u} {a a' : α} (h : HEq a a') : a = a' :=
   have : ∀ (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') (h₂ : α = α'), (Eq.recOn h₂ a : α') = a' :=
     fun (α' : Sort u) (a' : α') (h₁ : @HEq α a α' a') => HEq.recOn h₁ fun h₂ : α = α => rfl
   show (Eq.recOn (Eq.refl α) a : α) = a' from this α a' h (Eq.refl α)
-#align eq_of_heq eq_of_heq
--/
+#align eq_of_heq eq_of_hEq
 
 #print Prod.mk.inj /-
 /- The following four lemmas could not be automatically generated when the

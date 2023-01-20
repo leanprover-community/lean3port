@@ -30,7 +30,7 @@ private theorem zero_lt_unsigned_sz : 0 < unsignedSz :=
 
 -- Later, we define of_nat using mod, the following version is used to define the metaprogramming system.
 protected def ofNat' (n : Nat) : Unsigned :=
-  if h : n < unsignedSz then ⟨n, h⟩ else ⟨0, zero_lt_unsigned_sz⟩
+  if h : n < unsignedSz then ⟨n, h⟩ else ⟨0, zero_lt_unsignedSz⟩
 #align unsigned.of_nat' Unsigned.ofNat'
 
 def toNat (c : Unsigned) : Nat :=

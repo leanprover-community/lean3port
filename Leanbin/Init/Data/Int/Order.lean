@@ -70,11 +70,9 @@ theorem NonNeg.elim {a : ℤ} : NonNeg a → ∃ n : ℕ, a = n :=
 #align int.nonneg.elim Int.NonNeg.elim
 -/
 
-#print Int.nonneg_or_nonneg_neg /-
-theorem nonneg_or_nonneg_neg (a : ℤ) : NonNeg a ∨ NonNeg (-a) :=
+theorem nonNeg_or_nonNeg_neg (a : ℤ) : NonNeg a ∨ NonNeg (-a) :=
   Int.casesOn a (fun n => Or.inl trivial) fun n => Or.inr trivial
-#align int.nonneg_or_nonneg_neg Int.nonneg_or_nonneg_neg
--/
+#align int.nonneg_or_nonneg_neg Int.nonNeg_or_nonNeg_neg
 
 #print Int.le.intro_sub /-
 theorem le.intro_sub {a b : ℤ} {n : ℕ} (h : b - a = n) : a ≤ b :=
@@ -116,7 +114,7 @@ protected theorem le_total (a b : ℤ) : a ≤ b ∨ b ≤ a :=
     (fun H : NonNeg (-(b - a)) =>
       have : -(b - a) = a - b := by simp [Int.add_comm]
       show NonNeg (a - b) from this ▸ H)
-    (nonneg_or_nonneg_neg (b - a))
+    (nonNeg_or_nonNeg_neg (b - a))
 #align int.le_total Int.le_total
 -/
 

@@ -77,7 +77,7 @@ run_cmd
 /- The following lemmas are not needed by rsimp, and they actually hurt performance since they generate a lot of
    instances. -/
 attribute [no_rsimp]
-  id.def Ne.def not_true not_false_iff ne_self_iff_false eq_self_iff_true heq_self_iff_true iff_not_self not_iff_self true_iff_false false_iff_true and_comm and_assoc and_left_comm and_true_iff true_and_iff and_false_iff false_and_iff not_and_self_iff and_not_self_iff and_self_iff or_comm or_assoc or_left_comm or_true_iff true_or_iff or_false_iff false_or_iff or_self_iff iff_true_iff true_iff_iff iff_false_iff false_iff_iff iff_self_iff imp_true_iff false_imp_iff if_t_t if_true if_false
+  id.def Ne.def not_true not_false_iff ne_self_iff_false eq_self_iff_true hEq_self_iff_true iff_not_self not_iff_self true_iff_false false_iff_true and_comm and_assoc and_left_comm and_true_iff true_and_iff and_false_iff false_and_iff not_and_self_iff and_not_self_iff and_self_iff or_comm or_assoc or_left_comm or_true_iff true_or_iff or_false_iff false_or_iff or_self_iff iff_true_iff true_iff_iff iff_false_iff false_iff_iff iff_self_iff imp_true_iff false_imp_iff if_t_t if_true if_false
 
 namespace Rsimp
 

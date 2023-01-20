@@ -49,11 +49,11 @@ variable {α : Type u} {lt : α → α → Prop} [DecidableRel lt]
 attribute [local simp] cmpUsing
 
 @[simp]
-theorem cmp_using_eq_lt (a b : α) : (cmpUsing lt a b = Ordering.lt) = lt a b := by simp
-#align cmp_using_eq_lt cmp_using_eq_lt
+theorem cmpUsing_eq_lt (a b : α) : (cmpUsing lt a b = Ordering.lt) = lt a b := by simp
+#align cmp_using_eq_lt cmpUsing_eq_lt
 
 @[simp]
-theorem cmp_using_eq_gt [IsStrictOrder α lt] (a b : α) : (cmpUsing lt a b = Ordering.gt) = lt b a :=
+theorem cmpUsing_eq_gt [IsStrictOrder α lt] (a b : α) : (cmpUsing lt a b = Ordering.gt) = lt b a :=
   by
   simp; apply propext; apply Iff.intro
   · exact fun h => h.2
@@ -62,11 +62,11 @@ theorem cmp_using_eq_gt [IsStrictOrder α lt] (a b : α) : (cmpUsing lt a b = Or
     · intro hab
       exact absurd (trans hab hba) (irrefl a)
     · assumption
-#align cmp_using_eq_gt cmp_using_eq_gt
+#align cmp_using_eq_gt cmpUsing_eq_gt
 
 @[simp]
-theorem cmp_using_eq_eq (a b : α) : (cmpUsing lt a b = Ordering.eq) = (¬lt a b ∧ ¬lt b a) := by simp
-#align cmp_using_eq_eq cmp_using_eq_eq
+theorem cmpUsing_eq_eq (a b : α) : (cmpUsing lt a b = Ordering.eq) = (¬lt a b ∧ ¬lt b a) := by simp
+#align cmp_using_eq_eq cmpUsing_eq_eq
 
 end
 

@@ -18,13 +18,13 @@ def IsValidChar (n : Nat) : Prop :=
   n < 55296 ∨ 57343 < n ∧ n < 1114112
 #align is_valid_char IsValidChar
 
-theorem is_valid_char_range_1 (n : Nat) (h : n < 55296) : IsValidChar n :=
+theorem isValidChar_range_1 (n : Nat) (h : n < 55296) : IsValidChar n :=
   Or.inl h
-#align is_valid_char_range_1 is_valid_char_range_1
+#align is_valid_char_range_1 isValidChar_range_1
 
-theorem is_valid_char_range_2 (n : Nat) (h₁ : 57343 < n) (h₂ : n < 1114112) : IsValidChar n :=
+theorem isValidChar_range_2 (n : Nat) (h₁ : 57343 < n) (h₂ : n < 1114112) : IsValidChar n :=
   Or.inr ⟨h₁, h₂⟩
-#align is_valid_char_range_2 is_valid_char_range_2
+#align is_valid_char_range_2 isValidChar_range_2
 
 #print Char /-
 /-- The `char` type represents an unicode scalar value.

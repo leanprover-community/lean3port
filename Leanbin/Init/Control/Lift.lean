@@ -54,9 +54,9 @@ instance hasMonadLiftTRefl (m) : HasMonadLiftT m m :=
 #align has_monad_lift_t_refl hasMonadLiftTRefl
 
 @[simp]
-theorem monad_lift_refl {m : Type u → Type v} {α} : (monadLift : m α → m α) = id :=
+theorem monadLift_refl {m : Type u → Type v} {α} : (monadLift : m α → m α) = id :=
   rfl
-#align monad_lift_refl monad_lift_refl
+#align monad_lift_refl monadLift_refl
 
 /- warning: monad_functor -> MonadFunctor is a dubious translation:
 lean 3 declaration is
@@ -97,10 +97,10 @@ instance monadFunctorTRefl (m m') : MonadFunctorT m m' m m' :=
 #align monad_functor_t_refl monadFunctorTRefl
 
 @[simp]
-theorem monad_map_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α) {α} :
+theorem monadMap_refl {m m' : Type u → Type v} (f : ∀ {α}, m α → m' α) {α} :
     (monadMap @f : m α → m' α) = f :=
   rfl
-#align monad_map_refl monad_map_refl
+#align monad_map_refl monadMap_refl
 
 /-- Run a monad stack to completion.
     `run` should be the composition of the transformers' individual `run` functions.

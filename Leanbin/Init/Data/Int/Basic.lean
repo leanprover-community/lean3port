@@ -181,9 +181,11 @@ theorem ofNat_succ (n : ℕ) : ofNat (succ n) = ofNat n + 1 :=
 #align int.of_nat_succ Int.ofNat_succ
 -/
 
-theorem neg_of_nat_zero : -ofNat 0 = 0 :=
+#print Int.neg_ofNat_zero /-
+theorem neg_ofNat_zero : -ofNat 0 = 0 :=
   rfl
-#align int.neg_of_nat_zero Int.neg_of_nat_zero
+#align int.neg_of_nat_zero Int.neg_ofNat_zero
+-/
 
 #print Int.neg_ofNat_succ /-
 theorem neg_ofNat_succ (n : ℕ) : -ofNat (succ n) = -[n+1] :=

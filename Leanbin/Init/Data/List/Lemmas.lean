@@ -405,7 +405,8 @@ theorem length_take_le (n) (l : List α) : length (take n l) ≤ n := by simp [m
 #align list.length_take_le List.length_take_le
 -/
 
-theorem length_remove_nth :
+#print List.length_removeNth /-
+theorem length_removeNth :
     ∀ (l : List α) (i : ℕ), i < length l → length (removeNth l i) = length l - 1
   | [], _, h => rfl
   | x :: xs, 0, h => by simp [remove_nth]
@@ -415,20 +416,15 @@ theorem length_remove_nth :
         rw [length_remove_nth xs i this,
           Nat.sub_add_cancel (lt_of_le_of_lt (Nat.zero_le _) this)] <;>
       rfl
-#align list.length_remove_nth List.length_remove_nth
+#align list.length_remove_nth List.length_removeNth
+-/
 
-/- warning: list.partition_eq_filter_filter -> List.partition_eq_filter_filter is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u1}} (p : α -> Prop) [_inst_1 : DecidablePred.{succ u1} α p] (l : List.{u1} α), Eq.{succ u1} (Prod.{u1, u1} (List.{u1} α) (List.{u1} α)) (List.partitionₓ.{u1} α p (fun (a : α) => _inst_1 a) l) (Prod.mk.{u1, u1} (List.{u1} α) (List.{u1} α) (List.filterₓ.{u1} α p (fun (a : α) => _inst_1 a) l) (List.filterₓ.{u1} α (Function.comp.{succ u1, 1, 1} α Prop Prop Not p) (fun (a : α) => Not.decidable (p a) (_inst_1 a)) l))
-but is expected to have type
-  forall {α : Type.{u1}} (p : α -> Bool) (_inst_1 : List.{u1} α), Eq.{succ u1} (Prod.{u1, u1} (List.{u1} α) (List.{u1} α)) (List.partition.{u1} α p _inst_1) (Prod.mk.{u1, u1} (List.{u1} α) (List.{u1} α) (List.filter.{u1} α p _inst_1) (List.filter.{u1} α (Function.comp.{succ u1, 1, 1} α Bool Bool not p) _inst_1))
-Case conversion may be inaccurate. Consider using '#align list.partition_eq_filter_filter List.partition_eq_filter_filterₓ'. -/
 @[simp]
 theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
     ∀ l : List α, partition p l = (filter p l, filter (Not ∘ p) l)
   | [] => rfl
   | a :: l => by by_cases pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
-#align list.partition_eq_filter_filter List.partition_eq_filter_filter
+#align list.partition_eq_filter_filter List.partitionₓ_eq_filterₓ_filterₓ
 
 /-! sublists -/
 

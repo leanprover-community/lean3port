@@ -287,7 +287,7 @@ variable {α β φ : Sort u} {a a' : α} {b b' : β} {c : φ}
 
 #print HEq.elim /-
 def HEq.elim {α : Sort u} {a : α} {p : α → Sort v} {b : α} (h₁ : HEq a b) : p a → p b :=
-  Eq.recOn (eq_of_heq h₁)
+  Eq.recOn (eq_of_hEq h₁)
 #align heq.elim HEq.elim
 -/
 
@@ -304,11 +304,9 @@ theorem HEq.symm (h : HEq a b) : HEq b a :=
 #align heq.symm HEq.symm
 -/
 
-#print heq_of_eq /-
-theorem heq_of_eq (h : a = a') : HEq a a' :=
+theorem hEq_of_eq (h : a = a') : HEq a a' :=
   Eq.subst h (HEq.refl a)
-#align heq_of_eq heq_of_eq
--/
+#align heq_of_eq hEq_of_eq
 
 #print HEq.trans /-
 @[trans]
@@ -317,56 +315,42 @@ theorem HEq.trans (h₁ : HEq a b) (h₂ : HEq b c) : HEq a c :=
 #align heq.trans HEq.trans
 -/
 
-#print heq_of_heq_of_eq /-
 @[trans]
-theorem heq_of_heq_of_eq (h₁ : HEq a b) (h₂ : b = b') : HEq a b' :=
-  HEq.trans h₁ (heq_of_eq h₂)
-#align heq_of_heq_of_eq heq_of_heq_of_eq
--/
+theorem hEq_of_hEq_of_eq (h₁ : HEq a b) (h₂ : b = b') : HEq a b' :=
+  HEq.trans h₁ (hEq_of_eq h₂)
+#align heq_of_heq_of_eq hEq_of_hEq_of_eq
 
-#print heq_of_eq_of_heq /-
 @[trans]
-theorem heq_of_eq_of_heq (h₁ : a = a') (h₂ : HEq a' b) : HEq a b :=
-  HEq.trans (heq_of_eq h₁) h₂
-#align heq_of_eq_of_heq heq_of_eq_of_heq
--/
+theorem hEq_of_eq_of_hEq (h₁ : a = a') (h₂ : HEq a' b) : HEq a b :=
+  HEq.trans (hEq_of_eq h₁) h₂
+#align heq_of_eq_of_heq hEq_of_eq_of_hEq
 
-#print type_eq_of_heq /-
-theorem type_eq_of_heq (h : HEq a b) : α = β :=
+theorem type_eq_of_hEq (h : HEq a b) : α = β :=
   HEq.recOn h (Eq.refl α)
-#align type_eq_of_heq type_eq_of_heq
--/
+#align type_eq_of_heq type_eq_of_hEq
 
 end
 
-#print eq_rec_heq /-
-theorem eq_rec_heq {α : Sort u} {φ : α → Sort v} :
+theorem eq_rec_hEq {α : Sort u} {φ : α → Sort v} :
     ∀ {a a' : α} (h : a = a') (p : φ a), HEq (Eq.recOn h p : φ a') p
   | a, _, rfl, p => HEq.refl p
-#align eq_rec_heq eq_rec_heq
--/
+#align eq_rec_heq eq_rec_hEq
 
-#print heq_of_eq_rec_left /-
-theorem heq_of_eq_rec_left {α : Sort u} {φ : α → Sort v} :
+theorem hEq_of_eq_rec_left {α : Sort u} {φ : α → Sort v} :
     ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a = a') (h₂ : (Eq.recOn e p₁ : φ a') = p₂), HEq p₁ p₂
   | a, _, p₁, p₂, rfl, h => Eq.recOn h (HEq.refl p₁)
-#align heq_of_eq_rec_left heq_of_eq_rec_left
--/
+#align heq_of_eq_rec_left hEq_of_eq_rec_left
 
-#print heq_of_eq_rec_right /-
-theorem heq_of_eq_rec_right {α : Sort u} {φ : α → Sort v} :
+theorem hEq_of_eq_rec_right {α : Sort u} {φ : α → Sort v} :
     ∀ {a a' : α} {p₁ : φ a} {p₂ : φ a'} (e : a' = a) (h₂ : p₁ = Eq.recOn e p₂), HEq p₁ p₂
   | a, _, p₁, p₂, rfl, h =>
     have : p₁ = p₂ := h
     this ▸ HEq.refl p₁
-#align heq_of_eq_rec_right heq_of_eq_rec_right
--/
+#align heq_of_eq_rec_right hEq_of_eq_rec_right
 
-#print of_heq_true /-
-theorem of_heq_true {a : Prop} (h : HEq a True) : a :=
-  of_eq_true (eq_of_heq h)
-#align of_heq_true of_heq_true
--/
+theorem of_hEq_true {a : Prop} (h : HEq a True) : a :=
+  of_eq_true (eq_of_hEq h)
+#align of_heq_true of_hEq_true
 
 #print eq_rec_compose /-
 theorem eq_rec_compose :
@@ -376,11 +360,9 @@ theorem eq_rec_compose :
 #align eq_rec_compose eq_rec_compose
 -/
 
-#print cast_heq /-
-theorem cast_heq : ∀ {α β : Sort u} (h : α = β) (a : α), HEq (cast h a) a
+theorem cast_hEq : ∀ {α β : Sort u} (h : α = β) (a : α), HEq (cast h a) a
   | α, _, rfl, a => HEq.refl a
-#align cast_heq cast_heq
--/
+#align cast_heq cast_hEq
 
 /-! and -/
 
@@ -639,11 +621,9 @@ theorem eq_self_iff_true {α : Sort u} (a : α) : a = a ↔ True :=
 #align eq_self_iff_true eq_self_iff_true
 -/
 
-#print heq_self_iff_true /-
-theorem heq_self_iff_true {α : Sort u} (a : α) : HEq a a ↔ True :=
+theorem hEq_self_iff_true {α : Sort u} (a : α) : HEq a a ↔ True :=
   iff_true_intro (HEq.refl a)
-#align heq_self_iff_true heq_self_iff_true
--/
+#align heq_self_iff_true hEq_self_iff_true
 
 /- warning: iff_not_self -> iff_not_self is a dubious translation:
 lean 3 declaration is
@@ -1095,12 +1075,10 @@ theorem ExistsUnique.elim {α : Sort u} {p : α → Prop} {b : Prop} (h₂ : ∃
 #align exists_unique.elim ExistsUnique.elim
 -/
 
-#print exists_unique_of_exists_of_unique /-
-theorem exists_unique_of_exists_of_unique {α : Sort u} {p : α → Prop} (hex : ∃ x, p x)
+theorem existsUnique_of_exists_of_unique {α : Sort u} {p : α → Prop} (hex : ∃ x, p x)
     (hunique : ∀ y₁ y₂, p y₁ → p y₂ → y₁ = y₂) : ∃! x, p x :=
   Exists.elim hex fun x px => ExistsUnique.intro x px fun y => fun this : p y => hunique y x this px
-#align exists_unique_of_exists_of_unique exists_unique_of_exists_of_unique
--/
+#align exists_unique_of_exists_of_unique existsUnique_of_exists_of_unique
 
 #print ExistsUnique.exists /-
 theorem ExistsUnique.exists {α : Sort u} {p : α → Prop} (h : ∃! x, p x) : ∃ x, p x :=
@@ -1141,15 +1119,13 @@ theorem exists_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) 
 #align exists_congr exists_congr
 -/
 
-#print exists_unique_congr /-
 @[congr]
-theorem exists_unique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) :
+theorem existsUnique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) :
     ExistsUnique p₁ ↔ ∃! x, p₂ x :=
   --
     exists_congr
     fun x => and_congr (h x) (forall_congr' fun y => imp_congr (h y) Iff.rfl)
-#align exists_unique_congr exists_unique_congr
--/
+#align exists_unique_congr existsUnique_congr
 
 #print forall_not_of_not_exists /-
 theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x) → ∀ x, ¬p x :=
@@ -1363,11 +1339,9 @@ end
 instance {α : Sort u} [DecidableEq α] (a b : α) : Decidable (a ≠ b) :=
   Implies.decidable
 
-#print Bool.ff_ne_tt /-
-theorem Bool.ff_ne_tt : ff = tt → False :=
+theorem Bool.false_ne_true : ff = tt → False :=
   fun.
-#align bool.ff_ne_tt Bool.ff_ne_tt
--/
+#align bool.ff_ne_tt Bool.false_ne_true
 
 #print IsDecEq /-
 def IsDecEq {α : Sort u} (p : α → α → Bool) : Prop :=
@@ -1385,8 +1359,8 @@ open Decidable
 
 instance : DecidableEq Bool
   | ff, ff => isTrue rfl
-  | ff, tt => isFalse Bool.ff_ne_tt
-  | tt, ff => isFalse (Ne.symm Bool.ff_ne_tt)
+  | ff, tt => isFalse Bool.false_ne_true
+  | tt, ff => isFalse (Ne.symm Bool.false_ne_true)
   | tt, tt => isTrue rfl
 
 #print decidable_eq_of_bool_pred /-
@@ -1397,23 +1371,19 @@ def decidable_eq_of_bool_pred {α : Sort u} {p : α → α → Bool} (h₁ : IsD
 #align decidable_eq_of_bool_pred decidable_eq_of_bool_pred
 -/
 
-#print decidable_eq_inl_refl /-
-theorem decidable_eq_inl_refl {α : Sort u} [h : DecidableEq α] (a : α) :
+theorem decidableEq_inl_refl {α : Sort u} [h : DecidableEq α] (a : α) :
     h a a = isTrue (Eq.refl a) :=
   match h a a with
   | is_true e => rfl
   | is_false n => absurd rfl n
-#align decidable_eq_inl_refl decidable_eq_inl_refl
--/
+#align decidable_eq_inl_refl decidableEq_inl_refl
 
-#print decidable_eq_inr_neg /-
-theorem decidable_eq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} :
+theorem decidableEq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} :
     ∀ n : a ≠ b, h a b = isFalse n := fun n =>
   match h a b with
   | is_true e => absurd e n
   | is_false n₁ => proof_irrel n n₁ ▸ Eq.refl (isFalse n)
-#align decidable_eq_inr_neg decidable_eq_inr_neg
--/
+#align decidable_eq_inr_neg decidableEq_inr_neg
 
 /-! inhabited -/
 
@@ -1491,7 +1461,7 @@ protected theorem Subsingleton.elim {α : Sort u} [h : Subsingleton α] : ∀ a 
 #print Subsingleton.helim /-
 protected theorem Subsingleton.helim {α β : Sort u} [h : Subsingleton α] (h : α = β) :
     ∀ (a : α) (b : β), HEq a b :=
-  Eq.recOn h fun a b : α => heq_of_eq (Subsingleton.elim a b)
+  Eq.recOn h fun a b : α => hEq_of_eq (Subsingleton.elim a b)
 #align subsingleton.helim Subsingleton.helim
 -/
 

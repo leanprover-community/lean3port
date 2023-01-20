@@ -130,9 +130,9 @@ protected def recOnSubsingleton' [h : ∀ a, Subsingleton (β ⟦a⟧)] (q : Quo
 protected def hrecOn (q : Quot r) (f : ∀ a, β ⟦a⟧) (c : ∀ (a b : α) (p : r a b), HEq (f a) (f b)) :
     β q :=
   Quot.recOn' q f fun a b p =>
-    eq_of_heq
+    eq_of_hEq
       (calc
-        HEq (Eq.ndrec (f a) (sound p) : β ⟦b⟧) (f a) := eq_rec_heq (sound p) (f a)
+        HEq (Eq.ndrec (f a) (sound p) : β ⟦b⟧) (f a) := eq_rec_hEq (sound p) (f a)
         HEq _ (f b) := c a b p
         )
 #align quot.hrec_on Quot.hrecOn

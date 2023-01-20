@@ -54,7 +54,7 @@ def isNone {α : Type u} : Option α → Bool
 #print Option.get /-
 def get {α : Type u} : ∀ {o : Option α}, isSome o → α
   | some x, h => x
-  | none, h => False.ndrec _ <| Bool.ff_ne_tt h
+  | none, h => False.ndrec _ <| Bool.false_ne_true h
 #align option.get Option.get
 -/
 

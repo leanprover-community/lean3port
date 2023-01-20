@@ -477,14 +477,14 @@ instance : IsTotalPreorder α (· ≤ ·)
   Total := le_total
 
 -- TODO(Leo): decide whether we should keep this instance or not
-instance is_strict_weak_order_of_linear_order : IsStrictWeakOrder α (· < ·) :=
-  is_strict_weak_order_of_is_total_preorder lt_iff_not_ge
-#align is_strict_weak_order_of_linear_order is_strict_weak_order_of_linear_order
+instance isStrictWeakOrder_of_linearOrder : IsStrictWeakOrder α (· < ·) :=
+  isStrictWeakOrder_of_isTotalPreorder lt_iff_not_ge
+#align is_strict_weak_order_of_linear_order isStrictWeakOrder_of_linearOrder
 
 -- TODO(Leo): decide whether we should keep this instance or not
-instance is_strict_total_order_of_linear_order : IsStrictTotalOrder α (· < ·)
+instance isStrictTotalOrder_of_linearOrder : IsStrictTotalOrder α (· < ·)
     where trichotomous := lt_trichotomy
-#align is_strict_total_order_of_linear_order is_strict_total_order_of_linear_order
+#align is_strict_total_order_of_linear_order isStrictTotalOrder_of_linearOrder
 
 /-- Perform a case-split on the ordering of `x` and `y` in a decidable linear order. -/
 def ltByCases (x y : α) {P : Sort _} (h₁ : x < y → P) (h₂ : x = y → P) (h₃ : y < x → P) : P :=

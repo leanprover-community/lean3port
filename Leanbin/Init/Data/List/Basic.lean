@@ -209,7 +209,7 @@ def filterMap (f : α → Option β) : List α → List β
 
 def filter (p : α → Prop) [DecidablePred p] : List α → List α
   | [] => []
-  | a :: l => if p a then a :: filter l else filter l
+  | a :: l => if p a then a :: Filter l else Filter l
 #align list.filter List.filterₓ
 
 def partition (p : α → Prop) [DecidablePred p] : List α → List α × List α

@@ -254,7 +254,7 @@ unsafe def tactic_view_goal {γ} (local_c : tc local_collection γ) (target_c : 
 
 unsafe inductive tactic_view_action (γ : Type)
   | out (a : γ) : tactic_view_action
-  | filter (f : filter_type) : tactic_view_action
+  | Filter (f : filter_type) : tactic_view_action
 #align widget.tactic_view_action widget.tactic_view_action
 
 /-- Component that displays all goals, together with the `$n goals` message. -/

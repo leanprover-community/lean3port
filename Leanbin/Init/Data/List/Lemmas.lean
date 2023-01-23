@@ -423,7 +423,7 @@ theorem length_removeNth :
 theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
     ∀ l : List α, partition p l = (filter p l, filter (Not ∘ p) l)
   | [] => rfl
-  | a :: l => by by_cases pa : p a <;> simp [partition, filter, pa, partition_eq_filter_filter l]
+  | a :: l => by by_cases pa : p a <;> simp [partition, Filter, pa, partition_eq_filter_filter l]
 #align list.partition_eq_filter_filter List.partitionₓ_eq_filterₓ_filterₓ
 
 /-! sublists -/

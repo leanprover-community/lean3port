@@ -239,8 +239,6 @@ def testBit (m n : ℕ) : Bool :=
 #align nat.test_bit Nat.testBit
 -/
 
-/- warning: nat.binary_rec clashes with nat.binaryRec -> Nat.binaryRec
-Case conversion may be inaccurate. Consider using '#align nat.binary_rec Nat.binaryRecₓ'. -/
 #print Nat.binaryRec /-
 def binaryRec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) : ∀ n, C n
   | n =>

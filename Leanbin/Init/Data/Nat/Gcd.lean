@@ -98,11 +98,11 @@ def lcm (m n : ℕ) : ℕ :=
 #align nat.lcm Nat.lcm
 -/
 
-#print Nat.Coprime /-
+#print Nat.coprime /-
 @[reducible]
-def Coprime (m n : ℕ) : Prop :=
+def coprime (m n : ℕ) : Prop :=
   gcd m n = 1
-#align nat.coprime Nat.Coprime
+#align nat.coprime Nat.coprime
 -/
 
 end Nat

@@ -1499,6 +1499,7 @@ theorem mul_mod_mul_right (z x y : ℕ) : x * z % (y * z) = x % y * z := by
 #align nat.mul_mod_mul_right Nat.mul_mod_mul_right
 -/
 
+#print Nat.cond_decide_mod_two /-
 theorem cond_decide_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] :
     cond (@decide (x % 2 = 1) d) 1 0 = x % 2 :=
   by
@@ -1506,6 +1507,7 @@ theorem cond_decide_mod_two (x : ℕ) [d : Decidable (x % 2 = 1)] :
   · simp! [*]
   · cases mod_two_eq_zero_or_one x <;> simp! [*, Nat.zero_ne_one] <;> contradiction
 #align nat.cond_to_bool_mod_two Nat.cond_decide_mod_two
+-/
 
 #print Nat.sub_mul_mod /-
 theorem sub_mul_mod (x k n : ℕ) (h₁ : n * k ≤ x) : (x - n * k) % n = x % n :=

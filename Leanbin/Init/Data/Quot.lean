@@ -150,14 +150,14 @@ def Quotient {α : Sort u} (s : Setoid α) :=
 
 namespace Quotient
 
-#print Quotient.mk'' /-
-protected def mk'' {α : Sort u} [s : Setoid α] (a : α) : Quotient s :=
+#print Quotient.mk' /-
+protected def mk' {α : Sort u} [s : Setoid α] (a : α) : Quotient s :=
   Quot.mk Setoid.r a
-#align quotient.mk Quotient.mk''
+#align quotient.mk Quotient.mk'
 -/
 
 -- mathport name: «expr⟦ ⟧»
-notation:arg "⟦" a "⟧" => Quotient.mk'' a
+notation:arg "⟦" a "⟧" => Quotient.mk' a
 
 #print Quotient.sound /-
 theorem sound {α : Sort u} [s : Setoid α] {a b : α} : a ≈ b → ⟦a⟧ = ⟦b⟧ :=
@@ -390,7 +390,7 @@ def EqvGen.Setoid : Setoid α :=
 theorem Quot.exact {a b : α} (H : Quot.mk r a = Quot.mk r b) : EqvGen r a b :=
   @Quotient.exact _ (EqvGen.Setoid r) a b
     (@congr_arg _ _ _ _
-      (Quot.lift (@Quotient.mk'' _ (EqvGen.Setoid r)) fun x y h => Quot.sound (EqvGen.rel x y h)) H)
+      (Quot.lift (@Quotient.mk' _ (EqvGen.Setoid r)) fun x y h => Quot.sound (EqvGen.rel x y h)) H)
 #align quot.exact Quot.exact
 -/
 

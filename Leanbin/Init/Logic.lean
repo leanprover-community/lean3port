@@ -1363,27 +1363,31 @@ instance : DecidableEq Bool
   | tt, ff => isFalse (Ne.symm Bool.false_ne_true)
   | tt, tt => isTrue rfl
 
-#print decidable_eq_of_bool_pred /-
-def decidable_eq_of_bool_pred {α : Sort u} {p : α → α → Bool} (h₁ : IsDecEq p) (h₂ : IsDecRefl p) :
+#print decidableEq_of_bool_pred /-
+def decidableEq_of_bool_pred {α : Sort u} {p : α → α → Bool} (h₁ : IsDecEq p) (h₂ : IsDecRefl p) :
     DecidableEq α := fun x y : α =>
   if hp : p x y = tt then isTrue (h₁ hp)
   else isFalse fun hxy : x = y => absurd (h₂ y) (@Eq.recOn _ _ (fun z => ¬p z y = tt) _ hxy hp)
-#align decidable_eq_of_bool_pred decidable_eq_of_bool_pred
+#align decidable_eq_of_bool_pred decidableEq_of_bool_pred
 -/
 
+#print decidableEq_inl_refl /-
 theorem decidableEq_inl_refl {α : Sort u} [h : DecidableEq α] (a : α) :
     h a a = isTrue (Eq.refl a) :=
   match h a a with
   | is_true e => rfl
   | is_false n => absurd rfl n
 #align decidable_eq_inl_refl decidableEq_inl_refl
+-/
 
+#print decidableEq_inr_neg /-
 theorem decidableEq_inr_neg {α : Sort u} [h : DecidableEq α] {a b : α} :
     ∀ n : a ≠ b, h a b = isFalse n := fun n =>
   match h a b with
   | is_true e => absurd e n
   | is_false n₁ => proof_irrel n n₁ ▸ Eq.refl (isFalse n)
 #align decidable_eq_inr_neg decidableEq_inr_neg
+-/
 
 /-! inhabited -/
 

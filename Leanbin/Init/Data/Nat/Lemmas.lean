@@ -1206,7 +1206,7 @@ theorem succ_mul_succ_eq (a b : Nat) : succ a * succ b = a * b + a + b + 1 :=
 lean 3 declaration is
   forall (a : Nat), Eq.{1} Nat (LinearOrder.min.{0} Nat Nat.linearOrder (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) a) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
 but is expected to have type
-  forall (a : Nat), Eq.{1} Nat (Min.min.{0} Nat Nat.instMinNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) a) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
+  forall (a : Nat), Eq.{1} Nat (Min.min.{0} Nat instMinNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) a) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
 Case conversion may be inaccurate. Consider using '#align nat.zero_min Nat.zero_minₓ'. -/
 protected theorem zero_min (a : ℕ) : min 0 a = 0 :=
   min_eq_left a.zero_le
@@ -1216,7 +1216,7 @@ protected theorem zero_min (a : ℕ) : min 0 a = 0 :=
 lean 3 declaration is
   forall (a : Nat), Eq.{1} Nat (LinearOrder.min.{0} Nat Nat.linearOrder a (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
 but is expected to have type
-  forall (a : Nat), Eq.{1} Nat (Min.min.{0} Nat Nat.instMinNat a (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
+  forall (a : Nat), Eq.{1} Nat (Min.min.{0} Nat instMinNat a (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
 Case conversion may be inaccurate. Consider using '#align nat.min_zero Nat.min_zeroₓ'. -/
 protected theorem min_zero (a : ℕ) : min a 0 = 0 :=
   min_eq_right a.zero_le
@@ -1226,7 +1226,7 @@ protected theorem min_zero (a : ℕ) : min a 0 = 0 :=
 lean 3 declaration is
   forall (x : Nat) (y : Nat), Eq.{1} Nat (LinearOrder.min.{0} Nat Nat.linearOrder (Nat.succ x) (Nat.succ y)) (Nat.succ (LinearOrder.min.{0} Nat Nat.linearOrder x y))
 but is expected to have type
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (Min.min.{0} Nat Nat.instMinNat (Nat.succ x) (Nat.succ y)) (Nat.succ (Min.min.{0} Nat Nat.instMinNat x y))
+  forall (x : Nat) (y : Nat), Eq.{1} Nat (Min.min.{0} Nat instMinNat (Nat.succ x) (Nat.succ y)) (Nat.succ (Min.min.{0} Nat instMinNat x y))
 Case conversion may be inaccurate. Consider using '#align nat.min_succ_succ Nat.min_succ_succₓ'. -/
 -- Distribute succ over min
 theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
@@ -1247,7 +1247,7 @@ theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
 lean 3 declaration is
   forall (n : Nat) (m : Nat), Eq.{1} Nat (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n m) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n (LinearOrder.min.{0} Nat Nat.linearOrder n m))
 but is expected to have type
-  forall (n : Nat) (m : Nat), Eq.{1} Nat (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n m) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n (Min.min.{0} Nat Nat.instMinNat n m))
+  forall (n : Nat) (m : Nat), Eq.{1} Nat (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n m) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n (Min.min.{0} Nat instMinNat n m))
 Case conversion may be inaccurate. Consider using '#align nat.sub_eq_sub_min Nat.sub_eq_sub_minₓ'. -/
 theorem sub_eq_sub_min (n m : ℕ) : n - m = n - min n m :=
   if h : n ≥ m then by rw [min_eq_right h]
@@ -1258,7 +1258,7 @@ theorem sub_eq_sub_min (n m : ℕ) : n - m = n - min n m :=
 lean 3 declaration is
   forall (n : Nat) (m : Nat), Eq.{1} Nat (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat Nat.hasAdd) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n m) (LinearOrder.min.{0} Nat Nat.linearOrder n m)) n
 but is expected to have type
-  forall (n : Nat) (m : Nat), Eq.{1} Nat (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n m) (Min.min.{0} Nat Nat.instMinNat n m)) n
+  forall (n : Nat) (m : Nat), Eq.{1} Nat (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n m) (Min.min.{0} Nat instMinNat n m)) n
 Case conversion may be inaccurate. Consider using '#align nat.sub_add_min_cancel Nat.sub_add_min_cancelₓ'. -/
 @[simp]
 protected theorem sub_add_min_cancel (n m : ℕ) : n - m + min n m = n := by

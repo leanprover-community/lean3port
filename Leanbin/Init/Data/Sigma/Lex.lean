@@ -27,8 +27,8 @@ variable (s : ∀ a, β a → β a → Prop)
 #print PSigma.Lex /-
 -- Lexicographical order based on r and s
 inductive Lex : PSigma β → PSigma β → Prop
-  | left : ∀ {a₁ : α} (b₁ : β a₁) {a₂ : α} (b₂ : β a₂), r a₁ a₂ → lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
-  | right : ∀ (a : α) {b₁ b₂ : β a}, s a b₁ b₂ → lex ⟨a, b₁⟩ ⟨a, b₂⟩
+  | left : ∀ {a₁ : α} (b₁ : β a₁) {a₂ : α} (b₂ : β a₂), r a₁ a₂ → Lex ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
+  | right : ∀ (a : α) {b₁ b₂ : β a}, s a b₁ b₂ → Lex ⟨a, b₁⟩ ⟨a, b₂⟩
 #align psigma.lex PSigma.Lex
 -/
 

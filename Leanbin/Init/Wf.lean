@@ -236,8 +236,8 @@ variable (rb : β → β → Prop)
 #print Prod.Lex /-
 -- Lexicographical order based on ra and rb
 inductive Lex : α × β → α × β → Prop
-  | left {a₁} (b₁) {a₂} (b₂) (h : ra a₁ a₂) : lex (a₁, b₁) (a₂, b₂)
-  | right (a) {b₁ b₂} (h : rb b₁ b₂) : lex (a, b₁) (a, b₂)
+  | left {a₁} (b₁) {a₂} (b₂) (h : ra a₁ a₂) : Lex (a₁, b₁) (a₂, b₂)
+  | right (a) {b₁ b₂} (h : rb b₁ b₂) : Lex (a, b₁) (a, b₂)
 #align prod.lex Prod.Lex
 -/
 

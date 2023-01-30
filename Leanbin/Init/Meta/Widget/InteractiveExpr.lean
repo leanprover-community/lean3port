@@ -57,7 +57,7 @@ unsafe instance : Repr sf :=
 
 unsafe def sf.of_eformat : eformat → sf
   | tag ⟨ea, e⟩ m => sf.tag_expr ea e <| sf.of_eformat m
-  | group m => sf.of_eformat m
+  | Group m => sf.of_eformat m
   | nest i m => sf.of_eformat m
   | highlight i m => sf.of_eformat m
   | of_format f => sf.of_string <| format.to_string f

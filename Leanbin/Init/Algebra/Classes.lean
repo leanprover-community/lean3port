@@ -428,7 +428,7 @@ def Equiv (a b : α) : Prop :=
 parameter [IsStrictWeakOrder α r]
 
 -- mathport name: equiv
-local infixl:50 " ≈ " => equiv
+local infixl:50 " ≈ " => Equiv
 
 theorem erefl (a : α) : a ≈ a :=
   ⟨irrefl a, irrefl a⟩
@@ -447,7 +447,7 @@ theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
 theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
 #align strict_weak_order.not_lt_of_equiv' StrictWeakOrder.not_lt_of_equiv'
 
-instance isEquiv : IsEquiv α equiv where
+instance isEquiv : IsEquiv α Equiv where
   refl := erefl
   trans := @etrans
   symm := @esymm

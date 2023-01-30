@@ -20,7 +20,7 @@ universe u
 unsafe inductive tagged_format (α : Type u)
   | tag : α → tagged_format → tagged_format
   | compose : tagged_format → tagged_format → tagged_format
-  | group : tagged_format → tagged_format
+  | Group : tagged_format → tagged_format
   | nest : Nat → tagged_format → tagged_format
   | highlight : Format.Color → tagged_format → tagged_format
   | of_format : format → tagged_format
@@ -32,7 +32,7 @@ variable {α β : Type u}
 
 protected unsafe def map (f : α → β) : tagged_format α → tagged_format β
   | compose x y => compose (map x) (map y)
-  | group x => group <| map x
+  | Group x => Group <| map x
   | nest i x => nest i <| map x
   | highlight c x => highlight c <| map x
   | of_format x => of_format x
@@ -45,7 +45,7 @@ unsafe instance is_functor : Functor tagged_format where map := @tagged_format.m
 unsafe def m_untag {t : Type → Type} [Monad t] (f : α → format → t format) :
     tagged_format α → t format
   | compose x y => pure format.compose <*> m_untag x <*> m_untag y
-  | group x => pure format.group <*> m_untag x
+  | Group x => pure format.group <*> m_untag x
   | nest i x => pure (format.nest i) <*> m_untag x
   | highlight c x => pure format.highlight <*> m_untag x <*> pure c
   | of_format x => pure <| x

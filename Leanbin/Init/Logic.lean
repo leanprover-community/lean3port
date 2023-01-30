@@ -1090,7 +1090,7 @@ theorem ExistsUnique.exists {α : Sort u} {p : α → Prop} (h : ∃! x, p x) : 
 theorem ExistsUnique.unique {α : Sort u} {p : α → Prop} (h : ∃! x, p x) {y₁ y₂ : α} (py₁ : p y₁)
     (py₂ : p y₂) : y₁ = y₂ :=
   ExistsUnique.elim h fun x => fun this : p x => fun unique : ∀ y, p y → y = x =>
-    show y₁ = y₂ from Eq.trans (unique _ py₁) (Eq.symm (unique _ py₂))
+    show y₁ = y₂ from Eq.trans (Unique _ py₁) (Eq.symm (Unique _ py₂))
 #align unique_of_exists_unique ExistsUnique.unique
 -/
 

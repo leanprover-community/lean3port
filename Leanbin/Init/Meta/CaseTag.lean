@@ -142,13 +142,13 @@ protected unsafe def case_tag.to_format : CaseTag → format
   | pi names num_arguments =>
     join
       ["(pi ",
-        group <|
+        Group <|
           nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments],
         ")"]
   | hyps names arguments =>
     join
       ["(hyps ",
-        group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format],
+        Group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format],
         ")"]
 #align tactic.interactive.case_tag.to_format tactic.interactive.case_tag.to_format
 

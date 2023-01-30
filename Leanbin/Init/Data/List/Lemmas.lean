@@ -378,7 +378,7 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
 lean 3 declaration is
   forall {α : Type.{u1}} {β : Type.{u2}} {γ : Type.{u3}} (f : α -> β -> γ) (l₁ : List.{u1} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u3} γ (List.zipWith.{u1, u2, u3} α β γ f l₁ l₂)) (LinearOrder.min.{0} Nat Nat.linearOrder (List.length.{u1} α l₁) (List.length.{u2} β l₂))
 but is expected to have type
-  forall {α : Type.{u3}} {β : Type.{u2}} {γ : Type.{u1}} (f : α -> β -> γ) (l₁ : List.{u3} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u1} γ (List.zipWith.{u3, u2, u1} α β γ f l₁ l₂)) (Min.min.{0} Nat Nat.instMinNat (List.length.{u3} α l₁) (List.length.{u2} β l₂))
+  forall {α : Type.{u3}} {β : Type.{u2}} {γ : Type.{u1}} (f : α -> β -> γ) (l₁ : List.{u3} α) (l₂ : List.{u2} β), Eq.{1} Nat (List.length.{u1} γ (List.zipWith.{u3, u2, u1} α β γ f l₁ l₂)) (Min.min.{0} Nat instMinNat (List.length.{u3} α l₁) (List.length.{u2} β l₂))
 Case conversion may be inaccurate. Consider using '#align list.length_map₂ List.length_zipWithₓ'. -/
 @[simp]
 theorem length_zipWith (f : α → β → γ) (l₁) :
@@ -391,7 +391,7 @@ theorem length_zipWith (f : α → β → γ) (l₁) :
 lean 3 declaration is
   forall {α : Type.{u1}} (i : Nat) (l : List.{u1} α), Eq.{1} Nat (List.length.{u1} α (List.take.{u1} α i l)) (LinearOrder.min.{0} Nat Nat.linearOrder i (List.length.{u1} α l))
 but is expected to have type
-  forall {α : Type.{u1}} (i : Nat) (l : List.{u1} α), Eq.{1} Nat (List.length.{u1} α (List.take.{u1} α i l)) (Min.min.{0} Nat Nat.instMinNat i (List.length.{u1} α l))
+  forall {α : Type.{u1}} (i : Nat) (l : List.{u1} α), Eq.{1} Nat (List.length.{u1} α (List.take.{u1} α i l)) (Min.min.{0} Nat instMinNat i (List.length.{u1} α l))
 Case conversion may be inaccurate. Consider using '#align list.length_take List.length_takeₓ'. -/
 @[simp]
 theorem length_take : ∀ (i : ℕ) (l : List α), length (take i l) = min i (length l)
@@ -574,7 +574,7 @@ def mapAccumr₂ (f : α → β → σ → σ × φ) : List α → List β → �
 lean 3 declaration is
   forall {α : Type.{u1}} {β : Type.{u2}} {φ : Type.{u3}} {σ : Type.{u4}} (f : α -> β -> σ -> (Prod.{u4, u3} σ φ)) (x : List.{u1} α) (y : List.{u2} β) (c : σ), Eq.{1} Nat (List.length.{u3} φ (Prod.snd.{u4, u3} σ (List.{u3} φ) (List.mapAccumr₂.{u1, u2, u3, u4} α β φ σ f x y c))) (LinearOrder.min.{0} Nat Nat.linearOrder (List.length.{u1} α x) (List.length.{u2} β y))
 but is expected to have type
-  forall {α : Type.{u3}} {β : Type.{u4}} {φ : Type.{u2}} {σ : Type.{u1}} (f : φ -> σ -> β -> (Prod.{u4, u3} β α)) (x : List.{u2} φ) (y : List.{u1} σ) (c : β), Eq.{1} Nat (List.length.{u3} α (Prod.snd.{u4, u3} β (List.{u3} α) (List.mapAccumr₂.{u3, u4, u2, u1} α β φ σ f x y c))) (Min.min.{0} Nat Nat.instMinNat (List.length.{u2} φ x) (List.length.{u1} σ y))
+  forall {α : Type.{u3}} {β : Type.{u4}} {φ : Type.{u2}} {σ : Type.{u1}} (f : φ -> σ -> β -> (Prod.{u4, u3} β α)) (x : List.{u2} φ) (y : List.{u1} σ) (c : β), Eq.{1} Nat (List.length.{u3} α (Prod.snd.{u4, u3} β (List.{u3} α) (List.mapAccumr₂.{u3, u4, u2, u1} α β φ σ f x y c))) (Min.min.{0} Nat instMinNat (List.length.{u2} φ x) (List.length.{u1} σ y))
 Case conversion may be inaccurate. Consider using '#align list.length_map_accumr₂ List.length_mapAccumr₂ₓ'. -/
 @[simp]
 theorem length_mapAccumr₂ :

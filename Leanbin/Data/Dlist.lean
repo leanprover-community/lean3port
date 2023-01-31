@@ -92,10 +92,18 @@ instance : Append (Dlist α) :=
 
 attribute [local simp] of_list to_list Empty singleton cons concat Dlist.append
 
-theorem toList_ofList (l : List α) : toList (ofList l) = l := by cases l <;> simp
-#align dlist.to_list_of_list Dlist.toList_ofList
+#print Std.DList.toList_ofList /-
+theorem Std.DList.toList_ofList (l : List α) : toList (ofList l) = l := by cases l <;> simp
+#align dlist.to_list_of_list Std.DList.toList_ofList
+-/
 
-theorem ofList_toList (l : Dlist α) : ofList (toList l) = l :=
+/- warning: dlist.of_list_to_list -> Std.DList.ofList_toList is a dubious translation:
+lean 3 declaration is
+  forall {α : Type.{u1}} (l : Dlist.{u1} α), Eq.{succ u1} (Dlist.{u1} α) (Dlist.ofList.{u1} α (Dlist.toList.{u1} α l)) l
+but is expected to have type
+  forall {α : Type.{u1}} (l : Std.DList.{u1} α), Eq.{succ u1} (Std.DList.{u1} α) (Std.DList.ofList.{u1} α (Std.DList.toList.{u1} α l)) l
+Case conversion may be inaccurate. Consider using '#align dlist.of_list_to_list Std.DList.ofList_toListₓ'. -/
+theorem Std.DList.ofList_toList (l : Dlist α) : ofList (toList l) = l :=
   by
   cases' l with xs
   have h : append (xs []) = xs := by
@@ -103,7 +111,7 @@ theorem ofList_toList (l : Dlist α) : ofList (toList l) = l :=
     funext x
     simp [l_invariant x]
   simp [h]
-#align dlist.of_list_to_list Dlist.ofList_toList
+#align dlist.of_list_to_list Std.DList.ofList_toList
 
 theorem toList_empty : toList (@empty α) = [] := by simp
 #align dlist.to_list_empty Dlist.toList_empty

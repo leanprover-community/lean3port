@@ -1564,12 +1564,7 @@ theorem sign_eq_zero_iff_zero (a : ℤ) : sign a = 0 ↔ a = 0 :=
 #align int.sign_eq_zero_iff_zero Int.sign_eq_zero_iff_zero
 -/
 
-/- warning: int.eq_zero_or_eq_zero_of_mul_eq_zero -> Int.eq_zero_or_eq_zero_of_mul_eq_zero is a dubious translation:
-lean 3 declaration is
-  forall {a : Int} {b : Int}, (Eq.{1} Int (HMul.hMul.{0, 0, 0} Int Int Int (instHMul.{0} Int Int.hasMul) a b) (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))) -> (Or (Eq.{1} Int a (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))) (Eq.{1} Int b (OfNat.ofNat.{0} Int 0 (OfNat.mk.{0} Int 0 (Zero.zero.{0} Int Int.hasZero)))))
-but is expected to have type
-  forall {a : Nat} {b : Nat}, (Eq.{1} Nat (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) a b) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) -> (Or (Eq.{1} Nat a (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (Eq.{1} Nat b (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))))
-Case conversion may be inaccurate. Consider using '#align int.eq_zero_or_eq_zero_of_mul_eq_zero Int.eq_zero_or_eq_zero_of_mul_eq_zeroₓ'. -/
+#print Int.eq_zero_or_eq_zero_of_mul_eq_zero /-
 protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) : a = 0 ∨ b = 0 :=
   match lt_trichotomy 0 a with
   | Or.inl hlt₁ =>
@@ -1598,6 +1593,7 @@ protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) 
       rw [h] at this
       exact absurd this (lt_irrefl _)
 #align int.eq_zero_or_eq_zero_of_mul_eq_zero Int.eq_zero_or_eq_zero_of_mul_eq_zero
+-/
 
 #print Int.eq_of_mul_eq_mul_right /-
 protected theorem eq_of_mul_eq_mul_right {a b c : ℤ} (ha : a ≠ 0) (h : b * a = c * a) : b = c :=

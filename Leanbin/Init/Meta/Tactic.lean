@@ -407,7 +407,7 @@ unsafe def tactic.pp {α : Type u} [has_to_tactic_format α] : α → tactic for
 open Tactic Format
 
 unsafe instance {α : Type u} [has_to_tactic_format α] : has_to_tactic_format (List α) :=
-  ⟨fun l => to_fmt <$> l.mmap pp⟩
+  ⟨fun l => to_fmt <$> l.mapM pp⟩
 
 unsafe instance (α : Type u) (β : Type v) [has_to_tactic_format α] [has_to_tactic_format β] :
     has_to_tactic_format (α × β) :=
@@ -752,7 +752,7 @@ structure ApplyCfg where
   approx := true
   NewGoals := NewGoals.non_dep_first
   instances := true
-  autoParam := true
+  autoParamₓ := true
   optParam := true
   unify := true
 #align tactic.apply_cfg Tactic.ApplyCfg
@@ -906,7 +906,7 @@ unsafe def module_doc_strings : tactic (List (Option Name × String)) := do
       if (environment.decl_olean e n).isNone then n :: Acc else Acc
   let decls
     ←-- Map declarations to those which have docstrings.
-          decls.mfoldl
+          decls.foldlM
         (fun a n => (doc_string n >>= fun doc => pure <| (some n, doc) :: a) <|> pure a) []
   pure (mod_docs ++ decls)
 #align tactic.module_doc_strings tactic.module_doc_strings
@@ -934,7 +934,7 @@ unsafe def copy_attribute (attr_name : Name) (src : Name) (tgt : Name) (p : Opti
     tactic Unit :=
   try do
     let (p', prio) ← has_attribute attr_name src
-    let p := p.getOrElse p'
+    let p := p.getD p'
     set_basic_attribute attr_name tgt p (some prio)
 #align tactic.copy_attribute tactic.copy_attribute
 
@@ -1145,14 +1145,14 @@ unsafe def intros : tactic (List expr) := do
 /--
 Same as `intros`, except with the given names for the new hypotheses. Use the name ```_``` to instead use the binder's name.-/
 unsafe def intro_lst (ns : List Name) : tactic (List expr) :=
-  ns.mmap intro
+  ns.mapM intro
 #align tactic.intro_lst tactic.intro_lst
 
 /-- A variant of `intro_lst` which makes sure that the introduced hypotheses' names
 are unique in the context. See `intro_fresh`.
 -/
 unsafe def intro_lst_fresh (ns : List Name) : tactic (List expr) :=
-  ns.mmap intro_fresh
+  ns.mapM intro_fresh
 #align tactic.intro_lst_fresh tactic.intro_lst_fresh
 
 /-- Introduces new hypotheses with forward dependencies.  -/
@@ -1665,7 +1665,7 @@ unsafe axiom is_trace_enabled_for : Name → Bool
 
 /-- Execute tac only if option trace.n is set to true. -/
 unsafe def when_tracing (n : Name) (tac : tactic Unit) : tactic Unit :=
-  when (is_trace_enabled_for n = tt) tac
+  when (is_trace_enabled_for n = true) tac
 #align tactic.when_tracing tactic.when_tracing
 
 /-- Fail if there are no remaining goals. -/
@@ -1694,7 +1694,7 @@ unsafe def apply_auto_param : tactic Unit := do
 #align tactic.apply_auto_param tactic.apply_auto_param
 
 unsafe def has_opt_auto_param (ms : List expr) : tactic Bool :=
-  ms.mfoldl
+  ms.foldlM
     (fun r m => do
       let type ← infer_type m
       return <| r || type `opt_param 2 || type `auto_param 2)
@@ -1702,7 +1702,7 @@ unsafe def has_opt_auto_param (ms : List expr) : tactic Bool :=
 #align tactic.has_opt_auto_param tactic.has_opt_auto_param
 
 unsafe def try_apply_opt_auto_param (cfg : ApplyCfg) (ms : List expr) : tactic Unit :=
-  when (cfg.autoParam || cfg.optParam) <|
+  when (cfg.autoParamₓ || cfg.optParam) <|
     whenM (has_opt_auto_param ms) do
       let gs ← get_goals
       ms fun m =>
@@ -1712,7 +1712,7 @@ unsafe def try_apply_opt_auto_param (cfg : ApplyCfg) (ms : List expr) : tactic U
 #align tactic.try_apply_opt_auto_param tactic.try_apply_opt_auto_param
 
 unsafe def has_opt_auto_param_for_apply (ms : List (Name × expr)) : tactic Bool :=
-  ms.mfoldl
+  ms.foldlM
     (fun r m => do
       let type ← infer_type m.2
       return <| r || type `opt_param 2 || type `auto_param 2)
@@ -1910,7 +1910,7 @@ unsafe def revert_kdeps (e : expr) (md := reducible) :=
   "new hypotheses" that are, in fact, local constants. -/
 private unsafe def cases_postprocess (hs : List (Name × List expr × List (Name × expr))) :
     List (Name × List expr) :=
-  hs.map fun ⟨n, hs, _⟩ => (n, hs.filter fun h => h.is_local_constant)
+  hs.map fun ⟨n, hs, _⟩ => (n, hs.filterₓ fun h => h.is_local_constant)
 #align tactic.cases_postprocess tactic.cases_postprocess
 
 /-- Similar to `cases_core`, but `e` doesn't need to be a hypothesis.
@@ -1976,11 +1976,11 @@ unsafe def funext_core : List Name → Bool → tactic Unit
       let some (lhs, rhs) ← expr.is_eq <$> (target >>= whnf)
       applyc `funext
       let id ←
-        if ids.Empty ∨ ids.head = `_ then do
+        if ids.Empty ∨ ids.headI = `_ then do
             let expr.lam n _ _ _ ← whnf lhs |
               pure `_
             return n
-          else return ids.head
+          else return ids.headI
       intro id
       funext_core ids only_ids
 #align tactic.funext_core tactic.funext_core
@@ -2170,10 +2170,10 @@ unsafe def rename_many (renames : name_map Name) (strict := true) (use_unique_na
   let ctx ← revertible_local_context
   let-- The part of the context after (but including) the first hypthesis that
   -- must be renamed.
-  ctx_suffix := ctx.dropWhile fun h => (renames.find <| hyp_name h).isNone
+  ctx_suffix := ctx.dropWhileₓ fun h => (renames.find <| hyp_name h).isNone
   when strict do
       let ctx_names := rb_map.set_of_list (ctx_suffix hyp_name)
-      let invalid_renames := (renames Prod.fst).filter fun h => ¬ctx_names h
+      let invalid_renames := (renames Prod.fst).filterₓ fun h => ¬ctx_names h
       when ¬invalid_renames <|
           fail <|
             format.join
@@ -2183,7 +2183,7 @@ unsafe def rename_many (renames : name_map Name) (strict := true) (use_unique_na
                 "context or they occur before a frozen local instance.\n",
                 "In the latter case, try `unfreezingI { ... }`."]
   let-- The new names for all hypotheses in ctx_suffix.
-  new_names := ctx_suffix.map fun h => (renames.find <| hyp_name h).getOrElse h.local_pp_name
+  new_names := ctx_suffix.map fun h => (renames.find <| hyp_name h).getD h.local_pp_name
   revert_lst ctx_suffix
   intro_lst new_names
   pure ()

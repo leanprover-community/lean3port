@@ -103,7 +103,7 @@ unsafe axiom simp_lemmas.add_congr : simp_lemmas → Name → tactic simp_lemmas
 -/
 unsafe def simp_lemmas.append_with_symm (s : simp_lemmas) (hs : List (expr × Bool)) :
     tactic simp_lemmas :=
-  hs.mfoldl (fun s h => simp_lemmas.add s h.fst h.snd) s
+  hs.foldlM (fun s h => simp_lemmas.add s h.fst h.snd) s
 #align simp_lemmas.append_with_symm simp_lemmas.append_with_symm
 
 /-- Add expressions to a set of simp lemmas using `simp_lemmas.add`.
@@ -112,7 +112,7 @@ unsafe def simp_lemmas.append_with_symm (s : simp_lemmas) (hs : List (expr × Bo
   and sets all `symm` flags to `ff`.
 -/
 unsafe def simp_lemmas.append (s : simp_lemmas) (hs : List expr) : tactic simp_lemmas :=
-  hs.mfoldl (fun s h => simp_lemmas.add s h false) s
+  hs.foldlM (fun s h => simp_lemmas.add s h false) s
 #align simp_lemmas.append simp_lemmas.append
 
 /-- `simp_lemmas.rewrite s e prove R` apply a simplification lemma from 's'
@@ -550,7 +550,7 @@ unsafe def mk_simp_attr (attr_name : Name) (attr_deps : List Name := []) : Tacti
             { mk_cache := fun ns => do
                 let s ← tactic.to_simp_lemmas simp_lemmas.mk ns
                 let s ←
-                  attr_deps.mfoldl
+                  attr_deps.foldlM
                       (fun s attr_name => do
                         let ns ← attribute.get_instances attr_name
                         to_simp_lemmas s ns)
@@ -639,7 +639,7 @@ unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpCon
 
 private unsafe def remove_deps (s : name_set) (h : expr) : name_set :=
   if s.Empty then s
-  else h.fold s fun e o s => if e.is_local_constant then s.erase e.local_uniq_name else s
+  else h.fold s fun e o s => if e.is_local_constant then s.eraseₓ e.local_uniq_name else s
 #align tactic.remove_deps tactic.remove_deps
 
 /-- Return the list of hypothesis that are propositions and do not have
@@ -647,7 +647,7 @@ private unsafe def remove_deps (s : name_set) (h : expr) : name_set :=
 unsafe def non_dep_prop_hyps : tactic (List expr) := do
   let ctx ← local_context
   let s ←
-    ctx.mfoldl
+    ctx.foldlM
         (fun s h => do
           let h_type ← infer_type h
           let s := remove_deps s h_type
@@ -675,7 +675,7 @@ unsafe structure simp_all_entry where
 -- simplification lemmas for simplifying new_type
 private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) :
     tactic (List simp_all_entry) :=
-  es.mmap fun e => do
+  es.mapM fun e => do
     let new_s ← e.s.add h false
     return { e with s := new_s }
 #align tactic.update_simp_lemmas tactic.update_simp_lemmas
@@ -699,14 +699,14 @@ private unsafe def init (s : simp_lemmas) (hs : List expr) :
 #align tactic.init tactic.init
 
 private unsafe def add_new_hyps (es : List simp_all_entry) : tactic Unit :=
-  es.mmap' fun e =>
+  es.mapM' fun e =>
     match e.pr with
     | none => return ()
     | some pr => assert e.h.local_pp_name e.new_type >> mk_eq_mp pr e.h >>= exact
 #align tactic.add_new_hyps tactic.add_new_hyps
 
 private unsafe def clear_old_hyps (es : List simp_all_entry) : tactic Unit :=
-  es.mmap' fun e => when (e.pr ≠ none) (try (clear e.h))
+  es.mapM' fun e => when (e.pr ≠ none) (try (clear e.h))
 #align tactic.clear_old_hyps tactic.clear_old_hyps
 
 private unsafe def join_pr : Option expr → expr → tactic expr

@@ -48,7 +48,7 @@ private def split_core (p : Char → Bool) : Iterator → Iterator → List Stri
         Nat.sub_lt (Iterator.zero_lt_length_nextToString_of_hasNext h) (by decide)
       if p stop.curr then
         let rest := stop.next.nextToString
-        (start.extract stop).getOrElse "" :: split_core stop.next stop.next
+        (start.extract stop).getD "" :: split_core stop.next stop.next
       else split_core start stop.next
     else [start.nextToString]termination_by'
   ⟨_, measure_wf fun e => e.2.nextToString.length⟩

@@ -40,19 +40,19 @@ def bodd (n : ℕ) : Bool :=
 
 #print Nat.bodd_zero /-
 @[simp]
-theorem bodd_zero : bodd 0 = ff :=
+theorem bodd_zero : bodd 0 = false :=
   rfl
 #align nat.bodd_zero Nat.bodd_zero
 -/
 
 #print Nat.bodd_one /-
-theorem bodd_one : bodd 1 = tt :=
+theorem bodd_one : bodd 1 = true :=
   rfl
 #align nat.bodd_one Nat.bodd_one
 -/
 
 #print Nat.bodd_two /-
-theorem bodd_two : bodd 2 = ff :=
+theorem bodd_two : bodd 2 = false :=
   rfl
 #align nat.bodd_two Nat.bodd_two
 -/
@@ -401,7 +401,7 @@ theorem binaryRec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit
 -/
 
 #print Nat.bitwise'_bit_aux /-
-theorem bitwise'_bit_aux {f : Bool → Bool → Bool} (h : f false false = ff) :
+theorem bitwise'_bit_aux {f : Bool → Bool → Bool} (h : f false false = false) :
     (@binaryRec (fun _ => ℕ) (cond (f true false) (bit false 0) 0) fun b n _ =>
         bit (f false b) (cond (f false true) n 0)) =
       fun n : ℕ => cond (f false true) n 0 :=
@@ -434,7 +434,7 @@ but is expected to have type
   forall (f : Bool -> Bool -> Bool), (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat), Eq.{1} Nat (Nat.bitwise' f m (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (cond.{0} Nat (f Bool.true Bool.false) m (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))))
 Case conversion may be inaccurate. Consider using '#align nat.bitwise_zero_right Nat.bitwise'_zero_rightₓ'. -/
 @[simp]
-theorem bitwise'_zero_right (f : Bool → Bool → Bool) (h : f false false = ff) (m) :
+theorem bitwise'_zero_right (f : Bool → Bool → Bool) (h : f false false = false) (m) :
     bitwise f m 0 = cond (f true false) m 0 := by
   unfold bitwise <;> apply bit_cases_on m <;> intros <;> rw [binary_rec_eq, binary_rec_zero] <;>
     exact bitwise_bit_aux h
@@ -459,7 +459,7 @@ but is expected to have type
 Case conversion may be inaccurate. Consider using '#align nat.bitwise_bit Nat.bitwise'_bitₓ'. -/
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.swap -/
 @[simp]
-theorem bitwise'_bit {f : Bool → Bool → Bool} (h : f false false = ff) (a m b n) :
+theorem bitwise'_bit {f : Bool → Bool → Bool} (h : f false false = false) (a m b n) :
     bitwise f (bit a m) (bit b n) = bit (f a b) (bitwise f m n) :=
   by
   unfold bitwise
@@ -484,7 +484,7 @@ lean 3 declaration is
 but is expected to have type
   forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (Eq.{1} (Nat -> Nat -> Nat) (Nat.bitwise' (Function.swap.{1, 1, 1} Bool Bool (fun (ᾰ : Bool) (ᾰ : Bool) => Bool) f)) (Function.swap.{1, 1, 1} Nat Nat (fun (ᾰ : Nat) (ᾰ : Nat) => Nat) (Nat.bitwise' f)))
 Case conversion may be inaccurate. Consider using '#align nat.bitwise_swap Nat.bitwise'_swapₓ'. -/
-theorem bitwise'_swap {f : Bool → Bool → Bool} (h : f false false = ff) :
+theorem bitwise'_swap {f : Bool → Bool → Bool} (h : f false false = false) :
     bitwise (Function.swap f) = Function.swap (bitwise f) :=
   by
   funext m n; revert n
@@ -539,7 +539,7 @@ but is expected to have type
   forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.bitwise' f m n) k) (f (Nat.testBit m k) (Nat.testBit n k)))
 Case conversion may be inaccurate. Consider using '#align nat.test_bit_bitwise Nat.testBit_bitwise'ₓ'. -/
 @[simp]
-theorem testBit_bitwise' {f : Bool → Bool → Bool} (h : f false false = ff) (m n k) :
+theorem testBit_bitwise' {f : Bool → Bool → Bool} (h : f false false = false) (m n k) :
     testBit (bitwise f m n) k = f (testBit m k) (testBit n k) :=
   by
   revert m n <;> induction' k with k IH <;> intro m n <;> apply bit_cases_on m <;> intro a m' <;>

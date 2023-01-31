@@ -124,7 +124,7 @@ unsafe def assume :=
 
 unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
     (q₂ : parse <| (tk ":=" *> texpr)?) : smt_tactic Unit :=
-  let h := h.getOrElse `this
+  let h := h.getD `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← tactic.to_expr e
@@ -143,7 +143,7 @@ unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
 
 unsafe def let (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
     (q₂ : parse <| (tk ":=" *> texpr)?) : smt_tactic Unit :=
-  let h := h.getOrElse `this
+  let h := h.getD `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← tactic.to_expr e

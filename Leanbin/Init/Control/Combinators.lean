@@ -106,7 +106,7 @@ def whenM {m : Type → Type} [Monad m] (c : m Bool) (t : m Unit) : m Unit :=
 #align mwhen whenM
 -/
 
-export List (mmap mmap' mfilter mfoldl)
+export List (mapM mapM' filterM foldlM)
 
 namespace Monad
 

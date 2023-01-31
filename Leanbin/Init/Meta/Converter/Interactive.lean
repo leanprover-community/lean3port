@@ -203,7 +203,7 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
-  rs.mmap' fun r => do
+  rs.mapM' fun r => do
     save_info r
     let eq_lemmas ← get_rule_eqn_lemmas r
     orelse'

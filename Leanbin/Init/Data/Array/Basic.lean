@@ -110,7 +110,7 @@ protected def beq [∀ i, DecidableEq (α i)] (a b : DArray n α) : Bool :=
 
 theorem of_beqAux_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
-      DArray.beqAux a b i h = tt →
+      DArray.beqAux a b i h = true →
         ∀ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ = b.read ⟨j, lt_of_lt_of_le h' h⟩
   | 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zero _)
   | i + 1, h₁, h₂, j, h₃ =>
@@ -131,8 +131,8 @@ theorem of_beqAux_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact ih j j_lt_i
 #align d_array.of_beq_aux_eq_tt DArray.of_beqAux_eq_true
 
-theorem of_beq_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = tt → a = b :=
-  by
+theorem of_beq_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
+    DArray.beq a b = true → a = b := by
   unfold DArray.beq
   intro h
   have : ∀ (j : Nat) (h : j < n), a.read ⟨j, h⟩ = b.read ⟨j, h⟩ := of_beq_aux_eq_tt n (le_refl _) h
@@ -141,7 +141,7 @@ theorem of_beq_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.
 
 theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
-      DArray.beqAux a b i h = ff →
+      DArray.beqAux a b i h = false →
         ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
   | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂; contradiction
   | i + 1, h₁, h₂ =>
@@ -166,8 +166,8 @@ theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
       exact ih
 #align d_array.of_beq_aux_eq_ff DArray.of_beqAux_eq_false
 
-theorem of_beq_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray.beq a b = ff → a ≠ b :=
-  by
+theorem of_beq_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
+    DArray.beq a b = false → a ≠ b := by
   unfold DArray.beq
   intro h hne
   have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ :=
@@ -179,7 +179,7 @@ theorem of_beq_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} : DArray
 #align d_array.of_beq_eq_ff DArray.of_beq_eq_false
 
 instance [∀ i, DecidableEq (α i)] : DecidableEq (DArray n α) := fun a b =>
-  if h : DArray.beq a b = tt then isTrue (of_beq_eq_true h)
+  if h : DArray.beq a b = true then isTrue (of_beq_eq_true h)
   else isFalse (of_beq_eq_false (Bool.eq_false_of_not_eq_true h))
 
 end DArray
@@ -303,13 +303,13 @@ theorem read_mem (a : Array' n α) (i) : read a i ∈ a :=
 #align array.read_mem Array'.read_mem
 
 instance [Repr α] : Repr (Array' n α) :=
-  ⟨repr ∘ to_list⟩
+  ⟨repr ∘ toList⟩
 
 unsafe instance [has_to_format α] : has_to_format (Array' n α) :=
-  ⟨to_fmt ∘ to_list⟩
+  ⟨to_fmt ∘ toList⟩
 
 unsafe instance [has_to_tactic_format α] : has_to_tactic_format (Array' n α) :=
-  ⟨tactic.pp ∘ to_list⟩
+  ⟨tactic.pp ∘ toList⟩
 
 @[simp]
 theorem read_write (a : Array' n α) (i : Fin n) (v : α) : read (write a i v) i = v :=

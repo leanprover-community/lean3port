@@ -417,7 +417,7 @@ inductive Option (α : Type u)
 
 export Option (none some)
 
-export Bool (ff tt)
+export Bool (false true)
 
 #print List /-
 inductive List (T : Type u)
@@ -561,7 +561,7 @@ class HasSubset (α : Type u) where
 
 #print HasSSubset /-
 class HasSSubset (α : Type u) where
-  Ssubset : α → α → Prop
+  SSubset : α → α → Prop
 #align has_ssubset HasSSubset
 -/
 
@@ -574,7 +574,7 @@ class HasSSubset (α : Type u) where
 
 #print EmptyCollection /-
 class EmptyCollection (α : Type u) where
-  emptyc : α
+  emptyCollection : α
 #align has_emptyc EmptyCollection
 -/
 
@@ -672,13 +672,13 @@ export Insert (insert)
 #print IsLawfulSingleton /-
 class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] :
   Prop where
-  insert_emptyc_eq : ∀ x : α, (insert x ∅ : β) = {x}
+  insert_emptyCollection_eq : ∀ x : α, (insert x ∅ : β) = {x}
 #align is_lawful_singleton IsLawfulSingleton
 -/
 
 export Singleton (singleton)
 
-export IsLawfulSingleton (insert_emptyc_eq)
+export IsLawfulSingleton (insert_emptyCollection_eq)
 
 attribute [simp] insert_emptyc_eq
 
@@ -766,7 +766,7 @@ def Std.Prec.maxPlus : Nat :=
 -- notation for n-ary tuples
 -- sizeof
 class SizeOf (α : Sort u) where
-  sizeof : α → Nat
+  sizeOf : α → Nat
 #align has_sizeof SizeOf
 -/
 

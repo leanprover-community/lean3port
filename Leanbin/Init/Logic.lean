@@ -1142,18 +1142,18 @@ def Decidable.decide (p : Prop) [h : Decidable p] : Bool :=
 #align decidable.to_bool Decidable.decide
 -/
 
-export Decidable (isTrue isFalse toBool)
+export Decidable (isTrue isFalse decide)
 
 #print decide_True' /-
 @[simp]
-theorem decide_True' (h : Decidable True) : @decide True h = tt :=
+theorem decide_True' (h : Decidable True) : @decide True h = true :=
   Decidable.casesOn h (fun h => False.elim (Iff.mp not_true h)) fun _ => rfl
 #align to_bool_true_eq_tt decide_True'
 -/
 
 #print decide_False' /-
 @[simp]
-theorem decide_False' (h : Decidable False) : @decide False h = ff :=
+theorem decide_False' (h : Decidable False) : @decide False h = false :=
   Decidable.casesOn h (fun h => rfl) fun h => False.elim h
 #align to_bool_false_eq_ff decide_False'
 -/
@@ -1308,18 +1308,18 @@ instance Implies.decidable [Decidable p] [Decidable q] : Decidable (p → q) :=
 #align implies.decidable Implies.decidable
 
 instance [Decidable p] [Decidable q] : Decidable (p ↔ q) :=
-  if hp : p then if hq : q then isTrue ⟨fun _ => hq, fun _ => hp⟩ else is_false fun h => hq (h.1 hp)
+  if hp : p then if hq : q then isTrue ⟨fun _ => hq, fun _ => hp⟩ else isFalse fun h => hq (h.1 hp)
   else
-    if hq : q then is_false fun h => hp (h.2 hq)
-    else is_true <| ⟨fun h => absurd h hp, fun h => absurd h hq⟩
+    if hq : q then isFalse fun h => hp (h.2 hq)
+    else isTrue <| ⟨fun h => absurd h hp, fun h => absurd h hq⟩
 
 instance [Decidable p] [Decidable q] : Decidable (Xor' p q) :=
   if hp : p then
     if hq : q then
       isFalse (Or.ndrec (fun ⟨_, h⟩ => h hq : ¬(p ∧ ¬q)) (fun ⟨_, h⟩ => h hp : ¬(q ∧ ¬p)))
-    else is_true <| Or.inl ⟨hp, hq⟩
+    else isTrue <| Or.inl ⟨hp, hq⟩
   else
-    if hq : q then is_true <| Or.inr ⟨hq, hp⟩
+    if hq : q then isTrue <| Or.inr ⟨hq, hp⟩
     else isFalse (Or.ndrec (fun ⟨h, _⟩ => hp h : ¬(p ∧ ¬q)) (fun ⟨h, _⟩ => hq h : ¬(q ∧ ¬p)))
 
 instance existsPropDecidable {p} (P : p → Prop) [Dp : Decidable p] [DP : ∀ h, Decidable (P h)] :
@@ -1339,19 +1339,19 @@ end
 instance {α : Sort u} [DecidableEq α] (a b : α) : Decidable (a ≠ b) :=
   Implies.decidable
 
-theorem Bool.false_ne_true : ff = tt → False :=
+theorem Bool.false_ne_true : false = true → False :=
   fun.
 #align bool.ff_ne_tt Bool.false_ne_true
 
 #print IsDecEq /-
 def IsDecEq {α : Sort u} (p : α → α → Bool) : Prop :=
-  ∀ ⦃x y : α⦄, p x y = tt → x = y
+  ∀ ⦃x y : α⦄, p x y = true → x = y
 #align is_dec_eq IsDecEq
 -/
 
 #print IsDecRefl /-
 def IsDecRefl {α : Sort u} (p : α → α → Bool) : Prop :=
-  ∀ x, p x x = tt
+  ∀ x, p x x = true
 #align is_dec_refl IsDecRefl
 -/
 
@@ -1366,8 +1366,8 @@ instance : DecidableEq Bool
 #print decidableEq_of_bool_pred /-
 def decidableEq_of_bool_pred {α : Sort u} {p : α → α → Bool} (h₁ : IsDecEq p) (h₂ : IsDecRefl p) :
     DecidableEq α := fun x y : α =>
-  if hp : p x y = tt then isTrue (h₁ hp)
-  else isFalse fun hxy : x = y => absurd (h₂ y) (@Eq.recOn _ _ (fun z => ¬p z y = tt) _ hxy hp)
+  if hp : p x y = true then isTrue (h₁ hp)
+  else isFalse fun hxy : x = y => absurd (h₂ y) (@Eq.recOn _ _ (fun z => ¬p z y = true) _ hxy hp)
 #align decidable_eq_of_bool_pred decidableEq_of_bool_pred
 -/
 

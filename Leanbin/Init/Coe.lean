@@ -198,7 +198,7 @@ instance coeToLift {a : Sort u} {b : Sort v} [CoeTC a b] : HasLiftT a b :=
 
 
 instance coeBoolToProp : Coe Bool Prop :=
-  ⟨fun y => y = tt⟩
+  ⟨fun y => y = true⟩
 #align coe_bool_to_Prop coeBoolToProp
 
 /--
@@ -209,11 +209,11 @@ Tactics such as the simplifier only unfold reducible constants when checking whe
 -/
 @[reducible]
 instance coeSortBool : CoeSort Bool Prop :=
-  ⟨fun y => y = tt⟩
+  ⟨fun y => y = true⟩
 #align coe_sort_bool coeSortBool
 
 instance coeDecidableEq (x : Bool) : Decidable (coe x) :=
-  show Decidable (x = tt) from Bool.decidableEq x true
+  show Decidable (x = true) from Bool.decidableEq x true
 #align coe_decidable_eq coeDecidableEq
 
 instance coeSubtype {a : Sort u} {p : a → Prop} : Coe { x // p x } a :=

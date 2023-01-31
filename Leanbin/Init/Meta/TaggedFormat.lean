@@ -32,7 +32,7 @@ variable {α β : Type u}
 
 protected unsafe def map (f : α → β) : tagged_format α → tagged_format β
   | compose x y => compose (map x) (map y)
-  | Group x => Group <| map x
+  | Group x => group <| map x
   | nest i x => nest i <| map x
   | highlight c x => highlight c <| map x
   | of_format x => of_format x

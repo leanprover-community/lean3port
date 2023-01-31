@@ -43,13 +43,13 @@ inductive Loc : Type
 
 unsafe def loc.include_goal : Loc → Bool
   | loc.wildcard => true
-  | loc.ns ls => (ls.map Option.isNone).bor
+  | loc.ns ls => (ls.map Option.isNone).or
 #align interactive.loc.include_goal interactive.loc.include_goal
 
 unsafe def loc.get_locals : Loc → tactic (List expr)
   | loc.wildcard => tactic.local_context
   | loc.ns xs =>
-    xs.mfoldl
+    xs.foldlM
       (fun ls n =>
         match n with
         | none => pure ls
@@ -132,7 +132,7 @@ unsafe def without_ident_list :=
 unsafe def location :=
   tk "at" *>
       (tk "*" *> return Loc.wildcard <|>
-        loc.ns <$> ((with_desc "⊢" <| tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
+        Loc.ns <$> ((with_desc "⊢" <| tk "⊢" <|> tk "|-") *> return none <|> some <$> ident)*) <|>
     return (Loc.ns [none])
 #align interactive.types.location interactive.types.location
 
@@ -262,7 +262,8 @@ unsafe def param_desc : expr → tactic format
   | q(parse $(p)) => join <$> parser_desc_aux p
   | q(optParam $(t) _) => (· ++ "?") <$> pp t
   | e =>
-    if is_constant e ∧ (const_name e).components.ilast = `itactic then return <| to_fmt "{ tactic }"
+    if is_constant e ∧ (const_name e).components.getLastI = `itactic then
+      return <| to_fmt "{ tactic }"
     else paren <$> pp e
 #align interactive.param_desc interactive.param_desc
 

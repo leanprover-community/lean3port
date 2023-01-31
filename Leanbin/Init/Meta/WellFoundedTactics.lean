@@ -224,7 +224,7 @@ unsafe
           guard ( ty = q( Nat ) )
           let lhs_args := collect_add_args lhs
           let rhs_args := collect_add_args rhs
-          let common := lhs_args . bagInter rhs_args
+          let common := lhs_args . bagInterₓ rhs_args
           if
             common = [ ]
             then

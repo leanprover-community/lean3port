@@ -98,7 +98,7 @@ structure IteratorImp where
 
 #print String.Iterator /-
 def Iterator :=
-  iterator_imp
+  IteratorImp
 #align string.iterator String.Iterator
 -/
 
@@ -328,12 +328,12 @@ private theorem nil_ne_append_singleton : ∀ (c : Char) (l : List Char), [] ≠
   | c, d :: l => fun h => List.noConfusion h
 #align string.nil_ne_append_singleton string.nil_ne_append_singleton
 
-theorem empty_ne_str : ∀ (c : Char) (s : String), Empty ≠ str s c
+theorem empty_ne_str : ∀ (c : Char) (s : String), empty ≠ str s c
   | c, ⟨l⟩ => fun h : StringImp.mk [] = StringImp.mk (l ++ [c]) =>
     StringImp.noConfusion h fun h => nil_ne_append_singleton _ _ h
 #align string.empty_ne_str String.empty_ne_str
 
-theorem str_ne_empty (c : Char) (s : String) : str s c ≠ Empty :=
+theorem str_ne_empty (c : Char) (s : String) : str s c ≠ empty :=
   (empty_ne_str c s).symm
 #align string.str_ne_empty String.str_ne_empty
 

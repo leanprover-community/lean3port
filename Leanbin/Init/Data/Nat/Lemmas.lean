@@ -215,7 +215,7 @@ theorem eq_zero_of_mul_eq_zero : ∀ {n m : ℕ}, n * m = 0 → n = 0 ∨ m = 0
 
 #print Nat.le_of_eq /-
 protected theorem le_of_eq {n m : ℕ} (p : n = m) : n ≤ m :=
-  p ▸ less_than_or_equal.refl
+  p ▸ le.refl
 #align nat.le_of_eq Nat.le_of_eq
 -/
 
@@ -239,7 +239,7 @@ protected theorem le_of_lt {n m : ℕ} (h : n < m) : n ≤ m :=
 
 #print Nat.lt.step /-
 theorem lt.step {n m : ℕ} : n < m → n < succ m :=
-  less_than_or_equal.step
+  le.step
 #align nat.lt.step Nat.lt.step
 -/
 

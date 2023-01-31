@@ -66,7 +66,7 @@ instance : ToString Coord :=
   ⟨Coord.repr⟩
 
 unsafe instance : has_to_format Coord :=
-  ⟨format.of_string ∘ coord.repr⟩
+  ⟨format.of_string ∘ Coord.repr⟩
 
 unsafe instance has_dec_eq : DecidableEq Coord :=
   unchecked_cast (inferInstance : DecidableEq ℕ)

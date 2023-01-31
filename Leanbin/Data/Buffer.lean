@@ -130,7 +130,7 @@ def foreach : ∀ b : Buffer α, (Fin b.size → α → α) → Buffer α
 /-- Monadically map a function over the buffer. -/
 @[inline]
 def mmap {m} [Monad m] (b : Buffer α) (f : α → m β) : m (Buffer β) := do
-  let b' ← b.2.mmap f
+  let b' ← b.2.mapM f
   return b'
 #align buffer.mmap Buffer.mmap
 
@@ -175,13 +175,13 @@ instance : Append (Buffer α) :=
   ⟨Buffer.append⟩
 
 instance [Repr α] : Repr (Buffer α) :=
-  ⟨repr ∘ to_list⟩
+  ⟨repr ∘ toList⟩
 
 unsafe instance [has_to_format α] : has_to_format (Buffer α) :=
-  ⟨to_fmt ∘ to_list⟩
+  ⟨to_fmt ∘ toList⟩
 
 unsafe instance [has_to_tactic_format α] : has_to_tactic_format (Buffer α) :=
-  ⟨tactic.pp ∘ to_list⟩
+  ⟨tactic.pp ∘ toList⟩
 
 end Buffer
 

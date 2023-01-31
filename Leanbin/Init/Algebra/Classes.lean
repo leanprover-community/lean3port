@@ -47,7 +47,7 @@ instance (priority := 100) isSymmOp_of_isCommutative (α : Type u) (op : α → 
 
 #print IsAssociative /-
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
-  assoc : ∀ a b c, op (op a b) c = op a (op b c)
+  and_assoc : ∀ a b c, op (op a b) c = op a (op b c)
 #align is_associative IsAssociative
 -/
 

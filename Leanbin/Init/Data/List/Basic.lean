@@ -85,12 +85,12 @@ protected def erase {α} [DecidableEq α] : List α → α → List α
 protected def bagInter {α} [DecidableEq α] : List α → List α → List α
   | [], _ => []
   | _, [] => []
-  | a :: l₁, l₂ => if a ∈ l₂ then a :: bag_inter l₁ (l₂.erase a) else bag_inter l₁ l₂
+  | a :: l₁, l₂ => if a ∈ l₂ then a :: bag_inter l₁ (l₂.eraseₓ a) else bag_inter l₁ l₂
 #align list.bag_inter List.bagInterₓ
 
 protected def diff {α} [DecidableEq α] : List α → List α → List α
   | l, [] => l
-  | l₁, a :: l₂ => if a ∈ l₁ then diff (l₁.erase a) l₂ else diff l₁ l₂
+  | l₁, a :: l₂ => if a ∈ l₁ then diff (l₁.eraseₓ a) l₂ else diff l₁ l₂
 #align list.diff List.diffₓ
 
 #print List.length /-

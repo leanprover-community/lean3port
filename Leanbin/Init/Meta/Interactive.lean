@@ -135,7 +135,7 @@ unsafe def concat_tags (tac : tactic (List (Name × expr))) : tactic Unit :=
       let r ← tac
       let r
         ←-- remove assigned metavars
-              r.mfilter
+              r.filterM
             fun ⟨n, m⟩ => not <$> is_assigned m
       match r with
         | [(_, m)] => set_tag m in_tag
@@ -427,7 +427,7 @@ unsafe def get_rule_eqn_lemmas (r : rw_rule) : tactic (List Name) :=
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit :=
-  rs.mmap' fun r => do
+  rs.mapM' fun r => do
     save_info r
     let eq_lemmas ← get_rule_eqn_lemmas r
     orelse'
@@ -708,7 +708,7 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident)
           let env ← get_env
           let tt ← pure <| env n |
             pure (e, [], [])
-          let (locals, nonlocals) := (t <| env n).partition fun arg : expr => arg
+          let (locals, nonlocals) := (t <| env n).partitionₓ fun arg : expr => arg
           let _ :: _ ← pure nonlocals |
             pure (e, [], [])
           let n ← tactic.revert e
@@ -728,7 +728,7 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident)
       let to_generalize ←
         (-- revert `generalizing` params (and their dependencies, if any)
                 revert
-                []).mmap
+                []).mapM
             tactic.get_local
       let num_generalized ← revert_lst to_generalize
       let rs
@@ -741,7 +741,7 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident)
             do
             let new_hyps ← intron' num_generalized
             clear_lst (newvars local_pp_name)
-            (e :: locals).mmap' (try ∘ clear)
+            (e :: locals).mapM' (try ∘ clear)
             pure new_hyps
       set_cases_tags in_tag <|
           @List.zipWith (Name × List expr × List (Name × expr)) _ (Name × List expr)
@@ -751,10 +751,10 @@ unsafe def induction (hp : parse cases_arg_p) (rec_name : parse using_ident)
 open CaseTag.MatchResult
 
 private unsafe def goals_with_matching_tag (ns : List Name) :
-    tactic (List (expr × case_tag) × List (expr × case_tag)) := do
+    tactic (List (expr × CaseTag) × List (expr × CaseTag)) := do
   let gs ← get_goals
   let (gs : List (expr × tag)) ←
-    gs.mmap fun g => do
+    gs.mapM fun g => do
         let t ← get_tag g
         pure (g, t)
   pure <|
@@ -770,7 +770,7 @@ private unsafe def goals_with_matching_tag (ns : List Name) :
         ([], [])
 #align tactic.interactive.goals_with_matching_tag tactic.interactive.goals_with_matching_tag
 
-private unsafe def goal_with_matching_tag (ns : List Name) : tactic (expr × case_tag) := do
+private unsafe def goal_with_matching_tag (ns : List Name) : tactic (expr × CaseTag) := do
   let ⟨exact_matches, suffix_matches⟩ ← goals_with_matching_tag ns
   match exact_matches, suffix_matches with
     | [], [] => fail f! "Invalid `case`: there is no goal tagged with suffix {ns}."
@@ -847,12 +847,12 @@ case [A : N₀ ... Nₙ, B : M₀ ... Mₙ] {...}
 -/
 unsafe def case (args : parse case_parser) (tac : itactic) : tactic Unit := do
   let target_goals ←
-    args.mmap fun ⟨ns, ids⟩ => do
+    args.mapM fun ⟨ns, ids⟩ => do
         let ⟨goal, tag⟩ ← goal_with_matching_tag ns
-        let ids := ids.getOrElse []
+        let ids := ids.getD []
         let num_ids := ids.length
         let goals ← get_goals
-        let other_goals := goals.filter (· ≠ goal)
+        let other_goals := goals.filterₓ (· ≠ goal)
         set_goals [goal]
         match tag with
           | case_tag.pi _ num_args => do
@@ -937,7 +937,7 @@ cases_matching* [_ ∨ _, _ ∧ _]
 -/
 unsafe def cases_matching (rec : parse <| (tk "*")?) (ps : parse pexpr_list_or_texpr) :
     tactic Unit := do
-  let ps ← ps.mmap pexpr_to_pattern
+  let ps ← ps.mapM pexpr_to_pattern
   if rec then find_matching_hyp ps >>= cases_core
     else tactic.focus1 <| tactic.repeat <| find_matching_hyp ps >>= cases_core
 #align tactic.interactive.cases_matching tactic.interactive.cases_matching
@@ -973,7 +973,7 @@ cases_type* or and
 -/
 unsafe def cases_type (one : parse <| (tk "!")?) (rec : parse <| (tk "*")?)
     (type_names : parse ident*) : tactic Unit := do
-  let type_names ← type_names.mmap resolve_constant
+  let type_names ← type_names.mapM resolve_constant
   if rec then try_cases_for_types type_names (not one)
     else tactic.focus1 <| tactic.repeat <| try_cases_for_types type_names (not one)
 #align tactic.interactive.cases_type tactic.interactive.cases_type
@@ -1105,7 +1105,7 @@ Assuming the target of the goal is a Pi or a let, `assume h : t` unifies the typ
 unsafe def assume :
     parse (Sum.inl <$> (tk ":" *> texpr) <|> Sum.inr <$> parse_binders tac_rbp) → tactic Unit
   | Sum.inl ty => assume_core `this ty
-  | Sum.inr binders => binders.mmap' fun b => assume_core b.local_pp_name b.local_type
+  | Sum.inr binders => binders.mapM' fun b => assume_core b.local_pp_name b.local_type
 #align tactic.interactive.assume tactic.interactive.assume
 
 /--
@@ -1117,7 +1117,7 @@ If `h` is omitted, the name `this` is used.
 -/
 unsafe def have (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
     (q₂ : parse <| (tk ":=" *> texpr)?) : tactic Unit :=
-  let h := h.getOrElse `this
+  let h := h.getD `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← i_to_expr ``(($(e) : Sort _))
@@ -1143,7 +1143,7 @@ If `h` is omitted, the name `this` is used.
 -/
 unsafe def let (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
     (q₂ : parse <| (tk ":=" *> texpr)?) : tactic Unit :=
-  let h := h.getOrElse `this
+  let h := h.getD `this
   (match q₁, q₂ with
     | some e, some p => do
       let t ← i_to_expr ``(($(e) : Sort _))
@@ -1231,7 +1231,7 @@ private unsafe def constructor_matching_aux (ps : List pattern) : tactic Unit :=
 
 unsafe def constructor_matching (rec : parse <| (tk "*")?) (ps : parse pexpr_list_or_texpr) :
     tactic Unit := do
-  let ps ← ps.mmap pexpr_to_pattern
+  let ps ← ps.mapM pexpr_to_pattern
   if rec then constructor_matching_aux ps
     else tactic.focus1 <| tactic.repeat <| constructor_matching_aux ps
 #align tactic.interactive.constructor_matching tactic.interactive.constructor_matching
@@ -1324,7 +1324,7 @@ private unsafe def resolve_exception_ids (all_hyps : Bool) :
 unsafe def decode_simp_arg_list (hs : List simp_arg_type) :
     tactic <| List pexpr × List Name × List Name × Bool := do
   let (hs, ex, all) ←
-    hs.mfoldl
+    hs.foldlM
         (fun (r : List pexpr × List Name × Bool) h => do
           let (es, ex, all) := r
           match h with
@@ -1455,19 +1455,19 @@ unsafe def mk_simp_set_core (no_dflt : Bool) (attr_names : List Name) (hs : List
         | (local_const id _ _ _, tt) => id :: l
         | _ => l)
       []
-  let s := s.erase to_erase
+  let s := s.eraseₓ to_erase
   let (s, u) ← simp_lemmas.append_pexprs s [] hs
   let s ←
     if Not at_star ∧ all_hyps then do
         let ctx ← collect_ctx_simps
-        let ctx := ctx.filter fun h => h.local_uniq_name ∉ hex
+        let ctx := ctx.filterₓ fun h => h.local_uniq_name ∉ hex
         -- remove local exceptions
             s
             ctx
       else return s
   let gex
     ←-- add equational lemmas, if any
-          gex.mmap
+          gex.mapM
         fun n => List.cons n <$> get_eqn_lemmas_for true n
   return (all_hyps, simp_lemmas.erase s <| gex, u)
 #align tactic.mk_simp_set_core tactic.mk_simp_set_core
@@ -1741,7 +1741,7 @@ unsafe def delta : parse ident* → parse location → tactic Unit
 
 private unsafe def unfold_projs_hyps (cfg : UnfoldProjConfig := { }) (hs : List Name) :
     tactic Bool :=
-  hs.mfoldl
+  hs.foldlM
     (fun r h => do
       let h ← get_local h
       unfold_projs_hyp h cfg >> return tt <|> return r)
@@ -1765,7 +1765,7 @@ unsafe def unfold_projs (l : parse location) (cfg : UnfoldProjConfig := { }) : t
 end Interactive
 
 unsafe def ids_to_simp_arg_list (tac_name : Name) (cs : List Name) : tactic (List simp_arg_type) :=
-  cs.mmap fun c => do
+  cs.mapM fun c => do
     let n ← resolve_name c
     let hs ← get_eqn_lemmas_for false n.const_name
     let env ← get_env
@@ -1904,7 +1904,7 @@ If the target of the main goal is a proposition `p`, `by_contradiction` reduces 
 This tactic will attempt to use decidability of `p` if available, and will otherwise fall back on classical reasoning.
 -/
 unsafe def by_contradiction (n : parse ident ?) : tactic Unit :=
-  tactic.by_contradiction (n.getOrElse `h) $> ()
+  tactic.by_contradiction (n.getD `h) $> ()
 #align tactic.interactive.by_contradiction tactic.interactive.by_contradiction
 
 /--
@@ -2033,7 +2033,7 @@ protected unsafe def apply_inj_lemma : tactic Unit := do
   -- We disable auto_param and opt_param support to address issue #1943
       applyc
       (Name.mk_string "inj" C)
-      { autoParam := ff
+      { autoParamₓ := ff
         optParam := ff }
   assumption
 #align tactic.apply_inj_lemma tactic.apply_inj_lemma

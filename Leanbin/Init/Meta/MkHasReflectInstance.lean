@@ -67,7 +67,7 @@ private unsafe def has_reflect_case (I_name F_name : Name) (field_names : List N
   let quote ← mk_mapp `reflected [none, some fn] >>= mk_instance
   let quote
     ←-- now extend to an instance of `reflected _ (F_name ps fs)`
-          field_quotes.mfoldl
+          field_quotes.foldlM
         (fun quote fquote => to_expr ``(reflected.subst $(quote) $(fquote))) quote
   exact quote
 #align tactic.has_reflect_case tactic.has_reflect_case

@@ -59,7 +59,7 @@ unsafe def right : tactic (List (Name × expr)) := do
 
 unsafe def constructor_idx (idx : Nat) : tactic (List (Name × expr)) := do
   let cs ← target' >>= get_constructors_for
-  let some c ← return <| cs.nth (idx - 1) |
+  let some c ← return <| cs.get? (idx - 1) |
     fail
         "constructor_idx tactic failed, target is an inductive datatype, but it does not have sufficient constructors"
   mk_const c >>= apply

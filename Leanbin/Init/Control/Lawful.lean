@@ -28,7 +28,7 @@ unsafe def control_laws_tac :=
 
 #print LawfulFunctor /-
 class LawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
-  map_const_eq :
+  mapConst_eq :
     ∀ {α β : Type u},
       ((· <$ ·) : α → f β → f α) =
         (· <$> ·) ∘ const β := by
@@ -40,25 +40,25 @@ class LawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
 #align is_lawful_functor LawfulFunctor
 -/
 
-export LawfulFunctor (map_const_eq id_map comp_map)
+export LawfulFunctor (mapConst_eq id_map comp_map)
 
 attribute [simp] id_map
 
 #print LawfulApplicative /-
 -- `comp_map` does not make a good simp lemma
 class LawfulApplicative (f : Type u → Type v) [Applicative f] extends LawfulFunctor f : Prop where
-  seq_left_eq :
+  seqLeft_eq :
     ∀ {α β : Type u} (a : f α) (b : f β),
       a <* b = const β <$> a <*> b := by
     intros
     rfl
-  seq_right_eq :
+  seqRight_eq :
     ∀ {α β : Type u} (a : f α) (b : f β),
       a *> b = const α id <$> a <*> b := by
     intros
     rfl
   -- applicative laws
-  pure_seq_eq_map : ∀ {α β : Type u} (g : α → β) (x : f α), pure g <*> x = g <$> x
+  pure_seq : ∀ {α β : Type u} (g : α → β) (x : f α), pure g <*> x = g <$> x
   map_pure : ∀ {α β : Type u} (g : α → β) (x : α), g <$> (pure x : f α) = pure (g x)
   seq_pure : ∀ {α β : Type u} (g : f (α → β)) (x : α), g <*> pure x = (fun g : α → β => g x) <$> g
   seq_assoc :
@@ -69,7 +69,7 @@ class LawfulApplicative (f : Type u → Type v) [Applicative f] extends LawfulFu
 #align is_lawful_applicative LawfulApplicative
 -/
 
-export LawfulApplicative (seq_left_eq seq_right_eq pure_seq_eq_map map_pure seq_pure seq_assoc)
+export LawfulApplicative (seqLeft_eq seqRight_eq pure_seq map_pure seq_pure seq_assoc)
 
 attribute [simp] map_pure seq_pure
 
@@ -102,7 +102,7 @@ class LawfulMonad (m : Type u → Type v) [Monad m] extends LawfulApplicative m 
   bind_assoc :
     ∀ {α β γ : Type u} (x : m α) (f : α → m β) (g : β → m γ),
       x >>= f >>= g = x >>= fun x => f x >>= g
-  pure_seq_eq_map := (by intros <;> rw [← bind_map_eq_seq] <;> simp [pure_bind])
+  pure_seq := (by intros <;> rw [← bind_map_eq_seq] <;> simp [pure_bind])
   map_pure := (by intros <;> rw [← bind_pure_comp_eq_map] <;> simp [pure_bind])
   seq_pure := (by intros <;> rw [← bind_map_eq_seq] <;> simp [map_pure, bind_pure_comp_eq_map])
   seq_assoc :=

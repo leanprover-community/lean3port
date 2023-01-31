@@ -137,7 +137,7 @@ def ch (c : Char) : Parser Unit :=
 
 /-- Matches a whole char_buffer.  Does not consume input in case of failure. -/
 def charBuf (s : CharBuffer) : Parser Unit :=
-  decorateError s.toString <| s.toList.mmap' ch
+  decorateError s.toString <| s.toList.mapM' ch
 #align parser.char_buf Parser.charBuf
 
 /-- Matches one out of a list of characters. -/
@@ -154,7 +154,7 @@ def oneOf' (cs : List Char) : Parser Unit :=
 
 /-- Matches a string.  Does not consume input in case of failure. -/
 def str (s : String) : Parser Unit :=
-  decorateError s <| s.toList.mmap' ch
+  decorateError s <| s.toList.mapM' ch
 #align parser.str Parser.str
 
 /-- Number of remaining input characters. -/

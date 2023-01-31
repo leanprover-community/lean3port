@@ -376,7 +376,7 @@ unsafe def select {α} [DecidableEq α] : List (select_item α) → α → html 
     h "select"
         [attr.val "value" k, attr.val "key" k,
           attr.text_change_event fun k =>
-            match items.filter fun i => select_item.key i = k with
+            match items.filterₓ fun i => select_item.key i = k with
             | [] => undefined
             | h :: _ => h.result] <|
       items.map fun i => h "option" [attr.val "value" i.key] <| select_item.view i

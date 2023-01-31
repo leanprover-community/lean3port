@@ -52,8 +52,8 @@ unsafe def relation_lhs_rhs (e : expr) : tactic (Name × expr × expr) := do
   let some (arity, lhs_pos, rhs_pos) ← return <| env.relation_info c
   let args ← return <| get_app_args e
   guard (args = arity)
-  let some lhs ← return <| args.nth lhs_pos
-  let some rhs ← return <| args.nth rhs_pos
+  let some lhs ← return <| args.get? lhs_pos
+  let some rhs ← return <| args.get? rhs_pos
   return (c, lhs, rhs)
 #align tactic.relation_lhs_rhs tactic.relation_lhs_rhs
 

@@ -416,7 +416,7 @@ namespace Expr
 open Decidable
 
 unsafe def lt_prop (a b : expr) : Prop :=
-  expr.lt a b = tt
+  expr.lt a b = true
 #align expr.lt_prop expr.lt_prop
 
 unsafe instance : DecidableRel expr.lt_prop := fun a b => Bool.decidableEq _ _
@@ -784,7 +784,7 @@ unsafe def expr_map (data : Type) :=
 namespace ExprMap
 
 export
-  Native.RbMap (mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list set_of_list map for filter)
+  Native.RbMap (mk_core size Empty insert eraseₓ contains find min max fold keys values toList mfold of_list set_of_list map for filterₓ)
 
 unsafe def mk (data : Type) : expr_map data :=
   rb_map.mk expr data

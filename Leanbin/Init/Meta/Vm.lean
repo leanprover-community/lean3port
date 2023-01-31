@@ -264,7 +264,7 @@ end Vm
     If option 'debugger' is true, then the VM will initialize the vm_monitor state using the
     'init' field, and will invoke the function 'step' before each instruction is invoked. -/
 unsafe structure vm_monitor (α : Type) where
-  init : α
+  dropLast : α
   step : α → vm α
 #align vm_monitor vm_monitor
 

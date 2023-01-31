@@ -50,7 +50,7 @@ def orElse : Ordering → Ordering → Ordering
 -/
 
 #print Ordering.swap_swap /-
-theorem swap_swap : ∀ o : Ordering, o.swap.swap = o
+theorem swap_swap : ∀ o : Ordering, o.symm.symm = o
   | lt => rfl
   | Eq => rfl
   | GT.gt => rfl

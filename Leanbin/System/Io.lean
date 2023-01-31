@@ -120,7 +120,7 @@ def cmdlineArgs : Io (List String) :=
 #align io.cmdline_args Io.cmdlineArgs
 
 def print {α} [ToString α] (s : α) : Io Unit :=
-  put_str ∘ toString <| s
+  putStr ∘ toString <| s
 #align io.print Io.print
 
 def printLn {α} [ToString α] (s : α) : Io Unit :=

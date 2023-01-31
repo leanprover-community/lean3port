@@ -133,7 +133,7 @@ unsafe def nat_map (data : Type) :=
 namespace NatMap
 
 export
-  RbMap (mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list set_of_list map for filter)
+  RbMap (mk_core size Empty insert eraseₓ contains find min max fold keys values toList mfold of_list set_of_list map for filterₓ)
 
 unsafe def mk (data : Type) : nat_map data :=
   rb_map.mk Nat data
@@ -158,7 +158,7 @@ private unsafe def format_key_data (k : key) (d : data) (first : Bool) : format 
 
 unsafe instance : has_to_format (rb_map key data) :=
   ⟨fun m =>
-    Group <|
+    group <|
       to_fmt "⟨" ++
           nest 1
             (fst
@@ -264,7 +264,7 @@ unsafe def to_list {key : Type} (s : rb_set key) : List key :=
 
 unsafe instance {key} [has_to_format key] : has_to_format (rb_set key) :=
   ⟨fun m =>
-    Group <|
+    group <|
       to_fmt "{" ++
           nest 1
             (fst (fold m (to_fmt "", true) fun k p => (fst p ++ format_key k (snd p), false))) ++
@@ -284,7 +284,7 @@ unsafe def name_map (data : Type) :=
 namespace NameMap
 
 export
-  Native.RbMap (mk_core size Empty insert erase contains find min max fold keys values toList mfold of_list set_of_list map for filter)
+  Native.RbMap (mk_core size Empty insert eraseₓ contains find min max fold keys values toList mfold of_list set_of_list map for filterₓ)
 
 unsafe def mk (data : Type) : name_map data :=
   rb_map.mk_core data name.cmp
@@ -333,7 +333,7 @@ unsafe def to_list (s : name_set) : List Name :=
 
 unsafe instance : has_to_format name_set :=
   ⟨fun m =>
-    Group <|
+    group <|
       to_fmt "{" ++
           nest 1 (fold m (to_fmt "", true) fun k p => (p.1 ++ format_key k p.2, false)).1 ++
         to_fmt "}"⟩

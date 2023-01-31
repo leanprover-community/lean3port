@@ -986,7 +986,7 @@ theorem negSucc_coe' (n : ℕ) : -[n+1] = -↑n - 1 := by rw [Int.sub_eq_add_neg
 
 #print Int.ofNat_sub /-
 protected theorem ofNat_sub {n m : ℕ} : n ≤ m → (↑(m - n) : ℤ) = ↑m - ↑n :=
-  of_nat_sub
+  ofNat_sub
 #align int.coe_nat_sub Int.ofNat_sub
 -/
 

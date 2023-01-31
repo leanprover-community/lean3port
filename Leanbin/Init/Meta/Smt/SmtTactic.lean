@@ -516,7 +516,7 @@ unsafe def when (c : Prop) [Decidable c] (tac : smt_tactic Unit) : smt_tactic Un
 #align smt_tactic.when smt_tactic.when
 
 unsafe def when_tracing (n : Name) (tac : smt_tactic Unit) : smt_tactic Unit :=
-  when (is_trace_enabled_for n = tt) tac
+  when (is_trace_enabled_for n = true) tac
 #align smt_tactic.when_tracing smt_tactic.when_tracing
 
 end SmtTactic

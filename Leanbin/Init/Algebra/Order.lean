@@ -205,9 +205,9 @@ theorem le_of_eq_or_lt {a b : α} (h : a = b ∨ a < b) : a ≤ b :=
 def decidableLtOfDecidableLe [@DecidableRel α (· ≤ ·)] : @DecidableRel α (· < ·)
   | a, b =>
     if hab : a ≤ b then
-      if hba : b ≤ a then is_false fun hab' => not_le_of_gt hab' hba
-      else is_true <| lt_of_le_not_le hab hba
-    else is_false fun hab' => hab (le_of_lt hab')
+      if hba : b ≤ a then isFalse fun hab' => not_le_of_gt hab' hba
+      else isTrue <| lt_of_le_not_le hab hba
+    else isFalse fun hab' => hab (le_of_lt hab')
 #align decidable_lt_of_decidable_le decidableLtOfDecidableLe
 
 end Preorder
@@ -266,7 +266,7 @@ theorem lt_or_eq_of_le {a b : α} (hab : a ≤ b) : a < b ∨ a = b :=
 
 #print Decidable.eq_or_lt_of_le /-
 theorem eq_or_lt_of_le {a b : α} (hab : a ≤ b) : a = b ∨ a < b :=
-  (lt_or_eq_of_le hab).swap
+  (lt_or_eq_of_le hab).symm
 #align decidable.eq_or_lt_of_le Decidable.eq_or_lt_of_le
 -/
 
@@ -405,7 +405,7 @@ theorem lt_or_le (a b : α) : a < b ∨ b ≤ a :=
 
 #print le_or_lt /-
 theorem le_or_lt (a b : α) : a ≤ b ∨ b < a :=
-  (lt_or_le b a).swap
+  (lt_or_le b a).symm
 #align le_or_lt le_or_lt
 -/
 

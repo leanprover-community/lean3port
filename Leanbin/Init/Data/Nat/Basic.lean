@@ -103,7 +103,7 @@ theorem zero_eq : Nat.zero = 0 :=
 #print Nat.le_refl /-
 @[refl]
 protected theorem le_refl (a : ℕ) : a ≤ a :=
-  less_than_or_equal.refl
+  le.refl
 #align nat.le_refl Nat.le_refl
 -/
 

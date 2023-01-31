@@ -199,7 +199,7 @@ def String.quoteAux : List Char → String
 
 #print String.quote /-
 def String.quote (s : String) : String :=
-  if s.isEmpty = tt then "\"\"" else "\"" ++ String.quoteAux s.toList ++ "\""
+  if s.isEmpty = true then "\"\"" else "\"" ++ String.quoteAux s.toList ++ "\""
 #align string.quote String.quote
 -/
 

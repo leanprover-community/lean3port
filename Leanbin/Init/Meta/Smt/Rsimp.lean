@@ -133,7 +133,7 @@ unsafe def mk_repr_map :=
 #align rsimp.mk_repr_map rsimp.mk_repr_map
 
 unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
-  ccs.roots.mfoldl
+  ccs.roots.foldlM
     (fun S e => do
       let r ← choose ccs e
       return <| S e r)

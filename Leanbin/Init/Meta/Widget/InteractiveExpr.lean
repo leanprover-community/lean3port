@@ -239,7 +239,7 @@ unsafe def tactic_view_goal {γ} (local_c : tc local_collection γ) (target_c : 
     let lcs ← List.filterM (filter_local ft) lcs
     let lcs ← to_local_collection [] lcs
     let lchs ←
-      lcs.mmap fun lc => do
+      lcs.mapM fun lc => do
           let lh ← local_c lc
           let ns ←
             pure <|
@@ -268,7 +268,7 @@ unsafe def tactic_view_component {γ} (local_c : tc local_collection γ) (target
     fun ⟨⟩ ft => do
     let gs ← get_goals
     let hs ←
-      gs.mmap fun g => do
+      gs.mapM fun g => do
           set_goals [g]
           flip tc.to_html ft <| tactic_view_goal local_c target_c
     set_goals gs

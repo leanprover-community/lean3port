@@ -142,13 +142,13 @@ protected unsafe def case_tag.to_format : CaseTag → format
   | pi names num_arguments =>
     join
       ["(pi ",
-        Group <|
+        group <|
           nest 4 <| join <| List.intersperse line [names.to_format, format.of_nat num_arguments],
         ")"]
   | hyps names arguments =>
     join
       ["(hyps ",
-        Group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format],
+        group <| nest 6 <| join <| List.intersperse line [names.to_format, arguments.to_format],
         ")"]
 #align tactic.interactive.case_tag.to_format tactic.interactive.case_tag.to_format
 
@@ -211,7 +211,7 @@ tag are the non-internal names in `in_tag` (in the order in which they appear in
 `in_tag`). `num_arguments` is the number of arguments of the resulting tag.
 -/
 unsafe def from_tag_pi (in_tag : Tag) (num_arguments : ℕ) : CaseTag :=
-  pi (in_tag.filter fun n => ¬n.is_internal) num_arguments
+  pi (in_tag.filterₓ fun n => ¬n.is_internal) num_arguments
 #align tactic.interactive.case_tag.from_tag_pi tactic.interactive.case_tag.from_tag_pi
 
 /-- Creates a `hyps` case tag from an input tag `in_tag`. The `names` of the
@@ -220,7 +220,7 @@ appear in `in_tag`). `arguments` is the list of unique hypothesis names of the
 resulting tag.
 -/
 unsafe def from_tag_hyps (in_tag : Tag) (arguments : List Name) : CaseTag :=
-  hyps (in_tag.filter fun n => ¬n.is_internal) arguments
+  hyps (in_tag.filterₓ fun n => ¬n.is_internal) arguments
 #align tactic.interactive.case_tag.from_tag_hyps tactic.interactive.case_tag.from_tag_hyps
 
 private unsafe def parse_marker : Name → Option (Option Nat)
@@ -282,7 +282,7 @@ def combine : MatchResult → MatchResult → MatchResult
 end MatchResult
 
 private unsafe def name_match (suffix : Name) (n : Name) : MatchResult :=
-  if suffix = n then exact_match else if suffix.isSuffixOf n then fuzzy_match else no_match
+  if suffix = n then exact_match else if suffix.isSuffixOfₓ n then fuzzy_match else no_match
 #align tactic.interactive.case_tag.name_match tactic.interactive.case_tag.name_match
 
 private unsafe def names_match : List Name → List Name → MatchResult

@@ -54,7 +54,7 @@ unsafe def derive_attr : user_attribute Unit (List pexpr)
     some fun n _ _ => do
       let ps ← derive_attr.get_param n
       let handlers ← attribute.get_instances `derive_handler
-      let handlers ← handlers.mmap fun n => eval_expr derive_handler (expr.const n [])
+      let handlers ← handlers.mapM fun n => eval_expr derive_handler (expr.const n [])
       ps fun p => try_handlers p n handlers
 #align derive_attr derive_attr
 
@@ -77,7 +77,7 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
     let tgt ← mk_app cls [tgt]
     let tgt ← modify_target n params tgt
     let tgt ←
-      params.enum.mfoldr
+      params.enum.foldrM
           (fun ⟨i, param⟩ tgt => do
             let tgt ←
               (-- add typeclass hypothesis for each inductive parameter
@@ -104,7 +104,7 @@ unsafe def instance_derive_handler (cls : Name) (tac : tactic Unit) (univ_poly :
 unsafe def has_reflect_derive_handler :=
   instance_derive_handler `` has_reflect mk_has_reflect_instance false fun n params tgt =>
     -- add additional `reflected` assumption for each parameter
-        params.mfoldr
+        params.foldrM
       (fun param tgt => do
         let param_cls ← mk_mapp `reflected [none, some param]
         pure <| expr.pi `a BinderInfo.inst_implicit param_cls tgt)

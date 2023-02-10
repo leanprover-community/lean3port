@@ -77,7 +77,7 @@ attribute [simp] map_pure seq_pure
 lean 3 declaration is
   forall {α : Type.{u1}} {f : Type.{u1} -> Type.{u2}} [_inst_1 : Applicative.{u1, u2} f] [_inst_2 : LawfulApplicative.{u1, u2} f _inst_1] (x : f α), Eq.{succ u2} (f α) (Seq.seq.{u1, u2} f (Applicative.toHasSeq.{u1, u2} f _inst_1) α α (Pure.pure.{u1, u2} f (Applicative.toHasPure.{u1, u2} f _inst_1) (α -> α) (id.{succ u1} α)) x) x
 but is expected to have type
-  forall {α : Type.{u2} -> Type.{u1}} {f : Type.{u2}} [_inst_1 : Applicative.{u2, u1} α] [_inst_2 : LawfulApplicative.{u2, u1} α _inst_1] (x : α f), Eq.{succ u1} (α f) (Seq.seq.{u2, u1} α (Applicative.toSeq.{u2, u1} α _inst_1) f f (Pure.pure.{u2, u1} α (Applicative.toPure.{u2, u1} α _inst_1) (f -> f) (id.{succ u2} f)) (fun (x._@.Init.Control.Lawful._hyg.600 : Unit) => x)) x
+  forall {α : Type.{u2} -> Type.{u1}} {f : Type.{u2}} [_inst_1 : Applicative.{u2, u1} α] [_inst_2 : LawfulApplicative.{u2, u1} α _inst_1] (x : α f), Eq.{succ u1} (α f) (Seq.seq.{u2, u1} α (Applicative.toSeq.{u2, u1} α _inst_1) f f (Pure.pure.{u2, u1} α (Applicative.toPure.{u2, u1} α _inst_1) (f -> f) (id.{succ u2} f)) (fun (x._@.Init.Control.Lawful._hyg.566 : Unit) => x)) x
 Case conversion may be inaccurate. Consider using '#align pure_id_seq pure_id_seqₓ'. -/
 -- applicative "law" derivable from other laws
 @[simp]

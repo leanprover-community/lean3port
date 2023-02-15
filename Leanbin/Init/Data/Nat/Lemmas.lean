@@ -135,7 +135,7 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
 #align nat.zero_mul Nat.zero_mul
 -/
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:333:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:334:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def sort_add :=
   sorry
 #align nat.sort_add nat.sort_add

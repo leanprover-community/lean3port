@@ -4,60 +4,42 @@ axiom Real : Type
 #align real Real
 -/
 
-#print Zero /-
-axiom Zero : Zero Real
-#align has_zero Zero
--/
+axiom Real.hasZero : Zero Real
+#align real.has_zero Real.hasZero
 
-#print One /-
-axiom One : One Real
-#align has_one One
--/
+axiom Real.hasOne : One Real
+#align real.has_one Real.hasOne
 
-#print Add /-
-axiom Add : Add Real
-#align has_add Add
--/
+axiom Real.hasAdd : Add Real
+#align real.has_add Real.hasAdd
 
-#print Mul /-
-axiom Mul : Mul Real
-#align has_mul Mul
--/
+axiom Real.hasMul : Mul Real
+#align real.has_mul Real.hasMul
 
-#print Sub /-
-axiom Sub : Sub Real
-#align has_sub Sub
--/
+axiom Real.hasSub : Sub Real
+#align real.has_sub Real.hasSub
 
-#print Neg /-
-axiom Neg : Neg Real
-#align has_neg Neg
--/
+axiom Real.hasNeg : Neg Real
+#align real.has_neg Real.hasNeg
 
-#print Div /-
-axiom Div : Div Real
-#align has_div Div
--/
+axiom Real.hasDiv : Div Real
+#align real.has_div Real.hasDiv
 
-#print LT /-
-axiom LT : LT Real
-#align has_lt LT
--/
+axiom Real.hasLt : LT Real
+#align real.has_lt Real.hasLt
 
-#print LE /-
-axiom LE : LE Real
-#align has_le LE
--/
+axiom Real.hasLe : LE Real
+#align real.has_le Real.hasLe
 
 attribute [instance]
   Real.hasZero Real.hasOne Real.hasAdd Real.hasMul Real.hasSub Real.hasNeg Real.hasDiv Real.hasLe Real.hasLt
 
-axiom of_int : Int → Real
-#align of_int of_int
+axiom Real.ofInt : Int → Real
+#align real.of_int Real.ofInt
 
-axiom to_int : Real → Int
-#align to_int to_int
+axiom Real.toInt : Real → Int
+#align real.to_int Real.toInt
 
-axiom is_int : Real → Prop
-#align is_int is_int
+axiom Real.IsInt : Real → Prop
+#align real.is_int Real.IsInt
 

@@ -272,10 +272,12 @@ theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc
         aux rfl rfl
 #align prod.lex_accessible Prod.lex_accessible
 
+#print WellFounded.prod_lex /-
 -- The lexicographical order of well founded relations is well-founded
-theorem lex_wf (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Lex ra rb) :=
+theorem prod_lex (ha : WellFounded ra) (hb : WellFounded rb) : WellFounded (Lex ra rb) :=
   ⟨fun p => casesOn p fun a b => lex_accessible (apply ha a) (WellFounded.apply hb) b⟩
-#align prod.lex_wf Prod.lex_wf
+#align prod.lex_wf WellFounded.prod_lex
+-/
 
 -- relational product is a subrelation of the lex
 theorem rProd_sub_lex : ∀ a b, RProd ra rb a b → Lex ra rb a b := fun a b h =>
@@ -293,7 +295,7 @@ instance hasWellFounded {α : Type u} {β : Type v} [s₁ : WellFoundedRelation 
     [s₂ : WellFoundedRelation β] : WellFoundedRelation (α × β)
     where
   R := Lex s₁.R s₂.R
-  wf := lex_wf s₁.wf s₂.wf
+  wf := prod_lex s₁.wf s₂.wf
 #align prod.has_well_founded Prod.hasWellFounded
 
 end Prod

@@ -9,7 +9,7 @@ This theory is roughly modeled after the Haskell 'layers' package https://hackag
 Please see https://hackage.haskell.org/package/layers-0.1/docs/Documentation-Layers-Overview.html for an exhaustive discussion of the different approaches to lift functions.
 
 ! This file was ported from Lean 3 source module init.control.lift
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit 9af482290ef68e8aaa5ead01aa7b09b7be7019fd
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

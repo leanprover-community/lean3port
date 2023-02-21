@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 Helper tactic for showing that a type has decidable equality.
 
 ! This file was ported from Lean 3 source module init.meta.rec_util
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit e29c19c1aa04f5442d3bd035902705f50486c67a
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

@@ -6,7 +6,7 @@ Authors: Jeremy Avigad, Leonardo de Moura
 Monad combinators, as in Haskell's Control.Monad.
 
 ! This file was ported from Lean 3 source module init.control.combinators
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit e611ee5c2bd410148bcd493c58cb17498d667175
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

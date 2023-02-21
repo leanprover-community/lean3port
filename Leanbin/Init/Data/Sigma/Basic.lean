@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura, Jeremy Avigad, Floris van Doorn
 
 ! This file was ported from Lean 3 source module init.data.sigma.basic
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit 87932f1c56b7c05aefd2810d05e69da9500a0064
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

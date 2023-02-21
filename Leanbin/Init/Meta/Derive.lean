@@ -6,7 +6,7 @@ Authors: Sebastian Ullrich
 Attribute that can automatically derive typeclass instances.
 
 ! This file was ported from Lean 3 source module init.meta.derive
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit e77a64739870401e78ef3294bb95b8733b900cba
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

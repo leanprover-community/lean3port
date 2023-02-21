@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 
 ! This file was ported from Lean 3 source module init.meta.expr_address
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit 028fe70a072ea55fef6be67e376fc904330dea61
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

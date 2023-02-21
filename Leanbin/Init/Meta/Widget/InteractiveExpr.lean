@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 
 ! This file was ported from Lean 3 source module init.meta.widget.interactive_expr
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit b89dac0f6a0797e8031b59f3ec4f970fc11d2883
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

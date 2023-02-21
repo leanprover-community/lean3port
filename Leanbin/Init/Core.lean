@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 notation, basic datatypes and type classes
 
 ! This file was ported from Lean 3 source module init.core
-! leanprover-community/lean commit 855e5b74e3a52a40552e8f067169d747d48743fd
+! leanprover-community/mathlib commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

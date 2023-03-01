@@ -457,7 +457,7 @@ lean 3 declaration is
 but is expected to have type
   forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.bitwise' f (Nat.bit a m) (Nat.bit b n)) (Nat.bit (f a b) (Nat.bitwise' f m n)))
 Case conversion may be inaccurate. Consider using '#align nat.bitwise_bit Nat.bitwise'_bitₓ'. -/
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.swap -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.swap -/
 @[simp]
 theorem bitwise'_bit {f : Bool → Bool → Bool} (h : f false false = false) (a m b n) :
     bitwise f (bit a m) (bit b n) = bit (f a b) (bitwise f m n) :=

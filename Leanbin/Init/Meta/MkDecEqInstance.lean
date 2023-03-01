@@ -66,7 +66,7 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
   assertv `h' ty pr >> skip
 #align tactic.apply_eq_of_heq tactic.apply_eq_of_heq
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:334:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 /-- Target is of the form (decidable (C ... = C ...)) where C is a constructor -/
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
@@ -150,7 +150,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   all_goals' (dec_eq_case_1 I_name F_name)
 #align tactic.mk_dec_eq_instance_core tactic.mk_dec_eq_instance_core
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:334:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
   def
@@ -180,7 +180,7 @@ unsafe
           mk_dec_eq_instance_core
 #align tactic.mk_dec_eq_instance tactic.mk_dec_eq_instance
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:72:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
+/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.mk_dec_eq_instance -/
 unsafe instance binder_info.has_decidable_eq : DecidableEq BinderInfo := by
   run_tac
     mk_dec_eq_instance

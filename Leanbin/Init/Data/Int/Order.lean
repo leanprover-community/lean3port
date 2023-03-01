@@ -1231,7 +1231,7 @@ protected theorem sub_lt_sub_of_lt_of_le {a b c d : ℤ} (hab : a < b) (hcd : c 
 protected theorem sub_le_self (a : ℤ) {b : ℤ} (h : 0 ≤ b) : a - b ≤ a :=
   calc
     a - b = a + -b := rfl
-    _ ≤ a + 0 := Int.add_le_add_left (Int.neg_nonpos_of_nonneg h) _
+    _ ≤ a + 0 := (Int.add_le_add_left (Int.neg_nonpos_of_nonneg h) _)
     _ = a := by rw [Int.add_zero]
     
 #align int.sub_le_self Int.sub_le_self
@@ -1241,7 +1241,7 @@ protected theorem sub_le_self (a : ℤ) {b : ℤ} (h : 0 ≤ b) : a - b ≤ a :=
 protected theorem sub_lt_self (a : ℤ) {b : ℤ} (h : 0 < b) : a - b < a :=
   calc
     a - b = a + -b := rfl
-    _ < a + 0 := Int.add_lt_add_left (Int.neg_neg_of_pos h) _
+    _ < a + 0 := (Int.add_lt_add_left (Int.neg_neg_of_pos h) _)
     _ = a := by rw [Int.add_zero]
     
 #align int.sub_lt_self Int.sub_lt_self

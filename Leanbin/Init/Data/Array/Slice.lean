@@ -25,7 +25,7 @@ def slice (a : Array' n α) (k l : Nat) (h₁ : k ≤ l) (h₂ : l ≤ n) : Arra
       ⟨i + k,
         calc
           i + k < l - k + k := Nat.add_lt_add_right hi _
-          _ = l := Nat.sub_add_cancel h₁
+          _ = l := (Nat.sub_add_cancel h₁)
           _ ≤ n := h₂
           ⟩⟩
 #align array.slice Array'.slice

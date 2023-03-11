@@ -266,34 +266,34 @@ def bits : ℕ → List Bool :=
 #align nat.bits Nat.bits
 -/
 
-#print Nat.bitwise /-
-def bitwise (f : Bool → Bool → Bool) : ℕ → ℕ → ℕ :=
+#print Nat.bitwise' /-
+def bitwise' (f : Bool → Bool → Bool) : ℕ → ℕ → ℕ :=
   binaryRec (fun n => cond (f false true) n 0) fun a m Ia =>
     binaryRec (cond (f true false) (bit a m) 0) fun b n _ => bit (f a b) (Ia n)
-#align nat.bitwise Nat.bitwise
+#align nat.bitwise Nat.bitwise'
 -/
 
-#print Nat.lor /-
-def lor : ℕ → ℕ → ℕ :=
-  bitwise or
-#align nat.lor Nat.lor
+#print Nat.lor' /-
+def lor' : ℕ → ℕ → ℕ :=
+  bitwise' or
+#align nat.lor Nat.lor'
 -/
 
-#print Nat.land /-
-def land : ℕ → ℕ → ℕ :=
-  bitwise and
-#align nat.land Nat.land
+#print Nat.land' /-
+def land' : ℕ → ℕ → ℕ :=
+  bitwise' and
+#align nat.land Nat.land'
 -/
 
 #print Nat.ldiff' /-
 def ldiff' : ℕ → ℕ → ℕ :=
-  bitwise fun a b => a && not b
+  bitwise' fun a b => a && not b
 #align nat.ldiff Nat.ldiff'
 -/
 
 #print Nat.lxor' /-
 def lxor' : ℕ → ℕ → ℕ :=
-  bitwise xor
+  bitwise' xor
 #align nat.lxor Nat.lxor'
 -/
 
@@ -416,51 +416,34 @@ theorem bitwise'_bit_aux {f : Bool → Bool → Bool} (h : f false false = false
 #align nat.bitwise_bit_aux Nat.bitwise'_bit_aux
 -/
 
-/- warning: nat.bitwise_zero_left -> Nat.bitwise'_zero_left is a dubious translation:
-lean 3 declaration is
-  forall (f : Bool -> Bool -> Bool) (n : Nat), Eq.{1} Nat (Nat.bitwise f (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) n) (cond.{0} Nat (f Bool.false Bool.true) n (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))))
-but is expected to have type
-  forall (f : Bool -> Bool -> Bool) (n : Nat), Eq.{1} Nat (Nat.bitwise' f (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) n) (cond.{0} Nat (f Bool.false Bool.true) n (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)))
-Case conversion may be inaccurate. Consider using '#align nat.bitwise_zero_left Nat.bitwise'_zero_leftₓ'. -/
+#print Nat.bitwise'_zero_left /-
 @[simp]
-theorem bitwise'_zero_left (f : Bool → Bool → Bool) (n) : bitwise f 0 n = cond (f false true) n 0 :=
-  by unfold bitwise <;> rw [binary_rec_zero]
+theorem bitwise'_zero_left (f : Bool → Bool → Bool) (n) :
+    bitwise' f 0 n = cond (f false true) n 0 := by unfold bitwise <;> rw [binary_rec_zero]
 #align nat.bitwise_zero_left Nat.bitwise'_zero_left
+-/
 
-/- warning: nat.bitwise_zero_right -> Nat.bitwise'_zero_right is a dubious translation:
-lean 3 declaration is
-  forall (f : Bool -> Bool -> Bool), (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat), Eq.{1} Nat (Nat.bitwise f m (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) (cond.{0} Nat (f Bool.true Bool.false) m (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))))
-but is expected to have type
-  forall (f : Bool -> Bool -> Bool), (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat), Eq.{1} Nat (Nat.bitwise' f m (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (cond.{0} Nat (f Bool.true Bool.false) m (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))))
-Case conversion may be inaccurate. Consider using '#align nat.bitwise_zero_right Nat.bitwise'_zero_rightₓ'. -/
+#print Nat.bitwise'_zero_right /-
 @[simp]
 theorem bitwise'_zero_right (f : Bool → Bool → Bool) (h : f false false = false) (m) :
-    bitwise f m 0 = cond (f true false) m 0 := by
+    bitwise' f m 0 = cond (f true false) m 0 := by
   unfold bitwise <;> apply bit_cases_on m <;> intros <;> rw [binary_rec_eq, binary_rec_zero] <;>
     exact bitwise_bit_aux h
 #align nat.bitwise_zero_right Nat.bitwise'_zero_right
+-/
 
-/- warning: nat.bitwise_zero -> Nat.bitwise'_zero is a dubious translation:
-lean 3 declaration is
-  forall (f : Bool -> Bool -> Bool), Eq.{1} Nat (Nat.bitwise f (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
-but is expected to have type
-  forall (f : Bool -> Bool -> Bool), Eq.{1} Nat (Nat.bitwise' f (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
-Case conversion may be inaccurate. Consider using '#align nat.bitwise_zero Nat.bitwise'_zeroₓ'. -/
+#print Nat.bitwise'_zero /-
 @[simp]
-theorem bitwise'_zero (f : Bool → Bool → Bool) : bitwise f 0 0 = 0 := by
+theorem bitwise'_zero (f : Bool → Bool → Bool) : bitwise' f 0 0 = 0 := by
   rw [bitwise_zero_left] <;> cases f ff tt <;> rfl
 #align nat.bitwise_zero Nat.bitwise'_zero
+-/
 
-/- warning: nat.bitwise_bit -> Nat.bitwise'_bit is a dubious translation:
-lean 3 declaration is
-  forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.bitwise f (Nat.bit a m) (Nat.bit b n)) (Nat.bit (f a b) (Nat.bitwise f m n)))
-but is expected to have type
-  forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.bitwise' f (Nat.bit a m) (Nat.bit b n)) (Nat.bit (f a b) (Nat.bitwise' f m n)))
-Case conversion may be inaccurate. Consider using '#align nat.bitwise_bit Nat.bitwise'_bitₓ'. -/
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.swap -/
+#print Nat.bitwise'_bit /-
 @[simp]
 theorem bitwise'_bit {f : Bool → Bool → Bool} (h : f false false = false) (a m b n) :
-    bitwise f (bit a m) (bit b n) = bit (f a b) (bitwise f m n) :=
+    bitwise' f (bit a m) (bit b n) = bit (f a b) (bitwise' f m n) :=
   by
   unfold bitwise
   rw [binary_rec_eq, binary_rec_eq]
@@ -477,15 +460,11 @@ theorem bitwise'_bit {f : Bool → Bool → Bool} (h : f false false = false) (a
       rw [← bitwise_bit_aux h, ftf]; rfl
   · exact bitwise_bit_aux h
 #align nat.bitwise_bit Nat.bitwise'_bit
+-/
 
-/- warning: nat.bitwise_swap -> Nat.bitwise'_swap is a dubious translation:
-lean 3 declaration is
-  forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (Eq.{1} (Nat -> Nat -> Nat) (Nat.bitwise (Function.swap.{1, 1, 1} Bool Bool (fun (ᾰ : Bool) (ᾰ : Bool) => Bool) f)) (Function.swap.{1, 1, 1} Nat Nat (fun (ᾰ : Nat) (ᾰ : Nat) => Nat) (Nat.bitwise f)))
-but is expected to have type
-  forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (Eq.{1} (Nat -> Nat -> Nat) (Nat.bitwise' (Function.swap.{1, 1, 1} Bool Bool (fun (ᾰ : Bool) (ᾰ : Bool) => Bool) f)) (Function.swap.{1, 1, 1} Nat Nat (fun (ᾰ : Nat) (ᾰ : Nat) => Nat) (Nat.bitwise' f)))
-Case conversion may be inaccurate. Consider using '#align nat.bitwise_swap Nat.bitwise'_swapₓ'. -/
+#print Nat.bitwise'_swap /-
 theorem bitwise'_swap {f : Bool → Bool → Bool} (h : f false false = false) :
-    bitwise (Function.swap f) = Function.swap (bitwise f) :=
+    bitwise' (Function.swap f) = Function.swap (bitwise' f) :=
   by
   funext m n; revert n
   dsimp [Function.swap]
@@ -495,28 +474,21 @@ theorem bitwise'_swap {f : Bool → Bool → Bool} (h : f false false = false) :
   apply bit_cases_on n <;> intro b n'
   rw [bitwise_bit, bitwise_bit, IH] <;> exact h
 #align nat.bitwise_swap Nat.bitwise'_swap
+-/
 
-/- warning: nat.lor_bit -> Nat.lor'_bit is a dubious translation:
-lean 3 declaration is
-  forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.lor (Nat.bit a m) (Nat.bit b n)) (Nat.bit (or a b) (Nat.lor m n))
-but is expected to have type
-  forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.lor' (Nat.bit a m) (Nat.bit b n)) (Nat.bit (or a b) (Nat.lor' m n))
-Case conversion may be inaccurate. Consider using '#align nat.lor_bit Nat.lor'_bitₓ'. -/
+#print Nat.lor'_bit /-
 @[simp]
-theorem lor'_bit : ∀ a m b n, lor (bit a m) (bit b n) = bit (a || b) (lor m n) :=
+theorem lor'_bit : ∀ a m b n, lor' (bit a m) (bit b n) = bit (a || b) (lor' m n) :=
   bitwise'_bit rfl
 #align nat.lor_bit Nat.lor'_bit
+-/
 
-/- warning: nat.land_bit -> Nat.land'_bit is a dubious translation:
-lean 3 declaration is
-  forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.land (Nat.bit a m) (Nat.bit b n)) (Nat.bit (and a b) (Nat.land m n))
-but is expected to have type
-  forall (a : Bool) (m : Nat) (b : Bool) (n : Nat), Eq.{1} Nat (Nat.land' (Nat.bit a m) (Nat.bit b n)) (Nat.bit (and a b) (Nat.land' m n))
-Case conversion may be inaccurate. Consider using '#align nat.land_bit Nat.land'_bitₓ'. -/
+#print Nat.land'_bit /-
 @[simp]
-theorem land'_bit : ∀ a m b n, land (bit a m) (bit b n) = bit (a && b) (land m n) :=
+theorem land'_bit : ∀ a m b n, land' (bit a m) (bit b n) = bit (a && b) (land' m n) :=
   bitwise'_bit rfl
 #align nat.land_bit Nat.land'_bit
+-/
 
 #print Nat.ldiff'_bit /-
 @[simp]
@@ -532,15 +504,10 @@ theorem lxor'_bit : ∀ a m b n, lxor' (bit a m) (bit b n) = bit (xor a b) (lxor
 #align nat.lxor_bit Nat.lxor'_bit
 -/
 
-/- warning: nat.test_bit_bitwise -> Nat.testBit_bitwise' is a dubious translation:
-lean 3 declaration is
-  forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.bitwise f m n) k) (f (Nat.testBit m k) (Nat.testBit n k)))
-but is expected to have type
-  forall {f : Bool -> Bool -> Bool}, (Eq.{1} Bool (f Bool.false Bool.false) Bool.false) -> (forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.bitwise' f m n) k) (f (Nat.testBit m k) (Nat.testBit n k)))
-Case conversion may be inaccurate. Consider using '#align nat.test_bit_bitwise Nat.testBit_bitwise'ₓ'. -/
+#print Nat.testBit_bitwise' /-
 @[simp]
 theorem testBit_bitwise' {f : Bool → Bool → Bool} (h : f false false = false) (m n k) :
-    testBit (bitwise f m n) k = f (testBit m k) (testBit n k) :=
+    testBit (bitwise' f m n) k = f (testBit m k) (testBit n k) :=
   by
   revert m n <;> induction' k with k IH <;> intro m n <;> apply bit_cases_on m <;> intro a m' <;>
         apply bit_cases_on n <;>
@@ -549,28 +516,21 @@ theorem testBit_bitwise' {f : Bool → Bool → Bool} (h : f false false = false
   · simp [test_bit_zero]
   · simp [test_bit_succ, IH]
 #align nat.test_bit_bitwise Nat.testBit_bitwise'
+-/
 
-/- warning: nat.test_bit_lor -> Nat.testBit_lor' is a dubious translation:
-lean 3 declaration is
-  forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.lor m n) k) (or (Nat.testBit m k) (Nat.testBit n k))
-but is expected to have type
-  forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.lor' m n) k) (or (Nat.testBit m k) (Nat.testBit n k))
-Case conversion may be inaccurate. Consider using '#align nat.test_bit_lor Nat.testBit_lor'ₓ'. -/
+#print Nat.testBit_lor' /-
 @[simp]
-theorem testBit_lor' : ∀ m n k, testBit (lor m n) k = (testBit m k || testBit n k) :=
+theorem testBit_lor' : ∀ m n k, testBit (lor' m n) k = (testBit m k || testBit n k) :=
   testBit_bitwise' rfl
 #align nat.test_bit_lor Nat.testBit_lor'
+-/
 
-/- warning: nat.test_bit_land -> Nat.testBit_land' is a dubious translation:
-lean 3 declaration is
-  forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.land m n) k) (and (Nat.testBit m k) (Nat.testBit n k))
-but is expected to have type
-  forall (m : Nat) (n : Nat) (k : Nat), Eq.{1} Bool (Nat.testBit (Nat.land' m n) k) (and (Nat.testBit m k) (Nat.testBit n k))
-Case conversion may be inaccurate. Consider using '#align nat.test_bit_land Nat.testBit_land'ₓ'. -/
+#print Nat.testBit_land' /-
 @[simp]
-theorem testBit_land' : ∀ m n k, testBit (land m n) k = (testBit m k && testBit n k) :=
+theorem testBit_land' : ∀ m n k, testBit (land' m n) k = (testBit m k && testBit n k) :=
   testBit_bitwise' rfl
 #align nat.test_bit_land Nat.testBit_land'
+-/
 
 #print Nat.testBit_ldiff' /-
 @[simp]

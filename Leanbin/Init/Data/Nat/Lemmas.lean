@@ -131,7 +131,7 @@ theorem mul_succ (n m : ℕ) : n * succ m = n * m + n :=
 #print Nat.zero_mul /-
 protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
   | 0 => rfl
-  | succ n => by rw [mul_succ, zero_mul]
+  | succ n => by rw [mul_succ, MulZeroClass.zero_mul]
 #align nat.zero_mul Nat.zero_mul
 -/
 

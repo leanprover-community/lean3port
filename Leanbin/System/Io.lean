@@ -279,7 +279,7 @@ def rename : String → String → Io Unit :=
 #align io.fs.rename Io.Fs.rename
 
 def mkdir (path : String) (recursive : Bool := false) : Io Bool :=
-  MonadIoFileSystem.mkdir path recursive
+  MonadIoFileSystem.mkdir Path recursive
 #align io.fs.mkdir Io.Fs.mkdir
 
 def rmdir : String → Io Bool :=

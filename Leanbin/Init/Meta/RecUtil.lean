@@ -49,7 +49,7 @@ unsafe def constructor_num_fields (c : Name) : tactic Nat := do
   let arity ← get_pi_arity ctype
   let I ← env.inductive_type_of c
   let nparams ← return (env.inductive_num_params I)
-  return <| arity - nparams
+  return <| Arity - nparams
 #align tactic.constructor_num_fields tactic.constructor_num_fields
 
 private unsafe def mk_name_list_aux : Name → Nat → Nat → List Name → List Name × Nat

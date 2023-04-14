@@ -62,7 +62,7 @@ theorem monadLift_refl {m : Type u → Type v} {α} : (monadLift : m α → m α
 lean 3 declaration is
   (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u3}) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (succ (succ u1)) (succ u2) (succ u3)}
 but is expected to have type
-  (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (max (succ (succ u1)) (succ u2)) (succ u3)}
+  (semiOutParam.{max (succ (succ u1)) (succ (succ u2))} (Type.{u1} -> Type.{u2})) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (max (succ (succ u1)) (succ u2)) (succ u3)}
 Case conversion may be inaccurate. Consider using '#align monad_functor MonadFunctorₓ'. -/
 /-- A functor in the category of monads. Can be used to lift monad-transforming functions.
     Based on pipes' [MFunctor](https://hackage.haskell.org/package/pipes-2.4.0/docs/Control-MFunctor.html),

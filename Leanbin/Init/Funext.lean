@@ -6,7 +6,7 @@ Author: Jeremy Avigad
 Extensional equality for functions, and a proof of function extensionality from quotients.
 
 ! This file was ported from Lean 3 source module init.funext
-! leanprover-community/mathlib commit 855e0efed3137762a7ba9aca242499b3cce59406
+! leanprover-community/lean commit 855e0efed3137762a7ba9aca242499b3cce59406
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

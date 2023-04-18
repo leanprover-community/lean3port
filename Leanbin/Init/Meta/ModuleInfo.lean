@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gabriel Ebner
 
 ! This file was ported from Lean 3 source module init.meta.module_info
-! leanprover-community/mathlib commit 0d2b2697d163416d759f52e417d5579685e01d9e
+! leanprover-community/lean commit 0d2b2697d163416d759f52e417d5579685e01d9e
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

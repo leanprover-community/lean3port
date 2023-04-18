@@ -7,7 +7,7 @@ Tuples are lists of a fixed size.
 It is implemented as a subtype.
 
 ! This file was ported from Lean 3 source module data.vector
-! leanprover-community/mathlib commit 78b8dbdf66ac8db31afa8fe3d0d7f1d0bf1be236
+! leanprover-community/lean commit 78b8dbdf66ac8db31afa8fe3d0d7f1d0bf1be236
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

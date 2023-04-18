@@ -6,7 +6,7 @@ Authors: Leonardo de Moura, Jeremy Avigad
 The sum type, aka disjoint union.
 
 ! This file was ported from Lean 3 source module init.data.sum.basic
-! leanprover-community/mathlib commit 7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb
+! leanprover-community/lean commit 7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

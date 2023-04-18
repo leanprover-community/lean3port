@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.set_get_option_tactics
-! leanprover-community/mathlib commit 0d74ad97a70a07e0d1632359e0cea831c4c6bf6d
+! leanprover-community/lean commit 0d74ad97a70a07e0d1632359e0cea831c4c6bf6d
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

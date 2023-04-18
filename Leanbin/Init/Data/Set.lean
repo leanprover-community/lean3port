@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.set
-! leanprover-community/mathlib commit ab343ab4edc491dbd02bed7b70295a0bb88be06f
+! leanprover-community/lean commit ab343ab4edc491dbd02bed7b70295a0bb88be06f
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

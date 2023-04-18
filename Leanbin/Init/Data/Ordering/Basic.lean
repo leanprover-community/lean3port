@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.data.ordering.basic
-! leanprover-community/mathlib commit 6e4ef51f2662e5aa53d8981e1dabf02d1785f220
+! leanprover-community/lean commit 6e4ef51f2662e5aa53d8981e1dabf02d1785f220
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

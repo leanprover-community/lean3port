@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.algebra.order
-! leanprover-community/mathlib commit c2bcdbcbe741ed37c361a30d38e179182b989f76
+! leanprover-community/lean commit c2bcdbcbe741ed37c361a30d38e179182b989f76
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

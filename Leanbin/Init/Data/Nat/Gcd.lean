@@ -5,7 +5,7 @@ Authors: Jeremy Avigad, Leonardo de Moura, Mario Carneiro
 
 
 ! This file was ported from Lean 3 source module init.data.nat.gcd
-! leanprover-community/mathlib commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
+! leanprover-community/lean commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

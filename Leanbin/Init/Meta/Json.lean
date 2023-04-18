@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 
 ! This file was ported from Lean 3 source module init.meta.json
-! leanprover-community/mathlib commit a17a1922c334180fca768604b2ac6735ee8d0916
+! leanprover-community/lean commit a17a1922c334180fca768604b2ac6735ee8d0916
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

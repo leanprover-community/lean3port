@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.well_founded_tactics
-! leanprover-community/mathlib commit 5885f626d8db2f03abe21c45749d8e3995f0988e
+! leanprover-community/lean commit 5885f626d8db2f03abe21c45749d8e3995f0988e
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

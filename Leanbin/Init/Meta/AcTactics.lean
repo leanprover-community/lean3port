@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.ac_tactics
-! leanprover-community/mathlib commit 148da46481df09ac36e5d55497ae0f3754534914
+! leanprover-community/lean commit 148da46481df09ac36e5d55497ae0f3754534914
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

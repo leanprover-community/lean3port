@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 Simple command line interface for debugging Lean programs and tactics.
 
 ! This file was ported from Lean 3 source module tools.debugger.cli
-! leanprover-community/mathlib commit 52d6adc19c0c5cdc748d2a97e2ea9bca21037f89
+! leanprover-community/lean commit 52d6adc19c0c5cdc748d2a97e2ea9bca21037f89
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

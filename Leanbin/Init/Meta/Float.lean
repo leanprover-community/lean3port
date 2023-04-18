@@ -1,6 +1,6 @@
 /- Authors: E.W.Ayers 
 ! This file was ported from Lean 3 source module init.meta.float
-! leanprover-community/mathlib commit 9dc6b1ea9d64cb163b0a0c371622887d32e6792f
+! leanprover-community/lean commit 9dc6b1ea9d64cb163b0a0c371622887d32e6792f
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

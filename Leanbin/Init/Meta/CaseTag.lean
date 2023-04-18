@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jannis Limperg
 
 ! This file was ported from Lean 3 source module init.meta.case_tag
-! leanprover-community/mathlib commit c9a9368bc0fd600d832bd56c5cb2124b8a523ef9
+! leanprover-community/lean commit c9a9368bc0fd600d832bd56c5cb2124b8a523ef9
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 ! This file was ported from Lean 3 source module init.meta.smt.congruence_closure
-! leanprover-community/mathlib commit 9eae65f7144bcc692858b9dadf2e48181f4270b9
+! leanprover-community/lean commit 9eae65f7144bcc692858b9dadf2e48181f4270b9
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

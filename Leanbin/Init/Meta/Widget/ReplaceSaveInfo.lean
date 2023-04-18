@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 
 ! This file was ported from Lean 3 source module init.meta.widget.replace_save_info
-! leanprover-community/mathlib commit cacc7c8aa0f97341f8b50ae48c3069429f6c21de
+! leanprover-community/lean commit cacc7c8aa0f97341f8b50ae48c3069429f6c21de
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

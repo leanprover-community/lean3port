@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 Converter monad for building simplifiers.
 
 ! This file was ported from Lean 3 source module init.meta.converter.default
-! leanprover-community/mathlib commit 6669ff213268c5193e04c77a45da99404f54764d
+! leanprover-community/lean commit 6669ff213268c5193e04c77a45da99404f54764d
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

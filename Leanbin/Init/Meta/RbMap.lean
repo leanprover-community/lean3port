@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad
 
 ! This file was ported from Lean 3 source module init.meta.rb_map
-! leanprover-community/mathlib commit a880838c40c42543e5da9283c1eb587e52bce6c5
+! leanprover-community/lean commit a880838c40c42543e5da9283c1eb587e52bce6c5
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

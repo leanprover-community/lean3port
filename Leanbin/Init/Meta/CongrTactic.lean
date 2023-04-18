@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Daniel Selsam
 
 ! This file was ported from Lean 3 source module init.meta.congr_tactic
-! leanprover-community/mathlib commit c0792dde6a5c738ec01ca51039622828c43895d3
+! leanprover-community/lean commit c0792dde6a5c738ec01ca51039622828c43895d3
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/

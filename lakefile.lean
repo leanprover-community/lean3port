@@ -1,7 +1,7 @@
 import Lake
 open Lake DSL System
 
-def tag : String := "nightly-2023-04-25-02"
+def tag : String := "nightly-2023-04-25-04"
 def releaseRepo : String := "leanprover-community/mathport"
 def oleanTarName : String := "lean3-binport.tar.gz"
 
@@ -35,7 +35,7 @@ target fetchOleans (_pkg : Package) : Unit := do
     untarReleaseArtifact releaseRepo tag oleanTarName libDir
   return .nil
 
-require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"3393c04632eb923f835efab258815fb671df6ea1"
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git"@"26fdd3e304f7b6f30c2a298b03524e51d6a2b5e7"
 
 @[default_target]
 lean_lib Leanbin where

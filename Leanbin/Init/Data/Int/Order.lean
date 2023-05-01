@@ -42,7 +42,7 @@ instance : LT Int :=
 
 #print Int.decNonneg /-
 def decNonneg (a : ℤ) : Decidable (NonNeg a) :=
-  Int.casesOn a (fun a => Decidable.true) fun a => Decidable.false
+  Int.casesOn a (fun a => decidableTrue) fun a => decidableFalse
 #align int.decidable_nonneg Int.decNonneg
 -/
 

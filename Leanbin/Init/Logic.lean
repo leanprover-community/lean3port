@@ -1158,13 +1158,17 @@ theorem decide_False' (h : Decidable False) : @decide False h = false :=
 #align to_bool_false_eq_ff decide_False'
 -/
 
-instance Decidable.true : Decidable True :=
+#print decidableTrue /-
+instance decidableTrue : Decidable True :=
   isTrue trivial
-#align decidable.true Decidable.true
+#align decidable.true decidableTrue
+-/
 
-instance Decidable.false : Decidable False :=
+#print decidableFalse /-
+instance decidableFalse : Decidable False :=
   isFalse not_false
-#align decidable.false Decidable.false
+#align decidable.false decidableFalse
+-/
 
 #print dite /-
 -- We use "dependent" if-then-else to be able to communicate the if-then-else condition

@@ -83,14 +83,14 @@ unsafe instance : Repr json :=
 
 unsafe instance : DecidableEq json := fun j₁ j₂ =>
   by
-  cases j₁ <;> cases j₂ <;> simp <;> try apply Decidable.false
+  cases j₁ <;> cases j₂ <;> simp <;> try apply decidableFalse
   -- do this explicitly casewise to be extra sure we don't recurse unintentionally, as meta code
   -- doesn't protect against this.
   case of_string => exact String.hasDecidableEq _ _
   case of_float => exact native.float.dec_eq _ _
   case of_int => exact Int.decidableEq _ _
   case of_bool => exact Bool.decidableEq _ _
-  case null => exact Decidable.true
+  case null => exact decidableTrue
   case array => letI := DecidableEq; exact List.decidableEq _ _
   case object => letI := DecidableEq; exact List.decidableEq _ _
 

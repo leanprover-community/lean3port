@@ -281,7 +281,7 @@ unsafe axiom decl_attributes.apply : decl_attributes → Name → parser Unit
 #align interactive.decl_attributes.apply interactive.decl_attributes.apply
 
 unsafe inductive noncomputable_modifier
-  | computable
+  | Computable
   | noncomputable
   | force_noncomputable
 #align interactive.noncomputable_modifier interactive.noncomputable_modifier

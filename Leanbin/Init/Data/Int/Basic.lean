@@ -1017,7 +1017,7 @@ def toNat : ℤ → ℕ
 theorem toNat_sub (m n : ℕ) : toNat (m - n) = m - n := by
   rw [← Int.subNatNat_eq_coe] <;>
     exact
-      sub_nat_nat_elim m n (fun m n i => to_nat i = m - n)
+      sub_nat_nat_elim m n (fun m n i => toNat i = m - n)
         (fun i n => by rw [Nat.add_sub_cancel_left] <;> rfl) fun i n => by
         rw [Nat.add_assoc, Nat.sub_eq_zero_of_le (Nat.le_add_right _ _)] <;> rfl
 #align int.to_nat_sub Int.toNat_sub

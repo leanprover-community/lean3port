@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 
 ! This file was ported from Lean 3 source module init.meta.instance_cache
-! leanprover-community/lean commit 6f1b5639005a358db19f183c2d7296cebcb12b39
+! leanprover-community/lean commit 5613ccb117f38631c316450832d7a607fe5dd20d
 ! Please do not edit these lines, except to modify the commit id
 ! if you have ported upstream changes.
 -/
@@ -58,13 +58,15 @@ namespace Interactive
 /-- `unfreezingI { tac }` executes tac while temporarily unfreezing the instance cache.
 -/
 unsafe def unfreezingI (tac : itactic) :=
-  unfreezing tac
+  focus1 <|
+    propagate_tags unfreeze_local_instances *> tac <*
+      all_goals (propagate_tags freeze_local_instances)
 #align tactic.interactive.unfreezingI tactic.interactive.unfreezingI
 
 /-- Reset the instance cache. This allows any new instances
 added to the context to be used in typeclass inference. -/
 unsafe def resetI :=
-  reset_instance_cache
+  propagate_tags reset_instance_cache
 #align tactic.interactive.resetI tactic.interactive.resetI
 
 /-- Like `revert`, but can also revert instance arguments. -/
@@ -85,13 +87,13 @@ unsafe def casesI (p : parse cases_arg_p) (q : parse with_ident_list) : tactic U
 /-- Like `intro`, but uses the introduced variable
 in typeclass inference. -/
 unsafe def introI (p : parse ident_ ?) : tactic Unit :=
-  intro p >> reset_instance_cache
+  intro p >> resetI
 #align tactic.interactive.introI tactic.interactive.introI
 
 /-- Like `intros`, but uses the introduced variable(s)
 in typeclass inference. -/
 unsafe def introsI (p : parse ident_*) : tactic Unit :=
-  intros p >> reset_instance_cache
+  intros p >> resetI
 #align tactic.interactive.introsI tactic.interactive.introsI
 
 /-- Used to add typeclasses to the context so that they can
@@ -104,8 +106,8 @@ unsafe def haveI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
       | some a => return a
   have (some h) q₁ q₂
   match q₂ with
-    | none => (swap >> reset_instance_cache) >> swap
-    | some p₂ => reset_instance_cache
+    | none => (swap >> resetI) >> swap
+    | some p₂ => resetI
 #align tactic.interactive.haveI tactic.interactive.haveI
 
 /-- Used to add typeclasses to the context so that they can
@@ -118,14 +120,14 @@ unsafe def letI (h : parse ident ?) (q₁ : parse (tk ":" *> texpr)?)
       | some a => return a
   let (some h) q₁ q₂
   match q₂ with
-    | none => (swap >> reset_instance_cache) >> swap
-    | some p₂ => reset_instance_cache
+    | none => (swap >> resetI) >> swap
+    | some p₂ => resetI
 #align tactic.interactive.letI tactic.interactive.letI
 
 /-- Like `exact`, but uses all variables in the context
 for typeclass inference. -/
 unsafe def exactI (q : parse texpr) : tactic Unit :=
-  reset_instance_cache >> exact q
+  resetI >> exact q
 #align tactic.interactive.exactI tactic.interactive.exactI
 
 end Interactive

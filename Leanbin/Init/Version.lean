@@ -3,12 +3,12 @@ import Leanbin.Init.Data.Nat.Basic
 import Leanbin.Init.Data.String.Basic
 
 def Lean.version : Nat × Nat × Nat :=
-  (3, 50, 3)
+  (3, 51, 0)
 #align lean.version Lean.version
 
 #print Lean.githash /-
 def Lean.githash : String :=
-  "855e5b74e3a52a40552e8f067169d747d48743fd"
+  "9fc1dee97a72a3e34d658aefb4b8a95ecd3d477c"
 #align lean.githash Lean.githash
 -/
 

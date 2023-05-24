@@ -881,7 +881,7 @@ but is expected to have type
   forall {B : Type.{u}} {n : Type.{v}}, (Nat -> B -> n) -> Nat -> (List.{u} B) -> (List.{v} n)
 Case conversion may be inaccurate. Consider using '#align nat.discriminate [anonymous]ₓ'. -/
 def [anonymous] {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
-  induction' h : n with <;> [exact H1 h, exact H2 _ h]
+  induction' h : n with <;> [exact H1 h;exact H2 _ h]
 #align nat.discriminate [anonymous]
 
 theorem one_succ_zero : 1 = succ 0 :=
@@ -1104,7 +1104,7 @@ protected theorem lt_of_sub_eq_succ {m n l : ℕ} (H : m - n = Nat.succ l) : n <
 
 #print Nat.sub_le_sub_left /-
 protected theorem sub_le_sub_left {n m : ℕ} (k) (h : n ≤ m) : k - m ≤ k - n := by
-  induction h <;> [rfl, exact le_trans (pred_le _) h_ih]
+  induction h <;> [rfl;exact le_trans (pred_le _) h_ih]
 #align nat.sub_le_sub_left Nat.sub_le_sub_left
 -/
 

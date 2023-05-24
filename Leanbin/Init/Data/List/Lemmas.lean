@@ -193,7 +193,7 @@ Case conversion may be inaccurate. Consider using '#align list.append_bind List.
 @[simp]
 theorem append_bind (xs ys) (f : α → List β) :
     List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
-  induction xs <;> [rfl, simp [*, cons_bind]]
+  induction xs <;> [rfl;simp [*, cons_bind]]
 #align list.append_bind List.append_bind
 
 /-! mem -/

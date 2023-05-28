@@ -69,10 +69,8 @@ theorem bodd_succ (n : ℕ) : bodd (succ n) = not (bodd n) := by
 theorem bodd_add (m n : ℕ) : bodd (m + n) = xor (bodd m) (bodd n) :=
   by
   induction' n with n IH
-  · simp
-    cases bodd m <;> rfl
-  · simp [add_succ, IH]
-    cases bodd m <;> cases bodd n <;> rfl
+  · simp; cases bodd m <;> rfl
+  · simp [add_succ, IH]; cases bodd m <;> cases bodd n <;> rfl
 #align nat.bodd_add Nat.bodd_add
 -/
 
@@ -81,10 +79,8 @@ theorem bodd_add (m n : ℕ) : bodd (m + n) = xor (bodd m) (bodd n) :=
 theorem bodd_mul (m n : ℕ) : bodd (m * n) = (bodd m && bodd n) :=
   by
   induction' n with n IH
-  · simp
-    cases bodd m <;> rfl
-  · simp [mul_succ, IH]
-    cases bodd m <;> cases bodd n <;> rfl
+  · simp; cases bodd m <;> rfl
+  · simp [mul_succ, IH]; cases bodd m <;> cases bodd n <;> rfl
 #align nat.bodd_mul Nat.bodd_mul
 -/
 
@@ -173,11 +169,7 @@ theorem bit1_val (n : Nat) : bit1 n = 2 * n + 1 :=
 -/
 
 #print Nat.bit_val /-
-theorem bit_val (b n) : bit b n = 2 * n + cond b 1 0 :=
-  by
-  cases b
-  apply bit0_val
-  apply bit1_val
+theorem bit_val (b n) : bit b n = 2 * n + cond b 1 0 := by cases b; apply bit0_val; apply bit1_val
 #align nat.bit_val Nat.bit_val
 -/
 
@@ -300,9 +292,7 @@ def lxor' : ℕ → ℕ → ℕ :=
 #print Nat.binaryRec_zero /-
 @[simp]
 theorem binaryRec_zero {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) :
-    binaryRec z f 0 = z := by
-  rw [binary_rec]
-  rfl
+    binaryRec z f 0 = z := by rw [binary_rec]; rfl
 #align nat.binary_rec_zero Nat.binaryRec_zero
 -/
 
@@ -449,7 +439,7 @@ theorem bitwise'_bit {f : Bool → Bool → Bool} (h : f false false = false) (a
   rw [binary_rec_eq, binary_rec_eq]
   · induction' ftf : f tt ff with <;> dsimp [cond]
     rw [show f a ff = ff by cases a <;> assumption]
-    apply @congr_arg _ _ _ 0 (bit ff)
+    apply @congr_arg _ _ _ 0 (bit ff);
     run_tac
       tactic.swap
     rw [show f a ff = a by cases a <;> assumption]
@@ -469,8 +459,7 @@ theorem bitwise'_swap {f : Bool → Bool → Bool} (h : f false false = false) :
   funext m n; revert n
   dsimp [Function.swap]
   apply binary_rec _ (fun a m' IH => _) m <;> intro n
-  · rw [bitwise_zero_left, bitwise_zero_right]
-    exact h
+  · rw [bitwise_zero_left, bitwise_zero_right]; exact h
   apply bit_cases_on n <;> intro b n'
   rw [bitwise_bit, bitwise_bit, IH] <;> exact h
 #align nat.bitwise_swap Nat.bitwise'_swap

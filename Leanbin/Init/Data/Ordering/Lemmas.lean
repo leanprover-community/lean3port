@@ -66,11 +66,7 @@ theorem cmpUsing_eq_gt [IsStrictOrder α lt] (a b : α) : (cmpUsing lt a b = Ord
   by
   simp; apply propext; apply Iff.intro
   · exact fun h => h.2
-  · intro hba
-    constructor
-    · intro hab
-      exact absurd (trans hab hba) (irrefl a)
-    · assumption
+  · intro hba; constructor; · intro hab; exact absurd (trans hab hba) (irrefl a); · assumption
 #align cmp_using_eq_gt cmpUsing_eq_gt
 -/
 

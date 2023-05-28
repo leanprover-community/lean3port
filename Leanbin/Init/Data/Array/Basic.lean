@@ -115,18 +115,15 @@ theorem of_beqAux_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
   | 0, h₁, h₂, j, h₃ => absurd h₃ (Nat.not_lt_zero _)
   | i + 1, h₁, h₂, j, h₃ =>
     by
-    have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt :=
-      by
-      simp [DArray.beqAux] at h₂
-      assumption
+    have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
+      simp [DArray.beqAux] at h₂; assumption
     have h₁' : i ≤ n := le_of_lt h₁
     have ih :
       ∀ (j : Nat) (h' : j < i),
         a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ = b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
       of_beq_aux_eq_tt i h₁' h₂'.2
     by_cases hji : j = i
-    · subst hji
-      exact h₂'.1
+    · subst hji; exact h₂'.1
     · have j_lt_i : j < i := lt_of_le_of_ne (Nat.le_of_lt_succ h₃) hji
       exact ih j j_lt_i
 #align d_array.of_beq_aux_eq_tt DArray.of_beqAux_eq_true
@@ -146,14 +143,10 @@ theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
   | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂; contradiction
   | i + 1, h₁, h₂ =>
     by
-    have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff :=
-      by
-      simp [DArray.beqAux] at h₂
-      assumption
+    have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
+      simp [DArray.beqAux] at h₂; assumption
     cases' h₂' with h h
-    · exists i
-      exists Nat.lt_succ_self _
-      exact h
+    · exists i; exists Nat.lt_succ_self _; exact h
     · have h₁' : i ≤ n := le_of_lt h₁
       have ih :
         ∃ (j : Nat)(h' : j < i),
@@ -161,8 +154,7 @@ theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
         of_beq_aux_eq_ff i h₁' h
       cases' ih with j ih
       cases' ih with h' ih
-      exists j
-      exists Nat.lt_succ_of_lt h'
+      exists j; exists Nat.lt_succ_of_lt h'
       exact ih
 #align d_array.of_beq_aux_eq_ff DArray.of_beqAux_eq_false
 

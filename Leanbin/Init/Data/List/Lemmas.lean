@@ -67,8 +67,7 @@ theorem length_cons (a : α) (l : List α) : length (a :: l) = length l + 1 :=
 theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
   by
   induction s
-  · show length t = 0 + length t
-    · rw [Nat.zero_add]
+  · show length t = 0 + length t; · rw [Nat.zero_add]
   · simp [*, Nat.add_comm, Nat.add_left_comm]
 #align list.length_append List.length_append
 -/
@@ -277,11 +276,7 @@ theorem forall_mem_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => Fa
 -/
 
 theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
-  ⟨fun ⟨x, h, px⟩ => by
-    simp at h
-    cases' h with h h
-    · cases h
-      exact Or.inl px
+  ⟨fun ⟨x, h, px⟩ => by simp at h; cases' h with h h; · cases h; exact Or.inl px;
     · exact Or.inr ⟨x, h, px⟩, fun o =>
     o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 #align list.bex_cons List.bex_cons
@@ -360,11 +355,8 @@ theorem subset_cons_of_subset (a : α) {l₁ l₂ : List α} : l₁ ⊆ l₂ →
 -/
 
 #print List.eq_nil_of_length_eq_zero /-
-theorem eq_nil_of_length_eq_zero {l : List α} : length l = 0 → l = [] :=
-  by
-  induction l <;> intros
-  rfl
-  contradiction
+theorem eq_nil_of_length_eq_zero {l : List α} : length l = 0 → l = [] := by induction l <;> intros ;
+  rfl; contradiction
 #align list.eq_nil_of_length_eq_zero List.eq_nil_of_length_eq_zero
 -/
 

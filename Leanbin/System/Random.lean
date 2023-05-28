@@ -106,14 +106,9 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
     have : r' / gen_mag - 1 < r' :=
       by
       by_cases h : (r + 1) / gen_mag = 0
-      · rw [h]
-        simp
-        apply Nat.zero_lt_succ
+      · rw [h]; simp; apply Nat.zero_lt_succ
       · have : (r + 1) / gen_mag > 0 := Nat.pos_of_ne_zero h
-        have h₁ : (r + 1) / gen_mag - 1 < (r + 1) / gen_mag :=
-          by
-          apply Nat.sub_lt
-          assumption
+        have h₁ : (r + 1) / gen_mag - 1 < (r + 1) / gen_mag := by apply Nat.sub_lt; assumption;
           run_tac
             tactic.comp_val
         have h₂ : (r + 1) / gen_mag ≤ r + 1 := by apply Nat.div_le_self

@@ -147,21 +147,10 @@ Case conversion may be inaccurate. Consider using '#align min_assoc min_assocₓ
 theorem min_assoc (a b c : α) : min (min a b) c = min a (min b c) :=
   by
   apply eq_min
-  · apply le_trans
-    apply min_le_left
-    apply min_le_left
-  · apply le_min
-    apply le_trans
-    apply min_le_left
-    apply min_le_right
-    apply min_le_right
-  · intro d h₁ h₂
-    apply le_min
-    apply le_min h₁
-    apply le_trans h₂
-    apply min_le_left
-    apply le_trans h₂
-    apply min_le_right
+  · apply le_trans; apply min_le_left; apply min_le_left
+  · apply le_min; apply le_trans; apply min_le_left; apply min_le_right; apply min_le_right
+  · intro d h₁ h₂; apply le_min; apply le_min h₁; apply le_trans h₂; apply min_le_left
+    apply le_trans h₂; apply min_le_right
 #align min_assoc min_assoc
 
 /- warning: min_left_comm -> min_left_comm is a dubious translation:
@@ -237,18 +226,9 @@ Case conversion may be inaccurate. Consider using '#align max_assoc max_assocₓ
 theorem max_assoc (a b c : α) : max (max a b) c = max a (max b c) :=
   by
   apply eq_max
-  · apply le_trans
-    apply le_max_left a b
-    apply le_max_left
-  · apply max_le
-    apply le_trans
-    apply le_max_right a b
-    apply le_max_left
-    apply le_max_right
-  · intro d h₁ h₂
-    apply max_le
-    apply max_le h₁
-    apply le_trans (le_max_left _ _) h₂
+  · apply le_trans; apply le_max_left a b; apply le_max_left
+  · apply max_le; apply le_trans; apply le_max_right a b; apply le_max_left; apply le_max_right
+  · intro d h₁ h₂; apply max_le; apply max_le h₁; apply le_trans (le_max_left _ _) h₂
     apply le_trans (le_max_right _ _) h₂
 #align max_assoc max_assoc
 

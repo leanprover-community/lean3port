@@ -146,11 +146,8 @@ theorem ofNat_zero_le (n : ℕ) : 0 ≤ (↑n : ℤ) :=
 -/
 
 #print Int.eq_ofNat_of_zero_le /-
-theorem eq_ofNat_of_zero_le {a : ℤ} (h : 0 ≤ a) : ∃ n : ℕ, a = n :=
-  by
-  have t := le.dest_sub h
-  simp at t
-  exact t
+theorem eq_ofNat_of_zero_le {a : ℤ} (h : 0 ≤ a) : ∃ n : ℕ, a = n := by have t := le.dest_sub h;
+  simp at t; exact t
 #align int.eq_coe_of_zero_le Int.eq_ofNat_of_zero_le
 -/
 
@@ -164,10 +161,7 @@ theorem eq_succ_of_zero_lt {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
 #print Int.lt_add_succ /-
 theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a + ↑(Nat.succ n) :=
   le.intro
-    (show a + 1 + n = a + Nat.succ n
-      by
-      simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]
-      rfl)
+    (show a + 1 + n = a + Nat.succ n by simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]; rfl)
 #align int.lt_add_succ Int.lt_add_succ
 -/
 
@@ -319,17 +313,12 @@ protected theorem zero_lt_one : (0 : ℤ) < 1 :=
 protected theorem lt_iff_le_not_le {a b : ℤ} : a < b ↔ a ≤ b ∧ ¬b ≤ a :=
   by
   simp [Int.lt_iff_le_and_ne]; constructor <;> intro h
-  · cases' h with hab hn
-    constructor
+  · cases' h with hab hn; constructor
     · assumption
-    · intro hba
-      simp [Int.le_antisymm hab hba] at *
-      contradiction
-  · cases' h with hab hn
-    constructor
+    · intro hba; simp [Int.le_antisymm hab hba] at *; contradiction
+  · cases' h with hab hn; constructor
     · assumption
-    · intro h
-      simp_all
+    · intro h; simp_all
 #align int.lt_iff_le_not_le Int.lt_iff_le_not_le
 -/
 

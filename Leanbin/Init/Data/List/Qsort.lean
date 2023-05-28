@@ -26,8 +26,7 @@ def Qsort.f {α} (lt : α → α → Bool) :
       by
       rw [partition_eq_filter_filter] at e
       injection e
-      subst large
-      subst Small
+      subst large; subst Small
       constructor <;> exact Nat.succ_le_succ (length_le_of_sublist (filter_sublist _))
     exact IH Small this.left ++ h :: IH large this.right
 #align list.qsort.F List.Qsort.f

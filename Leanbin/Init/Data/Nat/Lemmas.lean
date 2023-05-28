@@ -49,9 +49,7 @@ protected theorem add_left_comm : ∀ n m k : ℕ, n + (m + k) = m + (n + k) :=
 protected theorem add_left_cancel : ∀ {n m k : ℕ}, n + m = n + k → m = k
   | 0, m, k => by simp (config := { contextual := true }) [Nat.zero_add]
   | succ n, m, k => fun h =>
-    have : n + m = n + k := by
-      simp [succ_add] at h
-      assumption
+    have : n + m = n + k := by simp [succ_add] at h; assumption
     add_left_cancel this
 #align nat.add_left_cancel Nat.add_left_cancel
 -/
@@ -243,10 +241,7 @@ theorem lt.step {n m : ℕ} : n < m → n < succ m :=
 -/
 
 #print Nat.eq_zero_or_pos /-
-protected theorem eq_zero_or_pos (n : ℕ) : n = 0 ∨ 0 < n :=
-  by
-  cases n
-  exact Or.inl rfl
+protected theorem eq_zero_or_pos (n : ℕ) : n = 0 ∨ 0 < n := by cases n; exact Or.inl rfl;
   exact Or.inr (succ_pos _)
 #align nat.eq_zero_or_pos Nat.eq_zero_or_pos
 -/
@@ -722,10 +717,8 @@ protected theorem bit0_inj : ∀ {n m : ℕ}, bit0 n = bit0 m → n = m
     by
     have : succ (succ (n + n)) = succ (succ (m + m)) :=
       by
-      unfold bit0 at h
-      simp [add_one, add_succ, succ_add] at h
-      have aux : n + n = m + m := h
-      rw [aux]
+      unfold bit0 at h; simp [add_one, add_succ, succ_add] at h
+      have aux : n + n = m + m := h; rw [aux]
     have : n + n = m + m := by repeat injection this with this
     have : n = m := bit0_inj this
     rw [this]
@@ -1285,16 +1278,11 @@ protected def strongRecOn {p : Nat → Sort u} (n : Nat) (h : ∀ n, (∀ m, m <
   by
   suffices ∀ n m, m < n → p m from this (succ n) n (lt_succ_self _)
   intro n; induction' n with n ih
-  · intro m h₁
-    exact absurd h₁ m.not_lt_zero
+  · intro m h₁; exact absurd h₁ m.not_lt_zero
   · intro m h₁
     apply Or.by_cases (Decidable.lt_or_eq_of_le (le_of_lt_succ h₁))
-    · intros
-      apply ih
-      assumption
-    · intros
-      subst m
-      apply h _ ih
+    · intros ; apply ih; assumption
+    · intros ; subst m; apply h _ ih
 #align nat.strong_rec_on Nat.strongRecOn
 
 #print Nat.strong_induction_on /-
@@ -1321,9 +1309,7 @@ private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
     Nat.modCore y f1 x = Nat.modCore y f2 x :=
   by
   cases y; · cases f1 <;> cases f2 <;> rfl
-  induction' f1 with f1 ih generalizing x f2;
-  · cases h1
-    cases f2 <;> rfl
+  induction' f1 with f1 ih generalizing x f2; · cases h1; cases f2 <;> rfl
   cases x; · cases f1 <;> cases f2 <;> rfl
   cases f2; · cases h2
   refine' if_congr Iff.rfl _ rfl
@@ -1369,9 +1355,7 @@ theorem mod_eq_of_lt {a b : Nat} (h : a < b) : a % b = a :=
 @[simp]
 theorem zero_mod (b : Nat) : 0 % b = 0 := by
   rw [mod_def]
-  have h : ¬(0 < b ∧ b ≤ 0) := by
-    intro hn
-    cases' hn with l r
+  have h : ¬(0 < b ∧ b ≤ 0) := by intro hn; cases' hn with l r;
     exact absurd (lt_of_lt_of_le l r) (lt_irrefl 0)
   simp [if_neg, h]
 #align nat.zero_mod Nat.zero_mod
@@ -1388,8 +1372,7 @@ theorem mod_eq_sub_mod {a b : Nat} (h : b ≤ a) : a % b = (a - b) % b :=
 theorem mod_lt (x : Nat) {y : Nat} (h : 0 < y) : x % y < y :=
   by
   induction' x using Nat.case_strong_induction_on with x ih
-  · rw [zero_mod]
-    assumption
+  · rw [zero_mod]; assumption
   · by_cases h₁ : succ x < y
     · rwa [mod_eq_of_lt h₁]
     · have h₁ : succ x % y = (succ x - y) % y := mod_eq_sub_mod (not_lt.1 h₁)
@@ -1445,11 +1428,8 @@ theorem add_mod_left (x z : ℕ) : (x + z) % x = z % x := by rw [Nat.add_comm, a
 
 #print Nat.add_mul_mod_self_left /-
 @[simp]
-theorem add_mul_mod_self_left (x y z : ℕ) : (x + y * z) % y = x % y :=
-  by
-  induction' z with z ih
-  rw [Nat.mul_zero, Nat.add_zero]
-  rw [mul_succ, ← Nat.add_assoc, add_mod_right, ih]
+theorem add_mul_mod_self_left (x y z : ℕ) : (x + y * z) % y = x % y := by induction' z with z ih;
+  rw [Nat.mul_zero, Nat.add_zero]; rw [mul_succ, ← Nat.add_assoc, add_mod_right, ih]
 #align nat.add_mul_mod_self_left Nat.add_mul_mod_self_left
 -/
 
@@ -1519,8 +1499,7 @@ theorem sub_mul_mod (x k n : ℕ) (h₁ : n * k ≤ x) : (x - n * k) % n = x % n
     have h₄ : x - n * k ≥ n := by
       apply @Nat.le_of_add_le_add_right (n * k)
       rw [Nat.sub_add_cancel h₂]
-      simp [mul_succ, Nat.add_comm] at h₁
-      simp [h₁]
+      simp [mul_succ, Nat.add_comm] at h₁; simp [h₁]
     rw [mul_succ, ← Nat.sub_sub, ← mod_eq_sub_mod h₄, k_ih h₂]
 #align nat.sub_mul_mod Nat.sub_mul_mod
 -/
@@ -1532,9 +1511,7 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
     Nat.divCore y f1 x = Nat.divCore y f2 x :=
   by
   cases y; · cases f1 <;> cases f2 <;> rfl
-  induction' f1 with f1 ih generalizing x f2;
-  · cases h1
-    cases f2 <;> rfl
+  induction' f1 with f1 ih generalizing x f2; · cases h1; cases f2 <;> rfl
   cases x; · cases f1 <;> cases f2 <;> rfl
   cases f2; · cases h2
   refine' if_congr Iff.rfl _ rfl
@@ -1698,8 +1675,7 @@ theorem sub_mul_div (x n p : ℕ) (h₁ : n * p ≤ x) : (x - n * p) / n = x / n
     · rw [Nat.mul_zero, Nat.sub_zero, Nat.sub_zero]
     · have h₂ : n * p ≤ x := by
         trans
-        · apply Nat.mul_le_mul_left
-          apply le_succ
+        · apply Nat.mul_le_mul_left; apply le_succ
         · apply h₁
       have h₃ : x - n * p ≥ n := by
         apply Nat.le_of_add_le_add_right
@@ -1760,8 +1736,7 @@ theorem add_mul_div_left (x z : ℕ) {y : ℕ} (H : 0 < y) : (x + y * z) / y = x
   by
   induction' z with z ih
   · rw [Nat.mul_zero, Nat.add_zero, Nat.add_zero]
-  · rw [mul_succ, ← Nat.add_assoc, add_div_right _ H, ih]
-    rfl
+  · rw [mul_succ, ← Nat.add_assoc, add_div_right _ H, ih]; rfl
 #align nat.add_mul_div_left Nat.add_mul_div_left
 -/
 
@@ -1814,10 +1789,8 @@ theorem mul_sub_div (x n p : ℕ) (h₁ : x < n * p) : (n * p - succ x) / n = p 
   · change succ (pred (n * p - x)) ≤ succ (pred (p - x / n)) * n
     rw [succ_pred_eq_of_pos (Nat.sub_pos_of_lt h₁), succ_pred_eq_of_pos (Nat.sub_pos_of_lt _)]
     · rw [Nat.mul_sub_right_distrib, Nat.mul_comm]
-      apply Nat.sub_le_sub_left
-      apply div_mul_le_self
-    · apply (div_lt_iff_lt_mul npos).2
-      rwa [Nat.mul_comm]
+      apply Nat.sub_le_sub_left; apply div_mul_le_self
+    · apply (div_lt_iff_lt_mul npos).2; rwa [Nat.mul_comm]
 #align nat.mul_sub_div Nat.mul_sub_div
 -/
 
@@ -1917,9 +1890,7 @@ theorem dvd_mod_iff {k m n : ℕ} (h : k ∣ n) : k ∣ m % n ↔ k ∣ m :=
 #print Nat.le_of_dvd /-
 theorem le_of_dvd {m n : ℕ} (h : 0 < n) : m ∣ n → m ≤ n := fun ⟨k, e⟩ =>
   by
-  revert h
-  rw [e]
-  refine' k.cases_on _ _
+  revert h; rw [e]; refine' k.cases_on _ _
   exact fun hn => absurd hn (lt_irrefl _)
   exact fun k _ => by
     let t := m.mul_le_mul_left (succ_pos k)
@@ -1950,9 +1921,7 @@ theorem eq_one_of_dvd_one {n : ℕ} (H : n ∣ 1) : n = 1 :=
 
 #print Nat.dvd_of_mod_eq_zero /-
 theorem dvd_of_mod_eq_zero {m n : ℕ} (H : n % m = 0) : m ∣ n :=
-  ⟨n / m, by
-    have t := (mod_add_div n m).symm
-    rwa [H, Nat.zero_add] at t⟩
+  ⟨n / m, by have t := (mod_add_div n m).symm; rwa [H, Nat.zero_add] at t⟩
 #align nat.dvd_of_mod_eq_zero Nat.dvd_of_mod_eq_zero
 -/
 

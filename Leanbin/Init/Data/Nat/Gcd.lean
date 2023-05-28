@@ -85,8 +85,7 @@ theorem gcd.induction {P : ℕ → ℕ → Prop} (m n : ℕ) (H0 : ∀ n, P 0 n)
     (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) : P m n :=
   @induction _ _ lt_wfRel (fun m => ∀ n, P m n) m
     (fun k IH => by
-      induction' k with k ih
-      exact H0
+      induction' k with k ih; exact H0
       exact fun n => H1 _ _ (succ_pos _) (IH _ (mod_lt _ (succ_pos _)) _))
     n
 #align nat.gcd.induction Nat.gcd.induction

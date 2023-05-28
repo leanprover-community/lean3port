@@ -79,12 +79,7 @@ def concat (x : α) : Dlist α → Dlist α
 
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
-  | ⟨xs, h₁⟩, ⟨ys, h₂⟩ =>
-    ⟨xs ∘ ys, by
-      intros
-      simp
-      rw [h₂, h₁, h₁ (ys List.nil)]
-      simp⟩
+  | ⟨xs, h₁⟩, ⟨ys, h₂⟩ => ⟨xs ∘ ys, by intros ; simp; rw [h₂, h₁, h₁ (ys List.nil)]; simp⟩
 #align dlist.append Dlist.append
 
 instance : Append (Dlist α) :=
@@ -106,10 +101,7 @@ Case conversion may be inaccurate. Consider using '#align dlist.of_list_to_list 
 theorem Std.DList.ofList_toList (l : Dlist α) : ofList (toList l) = l :=
   by
   cases' l with xs
-  have h : append (xs []) = xs := by
-    intros
-    funext x
-    simp [l_invariant x]
+  have h : append (xs []) = xs := by intros ; funext x; simp [l_invariant x]
   simp [h]
 #align dlist.of_list_to_list Std.DList.ofList_toList
 

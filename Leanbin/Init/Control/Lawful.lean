@@ -28,11 +28,7 @@ unsafe def control_laws_tac :=
 
 #print LawfulFunctor /-
 class LawfulFunctor (f : Type u → Type v) [Functor f] : Prop where
-  mapConst_eq :
-    ∀ {α β : Type u},
-      ((· <$ ·) : α → f β → f α) =
-        (· <$> ·) ∘ const β := by
-    intros
+  mapConst_eq : ∀ {α β : Type u}, ((· <$ ·) : α → f β → f α) = (· <$> ·) ∘ const β := by intros ;
     rfl
   -- `functor` is indeed a categorical functor
   id_map : ∀ {α : Type u} (x : f α), id <$> x = x
@@ -47,15 +43,8 @@ attribute [simp] id_map
 #print LawfulApplicative /-
 -- `comp_map` does not make a good simp lemma
 class LawfulApplicative (f : Type u → Type v) [Applicative f] extends LawfulFunctor f : Prop where
-  seqLeft_eq :
-    ∀ {α β : Type u} (a : f α) (b : f β),
-      a <* b = const β <$> a <*> b := by
-    intros
-    rfl
-  seqRight_eq :
-    ∀ {α β : Type u} (a : f α) (b : f β),
-      a *> b = const α id <$> a <*> b := by
-    intros
+  seqLeft_eq : ∀ {α β : Type u} (a : f α) (b : f β), a <* b = const β <$> a <*> b := by intros ; rfl
+  seqRight_eq : ∀ {α β : Type u} (a : f α) (b : f β), a *> b = const α id <$> a <*> b := by intros ;
     rfl
   -- applicative laws
   pure_seq : ∀ {α β : Type u} (g : α → β) (x : f α), pure g <*> x = g <$> x
@@ -87,16 +76,10 @@ theorem pure_id_seq {α : Type u} {f : Type u → Type v} [Applicative f] [Lawfu
 
 #print LawfulMonad /-
 class LawfulMonad (m : Type u → Type v) [Monad m] extends LawfulApplicative m : Prop where
-  bind_pure_comp_eq_map :
-    ∀ {α β : Type u} (f : α → β) (x : m α),
-      x >>= pure ∘ f = f <$> x := by
-    intros
-    rfl
-  bind_map_eq_seq :
-    ∀ {α β : Type u} (f : m (α → β)) (x : m α),
-      f >>= (· <$> x) = f <*> x := by
-    intros
-    rfl
+  bind_pure_comp_eq_map : ∀ {α β : Type u} (f : α → β) (x : m α), x >>= pure ∘ f = f <$> x := by
+    intros ; rfl
+  bind_map_eq_seq : ∀ {α β : Type u} (f : m (α → β)) (x : m α), f >>= (· <$> x) = f <*> x := by
+    intros ; rfl
   -- monad laws
   pure_bind : ∀ {α β : Type u} (x : α) (f : α → m β), pure x >>= f = f x
   bind_assoc :
@@ -240,14 +223,8 @@ end StateT
 instance (m : Type u → Type v) [Monad m] [LawfulMonad m] (σ : Type u) : LawfulMonad (StateT σ m)
     where
   id_map := by intros <;> apply StateT.ext <;> intro <;> simp <;> erw [id_map]
-  pure_bind := by
-    intros
-    apply StateT.ext
-    simp
-  bind_assoc := by
-    intros
-    apply StateT.ext
-    simp [bind_assoc]
+  pure_bind := by intros ; apply StateT.ext; simp
+  bind_assoc := by intros ; apply StateT.ext; simp [bind_assoc]
 
 namespace ExceptT
 

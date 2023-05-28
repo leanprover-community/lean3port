@@ -89,7 +89,6 @@ private unsafe def clear_wf_rec_goal_aux : List expr → tactic Unit
   | h :: hs =>
     clear_wf_rec_goal_aux hs >>
       try (guard (h.local_pp_name.is_internal || h.is_aux_decl) >> clear h)
-#align well_founded_tactics.clear_wf_rec_goal_aux well_founded_tactics.clear_wf_rec_goal_aux
 
 unsafe def clear_internals : tactic Unit :=
   local_context >>= clear_wf_rec_goal_aux
@@ -121,14 +120,12 @@ unsafe def process_lex : tactic Unit → tactic Unit
 
 private unsafe def unfold_sizeof_measure : tactic Unit :=
   dunfold_target [`` SizeofMeasure, `` Measure, `` InvImage] { failIfUnchanged := false }
-#align well_founded_tactics.unfold_sizeof_measure well_founded_tactics.unfold_sizeof_measure
 
 private unsafe def add_simps : simp_lemmas → List Name → tactic simp_lemmas
   | s, [] => return s
   | s, n :: ns => do
     let s' ← s.add_simp n false
     add_simps s' ns
-#align well_founded_tactics.add_simps well_founded_tactics.add_simps
 
 private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
   e.mfold simp_lemmas.mk fun c d s =>
@@ -139,14 +136,12 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
         add_simps s eqns
       | _ => return s
     else return s
-#align well_founded_tactics.collect_sizeof_lemmas well_founded_tactics.collect_sizeof_lemmas
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` SizeOf.sizeOf, `` SizeOf.sizeOf] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
   simp_target S >> unfold_sizeof_loop <|> try sorry
-#align well_founded_tactics.unfold_sizeof_loop well_founded_tactics.unfold_sizeof_loop
 
 unsafe def unfold_sizeof : tactic Unit :=
   unfold_sizeof_measure >> unfold_sizeof_loop
@@ -164,7 +159,6 @@ private unsafe
     collect_add_args
     : expr → List expr
     | q( $ ( a ) + $ ( b ) ) => collect_add_args a ++ collect_add_args b | e => [ e ]
-#align well_founded_tactics.collect_add_args well_founded_tactics.collect_add_args
 
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
@@ -174,7 +168,6 @@ private unsafe
     | [ ] => to_expr ` `( 0 )
       | [ a ] => return a
       | a :: as => do let rs ← mk_nat_add as to_expr ` `( $ ( a ) + $ ( rs ) )
-#align well_founded_tactics.mk_nat_add well_founded_tactics.mk_nat_add
 
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
@@ -184,31 +177,25 @@ private unsafe
     | [ ] , b => mk_nat_add b
       | a , [ ] => mk_nat_add a
       | a , b => do let t ← mk_nat_add a let s ← mk_nat_add b to_expr ` `( $ ( t ) + $ ( s ) )
-#align well_founded_tactics.mk_nat_add_add well_founded_tactics.mk_nat_add_add
 
 private unsafe def get_add_fn (e : expr) : expr :=
   if is_napp_of e `has_add.add 4 then e.app_fn.app_fn else e
-#align well_founded_tactics.get_add_fn well_founded_tactics.get_add_fn
 
 private unsafe def prove_eq_by_perm (a b : expr) : tactic expr :=
   is_def_eq a b >> to_expr ``(Eq.refl $(a)) <|>
     perm_ac (get_add_fn a) q(Nat.add_assoc) q(Nat.add_comm) a b
-#align well_founded_tactics.prove_eq_by_perm well_founded_tactics.prove_eq_by_perm
 
 private unsafe def num_small_lt (a b : expr) : Bool :=
   if a = b then false
   else
     if is_napp_of a `has_one.one 2 then true
     else if is_napp_of b `has_one.one 2 then false else a.lt b
-#align well_founded_tactics.num_small_lt well_founded_tactics.num_small_lt
 
 private unsafe def sort_args (args : List expr) : List expr :=
   args.qsort num_small_lt
-#align well_founded_tactics.sort_args well_founded_tactics.sort_args
 
 private def tagged_proof.wf : Unit :=
   ()
-#align well_founded_tactics.tagged_proof.wf well_founded_tactics.tagged_proof.wf
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/

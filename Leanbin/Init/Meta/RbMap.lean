@@ -19,7 +19,6 @@ open Format
 
 private unsafe def format_key {key} [has_to_format key] (k : key) (first : Bool) : format :=
   (if first then to_fmt "" else to_fmt "," ++ line) ++ to_fmt k
-#align format_key format_key
 
 namespace Native
 
@@ -154,7 +153,6 @@ variable {key : Type} {data : Type} [has_to_format key] [has_to_format data]
 private unsafe def format_key_data (k : key) (d : data) (first : Bool) : format :=
   (if first then to_fmt "" else to_fmt "," ++ line) ++ to_fmt k ++ space ++ to_fmt "←" ++ space ++
     to_fmt d
-#align native.format_key_data native.format_key_data
 
 unsafe instance : has_to_format (rb_map key data) :=
   ⟨fun m =>
@@ -174,7 +172,6 @@ variable {key : Type} {data : Type} [ToString key] [ToString data]
 
 private unsafe def key_data_to_string (k : key) (d : data) (first : Bool) : String :=
   (if first then "" else ", ") ++ toString k ++ " ← " ++ toString d
-#align native.key_data_to_string native.key_data_to_string
 
 unsafe instance : ToString (rb_map key data) :=
   ⟨fun m =>

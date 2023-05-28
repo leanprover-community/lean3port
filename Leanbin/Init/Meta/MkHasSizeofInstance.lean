@@ -27,7 +27,6 @@ private unsafe def get_has_sizeof_type_name : tactic Name :=
       return I) <|>
     fail
       "mk_has_sizeof_instance tactic failed, target type is expected to be of the form (has_sizeof ...)"
-#align tactic.get_has_sizeof_type_name tactic.get_has_sizeof_type_name
 
 /-- Try to synthesize constructor argument using type class resolution -/
 private unsafe def mk_has_sizeof_instance_for (a : expr) (use_default : Bool) : tactic expr := do
@@ -42,7 +41,6 @@ private unsafe def mk_has_sizeof_instance_for (a : expr) (use_default : Bool) : 
         fail
             (to_fmt "mk_has_sizeof_instance failed, failed to generate instance for" ++
               format.nest 2 (format.line ++ f))
-#align tactic.mk_has_sizeof_instance_for tactic.mk_has_sizeof_instance_for
 
 private unsafe def mk_sizeof : Bool → Name → Name → List Name → Nat → tactic (List expr)
   | use_default, I_name, F_name, [], num_rec => return []
@@ -54,18 +52,15 @@ private unsafe def mk_sizeof : Bool → Name → Name → List Name → Nat → 
         else mk_has_sizeof_instance_for Field use_default
     let szs ← mk_sizeof use_default I_name F_name fnames (if rec then num_rec + 1 else num_rec)
     return (sz :: szs)
-#align tactic.mk_sizeof tactic.mk_sizeof
 
 private unsafe def mk_sum : List expr → expr
   | [] => app (const `nat.succ []) (const `nat.zero [])
   | e :: es => app (app (const `nat.add []) e) (mk_sum es)
-#align tactic.mk_sum tactic.mk_sum
 
 private unsafe def has_sizeof_case (use_default : Bool) (I_name F_name : Name)
     (field_names : List Name) : tactic Unit := do
   let szs ← mk_sizeof use_default I_name F_name field_names 0
   exact (mk_sum szs)
-#align tactic.has_sizeof_case tactic.has_sizeof_case
 
 private unsafe def for_each_has_sizeof_goal : Bool → Name → Name → List (List Name) → tactic Unit
   | d, I_name, F_name, [] =>
@@ -73,7 +68,6 @@ private unsafe def for_each_has_sizeof_goal : Bool → Name → Name → List (L
   | d, I_name, F_name, ns :: nss => do
     solve1 (has_sizeof_case d I_name F_name ns)
     for_each_has_sizeof_goal d I_name F_name nss
-#align tactic.for_each_has_sizeof_goal tactic.for_each_has_sizeof_goal
 
 unsafe def mk_has_sizeof_instance_core (use_default : Bool) : tactic Unit := do
   let I_name ← get_has_sizeof_type_name

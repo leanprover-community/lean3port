@@ -32,19 +32,16 @@ private unsafe def get_dec_eq_type_name : tactic Name :=
       return I) <|>
     fail
       "mk_dec_eq_instance tactic failed, target type is expected to be of the form (decidable_eq ...)"
-#align tactic.get_dec_eq_type_name tactic.get_dec_eq_type_name
 
 /-- Extract (lhs, rhs) from a goal (decidable (lhs = rhs)) -/
 private unsafe def get_lhs_rhs : tactic (expr × expr) := do
   let app dec lhs_eq_rhs ← target |
     fail "mk_dec_eq_instance failed, unexpected case"
   match_eq lhs_eq_rhs
-#align tactic.get_lhs_rhs tactic.get_lhs_rhs
 
 private unsafe def find_next_target : List expr → List expr → tactic (expr × expr)
   | t :: ts, r :: rs => if t = r then find_next_target ts rs else return (t, r)
   | l1, l2 => failed
-#align tactic.find_next_target tactic.find_next_target
 
 /-- Create an inhabitant of (decidable (lhs = rhs)) -/
 private unsafe def mk_dec_eq_for (lhs : expr) (rhs : expr) : tactic expr := do
@@ -58,13 +55,11 @@ private unsafe def mk_dec_eq_for (lhs : expr) (rhs : expr) : tactic expr := do
       fail <|
           to_fmt "mk_dec_eq_instance failed, failed to generate instance for" ++
             format.nest 2 (format.line ++ f)
-#align tactic.mk_dec_eq_for tactic.mk_dec_eq_for
 
 private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
   let pr ← mk_app `eq_of_heq [h]
   let ty ← infer_type pr
   assertv `h' ty pr >> skip
-#align tactic.apply_eq_of_heq tactic.apply_eq_of_heq
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 /-- Target is of the form (decidable (C ... = C ...)) where C is a constructor -/
@@ -107,13 +102,11 @@ private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Un
             lc fun h => try (apply_eq_of_heq h) <|> skip
             contradiction
         return ()
-#align tactic.dec_eq_same_constructor tactic.dec_eq_same_constructor
 
 /--
 Easy case: target is of the form (decidable (C_1 ... = C_2 ...)) where C_1 and C_2 are distinct constructors -/
 private unsafe def dec_eq_diff_constructor : tactic Unit :=
   (left >> intron 1) >> contradiction
-#align tactic.dec_eq_diff_constructor tactic.dec_eq_diff_constructor
 
 /-- This tactic is invoked for each case of decidable_eq. There n^2 cases, where n is the number
    of constructors. -/
@@ -122,11 +115,9 @@ private unsafe def dec_eq_case_2 (I_name : Name) (F_name : Name) : tactic Unit :
   let lhs_fn := get_app_fn lhs
   let rhs_fn := get_app_fn rhs
   if lhs_fn = rhs_fn then dec_eq_same_constructor I_name F_name 0 else dec_eq_diff_constructor
-#align tactic.dec_eq_case_2 tactic.dec_eq_case_2
 
 private unsafe def dec_eq_case_1 (I_name : Name) (F_name : Name) : tactic Unit :=
   (intro `w >>= cases) >> all_goals' (dec_eq_case_2 I_name F_name)
-#align tactic.dec_eq_case_1 tactic.dec_eq_case_1
 
 unsafe def mk_dec_eq_instance_core : tactic Unit := do
   let I_name ← get_dec_eq_type_name

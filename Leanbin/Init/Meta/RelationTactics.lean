@@ -32,7 +32,6 @@ private unsafe def relation_tactic (md : Transparency) (op_for : environment →
       fail <|
         tac_name ++
           " tactic failed, target is not a relation application with the expected property."
-#align tactic.relation_tactic tactic.relation_tactic
 
 unsafe def reflexivity (md := semireducible) : tactic Unit :=
   relation_tactic md environment.refl_for "reflexivity"

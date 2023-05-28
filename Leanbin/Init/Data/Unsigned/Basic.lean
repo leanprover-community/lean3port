@@ -26,7 +26,6 @@ namespace Unsigned
 -- We cannot use tactic dec_trivial here because the tactic framework has not been defined yet.
 private theorem zero_lt_unsigned_sz : 0 < unsignedSz :=
   zero_lt_succ _
-#align unsigned.zero_lt_unsigned_sz unsigned.zero_lt_unsigned_sz
 
 -- Later, we define of_nat using mod, the following version is used to define the metaprogramming system.
 protected def ofNat' (n : Nat) : Unsigned :=

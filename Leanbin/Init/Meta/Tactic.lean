@@ -1441,7 +1441,6 @@ private unsafe def repeat_aux (t : tactic Unit) : List expr → List expr → ta
       | _ => do
         let gs' ← get_goals
         repeat_aux (gs' ++ gs) r
-#align tactic.repeat_aux tactic.repeat_aux
 
 /-- This tactic is applied to each goal. If the application succeeds,
     the tactic is applied recursively to all the generated subgoals until it eventually fails.
@@ -1490,7 +1489,6 @@ private unsafe def focus_aux {α} : List (tactic α) → List expr → List expr
       let rs' ← get_goals
       let as ← focus_aux ts gs (rs ++ rs')
       pure <| a :: as
-#align tactic.focus_aux tactic.focus_aux
 
 /-- `focus [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of
 goals is not n. Returns the results of t_i (one per goal).
@@ -1511,7 +1509,6 @@ private unsafe def focus'_aux : List (tactic Unit) → List expr → List expr �
       t
       let rs' ← get_goals
       focus'_aux ts gs (rs ++ rs')
-#align tactic.focus'_aux tactic.focus'_aux
 
 /-- `focus' [t_1, ..., t_n]` applies t_i to the i-th goal. Fails if the number of goals is not n. -/
 unsafe def focus' (ts : List (tactic Unit)) : tactic Unit := do
@@ -1540,7 +1537,6 @@ private unsafe def all_goals_core {α} (tac : tactic α) : List expr → List ex
       let new_gs ← get_goals
       let as ← all_goals_core gs (ac ++ new_gs)
       pure <| a :: as
-#align tactic.all_goals_core tactic.all_goals_core
 
 /-- Apply the given tactic to all goals. Return one result per goal.
 -/
@@ -1557,7 +1553,6 @@ private unsafe def all_goals'_core (tac : tactic Unit) : List expr → List expr
       tac
       let new_gs ← get_goals
       all_goals'_core gs (ac ++ new_gs)
-#align tactic.all_goals'_core tactic.all_goals'_core
 
 /-- Apply the given tactic to all goals. -/
 unsafe def all_goals' (tac : tactic Unit) : tactic Unit := do
@@ -1575,7 +1570,6 @@ private unsafe def any_goals_core {α} (tac : tactic α) :
       let new_gs ← get_goals
       let ress ← any_goals_core gs (ac ++ new_gs) (res.isSome || progress)
       pure <| res :: ress
-#align tactic.any_goals_core tactic.any_goals_core
 
 /-- Apply `tac` to any goal where it succeeds. The tactic succeeds if `tac`
 succeeds for at least one goal. The returned list contains the result of `tac`
@@ -1594,7 +1588,6 @@ private unsafe def any_goals'_core (tac : tactic Unit) : List expr → List expr
       let succeeded ← try_core tac
       let new_gs ← get_goals
       any_goals'_core gs (ac ++ new_gs) (succeeded || progress)
-#align tactic.any_goals'_core tactic.any_goals'_core
 
 /-- Apply the given tactic to any goal where it succeeds. The tactic succeeds only if
    tac succeeds for at least one goal. -/
@@ -1837,7 +1830,6 @@ private unsafe def get_pi_arity_aux : expr → tactic Nat
     let r ← get_pi_arity_aux new_b
     return (r + 1)
   | e => return 0
-#align tactic.get_pi_arity_aux tactic.get_pi_arity_aux
 
 /-- Compute the arity of the given (Pi-)type -/
 unsafe def get_pi_arity (type : expr) : tactic Nat :=
@@ -1869,7 +1861,6 @@ unsafe def by_contradiction (H : Name) : tactic expr := do
 private unsafe def generalizes_aux (md : Transparency) : List expr → tactic Unit
   | [] => skip
   | e :: es => generalize e `x md >> generalizes_aux es
-#align tactic.generalizes_aux tactic.generalizes_aux
 
 unsafe def generalizes (es : List expr) (md := semireducible) : tactic Unit :=
   generalizes_aux md es
@@ -1882,7 +1873,6 @@ private unsafe def kdependencies_core (e : expr) (md : Transparency) :
     let type ← infer_type h
     let d ← kdepends_on type e md
     if d then kdependencies_core hs (h :: r) else kdependencies_core hs r
-#align tactic.kdependencies_core tactic.kdependencies_core
 
 /-- Return all hypotheses that depends on `e`
     The dependency test is performed using `kdepends_on` with the given transparency setting. -/
@@ -1911,7 +1901,6 @@ unsafe def revert_kdeps (e : expr) (md := reducible) :=
 private unsafe def cases_postprocess (hs : List (Name × List expr × List (Name × expr))) :
     List (Name × List expr) :=
   hs.map fun ⟨n, hs, _⟩ => (n, hs.filterₓ fun h => h.is_local_constant)
-#align tactic.cases_postprocess tactic.cases_postprocess
 
 /-- Similar to `cases_core`, but `e` doesn't need to be a hypothesis.
     Remark, it reverts dependencies using `revert_kdeps`.
@@ -1997,7 +1986,6 @@ private unsafe def get_undeclared_const (env : environment) (base : Name) : ℕ 
   | i =>
     let n := .str base ("_aux_" ++ repr i)
     if ¬env.contains n then n else get_undeclared_const (i + 1)
-#align tactic.get_undeclared_const tactic.get_undeclared_const
 
 unsafe def new_aux_decl_name : tactic Name := do
   let env ← get_env
@@ -2010,7 +1998,6 @@ private unsafe def mk_aux_decl_name : Option Name → tactic Name
   | some suffix => do
     let p ← decl_name
     return <| p ++ suffix
-#align tactic.mk_aux_decl_name tactic.mk_aux_decl_name
 
 unsafe def abstract (tac : tactic Unit) (suffix : Option Name := none) (zeta_reduce := true) :
     tactic Unit := do

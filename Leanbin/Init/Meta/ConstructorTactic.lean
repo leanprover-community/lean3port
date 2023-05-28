@@ -17,7 +17,6 @@ namespace Tactic
 /-- Return target after instantiating metavars and whnf -/
 private unsafe def target' : tactic expr :=
   target >>= instantiate_mvars >>= whnf
-#align tactic.target' tactic.target'
 
 unsafe def get_constructors_for (e : expr) : tactic (List Name) := do
   let env ← get_env
@@ -29,7 +28,6 @@ unsafe def get_constructors_for (e : expr) : tactic (List Name) := do
 private unsafe def try_constructors (cfg : ApplyCfg) : List Name → tactic (List (Name × expr))
   | [] => fail "constructor tactic failed, none of the constructors is applicable"
   | c :: cs => (mk_const c >>= fun e => apply e cfg) <|> try_constructors cs
-#align tactic.try_constructors tactic.try_constructors
 
 unsafe def constructor (cfg : ApplyCfg := { }) : tactic (List (Name × expr)) :=
   target' >>= get_constructors_for >>= try_constructors cfg
@@ -81,7 +79,6 @@ private unsafe def apply_num_metavars : expr → expr → Nat → tactic expr
     let new_f ← return <| f a
     let new_ftype ← return <| b.instantiate_var a
     apply_num_metavars new_f new_ftype n
-#align tactic.apply_num_metavars tactic.apply_num_metavars
 
 unsafe def existsi (e : expr) : tactic Unit := do
   let [c] ← target' >>= get_constructors_for |

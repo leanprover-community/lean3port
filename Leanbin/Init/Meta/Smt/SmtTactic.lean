@@ -254,7 +254,6 @@ private unsafe def mk_smt_goals_for (cfg : SmtConfig) :
     let [new_tg] ← get_goals |
       tactic.failed
     mk_smt_goals_for tgs (new_sg :: sr) (new_tg :: tr)
-#align smt_tactic.mk_smt_goals_for smt_tactic.mk_smt_goals_for
 
 /-- See slift -/
 unsafe def slift_aux {α : Type} (t : tactic α) (cfg : SmtConfig) : smt_tactic α :=
@@ -319,7 +318,6 @@ private unsafe def all_goals_core (tac : smt_tactic Unit) :
     tac
     let (new_ss, new_ts) ← get_goals
     all_goals_core ss ts (acs ++ new_ss) (act ++ new_ts)
-#align smt_tactic.all_goals_core smt_tactic.all_goals_core
 
 /-- Apply the given tactic to all goals. -/
 unsafe def all_goals (tac : smt_tactic Unit) : smt_tactic Unit := do

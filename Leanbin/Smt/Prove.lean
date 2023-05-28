@@ -9,7 +9,6 @@ private unsafe def collect_props : List expr → tactic (List expr)
     let Eqs ← collect_props Hs
     let Htype ← infer_type H >>= infer_type >>= whnf
     return <| if Htype = q(Prop) then H :: Eqs else Eqs
-#align smt.collect_props smt.collect_props
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 -- This tactic is just a placeholder, designed to be modified for specific performance experiments

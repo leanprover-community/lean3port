@@ -32,7 +32,6 @@ private unsafe def mk_rec_inst_aux : expr → Nat → tactic expr
   | F, n + 1 => do
     let F' ← mk_app `pprod.snd [F]
     mk_rec_inst_aux F' n
-#align tactic.mk_rec_inst_aux tactic.mk_rec_inst_aux
 
 /-- Construct brec_on "recursive value". F_name is the name of the brec_on "dictionary".
    Type of the F_name hypothesis should be of the form (below (C ...)) where C is a constructor.
@@ -55,11 +54,9 @@ unsafe def constructor_num_fields (c : Name) : tactic Nat := do
 private unsafe def mk_name_list_aux : Name → Nat → Nat → List Name → List Name × Nat
   | p, i, 0, l => (List.reverse l, i)
   | p, i, j + 1, l => mk_name_list_aux p (i + 1) j (mkNumName p i :: l)
-#align tactic.mk_name_list_aux tactic.mk_name_list_aux
 
 private unsafe def mk_name_list (p : Name) (i : Nat) (n : Nat) : List Name × Nat :=
   mk_name_list_aux p i n []
-#align tactic.mk_name_list tactic.mk_name_list
 
 /-- Return a list of names of the form [p.i, ..., p.{i+n}] where n is
    the number of fields of the constructor c -/
@@ -75,7 +72,6 @@ private unsafe def mk_constructors_arg_names_aux :
     let v : List Name × Nat ← mk_constructor_arg_names c p i
     match v with
       | (l, i') => mk_constructors_arg_names_aux cs p i' (l :: r)
-#align tactic.mk_constructors_arg_names_aux tactic.mk_constructors_arg_names_aux
 
 /-- Given an inductive datatype I with k constructors and where constructor i has n_i fields,
    return the list [[p.1, ..., p.n_1], [p.{n_1 + 1}, ..., p.{n_1 + n_2}], ..., [..., p.{n_1 + ... + n_k}]] -/
@@ -89,12 +85,10 @@ private unsafe def mk_fresh_arg_name_aux : Name → Nat → name_set → tactic 
   | n, i, s => do
     let r ← get_unused_name n (some i)
     if s r then mk_fresh_arg_name_aux n (i + 1) s else return (r, s r)
-#align tactic.mk_fresh_arg_name_aux tactic.mk_fresh_arg_name_aux
 
 private unsafe def mk_fresh_arg_name (n : Name) (s : name_set) : tactic (Name × name_set) := do
   let r ← get_unused_name n
   if s r then mk_fresh_arg_name_aux n 1 s else return (r, s r)
-#align tactic.mk_fresh_arg_name tactic.mk_fresh_arg_name
 
 private unsafe def mk_constructor_fresh_names_aux :
     Nat → expr → name_set → tactic (List Name × name_set)
@@ -113,7 +107,6 @@ private unsafe def mk_constructor_fresh_names_aux :
           let ty' := b x
           mk_constructor_fresh_names_aux (nparams - 1) ty' s
       | _ => return ([], s)
-#align tactic.mk_constructor_fresh_names_aux tactic.mk_constructor_fresh_names_aux
 
 unsafe def mk_constructor_fresh_names (nparams : Nat) (c : Name) (s : name_set) :
     tactic (List Name × name_set) := do
@@ -128,7 +121,6 @@ private unsafe def mk_constructors_fresh_names_aux :
   | np, c :: cs, s, r => do
     let (ns, s') ← mk_constructor_fresh_names np c s
     mk_constructors_fresh_names_aux np cs s' (ns :: r)
-#align tactic.mk_constructors_fresh_names_aux tactic.mk_constructors_fresh_names_aux
 
 unsafe def mk_constructors_fresh_names (I : Name) : tactic (List (List Name)) := do
   let env ← get_env

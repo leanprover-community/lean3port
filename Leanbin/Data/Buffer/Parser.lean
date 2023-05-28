@@ -41,7 +41,6 @@ private theorem parser.id_map (p : Parser α) : Parser.bind p Parser.pure = p :=
   apply funext; intro pos
   dsimp only [Parser.bind]
   cases p input Pos <;> exact rfl
-#align parser.parser.id_map parser.parser.id_map
 
 private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β → Parser γ) :
     Parser.bind (Parser.bind p q) r = Parser.bind p fun a => Parser.bind (q a) r :=
@@ -52,7 +51,6 @@ private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β
   cases p input Pos <;> try dsimp only [bind]
   cases q result input pos_1 <;> try dsimp only [bind]
   all_goals rfl
-#align parser.parser.bind_assoc parser.parser.bind_assoc
 
 protected def fail (msg : String) : Parser α := fun _ pos =>
   ParseResult.fail Pos (Dlist.singleton msg)
@@ -263,7 +261,6 @@ private def make_monospaced : Char → Char
   | '\t' => ' '
   | '\x0d' => ' '
   | c => c
-#align parser.make_monospaced parser.make_monospaced
 
 def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Dlist String) : CharBuffer :=
   let left_ctx := (input.take Pos).takeRight 10

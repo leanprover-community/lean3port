@@ -86,7 +86,6 @@ unsafe def funext : conv Unit :=
 private unsafe def is_relation : conv Unit :=
   (lhs >>= tactic.relation_lhs_rhs) >> return () <|>
     tactic.fail "current expression is not a relation"
-#align conv.interactive.is_relation conv.interactive.is_relation
 
 unsafe def to_lhs : conv Unit :=
   ((is_relation >> congr) >> tactic.swap) >> skip
@@ -199,7 +198,6 @@ private unsafe def rw_lhs (h : expr) (cfg : RewriteCfg) : conv Unit := do
   let l ← conv.lhs
   let (new_lhs, prf, _) ← tactic.rewrite h l cfg
   update_lhs new_lhs prf
-#align conv.interactive.rw_lhs conv.interactive.rw_lhs
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
@@ -214,7 +212,6 @@ private unsafe def rw_core (rs : List rw_rule) (cfg : RewriteCfg) : conv Unit :=
           let e ← tactic.mk_const n
           rw_lhs e { cfg with symm := r })
         (eq_lemmas eq_lemmas.empty)
-#align conv.interactive.rw_core conv.interactive.rw_core
 
 unsafe def rewrite (q : parse rw_rules) (cfg : RewriteCfg := { }) : conv Unit :=
   rw_core q.rules cfg
@@ -253,7 +250,6 @@ private unsafe def conv_at (h_name : Name) (c : conv Unit) : tactic Unit := do
   let (new_h_type, pr) ← c.convert h_type
   replace_hyp h new_h_type pr `` id_tag.conv
   return ()
-#align tactic.interactive.conv_at tactic.interactive.conv_at
 
 private unsafe def conv_target (c : conv Unit) : tactic Unit := do
   let t ← target
@@ -261,7 +257,6 @@ private unsafe def conv_target (c : conv Unit) : tactic Unit := do
   replace_target new_t pr `` id_tag.conv
   try tactic.triv
   try (tactic.reflexivity reducible)
-#align tactic.interactive.conv_target tactic.interactive.conv_target
 
 unsafe def conv (loc : parse (tk "at" *> ident)?) (p : parse (tk "in" *> parser.pexpr)?)
     (c : conv.interactive.itactic) : tactic Unit := do

@@ -130,7 +130,6 @@ private unsafe def congr_aux : List CongrArgKind → List expr → tactic (List 
       | CongrArgKind.cast => return <| (gs, a :: largs)
       | _ => fail "congr tactic failed, unsupported congruence lemma"
   | ks, as => fail "congr tactic failed, unsupported congruence lemma"
-#align conv.congr_aux conv.congr_aux
 
 /--
 Take the target equality `f x y = X` and try to apply the congruence lemma for `f` to it (namely `x = x' → y = y' → f x y = f x' y'`). -/

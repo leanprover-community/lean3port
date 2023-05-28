@@ -748,7 +748,6 @@ private unsafe def p : List format → format
   | [] => ""
   | [x] => x.paren
   | x :: y :: xs => p ((x ++ format.line ++ y).group :: xs)
-#align expr.p expr.p
 
 unsafe def to_raw_fmt : expr elab → format
   | var n => p ["var", to_fmt n]

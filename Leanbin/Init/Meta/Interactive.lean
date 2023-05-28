@@ -208,13 +208,11 @@ unsafe def introv (ns : parse ident_*) : tactic Unit :=
 /-- Parse a current name and new name for `rename`. -/
 private unsafe def rename_arg_parser : parser (Name × Name) :=
   Prod.mk <$> ident <*> (optional (tk "->") *> ident)
-#align tactic.interactive.rename_arg_parser tactic.interactive.rename_arg_parser
 
 /-- Parse the arguments of `rename`. -/
 private unsafe def rename_args_parser : parser (List (Name × Name)) :=
   Functor.map (fun x => [x]) rename_arg_parser <|>
     tk "[" *> sep_by (tk ",") rename_arg_parser <* tk "]"
-#align tactic.interactive.rename_args_parser tactic.interactive.rename_args_parser
 
 /-- Rename one or more local hypotheses. The renamings are given as follows:
 
@@ -310,7 +308,6 @@ private unsafe def change_core (e : expr) : Option expr → tactic Unit
     let expr.pi n bi d b ← target
     tactic.change <| expr.pi n bi e b
     intron num_reverted
-#align tactic.interactive.change_core tactic.interactive.change_core
 
 /--
 `change u` replaces the target `t` of the main goal to `u` provided that `t` is well formed with respect to the local context of the main goal and `t` and `u` are definitionally equal.
@@ -382,7 +379,6 @@ private unsafe def resolve_name' (n : Name) : tactic expr := do
     |-- create metavars for universe levels
       _ =>
       i_to_expr p
-#align tactic.interactive.resolve_name' tactic.interactive.resolve_name'
 
 /--
 Version of to_expr that tries to bypass the elaborator if `p` is just a constant or local constant.
@@ -438,11 +434,9 @@ private unsafe def rw_goal (cfg : RewriteCfg) (rs : List rw_rule) : tactic Unit 
           let e ← mk_const n
           rewrite_target e { cfg with symm := r })
         (eq_lemmas eq_lemmas.empty)
-#align tactic.interactive.rw_goal tactic.interactive.rw_goal
 
 private unsafe def uses_hyp (e : expr) (h : expr) : Bool :=
   e.fold false fun t _ r => r || decide (t = h)
-#align tactic.interactive.uses_hyp tactic.interactive.uses_hyp
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `eq_lemmas -/
 private unsafe def rw_hyp (cfg : RewriteCfg) : List rw_rule → expr → tactic Unit
@@ -459,7 +453,6 @@ private unsafe def rw_hyp (cfg : RewriteCfg) : List rw_rule → expr → tactic 
           let e ← mk_const n
           rewrite_hyp e hyp { cfg with symm := r } >>= rw_hyp rs)
         (eq_lemmas eq_lemmas.empty)
-#align tactic.interactive.rw_hyp tactic.interactive.rw_hyp
 
 unsafe def rw_rule_p (ep : parser pexpr) : parser rw_rule :=
   rw_rule.mk <$> cur_pos <*> Option.isSome <$> (with_desc "←" (tk "←" <|> tk "<-"))? <*> ep
@@ -487,7 +480,6 @@ private unsafe def rw_core (rs : parse rw_rules) (loca : parse location) (cfg : 
       | _ => loca.apply (rw_hyp cfg rs.rules) (rw_goal cfg rs.rules)) >>
       try (reflexivity reducible)) >>
     (returnopt rs.end_pos >>= save_info <|> skip)
-#align tactic.interactive.rw_core tactic.interactive.rw_core
 
 /--
 `rewrite e` applies identity `e` as a rewrite rule to the target of the main goal. If `e` is preceded by left arrow (`←` or `<-`), the rewrite is applied in the reverse direction. If `e` is a defined constant, then the equational lemmas associated with `e` are used. This provides a convenient way to unfold `e`.
@@ -533,7 +525,6 @@ unsafe def erw (q : parse rw_rules) (l : parse location)
 private unsafe def hyp_unique_names : tactic name_set := do
   let ctx ← local_context
   pure <| ctx (fun r h => r h) mk_name_set
-#align tactic.interactive.hyp_unique_names tactic.interactive.hyp_unique_names
 
 /-- Returns all hypotheses (local constants) from the context except those whose
 unique names are in `hyp_uids`.
@@ -541,7 +532,6 @@ unique names are in `hyp_uids`.
 private unsafe def hyps_except (hyp_uids : name_set) : tactic (List expr) := do
   let ctx ← local_context
   pure <| ctx fun h : expr => ¬hyp_uids h
-#align tactic.interactive.hyps_except tactic.interactive.hyps_except
 
 /-- Apply `t` to the main goal and revert any new hypothesis in the generated goals.
 If `t` is a supported tactic or chain of supported tactics (e.g. `induction`,
@@ -592,11 +582,9 @@ unsafe def with_cases (t : itactic) : tactic Unit :=
 private unsafe def generalize_arg_p_aux : pexpr → parser (pexpr × Name)
   | app (app (macro _ [const `eq _]) h) (local_const x _ _ _) => pure (h, x)
   | _ => fail "parse error"
-#align tactic.interactive.generalize_arg_p_aux tactic.interactive.generalize_arg_p_aux
 
 private unsafe def generalize_arg_p : parser (pexpr × Name) :=
   with_desc "expr = id" <| parser.pexpr 0 >>= generalize_arg_p_aux
-#align tactic.interactive.generalize_arg_p tactic.interactive.generalize_arg_p
 
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 /--
@@ -660,7 +648,6 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
       tgs fun ⟨n, new_hyps, g⟩ =>
         with_enable_tags <|
           set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
-#align tactic.interactive.set_cases_tags tactic.interactive.set_cases_tags
 
 /- ./././Mathport/Syntax/Translate/Command.lean:686:29: warning: unsupported: precedence command -/
 /--
@@ -768,7 +755,6 @@ private unsafe def goals_with_matching_tag (ns : List Name) :
             | fuzzy_match => ⟨exact_matches, ⟨g, t⟩ :: suffix_matches⟩
             | no_match => ⟨exact_matches, suffix_matches⟩)
         ([], [])
-#align tactic.interactive.goals_with_matching_tag tactic.interactive.goals_with_matching_tag
 
 private unsafe def goal_with_matching_tag (ns : List Name) : tactic (expr × CaseTag) := do
   let ⟨exact_matches, suffix_matches⟩ ← goals_with_matching_tag ns
@@ -782,7 +768,6 @@ private unsafe def goal_with_matching_tag (ns : List Name) : tactic (expr × Cas
           Matching tags: {tags}"
     | [g], _ => pure g
     | _, _ => fail f! "Invalid `case`: there is more than one goal tagged with tag {ns}."
-#align tactic.interactive.goal_with_matching_tag tactic.interactive.goal_with_matching_tag
 
 unsafe def case_arg_parser : lean.parser (List Name × Option (List Name)) :=
   Prod.mk <$> ident_* <*> (tk ":" *> ident_*)?
@@ -923,7 +908,6 @@ private unsafe def find_matching_hyp (ps : List pattern) : tactic expr :=
     ps fun p => do
         match_pattern p type
         return h
-#align tactic.interactive.find_matching_hyp tactic.interactive.find_matching_hyp
 
 /--
 `cases_matching p` applies the `cases` tactic to a hypothesis `h : type` if `type` matches the pattern `p`.
@@ -959,7 +943,6 @@ private unsafe def try_cases_for_types (type_names : List Name) (at_most_one : B
             let n ← num_goals
             guard (n ≤ 1)
           else skip)
-#align tactic.interactive.try_cases_for_types tactic.interactive.try_cases_for_types
 
 /-- `cases_type I` applies the `cases` tactic to a hypothesis `h : (I ...)`
 `cases_type I_1 ... I_n` applies the `cases` tactic to a hypothesis `h : (I_1 ...)` or ... or `h : (I_n ...)`
@@ -1095,7 +1078,6 @@ private unsafe def assume_core (n : Name) (ty : pexpr) := do
   let ty ← i_to_expr ``(($(ty) : Sort _))
   unify ty t
   intro_core n >> skip
-#align tactic.interactive.assume_core tactic.interactive.assume_core
 
 /--
 Assuming the target of the goal is a Pi or a let, `assume h : t` unifies the type of the binder with `t` and introduces it with name `h`, just like `intro h`. If `h` is absent, the tactic uses the name `this`. If `t` is omitted, it will be inferred.
@@ -1227,7 +1209,6 @@ private unsafe def constructor_matching_aux (ps : List pattern) : tactic Unit :=
   let t ← target
   ps fun p => match_pattern p t
   constructor
-#align tactic.interactive.constructor_matching_aux tactic.interactive.constructor_matching_aux
 
 unsafe def constructor_matching (rec : parse <| (tk "*")?) (ps : parse pexpr_list_or_texpr) :
     tactic Unit := do
@@ -1312,7 +1293,6 @@ private unsafe def resolve_exception_ids (all_hyps : Bool) :
         when (Not all_hyps) (fail <| s! "invalid local exception {id}, '*' was not used") >>
           resolve_exception_ids ids gex (n :: hex)
       | _ => fail <| s! "invalid exception {id}, unknown identifier"
-#align tactic.resolve_exception_ids tactic.resolve_exception_ids
 
 /-- Decode a list of `simp_arg_type` into lists for each type.
 
@@ -1363,12 +1343,10 @@ private unsafe def add_simps : simp_lemmas → List (Name × Bool) → tactic si
   | s, n :: ns => do
     let s' ← s.add_simp n.fst n.snd
     add_simps s' ns
-#align tactic.add_simps tactic.add_simps
 
 private unsafe def report_invalid_simp_lemma {α : Type} (n : Name) : tactic α :=
   fail
     f! "invalid simplification lemma '{n}' (use command 'set_option trace.simp_lemmas true' for more details)"
-#align tactic.report_invalid_simp_lemma tactic.report_invalid_simp_lemma
 
 private unsafe def check_no_overload (p : pexpr) : tactic Unit :=
   when p.is_choice_macro <|
@@ -1378,7 +1356,6 @@ private unsafe def check_no_overload (p : pexpr) : tactic Unit :=
         to_fmt "ambiguous overload, possible interpretations" ++
           format.join (ps.map fun p => (to_fmt p).indent 4)
     | _ => failed
-#align tactic.check_no_overload tactic.check_no_overload
 
 private unsafe def simp_lemmas.resolve_and_add (s : simp_lemmas) (u : List Name) (n : Name)
     (ref : pexpr) (symm : Bool) : tactic (simp_lemmas × List Name) := do
@@ -1419,7 +1396,6 @@ private unsafe def simp_lemmas.resolve_and_add (s : simp_lemmas) (u : List Name)
           let s ← s e symm
           return (s, u)) <|>
         report_invalid_simp_lemma n
-#align tactic.simp_lemmas.resolve_and_add tactic.simp_lemmas.resolve_and_add
 
 private unsafe def simp_lemmas.add_pexpr (s : simp_lemmas) (u : List Name) (p : pexpr)
     (symm : Bool) : tactic (simp_lemmas × List Name) :=
@@ -1430,7 +1406,6 @@ private unsafe def simp_lemmas.add_pexpr (s : simp_lemmas) (u : List Name) (p : 
     let new_e ← i_to_expr_no_subgoals p
     let s ← s.add new_e symm
     return (s, u)
-#align tactic.simp_lemmas.add_pexpr tactic.simp_lemmas.add_pexpr
 
 private unsafe def simp_lemmas.append_pexprs :
     simp_lemmas → List Name → List (pexpr × Bool) → tactic (simp_lemmas × List Name)
@@ -1438,7 +1413,6 @@ private unsafe def simp_lemmas.append_pexprs :
   | s, u, l :: ls => do
     let (s, u) ← simp_lemmas.add_pexpr s u l.fst l.snd
     simp_lemmas.append_pexprs s u ls
-#align tactic.simp_lemmas.append_pexprs tactic.simp_lemmas.append_pexprs
 
 unsafe def mk_simp_set_core (no_dflt : Bool) (attr_names : List Name) (hs : List simp_arg_type)
     (at_star : Bool) : tactic (Bool × simp_lemmas × List Name) := do
@@ -1587,7 +1561,6 @@ unsafe def simp_intros (ids : parse ident_*) (no_dflt : parse only_flag) (hs : p
 
 private unsafe def to_simp_arg_list (symms : List Bool) (es : List pexpr) : List simp_arg_type :=
   (symms.zip es).map fun ⟨s, e⟩ => if s then simp_arg_type.symm_expr e else simp_arg_type.expr e
-#align tactic.interactive.to_simp_arg_list tactic.interactive.to_simp_arg_list
 
 /-- `dsimp` is similar to `simp`, except that it only uses definitional equalities.
 -/
@@ -1685,7 +1658,6 @@ private unsafe def to_qualified_name_core : Name → List Name → tactic Name
     let curr ← return <| ns ++ n
     let env ← get_env
     if env curr then return curr else to_qualified_name_core n nss
-#align tactic.interactive.to_qualified_name_core tactic.interactive.to_qualified_name_core
 
 private unsafe def to_qualified_name (n : Name) : tactic Name := do
   let env ← get_env
@@ -1693,7 +1665,6 @@ private unsafe def to_qualified_name (n : Name) : tactic Name := do
     else do
       let ns ← open_namespaces
       to_qualified_name_core n ns
-#align tactic.interactive.to_qualified_name tactic.interactive.to_qualified_name
 
 private unsafe def to_qualified_names : List Name → tactic (List Name)
   | [] => return []
@@ -1701,7 +1672,6 @@ private unsafe def to_qualified_names : List Name → tactic (List Name)
     let new_c ← to_qualified_name c
     let new_cs ← to_qualified_names cs
     return (new_c :: new_cs)
-#align tactic.interactive.to_qualified_names tactic.interactive.to_qualified_names
 
 /-- Similar to `unfold`, but only uses definitional equalities.
 -/
@@ -1722,7 +1692,6 @@ unsafe def dunfold (cs : parse ident*) (l : parse location) (cfg : DunfoldConfig
 private unsafe def delta_hyps : List Name → List Name → tactic Unit
   | cs, [] => skip
   | cs, h :: hs => (get_local h >>= delta_hyp cs) >> delta_hyps cs hs
-#align tactic.interactive.delta_hyps tactic.interactive.delta_hyps
 
 /--
 Similar to `dunfold`, but performs a raw delta reduction, rather than using an equation associated with the defined constants.
@@ -1746,7 +1715,6 @@ private unsafe def unfold_projs_hyps (cfg : UnfoldProjConfig := { }) (hs : List 
       let h ← get_local h
       unfold_projs_hyp h cfg >> return tt <|> return r)
     false
-#align tactic.interactive.unfold_projs_hyps tactic.interactive.unfold_projs_hyps
 
 /-- This tactic unfolds all structure projections.
 -/
@@ -1941,7 +1909,6 @@ private unsafe def show_aux (p : pexpr) : List expr → List expr → tactic Uni
           set_goals (g :: r ++ gs)
           tactic.change ty) <|>
         show_aux gs (g :: r)
-#align tactic.interactive.show_aux tactic.interactive.show_aux
 
 /--
 `show t` finds the first goal whose target unifies with `t`. It makes that the main goal, performs the unification, and replaces the target with the unified version of `t`.
@@ -1991,7 +1958,6 @@ private unsafe def add_interactive_aux (new_namespace : Name) : List Name → Ta
           add_doc_string new_name doc) <|>
         skip
     add_interactive_aux ns
-#align add_interactive_aux add_interactive_aux
 
 /-- Copy a list of meta definitions in the current namespace to tactic.interactive.
 

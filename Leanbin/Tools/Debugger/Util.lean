@@ -21,7 +21,6 @@ private def split_core : List Char → Option String → List String
   | c :: cs, some s => if isSpace c then s :: split_core cs none else split_core cs (s.str c)
   | [], none => []
   | [], some s => [s]
-#align debugger.split_core debugger.split_core
 
 def split (s : String) : List String :=
   splitCore s.toList none

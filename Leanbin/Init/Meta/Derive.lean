@@ -42,7 +42,6 @@ private unsafe def try_handlers (p : pexpr) (n : Name) : List derive_handler →
   | h :: hs => do
     let success ← h p n
     when ¬success <| try_handlers hs
-#align try_handlers try_handlers
 
 @[user_attribute]
 unsafe def derive_attr : user_attribute Unit (List pexpr)

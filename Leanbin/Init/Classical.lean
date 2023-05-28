@@ -51,35 +51,27 @@ parameter (p : Prop)
 
 private def U (x : Prop) : Prop :=
   x = True ∨ p
-#align classical.U classical.U
 
 private def V (x : Prop) : Prop :=
   x = False ∨ p
-#align classical.V classical.V
 
 private theorem exU : ∃ x, U x :=
   ⟨True, Or.inl rfl⟩
-#align classical.exU classical.exU
 
 private theorem exV : ∃ x, V x :=
   ⟨False, Or.inl rfl⟩
-#align classical.exV classical.exV
 
 private def u : Prop :=
   choose exU
-#align classical.u classical.u
 
 private def v : Prop :=
   choose exV
-#align classical.v classical.v
 
 private theorem u_def : U u :=
   choose_spec exU
-#align classical.u_def classical.u_def
 
 private theorem v_def : V v :=
   choose_spec exV
-#align classical.v_def classical.v_def
 
 private theorem not_uv_or_p : u ≠ v ∨ p :=
   Or.elim u_def
@@ -90,7 +82,6 @@ private theorem not_uv_or_p : u ≠ v ∨ p :=
           Or.inl hne)
         Or.inr)
     Or.inr
-#align classical.not_uv_or_p classical.not_uv_or_p
 
 private theorem p_implies_uv (hp : p) : u = v :=
   have hpred : U = V :=
@@ -100,7 +91,6 @@ private theorem p_implies_uv (hp : p) : u = v :=
       show (x = True ∨ p) = (x = False ∨ p) from propext (Iff.intro hl hr)
   have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := hpred ▸ fun exU exV => rfl
   show u = v from h₀ _ _
-#align classical.p_implies_uv classical.p_implies_uv
 
 #print Classical.em /-
 theorem em : p ∨ ¬p :=

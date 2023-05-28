@@ -308,7 +308,6 @@ private unsafe def is_delta_target (e : expr) (cs : List Name) : Bool :=
             f.is_constant &&
           f.const_name.is_internal &&
         f.const_name.getPrefix = c
-#align tactic.is_delta_target tactic.is_delta_target
 
 /-- Delta reduce the given constant names -/
 unsafe def delta (cs : List Name) (e : expr) (cfg : DeltaConfig := { }) : tactic expr :=
@@ -465,7 +464,6 @@ private unsafe def is_equation : expr → Bool
     match expr.is_eq e with
     | some a => true
     | none => false
-#align tactic.is_equation tactic.is_equation
 
 unsafe def collect_ctx_simps : tactic (List expr) :=
   local_context
@@ -640,7 +638,6 @@ unsafe def simp_bottom_up (post : expr → tactic (expr × expr)) (cfg : SimpCon
 private unsafe def remove_deps (s : name_set) (h : expr) : name_set :=
   if s.Empty then s
   else h.fold s fun e o s => if e.is_local_constant then s.eraseₓ e.local_uniq_name else s
-#align tactic.remove_deps tactic.remove_deps
 
 /-- Return the list of hypothesis that are propositions and do not have
    forward dependencies. -/
@@ -678,7 +675,6 @@ private unsafe def update_simp_lemmas (es : List simp_all_entry) (h : expr) :
   es.mapM fun e => do
     let new_s ← e.s.add h false
     return { e with s := new_s }
-#align tactic.update_simp_lemmas tactic.update_simp_lemmas
 
 /-- Helper tactic for `init`.
    Remark: the following tactic is quadratic on the length of list expr (the list of non dependent propositions).
@@ -691,28 +687,23 @@ private unsafe def init_aux :
     let new_s ← s.add h false
     let h_type ← infer_type h
     init_aux hs new_s (⟨h, h_type, none, s⟩ :: new_r)
-#align tactic.init_aux tactic.init_aux
 
 private unsafe def init (s : simp_lemmas) (hs : List expr) :
     tactic (simp_lemmas × List simp_all_entry) :=
   init_aux hs s []
-#align tactic.init tactic.init
 
 private unsafe def add_new_hyps (es : List simp_all_entry) : tactic Unit :=
   es.mapM' fun e =>
     match e.pr with
     | none => return ()
     | some pr => assert e.h.local_pp_name e.new_type >> mk_eq_mp pr e.h >>= exact
-#align tactic.add_new_hyps tactic.add_new_hyps
 
 private unsafe def clear_old_hyps (es : List simp_all_entry) : tactic Unit :=
   es.mapM' fun e => when (e.pr ≠ none) (try (clear e.h))
-#align tactic.clear_old_hyps tactic.clear_old_hyps
 
 private unsafe def join_pr : Option expr → expr → tactic expr
   | none, pr₂ => return pr₂
   | some pr₁, pr₂ => mk_eq_trans pr₁ pr₂
-#align tactic.join_pr tactic.join_pr
 
 private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold : List Name) :
     List simp_all_entry → List simp_all_entry → simp_lemmas → Bool → tactic name_set
@@ -754,7 +745,6 @@ private unsafe def loop (cfg : SimpConfig) (discharger : tactic Unit) (to_unfold
             let new_s ← s new_fact_pr ff
             let new_lms ← loop new_es new_r new_s tt
             return (new_lms lms fun n ns => name_set.insert ns n)
-#align tactic.loop tactic.loop
 
 unsafe def simp_all (s : simp_lemmas) (to_unfold : List Name) (cfg : SimpConfig := { })
     (discharger : tactic Unit := failed) : tactic name_set := do

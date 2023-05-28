@@ -25,7 +25,6 @@ private unsafe def add_lemma (m : Transparency) (h : Name) (hs : hinst_lemmas) :
       let h ← hinst_lemma.mk_from_decl_core m h true
       return <| hs h) <|>
     return hs
-#align add_lemma add_lemma
 
 private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) :
     List Name → hinst_lemmas → tactic hinst_lemmas
@@ -39,7 +38,6 @@ private unsafe def to_hinst_lemmas (m : Transparency) (ex : name_set) :
       match eqns with
         | [] => add n
         | _ => condM (is_prop_decl n) (add n) (to_hinst_lemmas eqns hs >>= to_hinst_lemmas ns)
-#align to_hinst_lemmas to_hinst_lemmas
 
 /-- Create a rsimp attribute named `attr_name`, the attribute declaration is named `attr_decl_name`.
     The cached hinst_lemmas structure is built using the lemmas marked with simp attribute `simp_attr_name`,
@@ -167,7 +165,6 @@ open SmtTactic
 
 private def tagged_proof.rsimp : Unit :=
   ()
-#align rsimp.tagged_proof.rsimp rsimp.tagged_proof.rsimp
 
 unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) : tactic cc_state :=
   do

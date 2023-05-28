@@ -161,7 +161,6 @@ private unsafe def maybe_paren : List format → format
   | [] => ""
   | [f] => f
   | fs => paren (join fs)
-#align interactive.maybe_paren interactive.maybe_paren
 
 private unsafe def unfold (e : expr) : tactic expr := do
   let expr.const f_name f_lvls ← return e.get_app_fn |
@@ -170,11 +169,9 @@ private unsafe def unfold (e : expr) : tactic expr := do
   let decl ← env.get f_name
   let new_f ← decl.instantiate_value_univ_params f_lvls
   head_beta (expr.mk_app new_f e)
-#align interactive.unfold interactive.unfold
 
 private unsafe def concat (f₁ f₂ : List format) :=
   if f₁.Empty then f₂ else if f₂.Empty then f₁ else f₁ ++ [" "] ++ f₂
-#align interactive.concat interactive.concat
 
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
@@ -256,7 +253,6 @@ private unsafe
                   <|>
                   do let f ← pp e fail <| to_fmt "don't know how to pretty print " ++ f
             parser_desc_aux e'
-#align interactive.parser_desc_aux interactive.parser_desc_aux
 
 unsafe def param_desc : expr → tactic format
   | q(parse $(p)) => join <$> parser_desc_aux p
@@ -268,7 +264,6 @@ unsafe def param_desc : expr → tactic format
 #align interactive.param_desc interactive.param_desc
 
 private unsafe axiom parse_binders_core (rbp : ℕ) : parser (List pexpr)
-#align interactive.parse_binders_core interactive.parse_binders_core
 
 unsafe def parse_binders (rbp := Std.Prec.max) :=
   with_desc "<binders>" (parse_binders_core rbp)
@@ -344,7 +339,6 @@ private unsafe def parse_format : String → List Char → parser pexpr
   | Acc, '}' :: '}' :: s => parse_format (Acc ++ "}") s
   | Acc, '}' :: s => fail "'}}' expected"
   | Acc, c :: s => parse_format (Acc.str c) s
-#align parse_format parse_format
 
 @[user_notation]
 unsafe def format_macro (_ : parse <| tk "format!") (s : String) : parser pexpr :=
@@ -369,7 +363,6 @@ private unsafe
       | Acc , '}' :: '}' :: s => parse_sformat ( Acc ++ "}" ) s
       | Acc , '}' :: s => fail "'}}' expected"
       | Acc , c :: s => parse_sformat ( Acc . str c ) s
-#align parse_sformat parse_sformat
 
 @[user_notation]
 unsafe def sformat_macro (_ : parse <| tk "sformat!") (s : String) : parser pexpr :=

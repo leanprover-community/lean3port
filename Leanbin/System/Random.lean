@@ -119,7 +119,6 @@ private def rand_nat_aux {gen : Type u} [RandomGen gen] (gen_lo gen_mag : Nat) (
         have h₂ : (r + 1) / gen_mag ≤ r + 1 := by apply Nat.div_le_self
         exact lt_of_lt_of_le h₁ h₂
     rand_nat_aux (r' / gen_mag - 1) v' g'
-#align rand_nat_aux rand_nat_aux
 
 #print randNat /-
 /-- Generate a random natural number in the interval [lo, hi]. -/

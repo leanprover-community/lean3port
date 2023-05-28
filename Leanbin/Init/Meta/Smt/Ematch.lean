@@ -90,7 +90,6 @@ private unsafe def add_lemma (m : Transparency) (as_simp : Bool) (h : Name) (hs 
     tactic hinst_lemmas := do
   let h ← hinst_lemma.mk_from_decl_core m h as_simp
   return <| hs h
-#align add_lemma add_lemma
 
 unsafe def to_hinst_lemmas_core (m : Transparency) :
     Bool → List Name → hinst_lemmas → tactic hinst_lemmas

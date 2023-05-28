@@ -30,7 +30,6 @@ private unsafe def get_inhabited_type_name : tactic Name :=
       return I) <|>
     fail
       "mk_inhabited_instance tactic failed, target type is expected to be of the form (inhabited ...)"
-#align tactic.get_inhabited_type_name tactic.get_inhabited_type_name
 
 /-- Try to synthesize constructor argument using type class resolution -/
 private unsafe def mk_inhabited_arg : tactic Unit := do
@@ -38,7 +37,6 @@ private unsafe def mk_inhabited_arg : tactic Unit := do
   let inh ← mk_app `inhabited [tgt]
   let inst ← mk_instance inh
   mk_app `inhabited.default [inst] >>= exact
-#align tactic.mk_inhabited_arg tactic.mk_inhabited_arg
 
 private unsafe def try_constructors : Nat → Nat → tactic Unit
   | 0, n => failed
@@ -48,7 +46,6 @@ private unsafe def try_constructors : Nat → Nat → tactic Unit
         all_goals mk_inhabited_arg
         done) <|>
       try_constructors i n
-#align tactic.try_constructors tactic.try_constructors
 
 unsafe def mk_inhabited_instance : tactic Unit := do
   let I ← get_inhabited_type_name

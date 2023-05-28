@@ -315,7 +315,6 @@ private def to_nat_core : String.Iterator → Nat → Nat → Nat
     let c := it.curr
     let r := r * 10 + c.toNat - '0'.toNat
     to_nat_core it.next i r
-#align to_nat_core to_nat_core
 
 def String.toNat (s : String) : Nat :=
   toNatCore s.mkIterator s.length 0
@@ -326,7 +325,6 @@ namespace String
 private theorem nil_ne_append_singleton : ∀ (c : Char) (l : List Char), [] ≠ l ++ [c]
   | c, [] => fun h => List.noConfusion h
   | c, d :: l => fun h => List.noConfusion h
-#align string.nil_ne_append_singleton string.nil_ne_append_singleton
 
 theorem empty_ne_str : ∀ (c : Char) (s : String), empty ≠ str s c
   | c, ⟨l⟩ => fun h : StringImp.mk [] = StringImp.mk (l ++ [c]) =>
@@ -352,7 +350,6 @@ private theorem str_ne_str_left_aux :
     have : d₁ :: (l₁ ++ [c₁]) = d₂ :: (l₂ ++ [c₂]) := h₂
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := List.noConfusion this fun _ h => h
     absurd this (str_ne_str_left_aux l₁ l₂ h₁)
-#align string.str_ne_str_left_aux string.str_ne_str_left_aux
 
 theorem str_ne_str_left : ∀ {c₁ c₂ : Char} (s₁ s₂ : String), c₁ ≠ c₂ → str s₁ c₁ ≠ str s₂ c₂
   | c₁, c₂, StringImp.mk l₁, StringImp.mk l₂, h₁, h₂ =>
@@ -379,7 +376,6 @@ private theorem str_ne_str_right_aux :
       absurd this h₁
     have : l₁ ++ [c₁] = l₂ ++ [c₂] := List.noConfusion aux₁ fun _ h => h
     absurd this (str_ne_str_right_aux c₁ c₂ aux₂)
-#align string.str_ne_str_right_aux string.str_ne_str_right_aux
 
 theorem str_ne_str_right : ∀ (c₁ c₂ : Char) {s₁ s₂ : String}, s₁ ≠ s₂ → str s₁ c₁ ≠ str s₂ c₂
   | c₁, c₂, StringImp.mk l₁, StringImp.mk l₂, h₁, h₂ =>

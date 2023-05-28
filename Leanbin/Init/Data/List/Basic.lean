@@ -558,7 +558,6 @@ private def to_list_aux : BinTree α → List α → List α
   | Empty, as => as
   | leaf a, as => a :: as
   | node l r, as => to_list_aux l (to_list_aux r as)
-#align bin_tree.to_list_aux bin_tree.to_list_aux
 
 def toList (t : BinTree α) : List α :=
   toListAux t []

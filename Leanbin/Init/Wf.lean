@@ -167,7 +167,6 @@ parameter (h : WellFounded r)
 private def acc_aux {b : β} (ac : Acc r b) : ∀ x : α, f x = b → Acc (InvImage r f) x :=
   Acc.recOn ac fun x acx ih z e =>
     Acc.intro z fun y lt => Eq.recOn e (fun acx ih => ih (f y) lt y rfl) acx ih
-#align inv_image.acc_aux inv_image.acc_aux
 
 theorem accessible {a : α} (ac : Acc r (f a)) : Acc (InvImage r f) a :=
   acc_aux ac a rfl

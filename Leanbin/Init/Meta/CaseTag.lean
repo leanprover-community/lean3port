@@ -186,7 +186,6 @@ unsafe def case_names : CaseTag → List Name
 
 private unsafe def render_arguments (args : List Name) : List Name :=
   args.map (Name.mk_string "_arg")
-#align tactic.interactive.case_tag.render_arguments tactic.interactive.case_tag.render_arguments
 
 /-- Renders a case tag to a goal tag (i.e. a list of names), according to the
 following schema:
@@ -227,7 +226,6 @@ private unsafe def parse_marker : Name → Option (Option Nat)
   | mk_numeral n `_case.pi => some (some n.toNat)
   | `_case.hyps => some none
   | _ => none
-#align tactic.interactive.case_tag.parse_marker tactic.interactive.case_tag.parse_marker
 
 private unsafe def parse_arguments : List Name → List Name × List Name
   | [] => ⟨[], []⟩
@@ -235,7 +233,6 @@ private unsafe def parse_arguments : List Name → List Name × List Name
     let ⟨args, rest⟩ := parse_arguments ns
     ⟨n :: args, rest⟩
   | ns => ⟨[], ns⟩
-#align tactic.interactive.case_tag.parse_arguments tactic.interactive.case_tag.parse_arguments
 
 /-- Parses a case tag from the list of names produced by `render`.
 -/
@@ -283,14 +280,12 @@ end MatchResult
 
 private unsafe def name_match (suffix : Name) (n : Name) : MatchResult :=
   if suffix = n then exact_match else if suffix.isSuffixOfₓ n then fuzzy_match else no_match
-#align tactic.interactive.case_tag.name_match tactic.interactive.case_tag.name_match
 
 private unsafe def names_match : List Name → List Name → MatchResult
   | [], [] => exact_match
   | [], _ => fuzzy_match
   | _ :: _, [] => no_match
   | n :: ns, n' :: ns' => (name_match n n').combine (names_match ns ns')
-#align tactic.interactive.case_tag.names_match tactic.interactive.case_tag.names_match
 
 /-- Match the `names` of a case tag against a user-supplied list of names `ns`. For
 this purpose, we consider the `names` in reverse order, i.e. in the order in

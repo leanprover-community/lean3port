@@ -29,11 +29,9 @@ open Format List Decidable
 
 private unsafe def ppfield {α : Type} [has_to_format α] (fname : String) (v : α) : format :=
   group <| to_fmt fname ++ space ++ to_fmt ":=" ++ space ++ nest (fname.length + 4) (to_fmt v)
-#align ppfield ppfield
 
 private unsafe def concat_fields (f₁ f₂ : format) : format :=
   if is_nil f₁ then f₂ else if is_nil f₂ then f₁ else f₁ ++ to_fmt "," ++ line ++ f₂
-#align concat_fields concat_fields
 
 -- mathport name: «expr +++ »
 local infixl:65 "+++" => concat_fields
@@ -135,7 +133,6 @@ unsafe axiom get_spec_prefix_size (t : expr) (nargs : Nat) (md := semireducible)
 private unsafe def is_next_explicit : List ParamInfo → Bool
   | [] => true
   | p :: ps => not p.isImplicit && not p.isInstImplicit
-#align tactic.is_next_explicit tactic.is_next_explicit
 
 unsafe def fold_explicit_args_aux {α} (f : α → expr → tactic α) :
     List expr → List ParamInfo → α → tactic α

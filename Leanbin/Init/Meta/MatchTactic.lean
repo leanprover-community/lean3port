@@ -87,7 +87,6 @@ private unsafe def to_pattern_core : expr → tactic (expr × List expr)
     let (p, xs) ← to_pattern_core new_b
     return (p, x :: xs)
   | e => return (e, [])
-#align tactic.to_pattern_core tactic.to_pattern_core
 
 /-- Given a pre-term of the form `λ x₁ ... xₙ, t[x₁, ..., xₙ]`, converts it
    into the pattern `t[?x₁, ..., ?xₙ]` with outputs `[?x₁, ..., ?xₙ]` -/
@@ -114,7 +113,6 @@ private unsafe def match_subexpr_core (m : Transparency) : pattern → List expr
   | p, e :: es =>
     Prod.snd <$> match_pattern p e m <|>
       match_subexpr_core p es <|> if is_app e then match_subexpr_core p (get_app_args e) else failed
-#align tactic.match_subexpr_core tactic.match_subexpr_core
 
 /-- Similar to match_expr, but it tries to match a subexpression of e.
    Remark: the procedure does not go inside binders. -/
@@ -144,7 +142,6 @@ private unsafe def match_hypothesis_core (m : Transparency) :
           let r ← match_pattern p h_type m
           return (h, r)) <|>
         match_hypothesis_core p hs
-#align tactic.match_hypothesis_core tactic.match_hypothesis_core
 
 /-- Match hypothesis in the main goal target.
    The result is pair (hypothesis, substitution). -/

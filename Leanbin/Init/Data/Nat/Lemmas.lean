@@ -138,7 +138,6 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def sort_add :=
   sorry
-#align nat.sort_add nat.sort_add
 
 /- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.succ_mul /-
@@ -1332,7 +1331,6 @@ private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
   exact
     ih (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h1))
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
-#align nat.mod_core_congr nat.mod_core_congr
 
 /- warning: nat.mod_def -> Nat.mod_eq is a dubious translation:
 lean 3 declaration is
@@ -1545,7 +1543,6 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
   exact
     ih (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h1))
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
-#align nat.div_core_congr nat.div_core_congr
 
 /- warning: nat.div_def -> Nat.div_eq is a dubious translation:
 lean 3 declaration is
@@ -2023,7 +2020,6 @@ parameter {p : ℕ → Prop}
 
 private def lbp (m n : ℕ) : Prop :=
   m = n + 1 ∧ ∀ k ≤ n, ¬p k
-#align nat.lbp nat.lbp
 
 parameter [DecidablePred p](H : ∃ n, p n)
 
@@ -2040,7 +2036,6 @@ private def wf_lbp : WellFounded lbp :=
       ⟨_, fun y r =>
         match y, r with
         | _, ⟨rfl, a⟩ => IH _ (by rw [Nat.add_right_comm] <;> exact kn)⟩⟩
-#align nat.wf_lbp nat.wf_lbp
 
 #print Nat.findX /-
 protected def findX : { n // p n ∧ ∀ m < n, ¬p m } :=

@@ -98,7 +98,6 @@ private unsafe def injections_with_inner (base : Name) (offset : Option ℕ) :
           some
           (t, ns') =>
         injections_with_inner n (t ++ lc) ns'
-#align tactic.injections_with_inner tactic.injections_with_inner
 
 /-- Simplifies equations in the context using injectivity of constructors. For
 each equation `h : C x₁ ... xₙ = D y₁ ... yₘ` in the context, where `C` and `D`

@@ -24,7 +24,6 @@ private unsafe def apply_replacement (replacements : name_map Name) (e : expr) :
       | some new_n => some (expr.const new_n ls)
       | none => none
     | _ => none
-#align apply_replacement apply_replacement
 
 /--
 Given a set of constant renamings `replacements` and a declaration name `src_decl_name`, create a new

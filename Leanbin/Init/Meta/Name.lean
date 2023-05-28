@@ -83,7 +83,6 @@ private def name.components' : Name → List Name
   | anonymous => []
   | mk_string s n => mk_string s anonymous :: name.components' n
   | mk_numeral v n => mk_numeral v anonymous :: name.components' n
-#align name.components' name.components'
 
 def Name.components (n : Name) : List Name :=
   (Name.components' n).reverse

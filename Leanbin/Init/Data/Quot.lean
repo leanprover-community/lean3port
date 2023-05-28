@@ -315,18 +315,15 @@ private def rel (q₁ q₂ : Quotient s) : Prop :=
     propext
       (Iff.intro (fun a₁a₂ => Setoid.trans (Setoid.symm a₁b₁) (Setoid.trans a₁a₂ a₂b₂)) fun b₁b₂ =>
         Setoid.trans a₁b₁ (Setoid.trans b₁b₂ (Setoid.symm a₂b₂)))
-#align quotient.rel quotient.rel
 
 -- mathport name: «expr ~ »
 local infixl:50 " ~ " => Rel
 
 private theorem rel.refl : ∀ q : Quotient s, q ~ q := fun q =>
   Quot.inductionOn q fun a => Setoid.refl a
-#align quotient.rel.refl quotient.rel.refl
 
 private theorem eq_imp_rel {q₁ q₂ : Quotient s} : q₁ = q₂ → q₁ ~ q₂ := fun h =>
   Eq.recOn h (Rel.refl q₁)
-#align quotient.eq_imp_rel quotient.eq_imp_rel
 
 #print Quotient.exact /-
 theorem exact {a b : α} : ⟦a⟧ = ⟦b⟧ → a ≈ b := fun h => eq_imp_rel h

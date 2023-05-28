@@ -35,7 +35,6 @@ private theorem mlt {n b : Nat} : ∀ {a}, n > a → b % n < n
   | a + 1, h =>
     have : n > 0 := lt_trans (Nat.zero_lt_succ _) h
     Nat.mod_lt _ this
-#align fin.mlt fin.mlt
 
 #print Fin.add /-
 protected def add : Fin n → Fin n → Fin n
@@ -51,7 +50,6 @@ protected def mul : Fin n → Fin n → Fin n
 
 private theorem sublt {a b n : Nat} (h : a < n) : a - b < n :=
   lt_of_le_of_lt (Nat.sub_le a b) h
-#align fin.sublt fin.sublt
 
 #print Fin.sub /-
 protected def sub : Fin n → Fin n → Fin n
@@ -67,7 +65,6 @@ private theorem modlt {a b n : Nat} (h₁ : a < n) (h₂ : b < n) : a % b < n :=
   · have h : a % succ b < succ b
     apply Nat.mod_lt _ (Nat.zero_lt_succ _)
     exact lt_trans h h₂
-#align fin.modlt fin.modlt
 
 #print Fin.mod /-
 protected def mod : Fin n → Fin n → Fin n
@@ -77,7 +74,6 @@ protected def mod : Fin n → Fin n → Fin n
 
 private theorem divlt {a b n : Nat} (h : a < n) : a / b < n :=
   lt_of_le_of_lt (Nat.div_le_self a b) h
-#align fin.divlt fin.divlt
 
 #print Fin.div /-
 protected def div : Fin n → Fin n → Fin n

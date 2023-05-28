@@ -52,7 +52,6 @@ private def split_core (p : Char → Bool) : Iterator → Iterator → List Stri
       else split_core start stop.next
     else [start.nextToString]termination_by'
   ⟨_, measure_wf fun e => e.2.nextToString.length⟩
-#align string.split_core string.split_core
 
 /- warning: string.split -> String.split is a dubious translation:
 lean 3 declaration is

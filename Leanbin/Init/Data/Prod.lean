@@ -17,12 +17,10 @@ section
 
 variable {α : Type u} {β : Type v}
 
-#print Prod.mk.eta /-
 @[simp]
 theorem Prod.mk.eta : ∀ {p : α × β}, (p.1, p.2) = p
   | (a, b) => rfl
 #align prod.mk.eta Prod.mk.eta
--/
 
 instance [Inhabited α] [Inhabited β] : Inhabited (Prod α β) :=
   ⟨(default, default)⟩

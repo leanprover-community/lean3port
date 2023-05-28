@@ -43,12 +43,6 @@ class Repr (α : Type u) where
 #align has_repr Repr
 -/
 
-/- warning: repr -> repr is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], α -> String
-but is expected to have type
-  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], α -> Std.Format
-Case conversion may be inaccurate. Consider using '#align repr reprₓ'. -/
 /--
 `repr` is similar to `to_string` except that we should have the property `eval (repr x) = x` for most sensible datatypes.
 Hence, `repr "hello"` has the value `"\"hello\""` not `"hello"`.  -/
@@ -69,12 +63,6 @@ protected def List.reprAux {α : Type u} [Repr α] : Bool → List α → String
   | ff, x :: xs => ", " ++ repr x ++ List.reprAux false xs
 #align list.repr_aux List.reprAux
 
-/- warning: list.repr -> List.repr is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], (List.{u1} α) -> String
-but is expected to have type
-  forall {α : Type.{u1}} [_inst_1 : Repr.{u1} α], (List.{u1} α) -> Nat -> Std.Format
-Case conversion may be inaccurate. Consider using '#align list.repr List.reprₓ'. -/
 protected def List.repr {α : Type u} [Repr α] : List α → String
   | [] => "[]"
   | x :: xs => "[" ++ List.reprAux true (x :: xs) ++ "]"

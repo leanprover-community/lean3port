@@ -13,12 +13,6 @@ import Leanbin.Init.Meta.Format
 
 universe u
 
-/- warning: timeit -> timeit is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u}}, String -> (Thunkₓ.{u} α) -> α
-but is expected to have type
-  forall {α : Type}, ([mdata borrowed:1 String]) -> (IO α) -> (IO α)
-Case conversion may be inaccurate. Consider using '#align timeit timeitₓ'. -/
 /-- This function has a native implementation that tracks time. -/
 def timeit {α : Type u} (s : String) (f : Thunk α) : α :=
   f ()

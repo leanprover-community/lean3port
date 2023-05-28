@@ -49,12 +49,6 @@ structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro 
 #align well_founded WellFounded
 -/
 
-/- warning: has_well_founded -> WellFoundedRelation is a dubious translation:
-lean 3 declaration is
-  Sort.{u1} -> Type.{u1}
-but is expected to have type
-  Sort.{u1} -> Sort.{max 1 u1}
-Case conversion may be inaccurate. Consider using '#align has_well_founded WellFoundedRelationₓ'. -/
 class WellFoundedRelation (α : Sort u) : Type u where
   R : α → α → Prop
   wf : WellFounded r
@@ -182,12 +176,6 @@ end
 
 end InvImage
 
-/- warning: nat.lt_wf -> Nat.lt_wfRel is a dubious translation:
-lean 3 declaration is
-  WellFounded.{1} Nat Nat.lt
-but is expected to have type
-  WellFoundedRelation.{1} Nat
-Case conversion may be inaccurate. Consider using '#align nat.lt_wf Nat.lt_wfRelₓ'. -/
 /-- less-than is well-founded -/
 theorem Nat.lt_wfRel : WellFounded Nat.lt :=
   ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zero n)) fun n ih =>

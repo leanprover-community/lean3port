@@ -154,12 +154,6 @@ def drop (i : ℕ) : Vector α n → Vector α (n - i)
 #align vector.drop Vector.drop
 -/
 
-/- warning: vector.take -> Vector.take is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u1}} {n : Nat} (i : Nat), (Vector.{u1} α n) -> (Vector.{u1} α (LinearOrder.min.{0} Nat Nat.linearOrder i n))
-but is expected to have type
-  forall {α : Type.{u1}} {n : Nat} (i : Nat), (Vector.{u1} α n) -> (Vector.{u1} α (Min.min.{0} Nat instMinNat i n))
-Case conversion may be inaccurate. Consider using '#align vector.take Vector.takeₓ'. -/
 def take (i : ℕ) : Vector α n → Vector α (min i n)
   | ⟨l, p⟩ => ⟨List.take i l, by simp [*]⟩
 #align vector.take Vector.take

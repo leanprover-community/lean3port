@@ -36,12 +36,6 @@ def ofList (l : List α) : Dlist α :=
   ⟨append l, ♯⟩
 #align dlist.of_list Dlist.ofList
 
-/- warning: dlist.lazy_of_list -> Std.DList.lazy_ofList is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u1}}, (Thunkₓ.{u1} (List.{u1} α)) -> (Dlist.{u1} α)
-but is expected to have type
-  forall {α : Type.{u1}}, (Thunk.{u1} (List.{u1} α)) -> (Std.DList.{u1} α)
-Case conversion may be inaccurate. Consider using '#align dlist.lazy_of_list Std.DList.lazy_ofListₓ'. -/
 /-- Convert a lazily-evaluated list to a dlist -/
 def Std.DList.lazy_ofList (l : Thunk (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
@@ -92,12 +86,6 @@ theorem Std.DList.toList_ofList (l : List α) : toList (ofList l) = l := by case
 #align dlist.to_list_of_list Std.DList.toList_ofList
 -/
 
-/- warning: dlist.of_list_to_list -> Std.DList.ofList_toList is a dubious translation:
-lean 3 declaration is
-  forall {α : Type.{u1}} (l : Dlist.{u1} α), Eq.{succ u1} (Dlist.{u1} α) (Dlist.ofList.{u1} α (Dlist.toList.{u1} α l)) l
-but is expected to have type
-  forall {α : Type.{u1}} (l : Std.DList.{u1} α), Eq.{succ u1} (Std.DList.{u1} α) (Std.DList.ofList.{u1} α (Std.DList.toList.{u1} α l)) l
-Case conversion may be inaccurate. Consider using '#align dlist.of_list_to_list Std.DList.ofList_toListₓ'. -/
 theorem Std.DList.ofList_toList (l : Dlist α) : ofList (toList l) = l :=
   by
   cases' l with xs

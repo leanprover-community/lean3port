@@ -58,12 +58,6 @@ theorem monadLift_refl {m : Type u → Type v} {α} : (monadLift : m α → m α
   rfl
 #align monad_lift_refl monadLift_refl
 
-/- warning: monad_functor -> MonadFunctor is a dubious translation:
-lean 3 declaration is
-  (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u3}) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (succ (succ u1)) (succ u2) (succ u3)}
-but is expected to have type
-  (semiOutParam.{max (succ (succ u1)) (succ (succ u2))} (Type.{u1} -> Type.{u2})) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (max (succ (succ u1)) (succ u2)) (succ u3)}
-Case conversion may be inaccurate. Consider using '#align monad_functor MonadFunctorₓ'. -/
 /-- A functor in the category of monads. Can be used to lift monad-transforming functions.
     Based on pipes' [MFunctor](https://hackage.haskell.org/package/pipes-2.4.0/docs/Control-MFunctor.html),
     but not restricted to monad transformers.
@@ -72,12 +66,6 @@ class MonadFunctor (m m' : Type u → Type v) (n n' : Type u → Type w) where
   monadMap {α : Type u} : (∀ {α}, m α → m' α) → n α → n' α
 #align monad_functor MonadFunctor
 
-/- warning: monad_functor_t -> MonadFunctorT is a dubious translation:
-lean 3 declaration is
-  (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u3}) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (succ (succ u1)) (succ u2) (succ u3)}
-but is expected to have type
-  (Type.{u1} -> Type.{u2}) -> (Type.{u1} -> Type.{u3}) -> Sort.{max (max (succ (succ u1)) (succ u2)) (succ u3)}
-Case conversion may be inaccurate. Consider using '#align monad_functor_t MonadFunctorTₓ'. -/
 /-- The reflexive-transitive closure of `monad_functor`.
     `monad_map` is used to transitively lift monad morphisms such as `state_t.zoom`.
     A generalization of [MonadLiftFunctor](http://duairc.netsoc.ie/layers-docs/Control-Monad-Layer.html#t:MonadLiftFunctor), which can only lift endomorphisms (i.e. m = m', n = n'). -/

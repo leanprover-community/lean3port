@@ -105,42 +105,18 @@ theorem ofNat_zero : @ofNat n 0 = 0 :=
   rfl
 #align fin.of_nat_zero Fin.ofNat_zero
 
-/- warning: fin.add_def -> Fin.add_def is a dubious translation:
-lean 3 declaration is
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} Nat (Fin.val n (HAdd.hAdd.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHAdd.{0} (Fin n) (Fin.hasAdd n)) a b)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat Nat.hasAdd) (Fin.val n a) (Fin.val n b)) n)
-but is expected to have type
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} (Fin n) (HAdd.hAdd.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHAdd.{0} (Fin n) (Fin.instAddFin n)) a b) (Fin.mk n (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (Fin.val n a) (Fin.val n b)) n) (Nat.mod_lt (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (Fin.val n a) (Fin.val n b)) n (Fin.size_positive n a)))
-Case conversion may be inaccurate. Consider using '#align fin.add_def Fin.add_defₓ'. -/
 theorem add_def (a b : Fin n) : (a + b).val = (a.val + b.val) % n :=
   show (Fin.add a b).val = (a.val + b.val) % n by cases a <;> cases b <;> simp [Fin.add]
 #align fin.add_def Fin.add_def
 
-/- warning: fin.mul_def -> Fin.mul_def is a dubious translation:
-lean 3 declaration is
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} Nat (Fin.val n (HMul.hMul.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMul.{0} (Fin n) (Fin.hasMul n)) a b)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat Nat.hasMul) (Fin.val n a) (Fin.val n b)) n)
-but is expected to have type
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} (Fin n) (HMul.hMul.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMul.{0} (Fin n) (Fin.instMulFin n)) a b) (Fin.mk n (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) (Fin.val n a) (Fin.val n b)) n) (Nat.mod_lt (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) (Fin.val n a) (Fin.val n b)) n (Fin.size_positive n a)))
-Case conversion may be inaccurate. Consider using '#align fin.mul_def Fin.mul_defₓ'. -/
 theorem mul_def (a b : Fin n) : (a * b).val = a.val * b.val % n :=
   show (Fin.mul a b).val = a.val * b.val % n by cases a <;> cases b <;> simp [Fin.mul]
 #align fin.mul_def Fin.mul_def
 
-/- warning: fin.sub_def -> Fin.sub_def is a dubious translation:
-lean 3 declaration is
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} Nat (Fin.val n (HSub.hSub.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHSub.{0} (Fin n) (Fin.hasSub n)) a b)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat Nat.hasAdd) (Fin.val n a) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n (Fin.val n b))) n)
-but is expected to have type
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} (Fin n) (HSub.hSub.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHSub.{0} (Fin n) (Fin.instSubFin n)) a b) (Fin.mk n (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (Fin.val n a) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n (Fin.val n b))) n) (Nat.mod_lt (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (Fin.val n a) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n (Fin.val n b))) n (Fin.size_positive n a)))
-Case conversion may be inaccurate. Consider using '#align fin.sub_def Fin.sub_defₓ'. -/
 theorem sub_def (a b : Fin n) : (a - b).val = (a.val + (n - b.val)) % n := by
   cases a <;> cases b <;> rfl
 #align fin.sub_def Fin.sub_def
 
-/- warning: fin.mod_def -> Fin.mod_def is a dubious translation:
-lean 3 declaration is
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} Nat (Fin.val n (HMod.hMod.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMod.{0} (Fin n) (Fin.hasMod n)) a b)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (Fin.val n a) (Fin.val n b))
-but is expected to have type
-  forall {n : Nat} (a : Fin n) (b : Fin n), Eq.{1} (Fin n) (HMod.hMod.{0, 0, 0} (Fin n) (Fin n) (Fin n) (instHMod.{0} (Fin n) (Fin.instModFin n)) a b) (Fin.mk n (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (Fin.val n a) (Fin.val n b)) n) (Nat.mod_lt (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (Fin.val n a) (Fin.val n b)) n (Fin.size_positive n a)))
-Case conversion may be inaccurate. Consider using '#align fin.mod_def Fin.mod_defₓ'. -/
 theorem mod_def (a b : Fin n) : (a % b).val = a.val % b.val :=
   show (Fin.mod a b).val = a.val % b.val by cases a <;> cases b <;> simp [Fin.mod]
 #align fin.mod_def Fin.mod_def
@@ -158,11 +134,6 @@ theorem le_def (a b : Fin n) : (a ≤ b) = (a.val ≤ b.val) :=
 #align fin.le_def Fin.le_def
 
 /- warning: fin.val_zero clashes with fin.coe_zero -> Fin.val_zero
-warning: fin.val_zero -> Fin.val_zero is a dubious translation:
-lean 3 declaration is
-  forall {n : Nat}, Eq.{1} Nat (Fin.val (Nat.succ n) (OfNat.ofNat.{0} (Fin (Nat.succ n)) 0 (OfNat.mk.{0} (Fin (Nat.succ n)) 0 (Zero.zero.{0} (Fin (Nat.succ n)) (Fin.hasZero n))))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
-but is expected to have type
-  forall (n : Nat) [inst._@.Mathlib.Data.Fin.Basic._hyg.2527 : NeZero.{0} Nat (LinearOrderedCommMonoidWithZero.toZero.{0} Nat Nat.linearOrderedCommMonoidWithZero) n], Eq.{1} Nat (Fin.val n (OfNat.ofNat.{0} (Fin n) 0 (Zero.toOfNat0.{0} (Fin n) (Fin.instZeroFin n inst._@.Mathlib.Data.Fin.Basic._hyg.2527)))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
 Case conversion may be inaccurate. Consider using '#align fin.val_zero Fin.val_zeroₓ'. -/
 theorem val_zero : (0 : Fin (succ n)).val = 0 :=
   rfl

@@ -103,12 +103,6 @@ theorem right_id (f : α → β) : f ∘ id = f :=
 #align function.right_id Function.right_id
 -/
 
-/- warning: function.comp_app -> Function.comp_apply is a dubious translation:
-lean 3 declaration is
-  forall {α : Sort.{u1}} {β : Sort.{u2}} {φ : Sort.{u3}} (f : β -> φ) (g : α -> β) (a : α), Eq.{u3} φ (Function.comp.{u1, u2, u3} α β φ f g a) (f (g a))
-but is expected to have type
-  forall {α : Sort.{u3}} {β : Sort.{u2}} {φ : Sort.{u1}} {f : α -> β} {g : φ -> α} {a : φ}, Eq.{u2} β (Function.comp.{u1, u3, u2} φ α β f g a) (f (g a))
-Case conversion may be inaccurate. Consider using '#align function.comp_app Function.comp_applyₓ'. -/
 @[simp]
 theorem comp_apply (f : β → φ) (g : α → β) (a : α) : (f ∘ g) a = f (g a) :=
   rfl

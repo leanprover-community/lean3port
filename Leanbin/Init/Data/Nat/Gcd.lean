@@ -52,12 +52,6 @@ theorem gcd_one_left (n : ℕ) : gcd 1 n = 1 := by simp [gcd]
 #align nat.gcd_one_left Nat.gcd_one_left
 -/
 
-/- warning: nat.gcd_def -> Nat.gcd_def is a dubious translation:
-lean 3 declaration is
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (Nat.gcd x y) (ite.{1} Nat (Eq.{1} Nat x (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) (Nat.decidableEq x (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) y (Nat.gcd (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) y x) x))
-but is expected to have type
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (Nat.gcd x y) (ite.{1} Nat (Eq.{1} Nat x (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (instDecidableEqNat x (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) y (Nat.gcd (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) y x) x))
-Case conversion may be inaccurate. Consider using '#align nat.gcd_def Nat.gcd_defₓ'. -/
 theorem gcd_def (x y : ℕ) : gcd x y = if x = 0 then y else gcd (y % x) x := by
   cases x <;> simp [gcd, succ_ne_zero]
 #align nat.gcd_def Nat.gcd_def

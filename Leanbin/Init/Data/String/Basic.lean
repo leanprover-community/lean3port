@@ -194,12 +194,6 @@ protected def extractCore : List Char → List Char → Option (List Char)
       | some r => some (c :: r)
 #align string.iterator.extract_core String.Iterator.extractCore
 
-/- warning: string.iterator.extract -> String.Iterator.extract is a dubious translation:
-lean 3 declaration is
-  String.Iterator -> String.Iterator -> (Option.{0} String)
-but is expected to have type
-  String.Iterator -> String.Iterator -> String
-Case conversion may be inaccurate. Consider using '#align string.iterator.extract String.Iterator.extractₓ'. -/
 def extract : Iterator → Iterator → Option String
   | ⟨p₁, n₁⟩, ⟨p₂, n₂⟩ =>
     if p₁.reverse ++ n₁ ≠ p₂.reverse ++ n₂ then none

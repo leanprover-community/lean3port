@@ -53,12 +53,6 @@ private def split_core (p : Char → Bool) : Iterator → Iterator → List Stri
     else [start.nextToString]termination_by'
   ⟨_, measure_wf fun e => e.2.nextToString.length⟩
 
-/- warning: string.split -> String.split is a dubious translation:
-lean 3 declaration is
-  (Char -> Bool) -> String -> (List.{0} String)
-but is expected to have type
-  String -> (Char -> Bool) -> (List.{0} String)
-Case conversion may be inaccurate. Consider using '#align string.split String.splitₓ'. -/
 def split (p : Char → Bool) (s : String) : List String :=
   splitCore p s.mkIterator s.mkIterator
 #align string.split String.split

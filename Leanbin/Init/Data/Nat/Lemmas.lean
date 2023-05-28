@@ -866,11 +866,6 @@ theorem exists_eq_succ_of_ne_zero {n : ℕ} (H : n ≠ 0) : ∃ k : ℕ, n = suc
 -/
 
 /- warning: nat.discriminate clashes with [anonymous] -> [anonymous]
-warning: nat.discriminate -> [anonymous] is a dubious translation:
-lean 3 declaration is
-  forall {B : Sort.{u}} {n : Nat}, ((Eq.{1} Nat n (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) -> B) -> (forall (m : Nat), (Eq.{1} Nat n (Nat.succ m)) -> B) -> B
-but is expected to have type
-  forall {B : Type.{u}} {n : Type.{v}}, (Nat -> B -> n) -> Nat -> (List.{u} B) -> (List.{v} n)
 Case conversion may be inaccurate. Consider using '#align nat.discriminate [anonymous]ₓ'. -/
 def [anonymous] {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
   induction' h : n with <;> [exact H1 h;exact H2 _ h]
@@ -1194,32 +1189,14 @@ theorem succ_mul_succ_eq (a b : Nat) : succ a * succ b = a * b + a + b + 1 :=
 /-! min -/
 
 
-/- warning: nat.zero_min -> Nat.zero_min is a dubious translation:
-lean 3 declaration is
-  forall (a : Nat), Eq.{1} Nat (LinearOrder.min.{0} Nat Nat.linearOrder (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) a) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
-but is expected to have type
-  forall (a : Nat), Eq.{1} Nat (Min.min.{0} Nat instMinNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) a) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
-Case conversion may be inaccurate. Consider using '#align nat.zero_min Nat.zero_minₓ'. -/
 protected theorem zero_min (a : ℕ) : min 0 a = 0 :=
   min_eq_left a.zero_le
 #align nat.zero_min Nat.zero_min
 
-/- warning: nat.min_zero -> Nat.min_zero is a dubious translation:
-lean 3 declaration is
-  forall (a : Nat), Eq.{1} Nat (LinearOrder.min.{0} Nat Nat.linearOrder a (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero)))
-but is expected to have type
-  forall (a : Nat), Eq.{1} Nat (Min.min.{0} Nat instMinNat a (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))
-Case conversion may be inaccurate. Consider using '#align nat.min_zero Nat.min_zeroₓ'. -/
 protected theorem min_zero (a : ℕ) : min a 0 = 0 :=
   min_eq_right a.zero_le
 #align nat.min_zero Nat.min_zero
 
-/- warning: nat.min_succ_succ -> Nat.min_succ_succ is a dubious translation:
-lean 3 declaration is
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (LinearOrder.min.{0} Nat Nat.linearOrder (Nat.succ x) (Nat.succ y)) (Nat.succ (LinearOrder.min.{0} Nat Nat.linearOrder x y))
-but is expected to have type
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (Min.min.{0} Nat instMinNat (Nat.succ x) (Nat.succ y)) (Nat.succ (Min.min.{0} Nat instMinNat x y))
-Case conversion may be inaccurate. Consider using '#align nat.min_succ_succ Nat.min_succ_succₓ'. -/
 -- Distribute succ over min
 theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
   have f : x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
@@ -1235,23 +1212,11 @@ theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
   Decidable.byCases f g
 #align nat.min_succ_succ Nat.min_succ_succ
 
-/- warning: nat.sub_eq_sub_min -> Nat.sub_eq_sub_min is a dubious translation:
-lean 3 declaration is
-  forall (n : Nat) (m : Nat), Eq.{1} Nat (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n m) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n (LinearOrder.min.{0} Nat Nat.linearOrder n m))
-but is expected to have type
-  forall (n : Nat) (m : Nat), Eq.{1} Nat (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n m) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n (Min.min.{0} Nat instMinNat n m))
-Case conversion may be inaccurate. Consider using '#align nat.sub_eq_sub_min Nat.sub_eq_sub_minₓ'. -/
 theorem sub_eq_sub_min (n m : ℕ) : n - m = n - min n m :=
   if h : n ≥ m then by rw [min_eq_right h]
   else by rw [Nat.sub_eq_zero_of_le (le_of_not_ge h), min_eq_left (le_of_not_ge h), Nat.sub_self]
 #align nat.sub_eq_sub_min Nat.sub_eq_sub_min
 
-/- warning: nat.sub_add_min_cancel -> Nat.sub_add_min_cancel is a dubious translation:
-lean 3 declaration is
-  forall (n : Nat) (m : Nat), Eq.{1} Nat (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat Nat.hasAdd) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) n m) (LinearOrder.min.{0} Nat Nat.linearOrder n m)) n
-but is expected to have type
-  forall (n : Nat) (m : Nat), Eq.{1} Nat (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) n m) (Min.min.{0} Nat instMinNat n m)) n
-Case conversion may be inaccurate. Consider using '#align nat.sub_add_min_cancel Nat.sub_add_min_cancelₓ'. -/
 @[simp]
 protected theorem sub_add_min_cancel (n m : ℕ) : n - m + min n m = n := by
   rw [sub_eq_sub_min, Nat.sub_add_cancel (min_le_left n m)]
@@ -1318,12 +1283,6 @@ private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
     ih (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h1))
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
 
-/- warning: nat.mod_def -> Nat.mod_eq is a dubious translation:
-lean 3 declaration is
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) x y) (ite.{1} Nat (And (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x)) (And.decidable (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x) (Nat.decidableLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (Nat.decidableLe y x)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.hasMod) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) x y) y) x)
-but is expected to have type
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) x y) (ite.{1} Nat (And (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x)) (instDecidableAnd (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x) (Nat.decLt (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (Nat.decLe y x)) (HMod.hMod.{0, 0, 0} Nat Nat Nat (instHMod.{0} Nat Nat.instModNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) x y) y) x)
-Case conversion may be inaccurate. Consider using '#align nat.mod_def Nat.mod_eqₓ'. -/
 theorem mod_eq (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x :=
   by
   cases x; · cases y <;> rfl
@@ -1521,12 +1480,6 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
     ih (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h1))
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
 
-/- warning: nat.div_def -> Nat.div_eq is a dubious translation:
-lean 3 declaration is
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) x y) (ite.{1} Nat (And (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x)) (And.decidable (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (LE.le.{0} Nat Nat.hasLe y x) (Nat.decidableLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) y) (Nat.decidableLe y x)) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat Nat.hasAdd) (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat Nat.hasSub) x y) y) (OfNat.ofNat.{0} Nat 1 (OfNat.mk.{0} Nat 1 (One.one.{0} Nat Nat.hasOne)))) (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))))
-but is expected to have type
-  forall (x : Nat) (y : Nat), Eq.{1} Nat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) x y) (ite.{1} Nat (And (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x)) (instDecidableAnd (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (LE.le.{0} Nat instLENat y x) (Nat.decLt (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) y) (Nat.decLe y x)) (HAdd.hAdd.{0, 0, 0} Nat Nat Nat (instHAdd.{0} Nat instAddNat) (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) (HSub.hSub.{0, 0, 0} Nat Nat Nat (instHSub.{0} Nat instSubNat) x y) y) (OfNat.ofNat.{0} Nat 1 (instOfNatNat 1))) (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)))
-Case conversion may be inaccurate. Consider using '#align nat.div_def Nat.div_eqₓ'. -/
 theorem div_eq (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 else 0 :=
   by
   cases x; · cases y <;> rfl
@@ -1617,12 +1570,6 @@ theorem div_eq_of_lt {a b : ℕ} (h₀ : a < b) : a / b = 0 :=
 #align nat.div_eq_of_lt Nat.div_eq_of_lt
 -/
 
-/- warning: nat.le_div_iff_mul_le -> Nat.le_div_iff_mul_le is a dubious translation:
-lean 3 declaration is
-  forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) k) -> (Iff (LE.le.{0} Nat Nat.hasLe x (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) y k)) (LE.le.{0} Nat Nat.hasLe (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat Nat.hasMul) x k) y))
-but is expected to have type
-  forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) x) -> (Iff (LE.le.{0} Nat instLENat y (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) k x)) (LE.le.{0} Nat instLENat (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) y x) k))
-Case conversion may be inaccurate. Consider using '#align nat.le_div_iff_mul_le Nat.le_div_iff_mul_leₓ'. -/
 -- this is a Galois connection
 --   f x ≤ y ↔ x ≤ g y
 -- with
@@ -1656,12 +1603,6 @@ theorem le_div_iff_mul_le {x y k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ x * k ≤
         succ_mul, Nat.le_sub_iff_right h]
 #align nat.le_div_iff_mul_le Nat.le_div_iff_mul_le
 
-/- warning: nat.div_lt_iff_lt_mul -> Nat.div_lt_iff_lt_mul is a dubious translation:
-lean 3 declaration is
-  forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat Nat.hasLt (OfNat.ofNat.{0} Nat 0 (OfNat.mk.{0} Nat 0 (Zero.zero.{0} Nat Nat.hasZero))) k) -> (Iff (LT.lt.{0} Nat Nat.hasLt (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.hasDiv) x k) y) (LT.lt.{0} Nat Nat.hasLt x (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat Nat.hasMul) y k)))
-but is expected to have type
-  forall {x : Nat} {y : Nat} {k : Nat}, (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) x) -> (Iff (LT.lt.{0} Nat instLTNat (HDiv.hDiv.{0, 0, 0} Nat Nat Nat (instHDiv.{0} Nat Nat.instDivNat) y x) k) (LT.lt.{0} Nat instLTNat y (HMul.hMul.{0, 0, 0} Nat Nat Nat (instHMul.{0} Nat instMulNat) k x)))
-Case conversion may be inaccurate. Consider using '#align nat.div_lt_iff_lt_mul Nat.div_lt_iff_lt_mulₓ'. -/
 theorem div_lt_iff_lt_mul {x y k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y * k := by
   rw [← not_le, not_congr (le_div_iff_mul_le Hk), not_le]
 #align nat.div_lt_iff_lt_mul Nat.div_lt_iff_lt_mul

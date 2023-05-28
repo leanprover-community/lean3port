@@ -28,12 +28,6 @@ def List.mapM {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u} (f :
 #align list.mmap List.mapM
 -/
 
-/- warning: list.mmap' -> List.mapM' is a dubious translation:
-lean 3 declaration is
-  forall {m : Type -> Type.{v}} [_inst_1 : Monad.{0, v} m] {α : Type.{u}} {β : Type}, (α -> (m β)) -> (List.{u} α) -> (m Unit)
-but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {_inst_1 : Type.{u_3}} {α : Type.{u_1}} [β : Monad.{u_1, u_2} m], (_inst_1 -> (m α)) -> (List.{u_3} _inst_1) -> (m (List.{u_1} α))
-Case conversion may be inaccurate. Consider using '#align list.mmap' List.mapM'ₓ'. -/
 def List.mapM' {m : Type → Type v} [Monad m] {α : Type u} {β : Type} (f : α → m β) : List α → m Unit
   | [] => return ()
   | h :: t => f h >> List.mapM' t
@@ -75,12 +69,6 @@ def List.foldrM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} :
 #align list.mfoldr List.foldrM
 -/
 
-/- warning: list.mfirst -> List.firstM is a dubious translation:
-lean 3 declaration is
-  forall {m : Type.{u1} -> Type.{u2}} [_inst_1 : Monad.{u1, u2} m] [_inst_2 : Alternative.{u1, u2} m] {α : Type.{u3}} {β : Type.{u1}}, (α -> (m β)) -> (List.{u3} α) -> (m β)
-but is expected to have type
-  forall {m : Type.{u1} -> Type.{u2}} [_inst_1 : Alternative.{u1, u2} m] {_inst_2 : Type.{u3}} {α : Type.{u1}}, (_inst_2 -> (m α)) -> (List.{u3} _inst_2) -> (m α)
-Case conversion may be inaccurate. Consider using '#align list.mfirst List.firstMₓ'. -/
 def List.firstM {m : Type u → Type v} [Monad m] [Alternative m] {α : Type w} {β : Type u}
     (f : α → m β) : List α → m β
   | [] => failure
@@ -116,12 +104,6 @@ def mapM :=
 #align monad.mapm Monad.mapM
 -/
 
-/- warning: monad.mapm' -> Monad.mapM' is a dubious translation:
-lean 3 declaration is
-  forall {m : Type -> Type.{u_1}} [_inst_1 : Monad.{0, u_1} m] {α : Type.{u_2}} {β : Type}, (α -> (m β)) -> (List.{u_2} α) -> (m Unit)
-but is expected to have type
-  forall {m : Type.{u_1} -> Type.{u_2}} {_inst_1 : Type.{u_3}} {α : Type.{u_1}} [β : Monad.{u_1, u_2} m], (_inst_1 -> (m α)) -> (List.{u_3} _inst_1) -> (m (List.{u_1} α))
-Case conversion may be inaccurate. Consider using '#align monad.mapm' Monad.mapM'ₓ'. -/
 def mapM' :=
   @mapM'
 #align monad.mapm' Monad.mapM'

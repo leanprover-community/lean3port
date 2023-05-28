@@ -625,12 +625,6 @@ theorem hEq_self_iff_true {α : Sort u} (a : α) : HEq a a ↔ True :=
   iff_true_intro (HEq.refl a)
 #align heq_self_iff_true hEq_self_iff_true
 
-/- warning: iff_not_self -> iff_not_self is a dubious translation:
-lean 3 declaration is
-  forall (a : Prop), Iff (Iff a (Not a)) False
-but is expected to have type
-  forall {a : Prop}, Not (Iff a (Not a))
-Case conversion may be inaccurate. Consider using '#align iff_not_self iff_not_selfₓ'. -/
 @[simp]
 theorem iff_not_self (a : Prop) : (a ↔ ¬a) ↔ False :=
   iff_false_intro fun h =>
@@ -638,12 +632,6 @@ theorem iff_not_self (a : Prop) : (a ↔ ¬a) ↔ False :=
     h' (Iff.mpr h h')
 #align iff_not_self iff_not_self
 
-/- warning: not_iff_self -> not_iff_self is a dubious translation:
-lean 3 declaration is
-  forall (a : Prop), Iff (Iff (Not a) a) False
-but is expected to have type
-  forall {a : Prop}, Not (Iff (Not a) a)
-Case conversion may be inaccurate. Consider using '#align not_iff_self not_iff_selfₓ'. -/
 @[simp]
 theorem not_iff_self (a : Prop) : (¬a ↔ a) ↔ False :=
   iff_false_intro fun h =>
@@ -688,12 +676,6 @@ theorem eq_comm {α : Sort u} {a b : α} : a = b ↔ b = a :=
 /-! and simp rules -/
 
 
-/- warning: and.imp -> And.imp is a dubious translation:
-lean 3 declaration is
-  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (a -> c) -> (b -> d) -> (And a b) -> (And c d)
-but is expected to have type
-  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (a -> b) -> (c -> d) -> (And a c) -> (And b d)
-Case conversion may be inaccurate. Consider using '#align and.imp And.impₓ'. -/
 theorem And.imp (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
 #align and.imp And.imp
 
@@ -701,12 +683,6 @@ theorem and_implies (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d :=
   And.imp hac hbd
 #align and_implies and_implies
 
-/- warning: and_congr -> and_congr is a dubious translation:
-lean 3 declaration is
-  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a c) -> (Iff b d) -> (Iff (And a b) (And c d))
-but is expected to have type
-  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a b) -> (Iff c d) -> (Iff (And a c) (And b d))
-Case conversion may be inaccurate. Consider using '#align and_congr and_congrₓ'. -/
 @[congr]
 theorem and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∧ b ↔ c ∧ d :=
   Iff.intro (And.imp (Iff.mp h₁) (Iff.mp h₂)) (And.imp (Iff.mpr h₁) (Iff.mpr h₂))
@@ -826,12 +802,6 @@ theorem Or.imp_right (h : a → b) : c ∨ a → c ∨ b :=
 #align or.imp_right Or.imp_right
 -/
 
-/- warning: or_congr -> or_congr is a dubious translation:
-lean 3 declaration is
-  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a c) -> (Iff b d) -> (Iff (Or a b) (Or c d))
-but is expected to have type
-  forall {a : Prop} {b : Prop} {c : Prop} {d : Prop}, (Iff a b) -> (Iff c d) -> (Iff (Or a c) (Or b d))
-Case conversion may be inaccurate. Consider using '#align or_congr or_congrₓ'. -/
 @[congr]
 theorem or_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∨ b ↔ c ∨ d :=
   Iff.intro (Or.imp (Iff.mp h₁) (Iff.mp h₂)) (Or.imp (Iff.mpr h₁) (Iff.mpr h₂))
@@ -1748,12 +1718,6 @@ theorem let_value_eq {α : Sort u} {β : Sort v} {a₁ a₂ : α} (b : α → β
 #align let_value_eq let_value_eq
 -/
 
-/- warning: let_value_heq -> let_value_heq is a dubious translation:
-lean 3 declaration is
-  forall {α : Sort.{u2}} {β : α -> Sort.{u1}} {a₁ : α} {a₂ : α} (b : forall (x : α), β x), (Eq.{u2} α a₁ a₂) -> (HEq.{u1} (β a₁) (let x : α := a₁; b x) (β a₂) (let x : α := a₂; b x))
-but is expected to have type
-  forall {α : Sort.{u1}} {β : α -> Sort.{u2}} {a₁ : α} {a₂ : α} (b : forall (x : α), β x), (Eq.{u1} α a₁ a₂) -> (HEq.{u2} (β a₁) (let x : α := a₁; b x) (β a₂) (let x : α := a₂; b x))
-Case conversion may be inaccurate. Consider using '#align let_value_heq let_value_heqₓ'. -/
 theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : ∀ x : α, β x) :
     a₁ = a₂ →
       HEq
@@ -1764,12 +1728,6 @@ theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : �
   fun h => Eq.recOn h (HEq.refl (b a₁))
 #align let_value_heq let_value_heq
 
-/- warning: let_body_eq -> let_body_eq is a dubious translation:
-lean 3 declaration is
-  forall {α : Sort.{u2}} {β : α -> Sort.{u1}} (a : α) {b₁ : forall (x : α), β x} {b₂ : forall (x : α), β x}, (forall (x : α), Eq.{u1} (β x) (b₁ x) (b₂ x)) -> (Eq.{u1} (β a) (let x : α := a; b₁ x) (let x : α := a; b₂ x))
-but is expected to have type
-  forall {α : Sort.{u1}} {β : α -> Sort.{u2}} (a : α) {b₁ : forall (x : α), β x} {b₂ : forall (x : α), β x}, (forall (x : α), Eq.{u2} (β x) (b₁ x) (b₂ x)) -> (Eq.{u2} (let x : α := a; β x) (let x : α := a; b₁ x) (let x : α := a; b₂ x))
-Case conversion may be inaccurate. Consider using '#align let_body_eq let_body_eqₓ'. -/
 theorem let_body_eq {α : Sort v} {β : α → Sort u} (a : α) {b₁ b₂ : ∀ x : α, β x} :
     (∀ x, b₁ x = b₂ x) →
       (let x : α := a
@@ -1779,12 +1737,6 @@ theorem let_body_eq {α : Sort v} {β : α → Sort u} (a : α) {b₁ b₂ : ∀
   fun h => h a
 #align let_body_eq let_body_eq
 
-/- warning: let_eq -> let_eq is a dubious translation:
-lean 3 declaration is
-  forall {α : Sort.{u2}} {β : Sort.{u1}} {a₁ : α} {a₂ : α} {b₁ : α -> β} {b₂ : α -> β}, (Eq.{u2} α a₁ a₂) -> (forall (x : α), Eq.{u1} β (b₁ x) (b₂ x)) -> (Eq.{u1} β (let x : α := a₁; b₁ x) (let x : α := a₂; b₂ x))
-but is expected to have type
-  forall {α : Sort.{u1}} {β : Sort.{u2}} {a₁ : α} {a₂ : α} {b₁ : α -> β} {b₂ : α -> β}, (Eq.{u1} α a₁ a₂) -> (forall (x : α), Eq.{u2} β (b₁ x) (b₂ x)) -> (Eq.{u2} β (let x : α := a₁; b₁ x) (let x : α := a₂; b₂ x))
-Case conversion may be inaccurate. Consider using '#align let_eq let_eqₓ'. -/
 theorem let_eq {α : Sort v} {β : Sort u} {a₁ a₂ : α} {b₁ b₂ : α → β} :
     a₁ = a₂ →
       (∀ x, b₁ x = b₂ x) →

@@ -173,20 +173,16 @@ def zipWith (f : α → β → γ) : List α → List β → List γ
 #align list.map₂ List.zipWith
 -/
 
-/- warning: list.map_with_index_core clashes with [anonymous] -> [anonymous]
-Case conversion may be inaccurate. Consider using '#align list.map_with_index_core [anonymous]ₓ'. -/
-#print [anonymous] /-
-def [anonymous] (f : ℕ → α → β) : ℕ → List α → List β
+def mapWithIndexCore (f : ℕ → α → β) : ℕ → List α → List β
   | k, [] => []
   | k, a :: as => f k a :: map_with_index_core (k + 1) as
-#align list.map_with_index_core [anonymous]
--/
+#align list.map_with_index_core List.mapWithIndexCore
 
 #print List.mapIdx /-
 /-- Given a function `f : ℕ → α → β` and `as : list α`, `as = [a₀, a₁, ...]`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`. -/
 def mapIdx (f : ℕ → α → β) (as : List α) : List β :=
-  [anonymous] f 0 as
+  mapWithIndexCore f 0 as
 #align list.map_with_index List.mapIdx
 -/
 

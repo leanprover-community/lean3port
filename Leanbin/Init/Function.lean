@@ -58,12 +58,10 @@ def onFun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y =
 #align function.on_fun Function.onFun
 -/
 
-#print Function.combine /-
 @[reducible]
 def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y =>
   op (f x y) (g x y)
 #align function.combine Function.combine
--/
 
 #print Function.const /-
 /-- Constant `λ _, a`. -/

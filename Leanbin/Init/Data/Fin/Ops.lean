@@ -145,7 +145,7 @@ def pred {n : Nat} : ∀ i : Fin (succ n), i ≠ 0 → Fin n
     ⟨a.pred,
       haveI : a ≠ 0 := by
         have aux₁ := vne_of_ne h₂
-        dsimp at aux₁; rw [val_zero] at aux₁; exact aux₁
+        dsimp at aux₁ ; rw [val_zero] at aux₁ ; exact aux₁
       Nat.pred_lt_pred this h₁⟩
 #align fin.pred Fin.pred
 -/

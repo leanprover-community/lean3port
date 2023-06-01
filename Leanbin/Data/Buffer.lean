@@ -12,7 +12,7 @@ Authors: Leonardo de Moura
 universe u w
 
 def Buffer (α : Type u) :=
-  Σn, Array' n α
+  Σ n, Array' n α
 #align buffer Buffer
 
 def mkBuffer {α : Type u} : Buffer α :=

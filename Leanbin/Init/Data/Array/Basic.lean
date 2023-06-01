@@ -95,7 +95,7 @@ protected theorem ext {a b : DArray n α} (h : ∀ i, read a i = read b i) : a =
 
 protected theorem ext' {a b : DArray n α}
     (h : ∀ (i : Nat) (h : i < n), read a ⟨i, h⟩ = read b ⟨i, h⟩) : a = b := by cases a; cases b;
-  congr ; funext i; cases i; apply h
+  congr; funext i; cases i; apply h
 #align d_array.ext' DArray.ext'
 
 protected def beqAux [∀ i, DecidableEq (α i)] (a b : DArray n α) : ∀ i : Nat, i ≤ n → Bool
@@ -116,7 +116,7 @@ theorem of_beqAux_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
   | i + 1, h₁, h₂, j, h₃ =>
     by
     have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
-      simp [DArray.beqAux] at h₂; assumption
+      simp [DArray.beqAux] at h₂ ; assumption
     have h₁' : i ≤ n := le_of_lt h₁
     have ih :
       ∀ (j : Nat) (h' : j < i),
@@ -139,17 +139,17 @@ theorem of_beq_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
 theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = false →
-        ∃ (j : Nat)(h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
-  | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂; contradiction
+        ∃ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
+  | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂ ; contradiction
   | i + 1, h₁, h₂ =>
     by
     have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
-      simp [DArray.beqAux] at h₂; assumption
+      simp [DArray.beqAux] at h₂ ; assumption
     cases' h₂' with h h
     · exists i; exists Nat.lt_succ_self _; exact h
     · have h₁' : i ≤ n := le_of_lt h₁
       have ih :
-        ∃ (j : Nat)(h' : j < i),
+        ∃ (j : Nat) (h' : j < i),
           a.read ⟨j, lt_of_lt_of_le h' h₁'⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h₁'⟩ :=
         of_beq_aux_eq_ff i h₁' h
       cases' ih with j ih
@@ -162,7 +162,7 @@ theorem of_beq_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     DArray.beq a b = false → a ≠ b := by
   unfold DArray.beq
   intro h hne
-  have : ∃ (j : Nat)(h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ :=
+  have : ∃ (j : Nat) (h' : j < n), a.read ⟨j, h'⟩ ≠ b.read ⟨j, h'⟩ :=
     of_beq_aux_eq_ff n (le_refl _) h
   cases' this with j this
   cases' this with h' this

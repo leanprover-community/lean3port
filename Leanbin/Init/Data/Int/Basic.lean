@@ -320,8 +320,10 @@ theorem negSucc_mul_negSucc' (m n : Nat) : -[m+1] * -[n+1] = ofNat (succ m * suc
 #align int.mul_neg_succ_of_nat_neg_succ_of_nat Int.negSucc_mul_negSucc'
 -/
 
-attribute [local simp]
-  of_nat_add_of_nat of_nat_mul_of_nat neg_of_nat_zero neg_of_nat_of_succ neg_neg_of_nat_succ of_nat_add_neg_succ_of_nat neg_succ_of_nat_add_of_nat neg_succ_of_nat_add_neg_succ_of_nat of_nat_mul_neg_succ_of_nat neg_succ_of_nat_of_nat mul_neg_succ_of_nat_neg_succ_of_nat
+attribute [local simp] of_nat_add_of_nat of_nat_mul_of_nat neg_of_nat_zero neg_of_nat_of_succ
+  neg_neg_of_nat_succ of_nat_add_neg_succ_of_nat neg_succ_of_nat_add_of_nat
+  neg_succ_of_nat_add_neg_succ_of_nat of_nat_mul_neg_succ_of_nat neg_succ_of_nat_of_nat
+  mul_neg_succ_of_nat_neg_succ_of_nat
 
 /-!  some basic functions and properties -/
 
@@ -397,7 +399,7 @@ theorem subNatNat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ 
       apply hp
     · intro heq
       have h : m ≤ n := Nat.le_of_lt (Nat.lt_of_sub_eq_succ HEq)
-      rw [Nat.sub_eq_iff_eq_add h] at heq
+      rw [Nat.sub_eq_iff_eq_add h] at heq 
       rw [HEq, Nat.add_comm]
       apply hn
   delta sub_nat_nat
@@ -799,8 +801,8 @@ theorem negOfNat_mul_negSucc (m n : ℕ) : negOfNat n * -[m+1] = ofNat (n * succ
 #align int.neg_of_nat_mul_neg_succ_of_nat Int.negOfNat_mul_negSucc
 -/
 
-attribute [local simp]
-  of_nat_mul_neg_of_nat neg_of_nat_mul_of_nat neg_succ_of_nat_mul_neg_of_nat neg_of_nat_mul_neg_succ_of_nat
+attribute [local simp] of_nat_mul_neg_of_nat neg_of_nat_mul_of_nat neg_succ_of_nat_mul_neg_of_nat
+  neg_of_nat_mul_neg_succ_of_nat
 
 #print Int.mul_assoc /-
 protected theorem mul_assoc : ∀ a b c : ℤ, a * b * c = a * (b * c)
@@ -944,7 +946,7 @@ protected theorem add_left_comm (a b c : ℤ) : a + (b + c) = b + (a + c) := by
 protected theorem add_left_cancel {a b c : ℤ} (h : a + b = a + c) : b = c :=
   by
   have : -a + (a + b) = -a + (a + c) := by rw [h]
-  rwa [← Int.add_assoc, ← Int.add_assoc, Int.add_left_neg, Int.zero_add, Int.zero_add] at this
+  rwa [← Int.add_assoc, ← Int.add_assoc, Int.add_left_neg, Int.zero_add, Int.zero_add] at this 
 #align int.add_left_cancel Int.add_left_cancel
 -/
 

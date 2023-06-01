@@ -671,7 +671,7 @@ export Insert (insert)
 
 #print IsLawfulSingleton /-
 class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] :
-  Prop where
+    Prop where
   insert_emptyCollection_eq : ∀ x : α, (insert x ∅ : β) = {x}
 #align is_lawful_singleton IsLawfulSingleton
 -/

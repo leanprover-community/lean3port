@@ -31,8 +31,8 @@ axiom Real.hasLt : LT Real
 axiom Real.hasLe : LE Real
 #align real.has_le Real.hasLe
 
-attribute [instance]
-  Real.hasZero Real.hasOne Real.hasAdd Real.hasMul Real.hasSub Real.hasNeg Real.hasDiv Real.hasLe Real.hasLt
+attribute [instance] Real.hasZero Real.hasOne Real.hasAdd Real.hasMul Real.hasSub Real.hasNeg
+  Real.hasDiv Real.hasLe Real.hasLt
 
 axiom Real.ofInt : Int → Real
 #align real.of_int Real.ofInt

@@ -88,9 +88,9 @@ theorem bodd_mul (m n : ℕ) : bodd (m * n) = (bodd m && bodd n) :=
 theorem mod_two_of_bodd (n : ℕ) : n % 2 = cond (bodd n) 1 0 :=
   by
   have := congr_arg bodd (mod_add_div n 2)
-  simp [not] at this
+  simp [not] at this 
   rw [show ∀ b, (ff && b) = ff by intros <;> cases b <;> rfl,
-    show ∀ b, xor b ff = b by intros <;> cases b <;> rfl] at this
+    show ∀ b, xor b ff = b by intros <;> cases b <;> rfl] at this 
   rw [← this]
   cases' mod_two_eq_zero_or_one n with h h <;> rw [h] <;> rfl
 #align nat.mod_two_of_bodd Nat.mod_two_of_bodd
@@ -241,7 +241,7 @@ def binaryRec {C : Nat → Sort u} (z : C 0) (f : ∀ b n, C n → C (bit b n)) 
         change div2 n < n; rw [div2_val]
         apply (div_lt_iff_lt_mul <| succ_pos 1).2
         have := Nat.mul_lt_mul_of_pos_left (lt_succ_self 1) (lt_of_le_of_ne n.zero_le (Ne.symm n0))
-        rwa [Nat.mul_one] at this
+        rwa [Nat.mul_one] at this 
       rw [← show bit (bodd n) n' = n from bit_decomp n] <;> exact f (bodd n) n' (binary_rec n')
 #align nat.binary_rec Nat.binaryRec
 -/
@@ -360,7 +360,7 @@ theorem testBit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m :=
   by
   have : bodd (shiftr (shiftr (bit b n) 1) m) = bodd (shiftr n m) := by
     dsimp [shiftr] <;> rw [div2_bit]
-  rw [← shiftr_add, Nat.add_comm] at this <;> exact this
+  rw [← shiftr_add, Nat.add_comm] at this  <;> exact this
 #align nat.test_bit_succ Nat.testBit_succ
 -/
 
@@ -377,16 +377,16 @@ theorem binaryRec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit
     revert e
     have bf := bodd_bit b n
     have n0 := div2_bit b n
-    rw [h'] at bf n0
-    simp at bf n0
+    rw [h'] at bf n0 
+    simp at bf n0 
     rw [← bf, ← n0, binary_rec_zero]
-    intros ; exact h.symm
+    intros; exact h.symm
   case neg h' =>
     simp [dif_neg h']
     generalize binary_rec._main._pack._proof_2 (bit b n) = e
     revert e
     rw [bodd_bit, div2_bit]
-    intros ; rfl
+    intros; rfl
 #align nat.binary_rec_eq Nat.binaryRec_eq
 -/
 

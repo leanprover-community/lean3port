@@ -98,22 +98,22 @@ class IsRightDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam 
 #align is_right_distrib IsRightDistrib
 
 class IsLeftInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α) :
-  Prop where
+    Prop where
   left_inv : ∀ a, op (inv a) a = o
 #align is_left_inv IsLeftInv
 
 class IsRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α) :
-  Prop where
+    Prop where
   right_inv : ∀ a, op a (inv a) = o
 #align is_right_inv IsRightInv
 
 class IsCondLeftInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α)
-  (p : outParam <| α → Prop) : Prop where
+    (p : outParam <| α → Prop) : Prop where
   left_inv : ∀ a, p a → op (inv a) a = o
 #align is_cond_left_inv IsCondLeftInv
 
 class IsCondRightInv (α : Type u) (op : α → α → α) (inv : outParam <| α → α) (o : outParam α)
-  (p : outParam <| α → Prop) : Prop where
+    (p : outParam <| α → Prop) : Prop where
   right_inv : ∀ a, p a → op a (inv a) = o
 #align is_cond_right_inv IsCondRightInv
 
@@ -256,7 +256,7 @@ class IsIncompTrans (α : Type u) (lt : α → α → Prop) : Prop where
 /-- `is_strict_weak_order X lt` means that the binary relation `lt` on `X` is a strict weak order,
 that is, `is_strict_order X lt` and `is_incomp_trans X lt`. -/
 class IsStrictWeakOrder (α : Type u) (lt : α → α → Prop) extends IsStrictOrder α lt,
-  IsIncompTrans α lt : Prop
+    IsIncompTrans α lt : Prop
 #align is_strict_weak_order IsStrictWeakOrder
 -/
 
@@ -272,7 +272,7 @@ class IsTrichotomous (α : Type u) (lt : α → α → Prop) : Prop where
 /-- `is_strict_total_order X lt` means that the binary relation `lt` on `X` is a strict total order,
 that is, `is_trichotomous X lt` and `is_strict_order X lt`. -/
 class IsStrictTotalOrder (α : Type u) (lt : α → α → Prop) extends IsTrichotomous α lt,
-  IsStrictOrder α lt : Prop
+    IsStrictOrder α lt : Prop
 #align is_strict_total_order IsStrictTotalOrder
 -/
 

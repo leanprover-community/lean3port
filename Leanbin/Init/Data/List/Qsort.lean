@@ -24,7 +24,7 @@ def Qsort.f {α} (lt : α → α → Bool) :
     induction' e : partition (fun x => lt h x = tt) t with large small
     have : length Small < length (h :: t) ∧ length large < length (h :: t) :=
       by
-      rw [partition_eq_filter_filter] at e
+      rw [partition_eq_filter_filter] at e 
       injection e
       subst large; subst Small
       constructor <;> exact Nat.succ_le_succ (length_le_of_sublist (filter_sublist _))

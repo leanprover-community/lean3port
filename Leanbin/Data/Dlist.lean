@@ -29,7 +29,7 @@ open Function
 variable {α : Type u}
 
 -- mathport name: «expr♯»
-local notation:arg "♯" => by abstract intros ; simp
+local notation:arg "♯" => by abstract intros; simp
 
 /-- Convert a list to a dlist -/
 def ofList (l : List α) : Dlist α :=
@@ -63,17 +63,17 @@ attribute [local simp] Function.comp
 
 /-- `O(1)` Prepend a single element to a dlist -/
 def cons (x : α) : Dlist α → Dlist α
-  | ⟨xs, h⟩ => ⟨x::_ ∘ xs, by abstract intros ; simp; rw [← h]⟩
+  | ⟨xs, h⟩ => ⟨x::_ ∘ xs, by abstract intros; simp; rw [← h]⟩
 #align dlist.cons Dlist.cons
 
 /-- `O(1)` Append a single element to a dlist -/
 def concat (x : α) : Dlist α → Dlist α
-  | ⟨xs, h⟩ => ⟨xs ∘ x::_, by abstract intros ; simp; rw [h, h [x]]; simp⟩
+  | ⟨xs, h⟩ => ⟨xs ∘ x::_, by abstract intros; simp; rw [h, h [x]]; simp⟩
 #align dlist.concat Dlist.concat
 
 /-- `O(1)` Append dlists -/
 protected def append : Dlist α → Dlist α → Dlist α
-  | ⟨xs, h₁⟩, ⟨ys, h₂⟩ => ⟨xs ∘ ys, by intros ; simp; rw [h₂, h₁, h₁ (ys List.nil)]; simp⟩
+  | ⟨xs, h₁⟩, ⟨ys, h₂⟩ => ⟨xs ∘ ys, by intros; simp; rw [h₂, h₁, h₁ (ys List.nil)]; simp⟩
 #align dlist.append Dlist.append
 
 instance : Append (Dlist α) :=
@@ -89,7 +89,7 @@ theorem Std.DList.toList_ofList (l : List α) : toList (ofList l) = l := by case
 theorem Std.DList.ofList_toList (l : Dlist α) : ofList (toList l) = l :=
   by
   cases' l with xs
-  have h : append (xs []) = xs := by intros ; funext x; simp [l_invariant x]
+  have h : append (xs []) = xs := by intros; funext x; simp [l_invariant x]
   simp [h]
 #align dlist.of_list_to_list Std.DList.ofList_toList
 

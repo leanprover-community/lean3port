@@ -98,7 +98,7 @@ theorem min_self (a : α) : min a a = a :=
 
 @[ematch]
 theorem min_eq_left {a b : α} (h : a ≤ b) : min a b = a := by apply Eq.symm;
-  apply eq_min (le_refl _) h; intros ; assumption
+  apply eq_min (le_refl _) h; intros; assumption
 #align min_eq_left min_eq_left
 
 @[ematch]
@@ -134,7 +134,7 @@ theorem max_self (a : α) : max a a = a :=
 #align max_self max_self
 
 theorem max_eq_left {a b : α} (h : b ≤ a) : max a b = a := by apply Eq.symm;
-  apply eq_max (le_refl _) h; intros ; assumption
+  apply eq_max (le_refl _) h; intros; assumption
 #align max_eq_left max_eq_left
 
 theorem max_eq_right {a b : α} (h : a ≤ b) : max a b = b :=

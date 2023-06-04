@@ -58,7 +58,7 @@ namespace WellFounded
 
 section
 
-parameter {α : Sort u}{r : α → α → Prop}
+parameter {α : Sort u} {r : α → α → Prop}
 
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
@@ -127,7 +127,7 @@ namespace Subrelation
 
 section
 
-parameter {α : Sort u}{r Q : α → α → Prop}
+parameter {α : Sort u} {r Q : α → α → Prop}
 
 parameter (h₁ : Subrelation Q r)
 
@@ -152,7 +152,7 @@ namespace InvImage
 
 section
 
-parameter {α : Sort u}{β : Sort v}{r : β → β → Prop}
+parameter {α : Sort u} {β : Sort v} {r : β → β → Prop}
 
 parameter (f : α → β)
 
@@ -239,9 +239,9 @@ end
 
 section
 
-parameter {α : Type u}{β : Type v}
+parameter {α : Type u} {β : Type v}
 
-parameter {ra : α → α → Prop}{rb : β → β → Prop}
+parameter {ra : α → α → Prop} {rb : β → β → Prop}
 
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => Lex ra rb

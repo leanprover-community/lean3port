@@ -81,7 +81,7 @@ namespace ExceptT
 
 section
 
-parameter {ε : Type u}{m : Type u → Type v}[Monad m]
+parameter {ε : Type u} {m : Type u → Type v} [Monad m]
 
 @[inline]
 protected def return {α : Type u} (a : α) : ExceptT ε m α :=

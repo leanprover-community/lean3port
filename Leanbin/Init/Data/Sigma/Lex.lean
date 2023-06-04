@@ -38,9 +38,9 @@ section
 
 open WellFounded Tactic
 
-parameter {α : Sort u}{β : α → Sort v}
+parameter {α : Sort u} {β : α → Sort v}
 
-parameter {r : α → α → Prop}{s : ∀ a : α, β a → β a → Prop}
+parameter {r : α → α → Prop} {s : ∀ a : α, β a → β a → Prop}
 
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => Lex r s
@@ -75,7 +75,7 @@ end
 
 section
 
-parameter {α : Sort u}{β : Sort v}
+parameter {α : Sort u} {β : Sort v}
 
 def LexNdep (r : α → α → Prop) (s : β → β → Prop) :=
   Lex r fun a : α => s
@@ -110,9 +110,9 @@ section
 
 open WellFounded Tactic
 
-parameter {α : Sort u}{β : Sort v}
+parameter {α : Sort u} {β : Sort v}
 
-parameter {r : α → α → Prop}{s : β → β → Prop}
+parameter {r : α → α → Prop} {s : β → β → Prop}
 
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => RevLex r s

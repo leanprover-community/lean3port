@@ -416,7 +416,7 @@ namespace StrictWeakOrder
 
 section
 
-parameter {α : Type u}{r : α → α → Prop}
+parameter {α : Type u} {r : α → α → Prop}
 
 -- mathport name: «expr ≺ »
 local infixl:50 "≺" => r

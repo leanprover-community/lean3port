@@ -24,7 +24,7 @@ axiom choice {α : Sort u} : Nonempty α → α
 
 #print Classical.indefiniteDescription /-
 noncomputable irreducible_def indefiniteDescription {α : Sort u} (p : α → Prop) (h : ∃ x, p x) :
-  { x // p x } :=
+    { x // p x } :=
   choice <|
     let ⟨x, px⟩ := h
     ⟨⟨x, px⟩⟩
@@ -150,7 +150,7 @@ noncomputable def typeDecidable (α : Sort u) : PSum α (α → False) :=
 
 #print Classical.strongIndefiniteDescription /-
 noncomputable irreducible_def strongIndefiniteDescription {α : Sort u} (p : α → Prop)
-  (h : Nonempty α) : { x : α // (∃ y : α, p y) → p x } :=
+    (h : Nonempty α) : { x : α // (∃ y : α, p y) → p x } :=
   if hp : ∃ x : α, p x then
     let xp := indefiniteDescription _ hp
     ⟨xp.val, fun h' => xp.property⟩

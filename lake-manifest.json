@@ -4,9 +4,9 @@
  [{"git":
    {"url": "https://github.com/leanprover-community/mathlib4.git",
     "subDir?": null,
-    "rev": "d2b5332904d3d3b874cefc133d61ec7a05f2b784",
+    "rev": "e2b5ca370bbc63149cba7caf35005bf2193dc387",
     "name": "mathlib",
-    "inputRev?": "d2b5332904d3d3b874cefc133d61ec7a05f2b784"}},
+    "inputRev?": "e2b5ca370bbc63149cba7caf35005bf2193dc387"}},
   {"git":
    {"url": "https://github.com/gebner/quote4",
     "subDir?": null,
@@ -16,7 +16,7 @@
   {"git":
    {"url": "https://github.com/JLimperg/aesop",
     "subDir?": null,
-    "rev": "38bcf8b9e564d23bad55cbfa3c770f135f926d98",
+    "rev": "ca73109cc40837bc61df8024c9016da4b4f99d4c",
     "name": "aesop",
     "inputRev?": "master"}},
   {"git":

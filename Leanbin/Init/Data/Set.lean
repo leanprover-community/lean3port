@@ -38,29 +38,29 @@ instance hasMem : Membership α (Set α) :=
 
 #print Set.mem_setOf_eq /-
 @[simp]
-theorem mem_setOf_eq {x : α} {p : α → Prop} : (x ∈ { y | p y }) = p x :=
+theorem mem_setOf_eq {x : α} {p : α → Prop} : (x ∈ {y | p y}) = p x :=
   rfl
 #align set.mem_set_of_eq Set.mem_setOf_eq
 -/
 
 instance : EmptyCollection (Set α) :=
-  ⟨{ x | False }⟩
+  ⟨{x | False}⟩
 
 #print Set.univ /-
 /-- The set that contains all elements of a type. -/
 def univ : Set α :=
-  { x | True }
+  {x | True}
 #align set.univ Set.univ
 -/
 
 instance : Insert α (Set α) :=
-  ⟨fun a s => { b | b = a ∨ b ∈ s }⟩
+  ⟨fun a s => {b | b = a ∨ b ∈ s}⟩
 
 instance : Singleton α (Set α) :=
-  ⟨fun a => { b | b = a }⟩
+  ⟨fun a => {b | b = a}⟩
 
 instance : Sep α (Set α) :=
-  ⟨fun p s => { x | x ∈ s ∧ p x }⟩
+  ⟨fun p s => {x | x ∈ s ∧ p x}⟩
 
 instance : IsLawfulSingleton α (Set α) :=
   ⟨fun a => funext fun b => propext <| or_false_iff _⟩

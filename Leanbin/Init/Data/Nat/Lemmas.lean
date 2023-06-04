@@ -1927,7 +1927,7 @@ parameter {p : ℕ → Prop}
 private def lbp (m n : ℕ) : Prop :=
   m = n + 1 ∧ ∀ k ≤ n, ¬p k
 
-parameter [DecidablePred p](H : ∃ n, p n)
+parameter [DecidablePred p] (H : ∃ n, p n)
 
 private def wf_lbp : WellFounded lbp :=
   ⟨let ⟨n, pn⟩ := H

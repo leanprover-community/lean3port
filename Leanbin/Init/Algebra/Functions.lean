@@ -37,6 +37,7 @@ theorem max_def (a b : α) : max a b = if a ≤ b then b else a := by
 private unsafe def min_tac_step : tactic Unit :=
   solve1 <| (((intros >> sorry) >> try sorry) >> try sorry) >> try sorry
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
   def

@@ -173,6 +173,7 @@ private unsafe def unfold (e : expr) : tactic expr := do
 private unsafe def concat (f₁ f₂ : List format) :=
   if f₁.Empty then f₂ else if f₂.Empty then f₁ else f₁ ++ [" "] ++ f₂
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
   def
@@ -345,6 +346,7 @@ unsafe def format_macro (_ : parse <| tk "format!") (s : String) : parser pexpr 
   parse_format "" s.toList
 #align format_macro format_macro
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
   def

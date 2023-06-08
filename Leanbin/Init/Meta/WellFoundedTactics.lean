@@ -149,6 +149,7 @@ section SimpleDecTac
 
 open Tactic Expr
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
   def
@@ -156,6 +157,7 @@ private unsafe
     : expr → List expr
     | q( $ ( a ) + $ ( b ) ) => collect_add_args a ++ collect_add_args b | e => [ e ]
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
   def
@@ -165,6 +167,7 @@ private unsafe
       | [ a ] => return a
       | a :: as => do let rs ← mk_nat_add as to_expr ` `( $ ( a ) + $ ( rs ) )
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 private unsafe
   def
@@ -195,6 +198,7 @@ private def tagged_proof.wf : Unit :=
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
   def
@@ -227,6 +231,7 @@ unsafe
                 sorry <|> sorry
 #align well_founded_tactics.cancel_nat_add_lt well_founded_tactics.cancel_nat_add_lt
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
   def check_target_is_value_lt : tactic Unit := do let q( $ ( lhs ) < $ ( rhs ) ) ← target guard lhs

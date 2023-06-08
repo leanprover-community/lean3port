@@ -142,6 +142,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
 #align tactic.mk_dec_eq_instance_core tactic.mk_dec_eq_instance_core
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
   def

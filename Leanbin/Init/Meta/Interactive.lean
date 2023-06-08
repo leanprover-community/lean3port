@@ -586,6 +586,7 @@ private unsafe def generalize_arg_p_aux : pexpr → parser (pexpr × Name)
 private unsafe def generalize_arg_p : parser (pexpr × Name) :=
   with_desc "expr = id" <| parser.pexpr 0 >>= generalize_arg_p_aux
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 /--
       `generalize : e = x` replaces all occurrences of `e` in the target with a new hypothesis `x` of the same type.

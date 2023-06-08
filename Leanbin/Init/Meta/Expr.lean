@@ -578,6 +578,7 @@ unsafe def is_false : expr → Bool
   | _ => false
 #align expr.is_false expr.is_false
 
+-- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
   def

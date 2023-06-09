@@ -426,7 +426,6 @@ theorem subNatNat_add_right {m n : ℕ} : subNatNat m (m + n + 1) = negSucc n :=
       by rw [Nat.add_assoc]
     _ = SubNatNat._match1 m (m + n + 1) (n + 1) := by rw [Nat.add_sub_cancel_left]
     _ = negSucc n := rfl
-    
 #align int.sub_nat_nat_add_right Int.subNatNat_add_right
 -/
 
@@ -673,7 +672,6 @@ theorem subNatNat_sub {m n : ℕ} (h : n ≤ m) (k : ℕ) : subNatNat (m - n) k 
   calc
     subNatNat (m - n) k = subNatNat (m - n + n) (k + n) := by rw [sub_nat_nat_add_add]
     _ = subNatNat m (k + n) := by rw [Nat.sub_add_cancel h]
-    
 #align int.sub_nat_nat_sub Int.subNatNat_subₓ
 
 #print Int.subNatNat_add /-
@@ -958,7 +956,6 @@ protected theorem neg_add {a b : ℤ} : -(a + b) = -a + -b :=
       rw [Int.add_assoc, Int.add_comm (-a), Int.add_assoc, Int.add_assoc, ← Int.add_assoc b]
       rw [Int.add_right_neg, Int.zero_add, Int.add_right_neg, Int.add_zero]
     _ = -a + -b := by rw [Int.add_left_neg, Int.zero_add]
-    
 #align int.neg_add Int.neg_add
 -/
 

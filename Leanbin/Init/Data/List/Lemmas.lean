@@ -93,7 +93,6 @@ theorem length_drop : ∀ (i : ℕ) (l : List α), length (drop i l) = length l 
     calc
       length (drop (succ i) (x :: l)) = length l - i := length_drop i l
       _ = succ (length l) - succ i := (Nat.succ_sub_succ_eq_sub (length l) i).symm
-      
 #align list.length_drop List.length_drop
 -/
 
@@ -462,7 +461,6 @@ theorem length_mapAccumr₂ :
       succ (length (mapAccumr₂ f x y c).2) = succ (min (length x) (length y)) :=
         congr_arg succ (length_map_accumr₂ f x y c)
       _ = min (succ (length x)) (succ (length y)) := Eq.symm (min_succ_succ (length x) (length y))
-      
   | f, a :: x, [], c => rfl
   | f, [], b :: y, c => rfl
   | f, [], [], c => rfl

@@ -158,7 +158,6 @@ theorem bit0_val (n : Nat) : bit0 n = 2 * n :=
     n + n = 0 + n + n := by rw [Nat.zero_add]
     _ = n * 2 := rfl
     _ = 2 * n := Nat.mul_comm _ _
-    
 #align nat.bit0_val Nat.bit0_val
 -/
 

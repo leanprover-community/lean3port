@@ -1927,7 +1927,6 @@ theorem left_comm : Commutative f → Associative f → LeftCommutative f := fun
     (a*b*c) = (a*b)*c := Eq.symm (hassoc a b c)
     _ = (b*a)*c := (hcomm a b ▸ rfl)
     _ = b*a*c := hassoc b a c
-    
 #align left_comm left_comm
 -/
 
@@ -1938,7 +1937,6 @@ theorem right_comm : Commutative f → Associative f → RightCommutative f := f
     ((a*b)*c) = a*b*c := hassoc a b c
     _ = a*c*b := (hcomm b c ▸ rfl)
     _ = (a*c)*b := Eq.symm (hassoc a c b)
-    
 #align right_comm right_comm
 -/
 

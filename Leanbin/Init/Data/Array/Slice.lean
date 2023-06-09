@@ -26,8 +26,7 @@ def slice (a : Array' n α) (k l : Nat) (h₁ : k ≤ l) (h₂ : l ≤ n) : Arra
         calc
           i + k < l - k + k := Nat.add_lt_add_right hi _
           _ = l := (Nat.sub_add_cancel h₁)
-          _ ≤ n := h₂
-          ⟩⟩
+          _ ≤ n := h₂⟩⟩
 #align array.slice Array'.slice
 
 def take (a : Array' n α) (m : Nat) (h : m ≤ n) : Array' m α :=
@@ -42,7 +41,6 @@ private theorem sub_sub_cancel (m n : ℕ) (h : m ≤ n) : n - (n - m) = m :=
   calc
     n - (n - m) = n - m + m - (n - m) := by rw [Nat.sub_add_cancel] <;> assumption
     _ = m := Nat.add_sub_cancel_left _ _
-    
 
 def takeRight (a : Array' n α) (m : Nat) (h : m ≤ n) : Array' m α :=
   cast (by simp [*, sub_sub_cancel]) <| a.drop (n - m) (Nat.sub_le _ _)

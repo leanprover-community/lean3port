@@ -469,7 +469,6 @@ protected theorem mul_sub (a b c : ℤ) : a * (b - c) = a * b - a * c :=
   calc
     a * (b - c) = a * b + a * -c := Int.mul_add a b (-c)
     _ = a * b - a * c := by simp
-    
 #align int.mul_sub Int.mul_sub
 -/
 
@@ -478,7 +477,6 @@ protected theorem sub_mul (a b c : ℤ) : (a - b) * c = a * c - b * c :=
   calc
     (a - b) * c = a * c + -b * c := Int.add_mul a (-b) c
     _ = a * c - b * c := by simp
-    
 #align int.sub_mul Int.sub_mul
 -/
 
@@ -1222,7 +1220,6 @@ protected theorem sub_le_self (a : ℤ) {b : ℤ} (h : 0 ≤ b) : a - b ≤ a :=
     a - b = a + -b := rfl
     _ ≤ a + 0 := (Int.add_le_add_left (Int.neg_nonpos_of_nonneg h) _)
     _ = a := by rw [Int.add_zero]
-    
 #align int.sub_le_self Int.sub_le_self
 -/
 
@@ -1232,7 +1229,6 @@ protected theorem sub_lt_self (a : ℤ) {b : ℤ} (h : 0 < b) : a - b < a :=
     a - b = a + -b := rfl
     _ < a + 0 := (Int.add_lt_add_left (Int.neg_neg_of_pos h) _)
     _ = a := by rw [Int.add_zero]
-    
 #align int.sub_lt_self Int.sub_lt_self
 -/
 
@@ -1301,7 +1297,6 @@ protected theorem mul_le_mul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (nn
   calc
     a * b ≤ c * b := Int.mul_le_mul_of_nonneg_right hac nn_b
     _ ≤ c * d := Int.mul_le_mul_of_nonneg_left hbd nn_c
-    
 #align int.mul_le_mul Int.mul_le_mul
 -/
 
@@ -1327,7 +1322,6 @@ protected theorem mul_lt_mul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_
   calc
     a * b < c * b := Int.mul_lt_mul_of_pos_right hac pos_b
     _ ≤ c * d := Int.mul_le_mul_of_nonneg_left hbd nn_c
-    
 #align int.mul_lt_mul Int.mul_lt_mul
 -/
 
@@ -1337,7 +1331,6 @@ protected theorem mul_lt_mul' {a b c d : ℤ} (h1 : a ≤ c) (h2 : b < d) (h3 : 
   calc
     a * b ≤ c * b := Int.mul_le_mul_of_nonneg_right h1 h3
     _ < c * d := Int.mul_lt_mul_of_pos_left h2 h4
-    
 #align int.mul_lt_mul' Int.mul_lt_mul'
 -/
 

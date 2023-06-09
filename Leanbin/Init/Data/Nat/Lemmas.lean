@@ -133,7 +133,7 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
 #align nat.zero_mul Nat.zero_mul
 -/
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def sort_add :=
   sorry
 
@@ -627,7 +627,6 @@ protected theorem mul_lt_mul {a b c d : ℕ} (hac : a < c) (hbd : b ≤ d) (pos_
   calc
     a * b < c * b := Nat.mul_lt_mul_of_pos_right hac pos_b
     _ ≤ c * d := Nat.mul_le_mul_of_nonneg_left hbd
-    
 #align nat.mul_lt_mul Nat.mul_lt_mulₓ
 
 protected theorem mul_lt_mul' {a b c d : ℕ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 < c) :
@@ -635,7 +634,6 @@ protected theorem mul_lt_mul' {a b c d : ℕ} (h1 : a ≤ c) (h2 : b < d) (h3 : 
   calc
     a * b ≤ c * b := Nat.mul_le_mul_of_nonneg_right h1
     _ < c * d := Nat.mul_lt_mul_of_pos_left h2 h3
-    
 #align nat.mul_lt_mul' Nat.mul_lt_mul'ₓ
 
 #print Nat.mul_le_mul /-
@@ -644,7 +642,6 @@ protected theorem mul_le_mul {a b c d : ℕ} (hac : a ≤ c) (hbd : b ≤ d) : a
   calc
     a * b ≤ c * b := Nat.mul_le_mul_of_nonneg_right hac
     _ ≤ c * d := Nat.mul_le_mul_of_nonneg_left hbd
-    
 #align nat.mul_le_mul Nat.mul_le_mul
 -/
 
@@ -1199,12 +1196,10 @@ theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
     calc
       min (succ x) (succ y) = succ x := if_pos (succ_le_succ p)
       _ = succ (min x y) := congr_arg succ (Eq.symm (if_pos p))
-      
   have g : ¬x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
     calc
       min (succ x) (succ y) = succ y := if_neg fun eq => p (pred_le_pred Eq)
       _ = succ (min x y) := congr_arg succ (Eq.symm (if_neg p))
-      
   Decidable.byCases f g
 #align nat.min_succ_succ Nat.min_succ_succ
 
@@ -1534,7 +1529,6 @@ protected theorem div_le_of_le_mul {m n : ℕ} : ∀ {k}, m ≤ k * n → m / k 
       succ k * (m / succ k) ≤ m % succ k + succ k * (m / succ k) := Nat.le_add_left _ _
       _ = m := by rw [mod_add_div]
       _ ≤ succ k * n := h
-      
 #align nat.div_le_of_le_mul Nat.div_le_of_le_mul
 -/
 
@@ -1546,7 +1540,6 @@ protected theorem div_le_self : ∀ m n : ℕ, m / n ≤ m
       calc
         m = 1 * m := by rw [Nat.one_mul]
         _ ≤ succ n * m := m.mul_le_mul_right (succ_le_succ n.zero_le)
-        
     Nat.div_le_of_le_mul this
 #align nat.div_le_self Nat.div_le_self
 -/

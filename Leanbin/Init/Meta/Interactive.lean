@@ -27,7 +27,7 @@ open Lean.Parser
 
 open Native
 
-/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:689:29: warning: unsupported: precedence command -/
 -- mathport name: «expr ?»
 local postfix:1024 "?" => optional
 
@@ -650,7 +650,7 @@ private unsafe def set_cases_tags (in_tag : Tag) (rs : List (Name × List expr))
         with_enable_tags <|
           set_tag g <| (case_tag.from_tag_hyps (n :: in_tag) (new_hyps expr.local_uniq_name)).render
 
-/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:689:29: warning: unsupported: precedence command -/
 /--
 Assuming `x` is a variable in the local context with an inductive type, `induction x` applies induction on `x` to the main goal, producing one goal for each constructor of the inductive type, in which the target is replaced by a general instance of that constructor and an inductive hypothesis is added for each recursive argument to the constructor. If the type of an element in the local context depends on `x`, that element is reverted and reintroduced afterward, so that the inductive hypothesis incorporates that hypothesis as well.
 

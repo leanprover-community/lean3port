@@ -105,21 +105,29 @@ theorem ofNat_zero : @ofNat n 0 = 0 :=
   rfl
 #align fin.of_nat_zero Fin.ofNat_zero
 
+#print Fin.add_def /-
 theorem add_def (a b : Fin n) : (a + b).val = (a.val + b.val) % n :=
   show (Fin.add a b).val = (a.val + b.val) % n by cases a <;> cases b <;> simp [Fin.add]
 #align fin.add_def Fin.add_def
+-/
 
+#print Fin.mul_def /-
 theorem mul_def (a b : Fin n) : (a * b).val = a.val * b.val % n :=
   show (Fin.mul a b).val = a.val * b.val % n by cases a <;> cases b <;> simp [Fin.mul]
 #align fin.mul_def Fin.mul_def
+-/
 
+#print Fin.sub_def /-
 theorem sub_def (a b : Fin n) : (a - b).val = (a.val + (n - b.val)) % n := by
   cases a <;> cases b <;> rfl
 #align fin.sub_def Fin.sub_def
+-/
 
+#print Fin.mod_def /-
 theorem mod_def (a b : Fin n) : (a % b).val = a.val % b.val :=
   show (Fin.mod a b).val = a.val % b.val by cases a <;> cases b <;> simp [Fin.mod]
 #align fin.mod_def Fin.mod_def
+-/
 
 theorem div_def (a b : Fin n) : (a / b).val = a.val / b.val :=
   show (Fin.div a b).val = a.val / b.val by cases a <;> cases b <;> simp [Fin.div]
@@ -135,9 +143,11 @@ theorem le_def (a b : Fin n) : (a ≤ b) = (a.val ≤ b.val) :=
 
 /- warning: fin.val_zero clashes with fin.coe_zero -> Fin.val_zero
 Case conversion may be inaccurate. Consider using '#align fin.val_zero Fin.val_zeroₓ'. -/
+#print Fin.val_zero /-
 theorem val_zero : (0 : Fin (succ n)).val = 0 :=
   rfl
 #align fin.val_zero Fin.val_zero
+-/
 
 #print Fin.pred /-
 def pred {n : Nat} : ∀ i : Fin (succ n), i ≠ 0 → Fin n

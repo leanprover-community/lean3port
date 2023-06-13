@@ -502,10 +502,12 @@ def ltByCases (x y : α) {P : Sort _} (h₁ : x < y → P) (h₂ : x = y → P) 
 #align lt_by_cases ltByCases
 -/
 
+#print le_imp_le_of_lt_imp_lt /-
 theorem le_imp_le_of_lt_imp_lt {β} [Preorder α] [LinearOrder β] {a b : α} {c d : β}
     (H : d < c → b < a) (h : a ≤ b) : c ≤ d :=
   le_of_not_lt fun h' => not_le_of_gt (H h') h
 #align le_imp_le_of_lt_imp_lt le_imp_le_of_lt_imp_lt
+-/
 
 end LinearOrder
 

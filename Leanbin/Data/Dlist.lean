@@ -28,7 +28,6 @@ open Function
 
 variable {α : Type u}
 
--- mathport name: «expr♯»
 local notation:arg "♯" => by abstract intros; simp
 
 /-- Convert a list to a dlist -/
@@ -36,10 +35,12 @@ def ofList (l : List α) : Dlist α :=
   ⟨append l, ♯⟩
 #align dlist.of_list Dlist.ofList
 
+#print Std.DList.lazy_ofList /-
 /-- Convert a lazily-evaluated list to a dlist -/
 def Std.DList.lazy_ofList (l : Thunk (List α)) : Dlist α :=
   ⟨fun xs => l () ++ xs, ♯⟩
 #align dlist.lazy_of_list Std.DList.lazy_ofList
+-/
 
 /-- Convert a dlist to a list -/
 def toList : Dlist α → List α
@@ -51,7 +52,6 @@ def empty : Dlist α :=
   ⟨id, ♯⟩
 #align dlist.empty Dlist.empty
 
--- mathport name: «expr ::_»
 local notation:arg a "::_" => List.cons a
 
 /-- Create dlist with a single element -/
@@ -86,12 +86,14 @@ theorem Std.DList.toList_ofList (l : List α) : toList (ofList l) = l := by case
 #align dlist.to_list_of_list Std.DList.toList_ofList
 -/
 
+#print Std.DList.ofList_toList /-
 theorem Std.DList.ofList_toList (l : Dlist α) : ofList (toList l) = l :=
   by
   cases' l with xs
   have h : append (xs []) = xs := by intros; funext x; simp [l_invariant x]
   simp [h]
 #align dlist.of_list_to_list Std.DList.ofList_toList
+-/
 
 theorem toList_empty : toList (@empty α) = [] := by simp
 #align dlist.to_list_empty Dlist.toList_empty

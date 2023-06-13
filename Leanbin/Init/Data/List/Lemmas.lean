@@ -99,18 +99,24 @@ theorem length_drop : ∀ (i : ℕ) (l : List α), length (drop i l) = length l 
 /-! map -/
 
 
+#print List.map_cons /-
 theorem map_cons (f : α → β) (a l) : map f (a :: l) = f a :: map f l :=
   rfl
 #align list.map_cons List.map_cons
+-/
 
+#print List.map_append /-
 @[simp]
 theorem map_append (f : α → β) : ∀ l₁ l₂, map f (l₁ ++ l₂) = map f l₁ ++ map f l₂ := by
   intro l₁ <;> induction l₁ <;> intros <;> simp [*]
 #align list.map_append List.map_append
+-/
 
+#print List.map_singleton /-
 theorem map_singleton (f : α → β) (a : α) : map f [a] = [f a] :=
   rfl
 #align list.map_singleton List.map_singleton
+-/
 
 #print List.map_id /-
 @[simp]
@@ -118,33 +124,43 @@ theorem map_id (l : List α) : map id l = l := by induction l <;> simp [*]
 #align list.map_id List.map_id
 -/
 
+#print List.map_map /-
 @[simp]
 theorem map_map (g : β → γ) (f : α → β) (l : List α) : map g (map f l) = map (g ∘ f) l := by
   induction l <;> simp [*]
 #align list.map_map List.map_map
+-/
 
+#print List.length_map /-
 @[simp]
 theorem length_map (f : α → β) (l : List α) : length (map f l) = length l := by
   induction l <;> simp [*]
 #align list.length_map List.length_map
+-/
 
 /-! bind -/
 
 
+#print List.nil_bind /-
 @[simp]
 theorem nil_bind (f : α → List β) : List.bind [] f = [] := by simp [join, List.bind]
 #align list.nil_bind List.nil_bind
+-/
 
+#print List.cons_bind /-
 @[simp]
 theorem cons_bind (x xs) (f : α → List β) : List.bind (x :: xs) f = f x ++ List.bind xs f := by
   simp [join, List.bind]
 #align list.cons_bind List.cons_bind
+-/
 
+#print List.append_bind /-
 @[simp]
 theorem append_bind (xs ys) (f : α → List β) :
     List.bind (xs ++ ys) f = List.bind xs f ++ List.bind ys f := by
   induction xs <;> [rfl; simp [*, cons_bind]]
 #align list.append_bind List.append_bind
+-/
 
 /-! mem -/
 
@@ -317,19 +333,23 @@ theorem ne_nil_of_length_eq_succ {l : List α} : ∀ {n : Nat}, length l = succ 
 #align list.ne_nil_of_length_eq_succ List.ne_nil_of_length_eq_succ
 -/
 
+#print List.length_zipWith /-
 @[simp]
 theorem length_zipWith (f : α → β → γ) (l₁) :
     ∀ l₂, length (zipWith f l₁ l₂) = min (length l₁) (length l₂) := by
   induction l₁ <;> intro l₂ <;> cases l₂ <;>
     simp [*, add_one, min_succ_succ, Nat.zero_min, Nat.min_zero]
 #align list.length_map₂ List.length_zipWith
+-/
 
+#print List.length_take /-
 @[simp]
 theorem length_take : ∀ (i : ℕ) (l : List α), length (take i l) = min i (length l)
   | 0, l => by simp [Nat.zero_min]
   | succ n, [] => by simp [Nat.min_zero]
   | succ n, a :: l => by simp [*, Nat.min_succ_succ, add_one]
 #align list.length_take List.length_take
+-/
 
 #print List.length_take_le /-
 theorem length_take_le (n) (l : List α) : length (take n l) ≤ n := by simp [min_le_left]
@@ -368,7 +388,6 @@ inductive Sublist : List α → List α → Prop
 #align list.sublist List.Sublist
 -/
 
--- mathport name: «expr <+ »
 infixl:50 " <+ " => Sublist
 
 #print List.length_le_of_sublist /-
@@ -382,28 +401,37 @@ theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → lengt
 /-! filter -/
 
 
+#print List.filter_nil /-
 @[simp]
 theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter p [] = [] :=
   rfl
 #align list.filter_nil List.filter_nil
+-/
 
+#print List.filter_cons_of_pos /-
 @[simp]
 theorem filter_cons_of_pos {p : α → Prop} [h : DecidablePred p] {a : α} :
     ∀ l, p a → filter p (a :: l) = a :: filter p l := fun l pa => if_pos pa
 #align list.filter_cons_of_pos List.filter_cons_of_pos
+-/
 
+#print List.filter_cons_of_neg /-
 @[simp]
 theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
     ∀ l, ¬p a → filter p (a :: l) = filter p l := fun l pa => if_neg pa
 #align list.filter_cons_of_neg List.filter_cons_of_neg
+-/
 
+#print List.filter_append /-
 @[simp]
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
     ∀ l₁ l₂ : List α, filter p (l₁ ++ l₂) = filter p l₁ ++ filter p l₂
   | [], l₂ => rfl
   | a :: l₁, l₂ => by by_cases pa : p a <;> simp [pa, filter_append]
 #align list.filter_append List.filter_append
+-/
 
+#print List.filter_sublist /-
 @[simp]
 theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filter p l <+ l
   | [] => Sublist.slnil
@@ -411,6 +439,7 @@ theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α
     if pa : p a then by simp [pa] <;> apply sublist.cons2 <;> apply filter_sublist l
     else by simp [pa] <;> apply sublist.cons <;> apply filter_sublist l
 #align list.filter_sublist List.filter_sublist
+-/
 
 /-! map_accumr -/
 
@@ -419,6 +448,7 @@ section MapAccumr
 
 variable {φ : Type w₁} {σ : Type w₂}
 
+#print List.mapAccumr /-
 -- This runs a function over a list returning the intermediate results and a
 -- a final result.
 def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
@@ -428,13 +458,16 @@ def mapAccumr (f : α → σ → σ × β) : List α → σ → σ × List β
     let z := f y r.1
     (z.1, z.2 :: r.2)
 #align list.map_accumr List.mapAccumr
+-/
 
+#print List.length_mapAccumr /-
 @[simp]
 theorem length_mapAccumr :
     ∀ (f : α → σ → σ × β) (x : List α) (s : σ), length (mapAccumr f x s).2 = length x
   | f, a :: x, s => congr_arg succ (length_map_accumr f x s)
   | f, [], s => rfl
 #align list.length_map_accumr List.length_mapAccumr
+-/
 
 end MapAccumr
 
@@ -442,6 +475,7 @@ section MapAccumr₂
 
 variable {φ : Type w₁} {σ : Type w₂}
 
+#print List.mapAccumr₂ /-
 -- This runs a function over two lists returning the intermediate results and a
 -- a final result.
 def mapAccumr₂ (f : α → β → σ → σ × φ) : List α → List β → σ → σ × List φ
@@ -452,7 +486,9 @@ def mapAccumr₂ (f : α → β → σ → σ × φ) : List α → List β → �
     let q := f x y r.1
     (q.1, q.2 :: r.2)
 #align list.map_accumr₂ List.mapAccumr₂
+-/
 
+#print List.length_mapAccumr₂ /-
 @[simp]
 theorem length_mapAccumr₂ :
     ∀ (f : α → β → σ → σ × φ) (x y c), length (mapAccumr₂ f x y c).2 = min (length x) (length y)
@@ -465,6 +501,7 @@ theorem length_mapAccumr₂ :
   | f, [], b :: y, c => rfl
   | f, [], [], c => rfl
 #align list.length_map_accumr₂ List.length_mapAccumr₂
+-/
 
 end MapAccumr₂
 

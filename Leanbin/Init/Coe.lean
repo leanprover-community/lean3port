@@ -117,10 +117,8 @@ def coeSort {a : Sort u} {b : Sort v} [CoeSort a b] : a → b :=
 /-! ### Notation -/
 
 
--- mathport name: «expr⇑ »
 notation:arg "⇑" x:arg => coeFn x
 
--- mathport name: «expr↥ »
 notation:arg "↥" x:arg => coeSort x
 
 universe u₁ u₂ u₃

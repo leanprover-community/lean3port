@@ -28,10 +28,12 @@ def List.mapM {m : Type u → Type v} [Monad m] {α : Type w} {β : Type u} (f :
 #align list.mmap List.mapM
 -/
 
+#print List.mapM' /-
 def List.mapM' {m : Type → Type v} [Monad m] {α : Type u} {β : Type} (f : α → m β) : List α → m Unit
   | [] => return ()
   | h :: t => f h >> List.mapM' t
 #align list.mmap' List.mapM'
+-/
 
 #print joinM /-
 def joinM {m : Type u → Type u} [Monad m] {α : Type u} (a : m (m α)) : m α :=
@@ -69,11 +71,13 @@ def List.foldrM {m : Type u → Type v} [Monad m] {s : Type u} {α : Type w} :
 #align list.mfoldr List.foldrM
 -/
 
+#print List.firstM /-
 def List.firstM {m : Type u → Type v} [Monad m] [Alternative m] {α : Type w} {β : Type u}
     (f : α → m β) : List α → m β
   | [] => failure
   | a :: as => f a <|> List.firstM as
 #align list.mfirst List.firstM
+-/
 
 #print when /-
 def when {m : Type → Type} [Monad m] (c : Prop) [h : Decidable c] (t : m Unit) : m Unit :=
@@ -104,9 +108,11 @@ def mapM :=
 #align monad.mapm Monad.mapM
 -/
 
+#print Monad.mapM' /-
 def mapM' :=
   @mapM'
 #align monad.mapm' Monad.mapM'
+-/
 
 #print Monad.join /-
 def join :=

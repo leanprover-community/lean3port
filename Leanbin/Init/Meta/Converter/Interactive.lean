@@ -241,7 +241,6 @@ open Interactive.Types
 
 open Tactic
 
--- mathport name: «expr ?»
 local postfix:1024 "?" => optional
 
 private unsafe def conv_at (h_name : Name) (c : conv Unit) : tactic Unit := do

@@ -34,10 +34,12 @@ axiom sound : ∀ {α : Sort u} {r : α → α → Prop} {a b : α}, r a b → Q
 
 attribute [elab_as_elim] lift ind
 
+#print Quot.lift_mk /-
 protected theorem lift_mk {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β)
     (c : ∀ a b, r a b → f a = f b) (a : α) : lift f c (Quot.mk r a) = f a :=
   rfl
 #align quot.lift_beta Quot.lift_mk
+-/
 
 protected theorem ind_beta {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop}
     (p : ∀ a, β (Quot.mk r a)) (a : α) : (ind p (Quot.mk r a) : β (Quot.mk r a)) = p a :=
@@ -74,7 +76,6 @@ variable {r : α → α → Prop}
 
 variable {β : Quot r → Sort v}
 
--- mathport name: «expr⟦ ⟧»
 local notation:arg "⟦" a "⟧" => Quot.mk r a
 
 #print Quot.indep /-
@@ -149,7 +150,6 @@ protected def mk' {α : Sort u} [s : Setoid α] (a : α) : Quotient s :=
 #align quotient.mk Quotient.mk'
 -/
 
--- mathport name: «expr⟦ ⟧»
 notation:arg "⟦" a "⟧" => Quotient.mk' a
 
 #print Quotient.sound /-
@@ -246,8 +246,6 @@ variable {α : Sort u_a} {β : Sort u_b} {φ : Sort u_c}
 
 variable [s₁ : Setoid α] [s₂ : Setoid β]
 
-include s₁ s₂
-
 #print Quotient.lift₂ /-
 @[reducible, elab_as_elim]
 protected def lift₂ (f : α → β → φ) (c : ∀ a₁ a₂ b₁ b₂, a₁ ≈ b₁ → a₂ ≈ b₂ → f a₁ a₂ = f b₁ b₂)
@@ -301,15 +299,12 @@ variable {α : Sort u}
 
 variable [s : Setoid α]
 
-include s
-
 private def rel (q₁ q₂ : Quotient s) : Prop :=
   Quotient.liftOn₂ q₁ q₂ (fun a₁ a₂ => a₁ ≈ a₂) fun a₁ a₂ b₁ b₂ a₁b₁ a₂b₂ =>
     propext
       (Iff.intro (fun a₁a₂ => Setoid.trans (Setoid.symm a₁b₁) (Setoid.trans a₁a₂ a₂b₂)) fun b₁b₂ =>
         Setoid.trans a₁b₁ (Setoid.trans b₁b₂ (Setoid.symm a₂b₂)))
 
--- mathport name: «expr ~ »
 local infixl:50 " ~ " => Rel
 
 private theorem rel.refl : ∀ q : Quotient s, q ~ q := fun q =>
@@ -332,8 +327,6 @@ universe u_a u_b u_c
 variable {α : Sort u_a} {β : Sort u_b}
 
 variable [s₁ : Setoid α] [s₂ : Setoid β]
-
-include s₁ s₂
 
 #print Quotient.recOnSubsingleton₂ /-
 @[reducible, elab_as_elim]

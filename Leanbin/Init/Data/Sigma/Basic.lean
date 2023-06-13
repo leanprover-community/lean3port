@@ -14,9 +14,11 @@ import Leanbin.Init.Wf
 
 universe u v
 
+#print ex_of_psig /-
 theorem ex_of_psig {α : Type u} {p : α → Prop} : (Σ' x, p x) → ∃ x, p x
   | ⟨x, hx⟩ => ⟨x, hx⟩
 #align ex_of_psig ex_of_psig
+-/
 
 section
 

@@ -154,9 +154,11 @@ def drop (i : ℕ) : Vector α n → Vector α (n - i)
 #align vector.drop Vector.drop
 -/
 
+#print Vector.take /-
 def take (i : ℕ) : Vector α n → Vector α (min i n)
   | ⟨l, p⟩ => ⟨List.take i l, by simp [*]⟩
 #align vector.take Vector.take
+-/
 
 #print Vector.removeNth /-
 def removeNth (i : Fin n) : Vector α n → Vector α (n - 1)

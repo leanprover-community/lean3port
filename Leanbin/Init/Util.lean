@@ -13,10 +13,12 @@ import Leanbin.Init.Meta.Format
 
 universe u
 
+#print timeit /-
 /-- This function has a native implementation that tracks time. -/
 def timeit {α : Type u} (s : String) (f : Thunk α) : α :=
   f ()
 #align timeit timeit
+-/
 
 /--
 This function has a native implementation that displays the given string in the regular output stream. -/

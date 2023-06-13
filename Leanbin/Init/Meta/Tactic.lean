@@ -110,10 +110,8 @@ open Tactic
 
 open TacticResult
 
--- mathport name: «expr >>=[tactic] »
 infixl:2 " >>=[tactic] " => interaction_monad_bind
 
--- mathport name: «expr >>[tactic] »
 infixl:2 " >>[tactic] " => interaction_monad_seq
 
 unsafe instance : Alternative tactic :=

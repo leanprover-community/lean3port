@@ -26,10 +26,8 @@ open Lean.Parser
 
 open Interactive Interactive.Types
 
--- mathport name: «expr ?»
 local postfix:1024 "?" => optional
 
--- mathport name: «expr *»
 local postfix:1024 "*" => many
 
 namespace Tactic

@@ -18,10 +18,8 @@ open Lean
 
 open Lean.Parser
 
--- mathport name: «expr ?»
 local postfix:1024 "?" => optional
 
--- mathport name: «expr *»
 local postfix:1024 "*" => many
 
 namespace Interactive
@@ -96,8 +94,8 @@ unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
 #align interactive.types.list_of interactive.types.list_of
 
-/- ./././Mathport/Syntax/Translate/Command.lean:689:29: warning: unsupported: precedence command -/
-/- ./././Mathport/Syntax/Translate/Command.lean:689:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -154,7 +152,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
-/- ./././Mathport/Syntax/Translate/Command.lean:689:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format

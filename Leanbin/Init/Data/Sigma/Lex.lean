@@ -42,7 +42,6 @@ parameter {α : Sort u} {β : α → Sort v}
 
 parameter {r : α → α → Prop} {s : ∀ a : α, β a → β a → Prop}
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => Lex r s
 
 theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) :
@@ -114,7 +113,6 @@ parameter {α : Sort u} {β : Sort v}
 
 parameter {r : α → α → Prop} {s : β → β → Prop}
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => RevLex r s
 
 theorem revLex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=

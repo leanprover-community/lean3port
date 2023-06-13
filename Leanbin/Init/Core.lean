@@ -130,7 +130,7 @@ def Not (a : Prop) :=
 #align not Not
 -/
 
-/- ./././Mathport/Syntax/Translate/Command.lean:370:30: infer kinds are unsupported in Lean 4: refl [] -/
+/- ./././Mathport/Syntax/Translate/Command.lean:369:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print Eq /-
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
@@ -159,7 +159,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 
 init_quot
 
-/- ./././Mathport/Syntax/Translate/Command.lean:370:30: infer kinds are unsupported in Lean 4: refl [] -/
+/- ./././Mathport/Syntax/Translate/Command.lean:369:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print HEq /-
 /-- Heterogeneous equality.
 
@@ -614,7 +614,6 @@ export AndThen' (andthen)
 
 export Pow (pow)
 
--- mathport name: «expr ⊂ »
 infixl:50
   " ⊂ " =>-- Note this is different to `|`.
   HasSSubset.SSubset
@@ -647,10 +646,8 @@ def Ssuperset {α : Type u} [HasSSubset α] (a b : α) : Prop :=
   HasSSubset.SSubset b a
 #align ssuperset Ssuperset
 
--- mathport name: «expr ⊇ »
 infixl:50 " ⊇ " => Superset
 
--- mathport name: «expr ⊃ »
 infixl:50 " ⊃ " => Ssuperset
 
 #print bit0 /-

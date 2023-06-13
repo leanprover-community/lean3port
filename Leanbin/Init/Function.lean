@@ -38,7 +38,6 @@ def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : �
     (g : ∀ x, β x) : ∀ x, φ (g x) := fun x => f (g x)
 #align function.dcomp Function.dcomp
 
--- mathport name: «expr ∘' »
 infixr:80 " ∘' " => Function.dcomp
 
 @[reducible]
@@ -58,10 +57,12 @@ def onFun (f : β → β → φ) (g : α → β) : α → α → φ := fun x y =
 #align function.on_fun Function.onFun
 -/
 
+#print Function.combine /-
 @[reducible]
 def combine (f : α → β → φ) (op : φ → δ → ζ) (g : α → β → δ) : α → β → ζ := fun x y =>
   op (f x y) (g x y)
 #align function.combine Function.combine
+-/
 
 #print Function.const /-
 /-- Constant `λ _, a`. -/
@@ -83,10 +84,8 @@ def app {β : α → Sort u₂} (f : ∀ x, β x) (x : α) : β x :=
 #align function.app Function.app
 -/
 
--- mathport name: «expr on »
 infixl:2 " on " => onFun
 
--- mathport name: «expr -[ ]- »
 notation f " -[" op "]- " g => combine f op g
 
 #print Function.left_id /-
@@ -101,10 +100,12 @@ theorem right_id (f : α → β) : f ∘ id = f :=
 #align function.right_id Function.right_id
 -/
 
+#print Function.comp_apply /-
 @[simp]
 theorem comp_apply (f : β → φ) (g : α → β) (a : α) : (f ∘ g) a = f (g a) :=
   rfl
 #align function.comp_app Function.comp_apply
+-/
 
 #print Function.comp.assoc /-
 theorem comp.assoc (f : φ → δ) (g : β → φ) (h : α → β) : (f ∘ g) ∘ h = f ∘ g ∘ h :=

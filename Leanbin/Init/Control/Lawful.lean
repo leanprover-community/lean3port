@@ -61,11 +61,13 @@ export LawfulApplicative (seqLeft_eq seqRight_eq pure_seq map_pure seq_pure seq_
 
 attribute [simp] map_pure seq_pure
 
+#print pure_id_seq /-
 -- applicative "law" derivable from other laws
 @[simp]
 theorem pure_id_seq {α : Type u} {f : Type u → Type v} [Applicative f] [LawfulApplicative f]
     (x : f α) : pure id <*> x = x := by simp [pure_seq_eq_map]
 #align pure_id_seq pure_id_seq
+-/
 
 #print LawfulMonad /-
 class LawfulMonad (m : Type u → Type v) [Monad m] extends LawfulApplicative m : Prop where
@@ -92,12 +94,14 @@ export LawfulMonad (bind_pure_comp_eq_map bind_map_eq_seq pure_bind bind_assoc)
 
 attribute [simp] pure_bind
 
+#print bind_pure /-
 -- monad "law" derivable from other laws
 @[simp]
 theorem bind_pure {α : Type u} {m : Type u → Type v} [Monad m] [LawfulMonad m] (x : m α) :
     x >>= pure = x :=
   show x >>= pure ∘ id = x by rw [bind_pure_comp_eq_map] <;> simp [id_map]
 #align bind_pure bind_pure
+-/
 
 theorem bind_ext_congr {α β} {m : Type u → Type v} [Bind m] {x : m α} {f g : α → m β} :
     (∀ a, f a = g a) → x >>= f = x >>= g := fun h => by simp [show f = g from funext h]

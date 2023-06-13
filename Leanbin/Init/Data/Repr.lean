@@ -43,12 +43,14 @@ class Repr (α : Type u) where
 #align has_repr Repr
 -/
 
+#print repr /-
 /--
 `repr` is similar to `to_string` except that we should have the property `eval (repr x) = x` for most sensible datatypes.
 Hence, `repr "hello"` has the value `"\"hello\""` not `"hello"`.  -/
 def repr {α : Type u} [Repr α] : α → String :=
   Repr.repr
 #align repr repr
+-/
 
 instance : Repr Bool :=
   ⟨fun b => cond b "tt" "ff"⟩
@@ -63,10 +65,12 @@ protected def List.reprAux {α : Type u} [Repr α] : Bool → List α → String
   | ff, x :: xs => ", " ++ repr x ++ List.reprAux false xs
 #align list.repr_aux List.reprAux
 
+#print List.repr /-
 protected def List.repr {α : Type u} [Repr α] : List α → String
   | [] => "[]"
   | x :: xs => "[" ++ List.reprAux true (x :: xs) ++ "]"
 #align list.repr List.repr
+-/
 
 instance {α : Type u} [Repr α] : Repr (List α) :=
   ⟨List.repr⟩

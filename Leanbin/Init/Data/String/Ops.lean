@@ -53,9 +53,11 @@ private def split_core (p : Char → Bool) : Iterator → Iterator → List Stri
     else [start.nextToString]
 termination_by' ⟨_, measure_wf fun e => e.2.nextToString.length⟩
 
+#print String.split /-
 def split (p : Char → Bool) (s : String) : List String :=
   splitCore p s.mkIterator s.mkIterator
 #align string.split String.split
+-/
 
 end String
 

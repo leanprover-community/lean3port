@@ -52,9 +52,11 @@ theorem gcd_one_left (n : ℕ) : gcd 1 n = 1 := by simp [gcd]
 #align nat.gcd_one_left Nat.gcd_one_left
 -/
 
+#print Nat.gcd_def /-
 theorem gcd_def (x y : ℕ) : gcd x y = if x = 0 then y else gcd (y % x) x := by
   cases x <;> simp [gcd, succ_ne_zero]
 #align nat.gcd_def Nat.gcd_def
+-/
 
 #print Nat.gcd_self /-
 @[simp]

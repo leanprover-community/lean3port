@@ -167,6 +167,7 @@ def put (st : σ) : m PUnit :=
   MonadState.lift (StateT.put st)
 #align put put
 
+#print modify /-
 /-- Map the top-most state of a monad stack.
 
     Note: `modify f` may be preferable to `f <$> get >>= put` because the latter
@@ -175,6 +176,7 @@ def put (st : σ) : m PUnit :=
 def modify (f : σ → σ) : m PUnit :=
   MonadState.lift (StateT.modify f)
 #align modify modify
+-/
 
 end
 

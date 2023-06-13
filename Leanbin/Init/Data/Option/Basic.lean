@@ -19,10 +19,12 @@ universe u v
 
 namespace Option
 
+#print Option.toMonad /-
 def toMonad {m : Type → Type} [Monad m] [Alternative m] {A} : Option A → m A
   | none => failure
   | some a => return a
 #align option.to_monad Option.toMonad
+-/
 
 #print Option.getD /-
 def getD {α : Type u} : Option α → α → α

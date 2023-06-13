@@ -194,6 +194,7 @@ protected def extractCore : List Char → List Char → Option (List Char)
       | some r => some (c :: r)
 #align string.iterator.extract_core String.Iterator.extractCore
 
+#print String.Iterator.extract /-
 def extract : Iterator → Iterator → Option String
   | ⟨p₁, n₁⟩, ⟨p₂, n₂⟩ =>
     if p₁.reverse ++ n₁ ≠ p₂.reverse ++ n₂ then none
@@ -204,6 +205,7 @@ def extract : Iterator → Iterator → Option String
         | none => none
         | some r => some ⟨r⟩
 #align string.iterator.extract String.Iterator.extract
+-/
 
 end Iterator
 

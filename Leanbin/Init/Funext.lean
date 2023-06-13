@@ -27,7 +27,6 @@ protected def Equiv (f₁ f₂ : ∀ x : α, β x) : Prop :=
   ∀ x, f₁ x = f₂ x
 #align function.equiv Function.Equiv
 
--- mathport name: «expr ~ »
 local infixl:50 " ~ " => Function.Equiv
 
 protected theorem Equiv.refl (f : ∀ x : α, β x) : f ~ f := fun x => rfl
@@ -81,7 +80,6 @@ theorem funext {f₁ f₂ : ∀ x : α, β x} (h : ∀ x, f₁ x = f₂ x) : f�
 
 attribute [intro!] funext
 
--- mathport name: «expr ~ »
 local infixl:50 " ~ " => Function.Equiv
 
 instance Pi.subsingleton [∀ a, Subsingleton (β a)] : Subsingleton (∀ a, β a) :=

@@ -625,19 +625,23 @@ theorem hEq_self_iff_true {α : Sort u} (a : α) : HEq a a ↔ True :=
   iff_true_intro (HEq.refl a)
 #align heq_self_iff_true hEq_self_iff_true
 
+#print iff_not_self /-
 @[simp]
 theorem iff_not_self (a : Prop) : (a ↔ ¬a) ↔ False :=
   iff_false_intro fun h =>
     have h' : ¬a := fun ha => (Iff.mp h ha) ha
     h' (Iff.mpr h h')
 #align iff_not_self iff_not_self
+-/
 
+#print not_iff_self /-
 @[simp]
 theorem not_iff_self (a : Prop) : (¬a ↔ a) ↔ False :=
   iff_false_intro fun h =>
     have h' : ¬a := fun ha => (Iff.mpr h ha) ha
     h' (Iff.mp h h')
 #align not_iff_self not_iff_self
+-/
 
 #print true_iff_false /-
 theorem true_iff_false : (True ↔ False) ↔ False :=
@@ -676,17 +680,21 @@ theorem eq_comm {α : Sort u} {a b : α} : a = b ↔ b = a :=
 /-! and simp rules -/
 
 
+#print And.imp /-
 theorem And.imp (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d := fun ⟨ha, hb⟩ => ⟨hac ha, hbd hb⟩
 #align and.imp And.imp
+-/
 
 theorem and_implies (hac : a → c) (hbd : b → d) : a ∧ b → c ∧ d :=
   And.imp hac hbd
 #align and_implies and_implies
 
+#print and_congr /-
 @[congr]
 theorem and_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∧ b ↔ c ∧ d :=
   Iff.intro (And.imp (Iff.mp h₁) (Iff.mp h₂)) (And.imp (Iff.mpr h₁) (Iff.mpr h₂))
 #align and_congr and_congr
+-/
 
 #print and_congr_right /-
 theorem and_congr_right (h : a → (b ↔ c)) : a ∧ b ↔ a ∧ c :=
@@ -802,10 +810,12 @@ theorem Or.imp_right (h : a → b) : c ∨ a → c ∨ b :=
 #align or.imp_right Or.imp_right
 -/
 
+#print or_congr /-
 @[congr]
 theorem or_congr (h₁ : a ↔ c) (h₂ : b ↔ d) : a ∨ b ↔ c ∨ d :=
   Iff.intro (Or.imp (Iff.mp h₁) (Iff.mp h₂)) (Or.imp (Iff.mpr h₁) (Iff.mpr h₂))
 #align or_congr or_congr
+-/
 
 #print or_comm /-
 theorem or_comm : a ∨ b ↔ b ∨ a :=
@@ -1718,6 +1728,7 @@ theorem let_value_eq {α : Sort u} {β : Sort v} {a₁ a₂ : α} (b : α → β
 #align let_value_eq let_value_eq
 -/
 
+#print let_value_heq /-
 theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : ∀ x : α, β x) :
     a₁ = a₂ →
       HEq
@@ -1727,7 +1738,9 @@ theorem let_value_heq {α : Sort v} {β : α → Sort u} {a₁ a₂ : α} (b : �
         b x) :=
   fun h => Eq.recOn h (HEq.refl (b a₁))
 #align let_value_heq let_value_heq
+-/
 
+#print let_body_eq /-
 theorem let_body_eq {α : Sort v} {β : α → Sort u} (a : α) {b₁ b₂ : ∀ x : α, β x} :
     (∀ x, b₁ x = b₂ x) →
       (let x : α := a
@@ -1736,7 +1749,9 @@ theorem let_body_eq {α : Sort v} {β : α → Sort u} (a : α) {b₁ b₂ : ∀
         b₂ x :=
   fun h => h a
 #align let_body_eq let_body_eq
+-/
 
+#print let_eq /-
 theorem let_eq {α : Sort v} {β : Sort u} {a₁ a₂ : α} {b₁ b₂ : α → β} :
     a₁ = a₂ →
       (∀ x, b₁ x = b₂ x) →
@@ -1746,12 +1761,12 @@ theorem let_eq {α : Sort v} {β : Sort u} {a₁ a₂ : α} {b₁ b₂ : α → 
           b₂ x :=
   fun h₁ h₂ => Eq.recOn h₁ (h₂ a₁)
 #align let_eq let_eq
+-/
 
 section Relation
 
 variable {α : Sort u} {β : Sort v} (r : β → β → Prop)
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
 #print Reflexive /-
@@ -1843,15 +1858,12 @@ variable (inv : α → α)
 
 variable (one : α)
 
--- mathport name: f
 local notation a "*" b => f a b
 
--- mathport name: inv
 local notation a "⁻¹" => inv a
 
 variable (g : α → α → α)
 
--- mathport name: g
 local notation a "+" b => g a b
 
 #print Commutative /-

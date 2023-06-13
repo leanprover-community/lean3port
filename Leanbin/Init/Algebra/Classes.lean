@@ -290,7 +290,6 @@ section
 
 variable {α : Type u} {r : α → α → Prop}
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
 #print irrefl /-
@@ -418,7 +417,6 @@ section
 
 parameter {α : Type u} {r : α → α → Prop}
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
 def Equiv (a b : α) : Prop :=
@@ -427,7 +425,6 @@ def Equiv (a b : α) : Prop :=
 
 parameter [IsStrictWeakOrder α r]
 
--- mathport name: equiv
 local infixl:50 " ≈ " => Equiv
 
 theorem erefl (a : α) : a ≈ a :=
@@ -455,7 +452,6 @@ instance isEquiv : IsEquiv α Equiv where
 
 end
 
--- mathport name: «expr ≈[ ] »
 notation:50 -- Notation for the equivalence relation induced by lt
 a " ≈[" lt "]" b:50 => @Equiv _ lt a b
 

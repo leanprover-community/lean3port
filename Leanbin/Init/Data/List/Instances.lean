@@ -44,6 +44,7 @@ instance binTreeToList : Coe (BinTree α) (List α) :=
   ⟨BinTree.toList⟩
 #align list.bin_tree_to_list List.binTreeToList
 
+#print List.decidableBex /-
 instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
   | [] => isFalse (by simp [List.not_bex_nil])
   | x :: xs =>
@@ -64,6 +65,7 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
             · refine' absurd _ h₂
               exact ⟨y, h, hp⟩)
 #align list.decidable_bex List.decidableBex
+-/
 
 #print List.decidableBall /-
 instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=

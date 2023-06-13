@@ -862,9 +862,11 @@ theorem exists_eq_succ_of_ne_zero {n : ℕ} (H : n ≠ 0) : ∃ k : ℕ, n = suc
 #align nat.exists_eq_succ_of_ne_zero Nat.exists_eq_succ_of_ne_zero
 -/
 
+#print Nat.discriminate /-
 def discriminate {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ m → B) : B := by
   induction' h : n with <;> [exact H1 h; exact H2 _ h]
 #align nat.discriminate Nat.discriminate
+-/
 
 theorem one_succ_zero : 1 = succ 0 :=
   rfl
@@ -1182,14 +1184,19 @@ theorem succ_mul_succ_eq (a b : Nat) : succ a * succ b = a * b + a + b + 1 :=
 /-! min -/
 
 
+#print Nat.zero_min /-
 protected theorem zero_min (a : ℕ) : min 0 a = 0 :=
   min_eq_left a.zero_le
 #align nat.zero_min Nat.zero_min
+-/
 
+#print Nat.min_zero /-
 protected theorem min_zero (a : ℕ) : min a 0 = 0 :=
   min_eq_right a.zero_le
 #align nat.min_zero Nat.min_zero
+-/
 
+#print Nat.min_succ_succ /-
 -- Distribute succ over min
 theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
   have f : x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
@@ -1202,16 +1209,21 @@ theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
       _ = succ (min x y) := congr_arg succ (Eq.symm (if_neg p))
   Decidable.byCases f g
 #align nat.min_succ_succ Nat.min_succ_succ
+-/
 
+#print Nat.sub_eq_sub_min /-
 theorem sub_eq_sub_min (n m : ℕ) : n - m = n - min n m :=
   if h : n ≥ m then by rw [min_eq_right h]
   else by rw [Nat.sub_eq_zero_of_le (le_of_not_ge h), min_eq_left (le_of_not_ge h), Nat.sub_self]
 #align nat.sub_eq_sub_min Nat.sub_eq_sub_min
+-/
 
+#print Nat.sub_add_min_cancel /-
 @[simp]
 protected theorem sub_add_min_cancel (n m : ℕ) : n - m + min n m = n := by
   rw [sub_eq_sub_min, Nat.sub_add_cancel (min_le_left n m)]
 #align nat.sub_add_min_cancel Nat.sub_add_min_cancel
+-/
 
 /-! induction principles -/
 
@@ -1274,12 +1286,14 @@ private theorem mod_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
     ih (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h1))
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
 
+#print Nat.mod_eq /-
 theorem mod_eq (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else x :=
   by
   cases x; · cases y <;> rfl
   cases y; · rfl
   refine' if_congr Iff.rfl (mod_core_congr _ _) rfl <;> simp [Nat.sub_le]
 #align nat.mod_def Nat.mod_eq
+-/
 
 #print Nat.mod_zero /-
 @[simp]
@@ -1471,6 +1485,7 @@ private theorem div_core_congr {x y f1 f2} (h1 : x ≤ f1) (h2 : x ≤ f2) :
     ih (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h1))
       (le_trans (Nat.sub_le _ _) (le_of_succ_le_succ h2))
 
+#print Nat.div_eq /-
 theorem div_eq (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 else 0 :=
   by
   cases x; · cases y <;> rfl
@@ -1478,6 +1493,7 @@ theorem div_eq (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 e
   refine' if_congr Iff.rfl (congr_arg (· + 1) _) rfl
   refine' div_core_congr _ _ <;> simp [Nat.sub_le]
 #align nat.div_def Nat.div_eq
+-/
 
 #print Nat.mod_add_div /-
 theorem mod_add_div (m k : ℕ) : m % k + k * (m / k) = m :=
@@ -1559,6 +1575,7 @@ theorem div_eq_of_lt {a b : ℕ} (h₀ : a < b) : a / b = 0 :=
 #align nat.div_eq_of_lt Nat.div_eq_of_lt
 -/
 
+#print Nat.le_div_iff_mul_le /-
 -- this is a Galois connection
 --   f x ≤ y ↔ x ≤ g y
 -- with
@@ -1591,10 +1608,13 @@ theorem le_div_iff_mul_le {x y k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ x * k ≤
       rw [← add_one, Nat.add_le_add_iff_right, IH (y - k) (Nat.sub_lt_of_pos_le _ _ Hk h), add_one,
         succ_mul, Nat.le_sub_iff_right h]
 #align nat.le_div_iff_mul_le Nat.le_div_iff_mul_le
+-/
 
+#print Nat.div_lt_iff_lt_mul /-
 theorem div_lt_iff_lt_mul {x y k : ℕ} (Hk : 0 < k) : x / k < y ↔ x < y * k := by
   rw [← not_le, not_congr (le_div_iff_mul_le Hk), not_le]
 #align nat.div_lt_iff_lt_mul Nat.div_lt_iff_lt_mul
+-/
 
 #print Nat.sub_mul_div /-
 theorem sub_mul_div (x n p : ℕ) (h₁ : n * p ≤ x) : (x - n * p) / n = x / n - p :=
@@ -1907,7 +1927,6 @@ def iterate {α : Sort u} (op : α → α) : ℕ → α → α
 #align nat.iterate Nat.iterate
 -/
 
--- mathport name: «expr ^[ ]»
 notation f "^[" n "]" => iterate f n
 
 /-! find -/

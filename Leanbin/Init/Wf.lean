@@ -49,10 +49,12 @@ structure WellFounded {α : Sort u} (r : α → α → Prop) : Prop where intro 
 #align well_founded WellFounded
 -/
 
+#print WellFoundedRelation /-
 class WellFoundedRelation (α : Sort u) : Type u where
   R : α → α → Prop
   wf : WellFounded r
 #align has_well_founded WellFoundedRelation
+-/
 
 namespace WellFounded
 
@@ -60,7 +62,6 @@ section
 
 parameter {α : Sort u} {r : α → α → Prop}
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => r
 
 parameter (hwf : WellFounded r)
@@ -176,6 +177,7 @@ end
 
 end InvImage
 
+#print Nat.lt_wfRel /-
 /-- less-than is well-founded -/
 theorem Nat.lt_wfRel : WellFounded Nat.lt :=
   ⟨Nat.rec (Acc.intro 0 fun n h => absurd h (Nat.not_lt_zero n)) fun n ih =>
@@ -183,6 +185,7 @@ theorem Nat.lt_wfRel : WellFounded Nat.lt :=
         Or.elim (Nat.eq_or_lt_of_le (Nat.le_of_succ_le_succ h)) (fun e => Eq.substr e ih)
           (Acc.inv ih)⟩
 #align nat.lt_wf Nat.lt_wfRel
+-/
 
 #print Measure /-
 def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
@@ -243,7 +246,6 @@ parameter {α : Type u} {β : Type v}
 
 parameter {ra : α → α → Prop} {rb : β → β → Prop}
 
--- mathport name: «expr ≺ »
 local infixl:50 "≺" => Lex ra rb
 
 theorem lex_accessible {a} (aca : Acc ra a) (acb : ∀ b, Acc rb b) : ∀ b, Acc (Lex ra rb) (a, b) :=

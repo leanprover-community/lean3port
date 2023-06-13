@@ -178,10 +178,8 @@ unsafe def many.{u, v} {f : Type u → Type v} [Monad f] [Alternative f] {a : Ty
       pure List.nil
 #align lean.parser.many lean.parser.many
 
--- mathport name: «expr ?»
 local postfix:100 "?" => optional
 
--- mathport name: «expr *»
 local postfix:100 "*" => many
 
 unsafe def sep_by : parser Unit → parser α → parser (List α)

@@ -24,7 +24,7 @@ instance : Monad List where
 
 instance : LawfulMonad List
     where
-  bind_pure_comp_eq_map := by intro α β f l; induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
+  bind_pure_comp := by intro α β f l; induction l <;> simp_all [(· <$> ·), (· >>= ·), pure]
   id_map := @List.map_id
   pure_bind := by intros; simp [pure, (· >>= ·)]
   bind_assoc := by

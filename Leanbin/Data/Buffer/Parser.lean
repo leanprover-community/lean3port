@@ -13,7 +13,7 @@ import Leanbin.Data.Dlist
 
 inductive ParseResult (α : Type)
   | done (pos : ℕ) (result : α) : ParseResult
-  | fail (pos : ℕ) (expected : Dlist String) : ParseResult
+  | fail (pos : ℕ) (expected : Std.DList String) : ParseResult
 #align parse_result ParseResult
 
 /--
@@ -53,7 +53,7 @@ private theorem parser.bind_assoc (p : Parser α) (q : α → Parser β) (r : β
   all_goals rfl
 
 protected def fail (msg : String) : Parser α := fun _ pos =>
-  ParseResult.fail Pos (Dlist.singleton msg)
+  ParseResult.fail Pos (Std.DList.singleton msg)
 #align parser.fail Parser.fail
 
 instance : Monad Parser where
@@ -68,7 +68,7 @@ instance : LawfulMonad Parser where
 instance : MonadFail Parser :=
   { Parser.monad with fail := @Parser.fail }
 
-protected def failure : Parser α := fun _ pos => ParseResult.fail Pos Dlist.empty
+protected def failure : Parser α := fun _ pos => ParseResult.fail Pos Std.DList.empty
 #align parser.failure Parser.failure
 
 protected def orelse (p q : Parser α) : Parser α := fun input pos =>
@@ -112,15 +112,15 @@ def anyChar : Parser Char := fun input pos =>
   if h : Pos < input.size then
     let c := input.read ⟨Pos, h⟩
     ParseResult.done (Pos + 1) c
-  else ParseResult.fail Pos Dlist.empty
+  else ParseResult.fail Pos Std.DList.empty
 #align parser.any_char Parser.anyChar
 
 /-- Matches a single character satisfying the given predicate. -/
 def sat (p : Char → Prop) [DecidablePred p] : Parser Char := fun input pos =>
   if h : Pos < input.size then
     let c := input.read ⟨Pos, h⟩
-    if p c then ParseResult.done (Pos + 1) c else ParseResult.fail Pos Dlist.empty
-  else ParseResult.fail Pos Dlist.empty
+    if p c then ParseResult.done (Pos + 1) c else ParseResult.fail Pos Std.DList.empty
+  else ParseResult.fail Pos Std.DList.empty
 #align parser.sat Parser.sat
 
 /-- Matches the empty word. -/
@@ -262,7 +262,7 @@ private def make_monospaced : Char → Char
   | '\x0d' => ' '
   | c => c
 
-def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Dlist String) : CharBuffer :=
+def mkErrorMsg (input : CharBuffer) (pos : ℕ) (expected : Std.DList String) : CharBuffer :=
   let left_ctx := (input.take Pos).takeRight 10
   let right_ctx := (input.drop Pos).take 10
   (left_ctx.map makeMonospaced ++ right_ctx.map makeMonospaced ++ "\n".toCharBuffer ++

@@ -46,9 +46,11 @@ instance : ToString Int :=
 
 namespace Int
 
+#print Int.coe_nat_eq /-
 protected theorem coe_nat_eq (n : ℕ) : ↑n = Int.ofNat n :=
   rfl
 #align int.coe_nat_eq Int.coe_nat_eq
+-/
 
 #print Int.zero /-
 protected def zero : ℤ :=

@@ -32,7 +32,7 @@ instance : LawfulMonad List
     · simp [(· >>= ·)] at ih ; simp [(· >>= ·), ih]
 
 instance : Alternative List :=
-  { List.monad with
+  { List.instMonad with
     failure := @List.nil
     orelse := @List.append }
 

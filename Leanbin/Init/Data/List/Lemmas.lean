@@ -235,8 +235,6 @@ theorem mem_append_right {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l
 theorem not_bex_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
 #align list.not_bex_nil List.not_bex_nil
 
-/- warning: list.ball_nil clashes with list.forall_mem_nil -> List.forall_mem_nil
-Case conversion may be inaccurate. Consider using '#align list.ball_nil List.forall_mem_nilₓ'. -/
 #print List.forall_mem_nil /-
 theorem forall_mem_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.elim
 #align list.ball_nil List.forall_mem_nil

@@ -301,9 +301,11 @@ protected theorem le_total {m n : ℕ} : m ≤ n ∨ n ≤ m :=
 #align nat.le_total Nat.le_total
 -/
 
+#print Nat.lt_of_le_and_ne /-
 protected theorem lt_of_le_and_ne {m n : ℕ} (h1 : m ≤ n) : m ≠ n → m < n :=
   Or.resolve_right (Or.symm (Nat.eq_or_lt_of_le h1))
 #align nat.lt_of_le_and_ne Nat.lt_of_le_and_ne
+-/
 
 #print Nat.lt_iff_le_not_le /-
 protected theorem lt_iff_le_not_le {m n : ℕ} : m < n ↔ m ≤ n ∧ ¬n ≤ m :=
@@ -426,9 +428,11 @@ protected theorem le_of_add_le_add_right {k n m : ℕ} : n + k ≤ m + k → n �
   apply Nat.le_of_add_le_add_left
 #align nat.le_of_add_le_add_right Nat.le_of_add_le_add_rightₓ
 
+#print Nat.add_le_add_iff_right /-
 protected theorem add_le_add_iff_right {k n m : ℕ} : n + k ≤ m + k ↔ n ≤ m :=
   ⟨Nat.le_of_add_le_add_right, fun h => Nat.add_le_add_right h _⟩
 #align nat.add_le_add_iff_right Nat.add_le_add_iff_right
+-/
 
 #print Nat.lt_of_add_lt_add_left /-
 protected theorem lt_of_add_lt_add_left {k n m : ℕ} (h : k + n < k + m) : n < m :=
@@ -567,14 +571,18 @@ protected theorem lt_asymm {n m : ℕ} (h₁ : n < m) : ¬m < n :=
 #align nat.lt_asymm Nat.lt_asymm
 -/
 
+#print Nat.ltGeByCases /-
 protected def ltGeByCases {a b : ℕ} {C : Sort u} (h₁ : a < b → C) (h₂ : b ≤ a → C) : C :=
   Decidable.byCases h₁ fun h => h₂ (Or.elim (Nat.lt_or_ge a b) (fun a => absurd a h) fun a => a)
 #align nat.lt_ge_by_cases Nat.ltGeByCases
+-/
 
+#print Nat.ltByCases /-
 protected def ltByCases {a b : ℕ} {C : Sort u} (h₁ : a < b → C) (h₂ : a = b → C) (h₃ : b < a → C) :
     C :=
   Nat.ltGeByCases h₁ fun h₁ => Nat.ltGeByCases h₃ fun h => h₂ (Nat.le_antisymm h h₁)
 #align nat.lt_by_cases Nat.ltByCases
+-/
 
 #print Nat.lt_trichotomy /-
 protected theorem lt_trichotomy (a b : ℕ) : a < b ∨ a = b ∨ b < a :=
@@ -868,9 +876,11 @@ def discriminate {B : Sort u} {n : ℕ} (H1 : n = 0 → B) (H2 : ∀ m, n = succ
 #align nat.discriminate Nat.discriminate
 -/
 
-theorem one_succ_zero : 1 = succ 0 :=
+#print Nat.one_eq_succ_zero /-
+theorem one_eq_succ_zero : 1 = succ 0 :=
   rfl
-#align nat.one_succ_zero Nat.one_succ_zero
+#align nat.one_succ_zero Nat.one_eq_succ_zero
+-/
 
 #print Nat.pred_inj /-
 theorem pred_inj : ∀ {a b : Nat}, 0 < a → 0 < b → Nat.pred a = Nat.pred b → a = b
@@ -992,9 +1002,11 @@ protected theorem le_of_le_of_sub_le_sub_right {n m k : ℕ} (h₀ : k ≤ m) (h
 #align nat.le_of_le_of_sub_le_sub_right Nat.le_of_le_of_sub_le_sub_right
 -/
 
+#print Nat.sub_le_sub_iff_right /-
 protected theorem sub_le_sub_iff_right {n m k : ℕ} (h : k ≤ m) : n - k ≤ m - k ↔ n ≤ m :=
   ⟨Nat.le_of_le_of_sub_le_sub_right h, fun h => Nat.sub_le_sub_right h k⟩
 #align nat.sub_le_sub_iff_right Nat.sub_le_sub_iff_right
+-/
 
 #print Nat.sub_self_add /-
 protected theorem sub_self_add (n m : ℕ) : n - (n + m) = 0 :=
@@ -1002,9 +1014,11 @@ protected theorem sub_self_add (n m : ℕ) : n - (n + m) = 0 :=
 #align nat.sub_self_add Nat.sub_self_add
 -/
 
+#print Nat.le_sub_iff_right /-
 protected theorem le_sub_iff_right {x y k : ℕ} (h : k ≤ y) : x ≤ y - k ↔ x + k ≤ y := by
   rw [← Nat.add_sub_cancel x k, Nat.sub_le_sub_iff_right h, Nat.add_sub_cancel]
 #align nat.le_sub_iff_right Nat.le_sub_iff_right
+-/
 
 #print Nat.sub_lt_of_pos_le /-
 protected theorem sub_lt_of_pos_le (a b : ℕ) (h₀ : 0 < a) (h₁ : a ≤ b) : b - a < b :=
@@ -1098,9 +1112,11 @@ theorem succ_sub_sub_succ (n m k : ℕ) : succ n - m - succ k = n - m - k := by
 #align nat.succ_sub_sub_succ Nat.succ_sub_sub_succ
 -/
 
+#print Nat.sub.right_comm /-
 protected theorem sub.right_comm (m n k : ℕ) : m - n - k = m - k - n := by
   rw [Nat.sub_sub, Nat.sub_sub, Nat.add_comm]
 #align nat.sub.right_comm Nat.sub.right_comm
+-/
 
 #print Nat.succ_sub /-
 theorem succ_sub {m n : ℕ} (h : n ≤ m) : succ m - n = succ (m - n) :=
@@ -1228,20 +1244,25 @@ protected theorem sub_add_min_cancel (n m : ℕ) : n - m + min n m = n := by
 /-! induction principles -/
 
 
+#print Nat.twoStepInduction /-
 def twoStepInduction {P : ℕ → Sort u} (H1 : P 0) (H2 : P 1)
     (H3 : ∀ (n : ℕ) (IH1 : P n) (IH2 : P (succ n)), P (succ (succ n))) : ∀ a : ℕ, P a
   | 0 => H1
   | 1 => H2
   | succ (succ n) => H3 _ (two_step_induction _) (two_step_induction _)
 #align nat.two_step_induction Nat.twoStepInduction
+-/
 
+#print Nat.subInduction /-
 def subInduction {P : ℕ → ℕ → Sort u} (H1 : ∀ m, P 0 m) (H2 : ∀ n, P (succ n) 0)
     (H3 : ∀ n m, P n m → P (succ n) (succ m)) : ∀ n m : ℕ, P n m
   | 0, m => H1 _
   | succ n, 0 => H2 _
   | succ n, succ m => H3 _ _ (sub_induction n m)
 #align nat.sub_induction Nat.subInduction
+-/
 
+#print Nat.strongRecOn /-
 protected def strongRecOn {p : Nat → Sort u} (n : Nat) (h : ∀ n, (∀ m, m < n → p m) → p n) : p n :=
   by
   suffices ∀ n m, m < n → p m from this (succ n) n (lt_succ_self _)
@@ -1252,6 +1273,7 @@ protected def strongRecOn {p : Nat → Sort u} (n : Nat) (h : ∀ n, (∀ m, m <
     · intros; apply ih; assumption
     · intros; subst m; apply h _ ih
 #align nat.strong_rec_on Nat.strongRecOn
+-/
 
 #print Nat.strong_induction_on /-
 protected theorem strong_induction_on {p : Nat → Prop} (n : Nat)
@@ -1763,9 +1785,11 @@ protected theorem div_div_eq_div_mul (m n k : ℕ) : m / n / k = m / (n * k) :=
 #align nat.div_div_eq_div_mul Nat.div_div_eq_div_mul
 -/
 
+#print Nat.mul_div_mul /-
 protected theorem mul_div_mul {m : ℕ} (n k : ℕ) (H : 0 < m) : m * n / (m * k) = n / k := by
   rw [← Nat.div_div_eq_div_mul, Nat.mul_div_cancel_left _ H]
 #align nat.mul_div_mul Nat.mul_div_mul
+-/
 
 #print Nat.div_lt_self /-
 theorem div_lt_self {n m : Nat} : 0 < n → 1 < m → n / m < n :=
@@ -1887,9 +1911,11 @@ theorem dvd_iff_mod_eq_zero {m n : ℕ} : m ∣ n ↔ n % m = 0 :=
 #align nat.dvd_iff_mod_eq_zero Nat.dvd_iff_mod_eq_zero
 -/
 
+#print Nat.decidableDvd /-
 instance decidableDvd : @DecidableRel ℕ (· ∣ ·) := fun m n =>
   decidable_of_decidable_of_iff (by infer_instance) dvd_iff_mod_eq_zero.symm
 #align nat.decidable_dvd Nat.decidableDvd
+-/
 
 protected theorem mul_div_cancel' {m n : ℕ} (H : n ∣ m) : n * (m / n) = m :=
   by

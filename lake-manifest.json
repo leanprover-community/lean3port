@@ -16,9 +16,9 @@
   {"git":
    {"url": "https://github.com/leanprover-community/mathlib4.git",
     "subDir?": null,
-    "rev": "d3e3344096036b34222911e6d8fe8c62970bdb84",
+    "rev": "180831e5ad012c19cbce142d73e2bff3db26c760",
     "name": "mathlib",
-    "inputRev?": "d3e3344096036b34222911e6d8fe8c62970bdb84"}},
+    "inputRev?": "180831e5ad012c19cbce142d73e2bff3db26c760"}},
   {"git":
    {"url": "https://github.com/gebner/quote4",
     "subDir?": null,

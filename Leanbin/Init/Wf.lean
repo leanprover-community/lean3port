@@ -187,11 +187,9 @@ theorem Nat.lt_wfRel : WellFounded Nat.lt :=
 #align nat.lt_wf Nat.lt_wfRel
 -/
 
-#print Measure /-
 def Measure {α : Sort u} : (α → ℕ) → α → α → Prop :=
   InvImage (· < ·)
 #align measure Measure
--/
 
 theorem measure_wf {α : Sort u} (f : α → ℕ) : WellFounded (Measure f) :=
   InvImage.wf f Nat.lt_wfRel

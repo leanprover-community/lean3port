@@ -31,22 +31,28 @@ def comp (f : β → φ) (g : α → β) : α → φ := fun x => f (g x)
 #align function.comp Function.comp
 -/
 
+#print Function.dcomp /-
 /-- Composition of dependent functions: `(f ∘' g) x = f (g x)`, where type of `g x` depends on `x`
 and type of `f (g x)` depends on `x` and `g x`. -/
 @[inline, reducible]
 def dcomp {β : α → Sort u₂} {φ : ∀ {x : α}, β x → Sort u₃} (f : ∀ {x : α} (y : β x), φ y)
     (g : ∀ x, β x) : ∀ x, φ (g x) := fun x => f (g x)
 #align function.dcomp Function.dcomp
+-/
 
 infixr:80 " ∘' " => Function.dcomp
 
+#print Function.compRight /-
 @[reducible]
 def compRight (f : β → β → β) (g : α → β) : β → α → β := fun b a => f b (g a)
 #align function.comp_right Function.compRight
+-/
 
+#print Function.compLeft /-
 @[reducible]
 def compLeft (f : β → β → β) (g : α → β) : α → β → β := fun a b => f (g a) b
 #align function.comp_left Function.compLeft
+-/
 
 #print Function.onFun /-
 /-- Given functions `f : β → β → φ` and `g : α → β`, produce a function `α → α → φ` that evaluates

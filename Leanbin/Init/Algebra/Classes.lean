@@ -419,36 +419,50 @@ parameter {α : Type u} {r : α → α → Prop}
 
 local infixl:50 "≺" => r
 
+#print StrictWeakOrder.Equiv /-
 def Equiv (a b : α) : Prop :=
   ¬a≺b ∧ ¬b≺a
 #align strict_weak_order.equiv StrictWeakOrder.Equiv
+-/
 
 parameter [IsStrictWeakOrder α r]
 
 local infixl:50 " ≈ " => Equiv
 
+#print StrictWeakOrder.erefl /-
 theorem erefl (a : α) : a ≈ a :=
   ⟨irrefl a, irrefl a⟩
 #align strict_weak_order.erefl StrictWeakOrder.erefl
+-/
 
+#print StrictWeakOrder.esymm /-
 theorem esymm {a b : α} : a ≈ b → b ≈ a := fun ⟨h₁, h₂⟩ => ⟨h₂, h₁⟩
 #align strict_weak_order.esymm StrictWeakOrder.esymm
+-/
 
+#print StrictWeakOrder.etrans /-
 theorem etrans {a b c : α} : a ≈ b → b ≈ c → a ≈ c :=
   incomp_trans
 #align strict_weak_order.etrans StrictWeakOrder.etrans
+-/
 
+#print StrictWeakOrder.not_lt_of_equiv /-
 theorem not_lt_of_equiv {a b : α} : a ≈ b → ¬a≺b := fun h => h.1
 #align strict_weak_order.not_lt_of_equiv StrictWeakOrder.not_lt_of_equiv
+-/
 
+#print StrictWeakOrder.not_lt_of_equiv' /-
 theorem not_lt_of_equiv' {a b : α} : a ≈ b → ¬b≺a := fun h => h.2
 #align strict_weak_order.not_lt_of_equiv' StrictWeakOrder.not_lt_of_equiv'
+-/
 
+#print StrictWeakOrder.isEquiv /-
 instance isEquiv : IsEquiv α Equiv where
   refl := erefl
   trans := @etrans
   symm := @esymm
 #align strict_weak_order.is_equiv StrictWeakOrder.isEquiv
+-/
 
 end
 

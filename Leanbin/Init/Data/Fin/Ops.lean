@@ -133,13 +133,17 @@ theorem div_def (a b : Fin n) : (a / b).val = a.val / b.val :=
   show (Fin.div a b).val = a.val / b.val by cases a <;> cases b <;> simp [Fin.div]
 #align fin.div_def Fin.div_def
 
+#print Fin.lt_def /-
 theorem lt_def (a b : Fin n) : (a < b) = (a.val < b.val) :=
   show Fin.Lt a b = (a.val < b.val) by cases a <;> cases b <;> simp [Fin.Lt]
 #align fin.lt_def Fin.lt_def
+-/
 
+#print Fin.le_def /-
 theorem le_def (a b : Fin n) : (a ≤ b) = (a.val ≤ b.val) :=
   show Fin.Le a b = (a.val ≤ b.val) by cases a <;> cases b <;> simp [Fin.Le]
 #align fin.le_def Fin.le_def
+-/
 
 /- warning: fin.val_zero clashes with fin.coe_zero -> Fin.val_zero
 Case conversion may be inaccurate. Consider using '#align fin.val_zero Fin.val_zeroₓ'. -/

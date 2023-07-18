@@ -44,7 +44,8 @@ parameter {r : α → α → Prop} {s : ∀ a : α, β a → β a → Prop}
 
 local infixl:50 "≺" => Lex r s
 
-theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) :
+#print PSigma.lexAccessible /-
+theorem lexAccessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) :
     ∀ b : β a, Acc (Lex r s) ⟨a, b⟩ :=
   Acc.recOn aca fun xa aca (iha : ∀ y, r y xa → ∀ b : β y, Acc (Lex r s) ⟨y, b⟩) => fun b : β xa =>
     Acc.recOn (WellFounded.apply (acb xa) b)
@@ -63,12 +64,15 @@ theorem lex_accessible {a} (aca : Acc r a) (acb : ∀ a, WellFounded (s a)) :
             subst new_eq₃
             exact ihb b₁ h
         aux rfl (HEq.refl xb)
-#align psigma.lex_accessible PSigma.lex_accessible
+#align psigma.lex_accessible PSigma.lexAccessible
+-/
 
+#print PSigma.lex_wf /-
 -- The lexicographical order of well founded relations is well-founded
 theorem lex_wf (ha : WellFounded r) (hb : ∀ x, WellFounded (s x)) : WellFounded (Lex r s) :=
   WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) hb b
 #align psigma.lex_wf PSigma.lex_wf
+-/
 
 end
 
@@ -76,14 +80,18 @@ section
 
 parameter {α : Sort u} {β : Sort v}
 
-def LexNdep (r : α → α → Prop) (s : β → β → Prop) :=
+#print PSigma.lexNdep /-
+def lexNdep (r : α → α → Prop) (s : β → β → Prop) :=
   Lex r fun a : α => s
-#align psigma.lex_ndep PSigma.LexNdep
+#align psigma.lex_ndep PSigma.lexNdep
+-/
 
-theorem lexNdep_wf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r) (hb : WellFounded s) :
+#print PSigma.lexNdepWf /-
+theorem lexNdepWf {r : α → α → Prop} {s : β → β → Prop} (ha : WellFounded r) (hb : WellFounded s) :
     WellFounded (lex_ndep r s) :=
-  WellFounded.intro fun ⟨a, b⟩ => lex_accessible (WellFounded.apply ha a) (fun x => hb) b
-#align psigma.lex_ndep_wf PSigma.lexNdep_wf
+  WellFounded.intro fun ⟨a, b⟩ => lexAccessible (WellFounded.apply ha a) (fun x => hb) b
+#align psigma.lex_ndep_wf PSigma.lexNdepWf
+-/
 
 end
 
@@ -115,7 +123,8 @@ parameter {r : α → α → Prop} {s : β → β → Prop}
 
 local infixl:50 "≺" => RevLex r s
 
-theorem revLex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=
+#print PSigma.revLexAccessible /-
+theorem revLexAccessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Acc (RevLex r s) ⟨a, b⟩ :=
   Acc.recOn acb fun xb acb (ihb : ∀ y, s y xb → ∀ a, Acc (RevLex r s) ⟨a, y⟩) => fun a =>
     Acc.recOn (aca a) fun xa aca (iha : ∀ y, r y xa → Acc (RevLex r s) (mk y xb)) =>
       Acc.intro ⟨xa, xb⟩ fun p (lt : p≺⟨xa, xb⟩) =>
@@ -132,11 +141,14 @@ theorem revLex_accessible {b} (acb : Acc s b) (aca : ∀ a, Acc r a) : ∀ a, Ac
               have s₁ : s b₁ xb := Eq.recOn eq₃ h
               ihb b₁ s₁ a₁
         aux rfl rfl
-#align psigma.rev_lex_accessible PSigma.revLex_accessible
+#align psigma.rev_lex_accessible PSigma.revLexAccessible
+-/
 
+#print PSigma.revLex_wf /-
 theorem revLex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (RevLex r s) :=
   WellFounded.intro fun ⟨a, b⟩ => rev_lex_accessible (apply hb b) (WellFounded.apply ha) a
 #align psigma.rev_lex_wf PSigma.revLex_wf
+-/
 
 end
 
@@ -149,24 +161,30 @@ def SkipLeft (α : Type u) {β : Type v} (s : β → β → Prop) :
 #align psigma.skip_left PSigma.SkipLeft
 -/
 
+#print PSigma.skipLeft_wf /-
 theorem skipLeft_wf (α : Type u) {β : Type v} {s : β → β → Prop} (hb : WellFounded s) :
     WellFounded (SkipLeft α s) :=
   revLex_wf empty_wf hb
 #align psigma.skip_left_wf PSigma.skipLeft_wf
+-/
 
-theorem mk_skipLeft {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β → Prop} (a₁ a₂ : α)
+#print PSigma.mkSkipLeft /-
+theorem mkSkipLeft {α : Type u} {β : Type v} {b₁ b₂ : β} {s : β → β → Prop} (a₁ a₂ : α)
     (h : s b₁ b₂) : SkipLeft α s ⟨a₁, b₁⟩ ⟨a₂, b₂⟩ :=
   RevLex.right _ _ h
-#align psigma.mk_skip_left PSigma.mk_skipLeft
+#align psigma.mk_skip_left PSigma.mkSkipLeft
+-/
 
 end
 
+#print PSigma.hasWellFounded /-
 instance hasWellFounded {α : Type u} {β : α → Type v} [s₁ : WellFoundedRelation α]
     [s₂ : ∀ a, WellFoundedRelation (β a)] : WellFoundedRelation (PSigma β)
     where
   R := Lex s₁.R fun a => (s₂ a).R
   wf := lex_wf s₁.wf fun a => (s₂ a).wf
 #align psigma.has_well_founded PSigma.hasWellFounded
+-/
 
 end PSigma
 

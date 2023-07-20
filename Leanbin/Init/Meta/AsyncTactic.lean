@@ -2,16 +2,13 @@
 Copyright (c) 2017 Gabriel Ebner. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gabriel Ebner
-
-! This file was ported from Lean 3 source module init.meta.async_tactic
-! leanprover-community/lean commit 6e4c67e71566ea02dd0d5e50b3b92312d20ba681
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Interactive
 import Leanbin.Init.Meta.InstanceCache
+
+#align_import init.meta.async_tactic from "leanprover-community/lean"@"6e4c67e71566ea02dd0d5e50b3b92312d20ba681"
 
 namespace Tactic
 

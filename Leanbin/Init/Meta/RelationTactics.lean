@@ -2,15 +2,12 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.relation_tactics
-! leanprover-community/lean commit 2a048c69f9105e8964e664fb16c6c69e4aa8d467
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Function
+
+#align_import init.meta.relation_tactics from "leanprover-community/lean"@"2a048c69f9105e8964e664fb16c6c69e4aa8d467"
 
 namespace Tactic
 

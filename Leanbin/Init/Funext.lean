@@ -4,15 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Jeremy Avigad
 
 Extensional equality for functions, and a proof of function extensionality from quotients.
-
-! This file was ported from Lean 3 source module init.funext
-! leanprover-community/lean commit 855e0efed3137762a7ba9aca242499b3cce59406
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Quot
 import Leanbin.Init.Logic
+
+#align_import init.funext from "leanprover-community/lean"@"855e0efed3137762a7ba9aca242499b3cce59406"
 
 open Quotient
 

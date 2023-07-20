@@ -2,14 +2,11 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.ite_simp
-! leanprover-community/lean commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Bool.Default
+
+#align_import init.ite_simp from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
 /-!
 # Simplification lemmas for ite.

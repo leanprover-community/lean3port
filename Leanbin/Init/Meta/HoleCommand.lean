@@ -2,14 +2,11 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.hole_command
-! leanprover-community/lean commit e29c19c1aa04f5442d3bd035902705f50486c67a
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
+
+#align_import init.meta.hole_command from "leanprover-community/lean"@"e29c19c1aa04f5442d3bd035902705f50486c67a"
 
 /-- The front-end (e.g., Emacs, VS Code) can invoke commands for holes `{! ... !}` in
 a declaration. A command is a tactic that takes zero or more pre-terms in the

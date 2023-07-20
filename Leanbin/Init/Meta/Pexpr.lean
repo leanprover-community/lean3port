@@ -2,14 +2,11 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.pexpr
-! leanprover-community/lean commit e77a64739870401e78ef3294bb95b8733b900cba
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Expr
+
+#align_import init.meta.pexpr from "leanprover-community/lean"@"e77a64739870401e78ef3294bb95b8733b900cba"
 
 universe u
 

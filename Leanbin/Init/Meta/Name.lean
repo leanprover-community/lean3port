@@ -2,16 +2,13 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.name
-! leanprover-community/lean commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Coe
 import Leanbin.Init.Data.ToString
+
+#align_import init.meta.name from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
 /-- Reflect a C++ name object. The VM replaces it with the C++ implementation. -/
 inductive Name

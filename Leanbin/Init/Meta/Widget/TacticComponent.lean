@@ -3,14 +3,11 @@ Copyright (c) E.W.Ayers. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 
 Author: E.W.Ayers
-
-! This file was ported from Lean 3 source module init.meta.widget.tactic_component
-! leanprover-community/lean commit 93ae212fb944163e6df29a036182fdea83173e3f
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Widget.Basic
+
+#align_import init.meta.widget.tactic_component from "leanprover-community/lean"@"93ae212fb944163e6df29a036182fdea83173e3f"
 
 namespace Widget
 

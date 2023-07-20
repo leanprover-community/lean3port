@@ -2,13 +2,10 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Luke Nelson, Jared Roesch and Leonardo de Moura
-
-! This file was ported from Lean 3 source module system.io
-! leanprover-community/lean commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 import Leanbin.System.IoInterface
+
+#align_import system.io from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
 /-! The following constants have a builtin implementation -/
 

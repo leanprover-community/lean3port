@@ -2,14 +2,11 @@
 Copyright (c) 2018 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module system.io_interface
-! leanprover-community/lean commit 28c860baf200cd0733cc1eff7991988e5423bd1a
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 import Leanbin.Data.Buffer
 import Leanbin.System.Random
+
+#align_import system.io_interface from "leanprover-community/lean"@"28c860baf200cd0733cc1eff7991988e5423bd1a"
 
 inductive Io.Error
   | other : String → Io.Error

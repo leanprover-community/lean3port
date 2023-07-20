@@ -2,16 +2,13 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
-
-! This file was ported from Lean 3 source module init.data.string.ops
-! leanprover-community/lean commit 9af482290ef68e8aaa5ead01aa7b09b7be7019fd
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Bool.Lemmas
 import Leanbin.Init.Data.String.Basic
 import Leanbin.Init.Meta.WellFoundedTactics
+
+#align_import init.data.string.ops from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 
 namespace String
 

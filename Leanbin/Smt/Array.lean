@@ -2,12 +2,9 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
-
-! This file was ported from Lean 3 source module smt.array
-! leanprover-community/lean commit 52d4189805e76b608b4f891254894fdea185c930
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
+
+#align_import smt.array from "leanprover-community/lean"@"52d4189805e76b608b4f891254894fdea185c930"
 
 namespace Smt
 

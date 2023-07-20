@@ -2,17 +2,14 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.environment
-! leanprover-community/lean commit 1340477dccb7fbe0cf2146aa1f1995022c13cd30
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Declaration
 import Leanbin.Init.Meta.Exceptional
 import Leanbin.Init.Data.Option.Basic
 import Leanbin.Init.Meta.RbMap
+
+#align_import init.meta.environment from "leanprover-community/lean"@"1340477dccb7fbe0cf2146aa1f1995022c13cd30"
 
 /--
 An __environment__ contains all of the declarations and notation that have been defined so far.   -/

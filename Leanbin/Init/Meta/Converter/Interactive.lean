@@ -4,15 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 Converter monad for building simplifiers.
-
-! This file was ported from Lean 3 source module init.meta.converter.interactive
-! leanprover-community/lean commit e83eca1fc5eda5ec3e0926a6913e02d9a574bf9e
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Interactive
 import Leanbin.Init.Meta.Converter.Conv
+
+#align_import init.meta.converter.interactive from "leanprover-community/lean"@"e83eca1fc5eda5ec3e0926a6913e02d9a574bf9e"
 
 namespace Conv
 

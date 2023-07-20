@@ -2,16 +2,13 @@
 Copyright (c) Luke Nelson and Jared Roesch. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Luke Nelson, Jared Roesch, Sebastian Ullrich, Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.control.functor
-! leanprover-community/lean commit e611ee5c2bd410148bcd493c58cb17498d667175
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Core
 import Leanbin.Init.Function
 import Leanbin.Init.Meta.Name
+
+#align_import init.control.functor from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 
 open Function
 

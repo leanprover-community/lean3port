@@ -2,14 +2,11 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.sum.instances
-! leanprover-community/lean commit 32e6442d0a1c9ab6948d5aaf6dc1de98a3d282e4
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.MkDecEqInstance
+
+#align_import init.data.sum.instances from "leanprover-community/lean"@"32e6442d0a1c9ab6948d5aaf6dc1de98a3d282e4"
 
 universe u v
 

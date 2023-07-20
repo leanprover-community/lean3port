@@ -3,11 +3,6 @@ Copyright (c) E.W.Ayers. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 
 Author: E.W.Ayers
-
-! This file was ported from Lean 3 source module init.meta.widget.basic
-! leanprover-community/lean commit 93ae212fb944163e6df29a036182fdea83173e3f
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Function
@@ -16,6 +11,8 @@ import Leanbin.Init.Util
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.MkDecEqInstance
 import Leanbin.Init.Meta.Json
+
+#align_import init.meta.widget.basic from "leanprover-community/lean"@"93ae212fb944163e6df29a036182fdea83173e3f"
 
 /-! A component is a piece of UI which may contain internal state. Use component.mk to build new components.
 

@@ -2,14 +2,11 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.fin.basic
-! leanprover-community/lean commit 3626c1e18e15a96099f9d639e2e0a719273f25ef
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Nat.Basic
+
+#align_import init.data.fin.basic from "leanprover-community/lean"@"3626c1e18e15a96099f9d639e2e0a719273f25ef"
 
 open Nat
 

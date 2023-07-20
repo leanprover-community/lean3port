@@ -1,4 +1,6 @@
 
+#align_import smt.arith from "leanprover-community/lean"@"e705d8949002481a118003ea5bee2098226dbd22"
+
 #print Real /-
 axiom Real : Type
 #align real Real

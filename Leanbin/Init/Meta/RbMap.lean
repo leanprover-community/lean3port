@@ -2,11 +2,6 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad
-
-! This file was ported from Lean 3 source module init.meta.rb_map
-! leanprover-community/lean commit a880838c40c42543e5da9283c1eb587e52bce6c5
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Ordering.Basic
@@ -14,6 +9,8 @@ import Leanbin.Init.Function
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Control.Monad
+
+#align_import init.meta.rb_map from "leanprover-community/lean"@"a880838c40c42543e5da9283c1eb587e52bce6c5"
 
 open Format
 

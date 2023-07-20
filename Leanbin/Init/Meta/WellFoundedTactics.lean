@@ -2,11 +2,6 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.well_founded_tactics
-! leanprover-community/lean commit 5885f626d8db2f03abe21c45749d8e3995f0988e
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Default
@@ -14,6 +9,8 @@ import Leanbin.Init.Data.Sigma.Lex
 import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.List.Instances
 import Leanbin.Init.Data.List.Qsort
+
+#align_import init.meta.well_founded_tactics from "leanprover-community/lean"@"5885f626d8db2f03abe21c45749d8e3995f0988e"
 
 #print Nat.lt_add_of_zero_lt_left /-
 -- TODO(Leo): move this lemma, or delete it after we add algebraic normalizer. 

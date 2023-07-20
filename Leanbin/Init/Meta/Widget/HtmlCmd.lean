@@ -3,17 +3,14 @@ Copyright (c) E.W.Ayers. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 
 Author: E.W.Ayers
-
-! This file was ported from Lean 3 source module init.meta.widget.html_cmd
-! leanprover-community/lean commit 191021bf4f7656f1cb5b8c3de024ba27cf634d83
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Widget.Basic
 import Leanbin.Init.Meta.Lean.Parser
 import Leanbin.Init.Meta.InteractiveBase
 import Leanbin.Init.Data.Punit
+
+#align_import init.meta.widget.html_cmd from "leanprover-community/lean"@"191021bf4f7656f1cb5b8c3de024ba27cf634d83"
 
 open Lean
 

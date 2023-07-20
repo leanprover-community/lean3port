@@ -4,17 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 
 Quotient types.
-
-! This file was ported from Lean 3 source module init.data.quot
-! leanprover-community/lean commit de855f9965c69f6818f97edaea7d937e24ef678a
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Sigma.Basic
 import Leanbin.Init.Logic
 import Leanbin.Init.Propext
 import Leanbin.Init.Data.Setoid
+
+#align_import init.data.quot from "leanprover-community/lean"@"de855f9965c69f6818f97edaea7d937e24ef678a"
 
 -- We import propext here, otherwise we would need a quot.lift for propositions.
 universe u v

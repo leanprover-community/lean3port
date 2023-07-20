@@ -4,11 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 
 Attribute that can automatically derive typeclass instances.
-
-! This file was ported from Lean 3 source module init.meta.derive
-! leanprover-community/lean commit e77a64739870401e78ef3294bb95b8733b900cba
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Attribute
@@ -16,6 +11,8 @@ import Leanbin.Init.Meta.InteractiveBase
 import Leanbin.Init.Meta.MkHasReflectInstance
 import Leanbin.Init.Meta.MkHasSizeofInstance
 import Leanbin.Init.Meta.MkInhabitedInstance
+
+#align_import init.meta.derive from "leanprover-community/lean"@"e77a64739870401e78ef3294bb95b8733b900cba"
 
 open Lean
 

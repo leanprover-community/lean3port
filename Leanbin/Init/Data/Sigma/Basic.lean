@@ -2,15 +2,12 @@
 Copyright (c) 2014 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura, Jeremy Avigad, Floris van Doorn
-
-! This file was ported from Lean 3 source module init.data.sigma.basic
-! leanprover-community/lean commit 87932f1c56b7c05aefd2810d05e69da9500a0064
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Logic
 import Leanbin.Init.Wf
+
+#align_import init.data.sigma.basic from "leanprover-community/lean"@"87932f1c56b7c05aefd2810d05e69da9500a0064"
 
 universe u v
 

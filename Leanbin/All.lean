@@ -13,3 +13,5 @@ import Leanbin.Tools.Debugger.Cli
 import Leanbin.Tools.Debugger.Default
 import Leanbin.Tools.Debugger.Util
 
+#align_import all from "leanprover-community/lean"@"cce7990ea86a78bdb383e38ed7f9b5ba93c60ce0"
+

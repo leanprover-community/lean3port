@@ -2,16 +2,13 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Mario Carneiro
-
-! This file was ported from Lean 3 source module init.data.array.basic
-! leanprover-community/lean commit 7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Nat.Default
 import Leanbin.Init.Data.Bool.Default
 import Leanbin.Init.IteSimp
+
+#align_import init.data.array.basic from "leanprover-community/lean"@"7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb"
 
 universe u v w
 

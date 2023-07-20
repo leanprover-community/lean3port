@@ -2,16 +2,13 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.smt.congruence_closure
-! leanprover-community/lean commit 9eae65f7144bcc692858b9dadf2e48181f4270b9
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.InteractiveBase
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.SetGetOptionTactics
+
+#align_import init.meta.smt.congruence_closure from "leanprover-community/lean"@"9eae65f7144bcc692858b9dadf2e48181f4270b9"
 
 structure CcConfig where
   -- If tt, congruence closure will treat implicit instance arguments as constants.

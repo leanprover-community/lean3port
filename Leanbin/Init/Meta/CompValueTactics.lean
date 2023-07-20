@@ -2,15 +2,12 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.comp_value_tactics
-! leanprover-community/lean commit 3626c1e18e15a96099f9d639e2e0a719273f25ef
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Data.Option.Basic
+
+#align_import init.meta.comp_value_tactics from "leanprover-community/lean"@"3626c1e18e15a96099f9d639e2e0a719273f25ef"
 
 unsafe axiom mk_nat_val_ne_proof : expr → expr → Option expr
 #align mk_nat_val_ne_proof mk_nat_val_ne_proof

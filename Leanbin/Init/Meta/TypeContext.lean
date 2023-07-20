@@ -4,6 +4,8 @@ import Leanbin.Init.Meta.LocalContext
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.FunInfo
 
+#align_import init.meta.type_context from "leanprover-community/lean"@"6196cbe07d23c8d35ea8b35d2f9fcd219974530b"
+
 namespace Tactic.Unsafe
 
 /-- A monad that exposes the functionality of the C++ class `type_context_old`.

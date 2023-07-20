@@ -2,11 +2,6 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.occurrences
-! leanprover-community/lean commit dc1a1c8540b42cad862484a7b804676de2fb2c9c
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Logic
@@ -16,6 +11,8 @@ import Leanbin.Init.Meta.ContradictionTactic
 import Leanbin.Init.Meta.ConstructorTactic
 import Leanbin.Init.Meta.RelationTactics
 import Leanbin.Init.Meta.InjectionTactic
+
+#align_import init.meta.occurrences from "leanprover-community/lean"@"dc1a1c8540b42cad862484a7b804676de2fb2c9c"
 
 /-- We can specify the scope of application of some tactics using
    the following type.

@@ -1,4 +1,6 @@
 
+#align_import smt.prove from "leanprover-community/lean"@"76eed7cb41effca75066a0f6b83e921f133a6d58"
+
 namespace Smt
 
 open Tactic

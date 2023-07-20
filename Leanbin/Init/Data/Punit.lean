@@ -2,14 +2,11 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.punit
-! leanprover-community/lean commit ab7b94ef22d18679460483c47458a58716eb47da
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Logic
+
+#align_import init.data.punit from "leanprover-community/lean"@"ab7b94ef22d18679460483c47458a58716eb47da"
 
 #print PUnit.subsingleton /-
 theorem PUnit.subsingleton (a b : PUnit) : a = b :=

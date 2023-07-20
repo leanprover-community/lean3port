@@ -2,17 +2,14 @@
 Copyright (c) 2017 Daniel Selsam. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Daniel Selsam
-
-! This file was ported from Lean 3 source module init.meta.congr_tactic
-! leanprover-community/lean commit c0792dde6a5c738ec01ca51039622828c43895d3
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.CongrLemma
 import Leanbin.Init.Meta.RelationTactics
 import Leanbin.Init.Function
+
+#align_import init.meta.congr_tactic from "leanprover-community/lean"@"c0792dde6a5c738ec01ca51039622828c43895d3"
 
 namespace Tactic
 

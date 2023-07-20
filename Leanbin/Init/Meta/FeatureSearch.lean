@@ -2,17 +2,14 @@
 Copyright (c) 2019 Gabriel Ebner. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Gabriel Ebner
-
-! This file was ported from Lean 3 source module init.meta.feature_search
-! leanprover-community/lean commit 885390e749e617b3ace9cd5d33759bbccc609a43
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Derive
 import Leanbin.Init.Meta.MkDecEqInstance
 import Leanbin.Init.Meta.Float
+
+#align_import init.meta.feature_search from "leanprover-community/lean"@"885390e749e617b3ace9cd5d33759bbccc609a43"
 
 namespace FeatureSearch
 

@@ -3,11 +3,6 @@ Copyright (c) E.W.Ayers. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 
 Author: E.W.Ayers
-
-! This file was ported from Lean 3 source module init.meta.widget.interactive_expr
-! leanprover-community/lean commit b89dac0f6a0797e8031b59f3ec4f970fc11d2883
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Widget.Basic
@@ -15,6 +10,8 @@ import Leanbin.Init.Meta.Widget.TacticComponent
 import Leanbin.Init.Meta.TaggedFormat
 import Leanbin.Init.Data.Punit
 import Leanbin.Init.Meta.MkDecEqInstance
+
+#align_import init.meta.widget.interactive_expr from "leanprover-community/lean"@"b89dac0f6a0797e8031b59f3ec4f970fc11d2883"
 
 unsafe def subexpr :=
   expr × Expr.Address

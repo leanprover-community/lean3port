@@ -2,15 +2,12 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.level
-! leanprover-community/lean commit ab383aec6bf581badb383037f744bfbc600f4e4c
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Format
+
+#align_import init.meta.level from "leanprover-community/lean"@"ab383aec6bf581badb383037f744bfbc600f4e4c"
 
 /--
 A type universe term. eg `max u v`. Reflect a C++ level object. The VM replaces it with the C++ implementation. -/

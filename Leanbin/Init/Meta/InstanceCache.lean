@@ -2,15 +2,12 @@
 Copyright (c) 2018 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
-
-! This file was ported from Lean 3 source module init.meta.instance_cache
-! leanprover-community/lean commit 5613ccb117f38631c316450832d7a607fe5dd20d
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Interactive
+
+#align_import init.meta.instance_cache from "leanprover-community/lean"@"5613ccb117f38631c316450832d7a607fe5dd20d"
 
 /-!
 # Instance cache tactics

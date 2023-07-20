@@ -7,16 +7,13 @@ Classy functions for lifting monadic actions of different shapes.
 
 This theory is roughly modeled after the Haskell 'layers' package https://hackage.haskell.org/package/layers-0.1.
 Please see https://hackage.haskell.org/package/layers-0.1/docs/Documentation-Layers-Overview.html for an exhaustive discussion of the different approaches to lift functions.
-
-! This file was ported from Lean 3 source module init.control.lift
-! leanprover-community/lean commit 9af482290ef68e8aaa5ead01aa7b09b7be7019fd
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Function
 import Leanbin.Init.Coe
 import Leanbin.Init.Control.Monad
+
+#align_import init.control.lift from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 
 universe u v w
 

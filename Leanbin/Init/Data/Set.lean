@@ -2,15 +2,12 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.set
-! leanprover-community/lean commit ab343ab4edc491dbd02bed7b70295a0bb88be06f
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Interactive
 import Leanbin.Init.Control.Lawful
+
+#align_import init.data.set from "leanprover-community/lean"@"ab343ab4edc491dbd02bed7b70295a0bb88be06f"
 
 universe u v
 

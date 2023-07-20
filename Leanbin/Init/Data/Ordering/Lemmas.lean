@@ -2,17 +2,14 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.ordering.lemmas
-! leanprover-community/lean commit 4bd314f7bd5e0c9e813fc201f1279a23f13f9f1d
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Meta.Default
 import Leanbin.Init.Algebra.Classes
 import Leanbin.Init.IteSimp
+
+#align_import init.data.ordering.lemmas from "leanprover-community/lean"@"4bd314f7bd5e0c9e813fc201f1279a23f13f9f1d"
 
 /- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option default_priority -/
 set_option default_priority 100

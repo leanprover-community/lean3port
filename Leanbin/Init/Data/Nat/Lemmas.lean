@@ -2,17 +2,14 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad
-
-! This file was ported from Lean 3 source module init.data.nat.lemmas
-! leanprover-community/lean commit 38b59111b2b4e6c572582b27e8937e92fc70ac02
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Nat.Basic
 import Leanbin.Init.Data.Nat.Div
 import Leanbin.Init.Meta.Default
 import Leanbin.Init.Algebra.Functions
+
+#align_import init.data.nat.lemmas from "leanprover-community/lean"@"38b59111b2b4e6c572582b27e8937e92fc70ac02"
 
 universe u
 

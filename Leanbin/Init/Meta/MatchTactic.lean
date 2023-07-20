@@ -2,15 +2,12 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.match_tactic
-! leanprover-community/lean commit 82568609e2bdf56addbfad477b181b10c8f32efe
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.InteractiveBase
 import Leanbin.Init.Function
+
+#align_import init.meta.match_tactic from "leanprover-community/lean"@"82568609e2bdf56addbfad477b181b10c8f32efe"
 
 namespace Tactic
 

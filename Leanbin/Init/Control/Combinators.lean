@@ -4,16 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad, Leonardo de Moura
 
 Monad combinators, as in Haskell's Control.Monad.
-
-! This file was ported from Lean 3 source module init.control.combinators
-! leanprover-community/lean commit e611ee5c2bd410148bcd493c58cb17498d667175
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Control.Monad
 import Leanbin.Init.Control.Alternative
 import Leanbin.Init.Data.List.Basic
+
+#align_import init.control.combinators from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 
 universe u v w
 

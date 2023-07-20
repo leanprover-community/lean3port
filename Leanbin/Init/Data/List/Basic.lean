@@ -2,17 +2,14 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.list.basic
-! leanprover-community/lean commit 7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Logic
 import Leanbin.Init.Data.Nat.Basic
 import Leanbin.Init.Data.Bool.Basic
 import Leanbin.Init.Propext
+
+#align_import init.data.list.basic from "leanprover-community/lean"@"7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb"
 
 open Decidable List
 

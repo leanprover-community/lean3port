@@ -3,6 +3,8 @@ import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Data.Option.Basic
 
+#align_import init.meta.local_context from "leanprover-community/lean"@"5107c602f15393cd855e877109e07d9ac05d6134"
+
 unsafe structure local_decl where
   unique_name : Name
   pp_name : Name

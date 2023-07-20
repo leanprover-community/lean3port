@@ -2,15 +2,12 @@
 Copyright (c) 2017 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Mario Carneiro
-
-! This file was ported from Lean 3 source module init.data.int.bitwise
-! leanprover-community/lean commit cc811188929de043b8b159da1c49e72074f59db0
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Int.Basic
 import Leanbin.Init.Data.Nat.Bitwise
+
+#align_import init.data.int.bitwise from "leanprover-community/lean"@"cc811188929de043b8b159da1c49e72074f59db0"
 
 universe u
 

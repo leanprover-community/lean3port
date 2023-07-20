@@ -2,11 +2,6 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.data.basic
-! leanprover-community/lean commit 3fefe947574d0133fcbf96eda17330e929b76f59
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.Setoid
@@ -28,4 +23,6 @@ import Leanbin.Init.Data.Unsigned.Basic
 import Leanbin.Init.Data.Ordering.Basic
 import Leanbin.Init.Data.Repr
 import Leanbin.Init.Data.ToString
+
+#align_import init.data.basic from "leanprover-community/lean"@"3fefe947574d0133fcbf96eda17330e929b76f59"
 

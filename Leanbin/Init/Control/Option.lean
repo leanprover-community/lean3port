@@ -2,16 +2,13 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Sebastian Ullrich
-
-! This file was ported from Lean 3 source module init.control.option
-! leanprover-community/lean commit e611ee5c2bd410148bcd493c58cb17498d667175
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Control.Alternative
 import Leanbin.Init.Control.Lift
 import Leanbin.Init.Control.Except
+
+#align_import init.control.option from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 
 universe u v
 

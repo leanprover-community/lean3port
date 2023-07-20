@@ -4,11 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 
 Helper tactic for showing that a type is inhabited.
-
-! This file was ported from Lean 3 source module init.meta.mk_inhabited_instance
-! leanprover-community/lean commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.InteractiveBase
@@ -16,6 +11,8 @@ import Leanbin.Init.Meta.ContradictionTactic
 import Leanbin.Init.Meta.ConstructorTactic
 import Leanbin.Init.Meta.InjectionTactic
 import Leanbin.Init.Meta.RelationTactics
+
+#align_import init.meta.mk_inhabited_instance from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
 namespace Tactic
 

@@ -2,11 +2,6 @@
 Copyright (c) 2014 Parikshit Khanna. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Parikshit Khanna, Jeremy Avigad, Leonardo de Moura, Floris van Doorn
-
-! This file was ported from Lean 3 source module init.data.list.lemmas
-! leanprover-community/lean commit 4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Data.List.Basic
@@ -15,6 +10,8 @@ import Leanbin.Init.Meta.Default
 import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Meta.Interactive
 import Leanbin.Init.Meta.Smt.Rsimp
+
+#align_import init.data.list.lemmas from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
 universe u v w w₁ w₂
 

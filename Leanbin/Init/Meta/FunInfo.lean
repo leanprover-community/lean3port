@@ -2,16 +2,13 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.fun_info
-! leanprover-community/lean commit 49194b4458c682842a21a1f8675e174b440af055
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.Format
 import Leanbin.Init.Function
+
+#align_import init.meta.fun_info from "leanprover-community/lean"@"49194b4458c682842a21a1f8675e174b440af055"
 
 structure ParamInfo where
   isImplicit : Bool

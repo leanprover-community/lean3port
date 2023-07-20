@@ -1,6 +1,8 @@
 prelude
 import Leanbin.Init.Logic
 
+#align_import init.meta.task from "leanprover-community/lean"@"e29c19c1aa04f5442d3bd035902705f50486c67a"
+
 /--
 A task is a promise to produce a value later. They perform the same role as promises in JavaScript. -/
 unsafe axiom task.{u} : Type u → Type u

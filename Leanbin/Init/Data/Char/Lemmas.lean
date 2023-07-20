@@ -4,6 +4,8 @@ import Leanbin.Init.Logic
 import Leanbin.Init.Data.Nat.Lemmas
 import Leanbin.Init.Data.Char.Basic
 
+#align_import init.data.char.lemmas from "leanprover-community/lean"@"bdc8e1ced8878e7ae6e8f9bd2542e0e8993f0c56"
+
 namespace Char
 
 theorem val_ofNat_eq_of_is_valid {n : Nat} : IsValidChar n → (ofNat n).val = n := by

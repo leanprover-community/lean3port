@@ -2,14 +2,11 @@
 Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gabriel Ebner
-
-! This file was ported from Lean 3 source module data.buffer.parser
-! leanprover-community/lean commit 549e2fed50b361d0d49a3dd1e7ccb6de9440059b
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 import Leanbin.Data.Buffer
 import Leanbin.Data.Dlist
+
+#align_import data.buffer.parser from "leanprover-community/lean"@"549e2fed50b361d0d49a3dd1e7ccb6de9440059b"
 
 inductive ParseResult (α : Type)
   | done (pos : ℕ) (result : α) : ParseResult

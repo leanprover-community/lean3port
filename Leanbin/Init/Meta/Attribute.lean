@@ -2,17 +2,14 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
-
-! This file was ported from Lean 3 source module init.meta.attribute
-! leanprover-community/lean commit e77a64739870401e78ef3294bb95b8733b900cba
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Tactic
 import Leanbin.Init.Meta.RbMap
 import Leanbin.Init.Meta.HasReflect
 import Leanbin.Init.Meta.Lean.Parser
+
+#align_import init.meta.attribute from "leanprover-community/lean"@"e77a64739870401e78ef3294bb95b8733b900cba"
 
 /-- Get all of the declaration names that have the given attribute.
 Eg. ``get_instances `simp`` returns a list with the names of all of the lemmas in the environment tagged with the `@[simp]` attribute.

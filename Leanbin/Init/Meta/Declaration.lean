@@ -2,16 +2,13 @@
 Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
-
-! This file was ported from Lean 3 source module init.meta.declaration
-! leanprover-community/lean commit cd2d62882160de729619fc68c92a57b5e9d0e968
-! Please do not edit these lines, except to modify the commit id
-! if you have ported upstream changes.
 -/
 prelude
 import Leanbin.Init.Meta.Expr
 import Leanbin.Init.Meta.Name
 import Leanbin.Init.Meta.Task
+
+#align_import init.meta.declaration from "leanprover-community/lean"@"cd2d62882160de729619fc68c92a57b5e9d0e968"
 
 /-- Reducibility hints are used in the convertibility checker.
 When trying to solve a constraint such a

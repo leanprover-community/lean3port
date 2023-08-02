@@ -69,10 +69,12 @@ theorem length_append (s t : List α) : length (s ++ t) = length s + length t :=
 #align list.length_append List.length_append
 -/
 
+#print List.length_replicate /-
 @[simp]
-theorem length_repeat (a : α) (n : ℕ) : length (repeat a n) = n := by
+theorem length_replicate (a : α) (n : ℕ) : length (repeat a n) = n := by
   induction n <;> simp [*] <;> rfl
-#align list.length_repeat List.length_repeat
+#align list.length_repeat List.length_replicate
+-/
 
 #print List.length_tail /-
 @[simp]
@@ -188,10 +190,12 @@ theorem mem_cons (a y : α) (l : List α) : a ∈ y :: l ↔ a = y ∨ a ∈ l :
 #align list.mem_cons_iff List.mem_cons
 -/
 
+#print List.mem_cons_eq /-
 @[rsimp]
 theorem mem_cons_eq (a y : α) (l : List α) : (a ∈ y :: l) = (a = y ∨ a ∈ l) :=
   rfl
 #align list.mem_cons_eq List.mem_cons_eq
+-/
 
 #print List.mem_cons_of_mem /-
 theorem mem_cons_of_mem (y : α) {a : α} {l : List α} : a ∈ l → a ∈ y :: l := fun H => Or.inr H
@@ -229,19 +233,23 @@ theorem mem_append_right {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l
 #align list.mem_append_right List.mem_append_right
 -/
 
+#print List.not_bex_nil /-
 theorem not_bex_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
 #align list.not_bex_nil List.not_bex_nil
+-/
 
 #print List.forall_mem_nil /-
 theorem forall_mem_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => False.elim
 #align list.ball_nil List.forall_mem_nil
 -/
 
+#print List.bex_cons /-
 theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
   ⟨fun ⟨x, h, px⟩ => by simp at h ; cases' h with h h; · cases h; exact Or.inl px;
     · exact Or.inr ⟨x, h, px⟩, fun o =>
     o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
 #align list.bex_cons List.bex_cons
+-/
 
 theorem forall_mem_cons (p : α → Prop) (a : α) (l : List α) :
     (∀ x ∈ a :: l, p x) ↔ p a ∧ ∀ x ∈ l, p x :=
@@ -370,7 +378,7 @@ theorem partition_eq_filter_filter (p : α → Prop) [DecidablePred p] :
     ∀ l : List α, partition p l = (filter p l, filter (Not ∘ p) l)
   | [] => rfl
   | a :: l => by by_cases pa : p a <;> simp [partition, Filter, pa, partition_eq_filter_filter l]
-#align list.partition_eq_filter_filter List.partitionₓ_eq_filterₓ_filterₓ
+#align list.partition_eq_filter_filter List.partition_eq_filter_filterₓ
 
 /-! sublists -/
 
@@ -396,45 +404,35 @@ theorem length_le_of_sublist : ∀ {l₁ l₂ : List α}, l₁ <+ l₂ → lengt
 /-! filter -/
 
 
-#print List.filter_nil /-
 @[simp]
 theorem filter_nil (p : α → Prop) [h : DecidablePred p] : filter p [] = [] :=
   rfl
-#align list.filter_nil List.filter_nil
--/
+#align list.filter_nil List.filter_nilₓ
 
-#print List.filter_cons_of_pos /-
 @[simp]
 theorem filter_cons_of_pos {p : α → Prop} [h : DecidablePred p] {a : α} :
     ∀ l, p a → filter p (a :: l) = a :: filter p l := fun l pa => if_pos pa
-#align list.filter_cons_of_pos List.filter_cons_of_pos
--/
+#align list.filter_cons_of_pos List.filter_cons_of_posₓ
 
-#print List.filter_cons_of_neg /-
 @[simp]
 theorem filter_cons_of_neg {p : α → Prop} [h : DecidablePred p] {a : α} :
     ∀ l, ¬p a → filter p (a :: l) = filter p l := fun l pa => if_neg pa
-#align list.filter_cons_of_neg List.filter_cons_of_neg
--/
+#align list.filter_cons_of_neg List.filter_cons_of_negₓ
 
-#print List.filter_append /-
 @[simp]
 theorem filter_append {p : α → Prop} [h : DecidablePred p] :
     ∀ l₁ l₂ : List α, filter p (l₁ ++ l₂) = filter p l₁ ++ filter p l₂
   | [], l₂ => rfl
   | a :: l₁, l₂ => by by_cases pa : p a <;> simp [pa, filter_append]
-#align list.filter_append List.filter_append
--/
+#align list.filter_append List.filter_appendₓ
 
-#print List.filter_sublist /-
 @[simp]
 theorem filter_sublist {p : α → Prop} [h : DecidablePred p] : ∀ l : List α, filter p l <+ l
   | [] => Sublist.slnil
   | a :: l =>
     if pa : p a then by simp [pa] <;> apply sublist.cons2 <;> apply filter_sublist l
     else by simp [pa] <;> apply sublist.cons <;> apply filter_sublist l
-#align list.filter_sublist List.filter_sublist
--/
+#align list.filter_sublist List.filter_sublistₓ
 
 /-! map_accumr -/
 

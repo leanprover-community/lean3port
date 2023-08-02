@@ -142,7 +142,7 @@ def map₂ (f : α → β → φ) : Vector α n → Vector β n → Vector φ n
 -/
 
 def repeat (a : α) (n : ℕ) : Vector α n :=
-  ⟨List.repeat a n, List.length_repeat a n⟩
+  ⟨List.repeat a n, List.length_replicate a n⟩
 #align vector.repeat Vector.repeat
 
 #print Vector.drop /-

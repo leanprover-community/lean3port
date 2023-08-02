@@ -82,6 +82,7 @@ abbrev Unit.unit : Unit :=
 #align unit.star Unit.unit
 -/
 
+#print Thunk /-
 /-- Gadget for defining thunks, thunk parameters have special treatment.
 Example: given
       def f (s : string) (t : thunk nat) : nat
@@ -93,7 +94,8 @@ an application
 @[reducible]
 def Thunk (α : Type u) : Type u :=
   Unit → α
-#align thunk Thunkₓ
+#align thunk Thunk
+-/
 
 #print True /-
 inductive True : Prop

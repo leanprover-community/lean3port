@@ -280,16 +280,13 @@ protected theorem add_lt_add_left {a b : ℤ} (h : a < b) (c : ℤ) : c + a < c 
 #align int.add_lt_add_left Int.add_lt_add_left
 -/
 
-#print Int.mul_nonneg /-
-protected theorem mul_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b :=
+protected theorem hMul_nonneg {a b : ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b :=
   le.elim ha fun n => fun hn =>
     le.elim hb fun m => fun hm =>
       le.intro (show 0 + ↑n * ↑m = a * b by rw [← hn, ← hm]; simp [Int.zero_add])
-#align int.mul_nonneg Int.mul_nonneg
--/
+#align int.mul_nonneg Int.hMul_nonneg
 
-#print Int.mul_pos /-
-protected theorem mul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
+protected theorem hMul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
   lt.elim ha fun n => fun hn =>
     lt.elim hb fun m => fun hm =>
       lt.intro
@@ -297,8 +294,7 @@ protected theorem mul_pos {a b : ℤ} (ha : 0 < a) (hb : 0 < b) : 0 < a * b :=
           by
           rw [← hn, ← hm]; simp [Int.ofNat_zero]
           rw [← Int.ofNat_mul]; simp [Nat.mul_succ, Nat.add_succ, Nat.succ_add])
-#align int.mul_pos Int.mul_pos
--/
+#align int.mul_pos Int.hMul_pos
 
 #print Int.zero_lt_one /-
 protected theorem zero_lt_one : (0 : ℤ) < 1 :=
@@ -425,57 +421,45 @@ protected theorem neg_eq_of_add_eq_zero {a b : ℤ} (h : a + b = 0) : -a = b := 
 #align int.neg_eq_of_add_eq_zero Int.neg_eq_of_add_eq_zero
 -/
 
-#print Int.neg_mul_eq_neg_mul /-
-protected theorem neg_mul_eq_neg_mul (a b : ℤ) : -(a * b) = -a * b :=
-  Int.neg_eq_of_add_eq_zero (by rw [← Int.add_mul, Int.add_right_neg, Int.zero_mul])
-#align int.neg_mul_eq_neg_mul Int.neg_mul_eq_neg_mul
--/
+protected theorem neg_hMul_eq_neg_hMul (a b : ℤ) : -(a * b) = -a * b :=
+  Int.neg_eq_of_add_eq_zero (by rw [← Int.add_mul, Int.add_right_neg, Int.zero_hMul])
+#align int.neg_mul_eq_neg_mul Int.neg_hMul_eq_neg_hMul
 
-#print Int.neg_mul_eq_mul_neg /-
-protected theorem neg_mul_eq_mul_neg (a b : ℤ) : -(a * b) = a * -b :=
-  Int.neg_eq_of_add_eq_zero (by rw [← Int.mul_add, Int.add_right_neg, Int.mul_zero])
-#align int.neg_mul_eq_mul_neg Int.neg_mul_eq_mul_neg
--/
+protected theorem neg_hMul_eq_hMul_neg (a b : ℤ) : -(a * b) = a * -b :=
+  Int.neg_eq_of_add_eq_zero (by rw [← Int.mul_add, Int.add_right_neg, Int.hMul_zero])
+#align int.neg_mul_eq_mul_neg Int.neg_hMul_eq_hMul_neg
 
 #print Int.neg_mul_eq_neg_mul_symm /-
 theorem neg_mul_eq_neg_mul_symm (a b : ℤ) : -a * b = -(a * b) :=
-  Eq.symm (Int.neg_mul_eq_neg_mul a b)
+  Eq.symm (Int.neg_hMul_eq_neg_hMul a b)
 #align int.neg_mul_eq_neg_mul_symm Int.neg_mul_eq_neg_mul_symm
 -/
 
 #print Int.mul_neg_eq_neg_mul_symm /-
 theorem mul_neg_eq_neg_mul_symm (a b : ℤ) : a * -b = -(a * b) :=
-  Eq.symm (Int.neg_mul_eq_mul_neg a b)
+  Eq.symm (Int.neg_hMul_eq_hMul_neg a b)
 #align int.mul_neg_eq_neg_mul_symm Int.mul_neg_eq_neg_mul_symm
 -/
 
 attribute [local simp] neg_mul_eq_neg_mul_symm mul_neg_eq_neg_mul_symm
 
-#print Int.neg_mul_neg /-
-protected theorem neg_mul_neg (a b : ℤ) : -a * -b = a * b := by simp
-#align int.neg_mul_neg Int.neg_mul_neg
--/
+protected theorem neg_hMul_neg (a b : ℤ) : -a * -b = a * b := by simp
+#align int.neg_mul_neg Int.neg_hMul_neg
 
-#print Int.neg_mul_comm /-
-protected theorem neg_mul_comm (a b : ℤ) : -a * b = a * -b := by simp
-#align int.neg_mul_comm Int.neg_mul_comm
--/
+protected theorem neg_hMul_comm (a b : ℤ) : -a * b = a * -b := by simp
+#align int.neg_mul_comm Int.neg_hMul_comm
 
-#print Int.mul_sub /-
-protected theorem mul_sub (a b c : ℤ) : a * (b - c) = a * b - a * c :=
+protected theorem hMul_sub (a b c : ℤ) : a * (b - c) = a * b - a * c :=
   calc
     a * (b - c) = a * b + a * -c := Int.mul_add a b (-c)
     _ = a * b - a * c := by simp
-#align int.mul_sub Int.mul_sub
--/
+#align int.mul_sub Int.hMul_sub
 
-#print Int.sub_mul /-
-protected theorem sub_mul (a b c : ℤ) : (a - b) * c = a * c - b * c :=
+protected theorem sub_hMul (a b c : ℤ) : (a - b) * c = a * c - b * c :=
   calc
     (a - b) * c = a * c + -b * c := Int.add_mul a (-b) c
     _ = a * c - b * c := by simp
-#align int.sub_mul Int.sub_mul
--/
+#align int.sub_mul Int.sub_hMul
 
 section
 
@@ -1245,162 +1229,130 @@ end
 /-! missing facts -/
 
 
-#print Int.mul_lt_mul_of_pos_left /-
-protected theorem mul_lt_mul_of_pos_left {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : c * a < c * b :=
+protected theorem hMul_lt_hMul_of_pos_left {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : c * a < c * b :=
   by
   have : 0 < b - a := Int.sub_pos_of_lt h₁
-  have : 0 < c * (b - a) := Int.mul_pos h₂ this
-  rw [Int.mul_sub] at this 
+  have : 0 < c * (b - a) := Int.hMul_pos h₂ this
+  rw [Int.hMul_sub] at this 
   exact Int.lt_of_sub_pos this
-#align int.mul_lt_mul_of_pos_left Int.mul_lt_mul_of_pos_left
--/
+#align int.mul_lt_mul_of_pos_left Int.hMul_lt_hMul_of_pos_left
 
-#print Int.mul_lt_mul_of_pos_right /-
-protected theorem mul_lt_mul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : a * c < b * c :=
+protected theorem hMul_lt_hMul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ : 0 < c) : a * c < b * c :=
   by
   have : 0 < b - a := Int.sub_pos_of_lt h₁
-  have : 0 < (b - a) * c := Int.mul_pos this h₂
-  rw [Int.sub_mul] at this 
+  have : 0 < (b - a) * c := Int.hMul_pos this h₂
+  rw [Int.sub_hMul] at this 
   exact Int.lt_of_sub_pos this
-#align int.mul_lt_mul_of_pos_right Int.mul_lt_mul_of_pos_right
--/
+#align int.mul_lt_mul_of_pos_right Int.hMul_lt_hMul_of_pos_right
 
-#print Int.mul_le_mul_of_nonneg_left /-
-protected theorem mul_le_mul_of_nonneg_left {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) : c * a ≤ c * b :=
-  by
+protected theorem hMul_le_hMul_of_nonneg_left {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) :
+    c * a ≤ c * b := by
   by_cases hba : b ≤ a; · simp [le_antisymm hba h₁]
-  by_cases hc0 : c ≤ 0; · simp [le_antisymm hc0 h₂, Int.zero_mul]
+  by_cases hc0 : c ≤ 0; · simp [le_antisymm hc0 h₂, Int.zero_hMul]
   exact
     (le_not_le_of_lt
-        (Int.mul_lt_mul_of_pos_left (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
-#align int.mul_le_mul_of_nonneg_left Int.mul_le_mul_of_nonneg_left
--/
+        (Int.hMul_lt_hMul_of_pos_left (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
+#align int.mul_le_mul_of_nonneg_left Int.hMul_le_hMul_of_nonneg_left
 
-#print Int.mul_le_mul_of_nonneg_right /-
-protected theorem mul_le_mul_of_nonneg_right {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) :
+protected theorem hMul_le_hMul_of_nonneg_right {a b c : ℤ} (h₁ : a ≤ b) (h₂ : 0 ≤ c) :
     a * c ≤ b * c := by
   by_cases hba : b ≤ a; · simp [le_antisymm hba h₁]
-  by_cases hc0 : c ≤ 0; · simp [le_antisymm hc0 h₂, Int.mul_zero]
+  by_cases hc0 : c ≤ 0; · simp [le_antisymm hc0 h₂, Int.hMul_zero]
   exact
     (le_not_le_of_lt
-        (Int.mul_lt_mul_of_pos_right (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
-#align int.mul_le_mul_of_nonneg_right Int.mul_le_mul_of_nonneg_right
--/
+        (Int.hMul_lt_hMul_of_pos_right (lt_of_le_not_le h₁ hba) (lt_of_le_not_le h₂ hc0))).left
+#align int.mul_le_mul_of_nonneg_right Int.hMul_le_hMul_of_nonneg_right
 
-#print Int.mul_le_mul /-
 -- TODO: there are four variations, depending on which variables we assume to be nonneg
-protected theorem mul_le_mul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (nn_b : 0 ≤ b)
+protected theorem hMul_le_hMul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (nn_b : 0 ≤ b)
     (nn_c : 0 ≤ c) : a * b ≤ c * d :=
   calc
-    a * b ≤ c * b := Int.mul_le_mul_of_nonneg_right hac nn_b
-    _ ≤ c * d := Int.mul_le_mul_of_nonneg_left hbd nn_c
-#align int.mul_le_mul Int.mul_le_mul
--/
+    a * b ≤ c * b := Int.hMul_le_hMul_of_nonneg_right hac nn_b
+    _ ≤ c * d := Int.hMul_le_hMul_of_nonneg_left hbd nn_c
+#align int.mul_le_mul Int.hMul_le_hMul
 
-#print Int.mul_nonpos_of_nonneg_of_nonpos /-
-protected theorem mul_nonpos_of_nonneg_of_nonpos {a b : ℤ} (ha : 0 ≤ a) (hb : b ≤ 0) : a * b ≤ 0 :=
+protected theorem hMul_nonpos_of_nonneg_of_nonpos {a b : ℤ} (ha : 0 ≤ a) (hb : b ≤ 0) : a * b ≤ 0 :=
   by
-  have h : a * b ≤ a * 0 := Int.mul_le_mul_of_nonneg_left hb ha
-  rwa [Int.mul_zero] at h 
-#align int.mul_nonpos_of_nonneg_of_nonpos Int.mul_nonpos_of_nonneg_of_nonpos
--/
+  have h : a * b ≤ a * 0 := Int.hMul_le_hMul_of_nonneg_left hb ha
+  rwa [Int.hMul_zero] at h 
+#align int.mul_nonpos_of_nonneg_of_nonpos Int.hMul_nonpos_of_nonneg_of_nonpos
 
-#print Int.mul_nonpos_of_nonpos_of_nonneg /-
-protected theorem mul_nonpos_of_nonpos_of_nonneg {a b : ℤ} (ha : a ≤ 0) (hb : 0 ≤ b) : a * b ≤ 0 :=
+protected theorem hMul_nonpos_of_nonpos_of_nonneg {a b : ℤ} (ha : a ≤ 0) (hb : 0 ≤ b) : a * b ≤ 0 :=
   by
-  have h : a * b ≤ 0 * b := Int.mul_le_mul_of_nonneg_right ha hb
-  rwa [Int.zero_mul] at h 
-#align int.mul_nonpos_of_nonpos_of_nonneg Int.mul_nonpos_of_nonpos_of_nonneg
--/
+  have h : a * b ≤ 0 * b := Int.hMul_le_hMul_of_nonneg_right ha hb
+  rwa [Int.zero_hMul] at h 
+#align int.mul_nonpos_of_nonpos_of_nonneg Int.hMul_nonpos_of_nonpos_of_nonneg
 
-#print Int.mul_lt_mul /-
-protected theorem mul_lt_mul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b)
+protected theorem hMul_lt_hMul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b)
     (nn_c : 0 ≤ c) : a * b < c * d :=
   calc
-    a * b < c * b := Int.mul_lt_mul_of_pos_right hac pos_b
-    _ ≤ c * d := Int.mul_le_mul_of_nonneg_left hbd nn_c
-#align int.mul_lt_mul Int.mul_lt_mul
--/
+    a * b < c * b := Int.hMul_lt_hMul_of_pos_right hac pos_b
+    _ ≤ c * d := Int.hMul_le_hMul_of_nonneg_left hbd nn_c
+#align int.mul_lt_mul Int.hMul_lt_hMul
 
-#print Int.mul_lt_mul' /-
-protected theorem mul_lt_mul' {a b c d : ℤ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 ≤ b) (h4 : 0 < c) :
+protected theorem hMul_lt_mul' {a b c d : ℤ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 ≤ b) (h4 : 0 < c) :
     a * b < c * d :=
   calc
-    a * b ≤ c * b := Int.mul_le_mul_of_nonneg_right h1 h3
-    _ < c * d := Int.mul_lt_mul_of_pos_left h2 h4
-#align int.mul_lt_mul' Int.mul_lt_mul'
--/
+    a * b ≤ c * b := Int.hMul_le_hMul_of_nonneg_right h1 h3
+    _ < c * d := Int.hMul_lt_hMul_of_pos_left h2 h4
+#align int.mul_lt_mul' Int.hMul_lt_mul'
 
-#print Int.mul_neg_of_pos_of_neg /-
-protected theorem mul_neg_of_pos_of_neg {a b : ℤ} (ha : 0 < a) (hb : b < 0) : a * b < 0 :=
+protected theorem hMul_neg_of_pos_of_neg {a b : ℤ} (ha : 0 < a) (hb : b < 0) : a * b < 0 :=
   by
-  have h : a * b < a * 0 := Int.mul_lt_mul_of_pos_left hb ha
-  rwa [Int.mul_zero] at h 
-#align int.mul_neg_of_pos_of_neg Int.mul_neg_of_pos_of_neg
--/
+  have h : a * b < a * 0 := Int.hMul_lt_hMul_of_pos_left hb ha
+  rwa [Int.hMul_zero] at h 
+#align int.mul_neg_of_pos_of_neg Int.hMul_neg_of_pos_of_neg
 
-#print Int.mul_neg_of_neg_of_pos /-
-protected theorem mul_neg_of_neg_of_pos {a b : ℤ} (ha : a < 0) (hb : 0 < b) : a * b < 0 :=
+protected theorem hMul_neg_of_neg_of_pos {a b : ℤ} (ha : a < 0) (hb : 0 < b) : a * b < 0 :=
   by
-  have h : a * b < 0 * b := Int.mul_lt_mul_of_pos_right ha hb
-  rwa [Int.zero_mul] at h 
-#align int.mul_neg_of_neg_of_pos Int.mul_neg_of_neg_of_pos
--/
+  have h : a * b < 0 * b := Int.hMul_lt_hMul_of_pos_right ha hb
+  rwa [Int.zero_hMul] at h 
+#align int.mul_neg_of_neg_of_pos Int.hMul_neg_of_neg_of_pos
 
-#print Int.mul_le_mul_of_nonpos_right /-
-protected theorem mul_le_mul_of_nonpos_right {a b c : ℤ} (h : b ≤ a) (hc : c ≤ 0) : a * c ≤ b * c :=
+protected theorem hMul_le_hMul_of_nonpos_right {a b c : ℤ} (h : b ≤ a) (hc : c ≤ 0) :
+    a * c ≤ b * c :=
   have : -c ≥ 0 := Int.neg_nonneg_of_nonpos hc
-  have : b * -c ≤ a * -c := Int.mul_le_mul_of_nonneg_right h this
-  have : -(b * c) ≤ -(a * c) := by rwa [← Int.neg_mul_eq_mul_neg, ← Int.neg_mul_eq_mul_neg] at this 
+  have : b * -c ≤ a * -c := Int.hMul_le_hMul_of_nonneg_right h this
+  have : -(b * c) ≤ -(a * c) := by
+    rwa [← Int.neg_hMul_eq_hMul_neg, ← Int.neg_hMul_eq_hMul_neg] at this 
   Int.le_of_neg_le_neg this
-#align int.mul_le_mul_of_nonpos_right Int.mul_le_mul_of_nonpos_right
--/
+#align int.mul_le_mul_of_nonpos_right Int.hMul_le_hMul_of_nonpos_right
 
-#print Int.mul_nonneg_of_nonpos_of_nonpos /-
-protected theorem mul_nonneg_of_nonpos_of_nonpos {a b : ℤ} (ha : a ≤ 0) (hb : b ≤ 0) : 0 ≤ a * b :=
+protected theorem hMul_nonneg_of_nonpos_of_nonpos {a b : ℤ} (ha : a ≤ 0) (hb : b ≤ 0) : 0 ≤ a * b :=
   by
-  have : 0 * b ≤ a * b := Int.mul_le_mul_of_nonpos_right ha hb
-  rwa [Int.zero_mul] at this 
-#align int.mul_nonneg_of_nonpos_of_nonpos Int.mul_nonneg_of_nonpos_of_nonpos
--/
+  have : 0 * b ≤ a * b := Int.hMul_le_hMul_of_nonpos_right ha hb
+  rwa [Int.zero_hMul] at this 
+#align int.mul_nonneg_of_nonpos_of_nonpos Int.hMul_nonneg_of_nonpos_of_nonpos
 
-#print Int.mul_lt_mul_of_neg_left /-
-protected theorem mul_lt_mul_of_neg_left {a b c : ℤ} (h : b < a) (hc : c < 0) : c * a < c * b :=
+protected theorem hMul_lt_hMul_of_neg_left {a b c : ℤ} (h : b < a) (hc : c < 0) : c * a < c * b :=
   have : -c > 0 := Int.neg_pos_of_neg hc
-  have : -c * b < -c * a := Int.mul_lt_mul_of_pos_left h this
-  have : -(c * b) < -(c * a) := by rwa [← Int.neg_mul_eq_neg_mul, ← Int.neg_mul_eq_neg_mul] at this 
+  have : -c * b < -c * a := Int.hMul_lt_hMul_of_pos_left h this
+  have : -(c * b) < -(c * a) := by
+    rwa [← Int.neg_hMul_eq_neg_hMul, ← Int.neg_hMul_eq_neg_hMul] at this 
   Int.lt_of_neg_lt_neg this
-#align int.mul_lt_mul_of_neg_left Int.mul_lt_mul_of_neg_left
--/
+#align int.mul_lt_mul_of_neg_left Int.hMul_lt_hMul_of_neg_left
 
-#print Int.mul_lt_mul_of_neg_right /-
-protected theorem mul_lt_mul_of_neg_right {a b c : ℤ} (h : b < a) (hc : c < 0) : a * c < b * c :=
+protected theorem hMul_lt_hMul_of_neg_right {a b c : ℤ} (h : b < a) (hc : c < 0) : a * c < b * c :=
   have : -c > 0 := Int.neg_pos_of_neg hc
-  have : b * -c < a * -c := Int.mul_lt_mul_of_pos_right h this
-  have : -(b * c) < -(a * c) := by rwa [← Int.neg_mul_eq_mul_neg, ← Int.neg_mul_eq_mul_neg] at this 
+  have : b * -c < a * -c := Int.hMul_lt_hMul_of_pos_right h this
+  have : -(b * c) < -(a * c) := by
+    rwa [← Int.neg_hMul_eq_hMul_neg, ← Int.neg_hMul_eq_hMul_neg] at this 
   Int.lt_of_neg_lt_neg this
-#align int.mul_lt_mul_of_neg_right Int.mul_lt_mul_of_neg_right
--/
+#align int.mul_lt_mul_of_neg_right Int.hMul_lt_hMul_of_neg_right
 
-#print Int.mul_pos_of_neg_of_neg /-
-protected theorem mul_pos_of_neg_of_neg {a b : ℤ} (ha : a < 0) (hb : b < 0) : 0 < a * b :=
+protected theorem hMul_pos_of_neg_of_neg {a b : ℤ} (ha : a < 0) (hb : b < 0) : 0 < a * b :=
   by
-  have : 0 * b < a * b := Int.mul_lt_mul_of_neg_right ha hb
-  rwa [Int.zero_mul] at this 
-#align int.mul_pos_of_neg_of_neg Int.mul_pos_of_neg_of_neg
--/
+  have : 0 * b < a * b := Int.hMul_lt_hMul_of_neg_right ha hb
+  rwa [Int.zero_hMul] at this 
+#align int.mul_pos_of_neg_of_neg Int.hMul_pos_of_neg_of_neg
 
-#print Int.mul_self_le_mul_self /-
-protected theorem mul_self_le_mul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a ≤ b) : a * a ≤ b * b :=
-  Int.mul_le_mul h2 h2 h1 (le_trans h1 h2)
-#align int.mul_self_le_mul_self Int.mul_self_le_mul_self
--/
+protected theorem hMul_self_le_hMul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a ≤ b) : a * a ≤ b * b :=
+  Int.hMul_le_hMul h2 h2 h1 (le_trans h1 h2)
+#align int.mul_self_le_mul_self Int.hMul_self_le_hMul_self
 
-#print Int.mul_self_lt_mul_self /-
-protected theorem mul_self_lt_mul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a < b) : a * a < b * b :=
-  Int.mul_lt_mul' (le_of_lt h2) h2 h1 (lt_of_le_of_lt h1 h2)
-#align int.mul_self_lt_mul_self Int.mul_self_lt_mul_self
--/
+protected theorem hMul_self_lt_hMul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a < b) : a * a < b * b :=
+  Int.hMul_lt_mul' (le_of_lt h2) h2 h1 (lt_of_le_of_lt h1 h2)
+#align int.mul_self_lt_mul_self Int.hMul_self_lt_hMul_self
 
 /-! more facts specific to int -/
 
@@ -1549,60 +1501,52 @@ protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) 
   | Or.inl hlt₁ =>
     match lt_trichotomy 0 b with
     | Or.inl hlt₂ => by
-      have : 0 < a * b := Int.mul_pos hlt₁ hlt₂
+      have : 0 < a * b := Int.hMul_pos hlt₁ hlt₂
       rw [h] at this 
       exact absurd this (lt_irrefl _)
     | Or.inr (Or.inl heq₂) => Or.inr heq₂.symm
     | Or.inr (Or.inr hgt₂) =>
       by
-      have : 0 > a * b := Int.mul_neg_of_pos_of_neg hlt₁ hgt₂
+      have : 0 > a * b := Int.hMul_neg_of_pos_of_neg hlt₁ hgt₂
       rw [h] at this 
       exact absurd this (lt_irrefl _)
   | Or.inr (Or.inl heq₁) => Or.inl heq₁.symm
   | Or.inr (Or.inr hgt₁) =>
     match lt_trichotomy 0 b with
     | Or.inl hlt₂ => by
-      have : 0 > a * b := Int.mul_neg_of_neg_of_pos hgt₁ hlt₂
+      have : 0 > a * b := Int.hMul_neg_of_neg_of_pos hgt₁ hlt₂
       rw [h] at this 
       exact absurd this (lt_irrefl _)
     | Or.inr (Or.inl heq₂) => Or.inr heq₂.symm
     | Or.inr (Or.inr hgt₂) =>
       by
-      have : 0 < a * b := Int.mul_pos_of_neg_of_neg hgt₁ hgt₂
+      have : 0 < a * b := Int.hMul_pos_of_neg_of_neg hgt₁ hgt₂
       rw [h] at this 
       exact absurd this (lt_irrefl _)
 #align int.eq_zero_or_eq_zero_of_mul_eq_zero Int.eq_zero_or_eq_zero_of_mul_eq_zero
 -/
 
-#print Int.eq_of_mul_eq_mul_right /-
-protected theorem eq_of_mul_eq_mul_right {a b c : ℤ} (ha : a ≠ 0) (h : b * a = c * a) : b = c :=
+protected theorem eq_of_hMul_eq_hMul_right {a b c : ℤ} (ha : a ≠ 0) (h : b * a = c * a) : b = c :=
   have : b * a - c * a = 0 := Int.sub_eq_zero_of_eq h
-  have : (b - c) * a = 0 := by rw [Int.sub_mul, this]
+  have : (b - c) * a = 0 := by rw [Int.sub_hMul, this]
   have : b - c = 0 := (Int.eq_zero_or_eq_zero_of_mul_eq_zero this).resolve_right ha
   Int.eq_of_sub_eq_zero this
-#align int.eq_of_mul_eq_mul_right Int.eq_of_mul_eq_mul_right
--/
+#align int.eq_of_mul_eq_mul_right Int.eq_of_hMul_eq_hMul_right
 
-#print Int.eq_of_mul_eq_mul_left /-
-protected theorem eq_of_mul_eq_mul_left {a b c : ℤ} (ha : a ≠ 0) (h : a * b = a * c) : b = c :=
+protected theorem eq_of_hMul_eq_hMul_left {a b c : ℤ} (ha : a ≠ 0) (h : a * b = a * c) : b = c :=
   have : a * b - a * c = 0 := Int.sub_eq_zero_of_eq h
-  have : a * (b - c) = 0 := by rw [Int.mul_sub, this]
+  have : a * (b - c) = 0 := by rw [Int.hMul_sub, this]
   have : b - c = 0 := (Int.eq_zero_or_eq_zero_of_mul_eq_zero this).resolve_left ha
   Int.eq_of_sub_eq_zero this
-#align int.eq_of_mul_eq_mul_left Int.eq_of_mul_eq_mul_left
--/
+#align int.eq_of_mul_eq_mul_left Int.eq_of_hMul_eq_hMul_left
 
-#print Int.eq_one_of_mul_eq_self_left /-
-theorem eq_one_of_mul_eq_self_left {a b : ℤ} (Hpos : a ≠ 0) (H : b * a = a) : b = 1 :=
-  Int.eq_of_mul_eq_mul_right Hpos (by rw [Int.one_mul, H])
-#align int.eq_one_of_mul_eq_self_left Int.eq_one_of_mul_eq_self_left
--/
+theorem eq_one_of_hMul_eq_self_left {a b : ℤ} (Hpos : a ≠ 0) (H : b * a = a) : b = 1 :=
+  Int.eq_of_hMul_eq_hMul_right Hpos (by rw [Int.one_hMul, H])
+#align int.eq_one_of_mul_eq_self_left Int.eq_one_of_hMul_eq_self_left
 
-#print Int.eq_one_of_mul_eq_self_right /-
-theorem eq_one_of_mul_eq_self_right {a b : ℤ} (Hpos : b ≠ 0) (H : b * a = b) : a = 1 :=
-  Int.eq_of_mul_eq_mul_left Hpos (by rw [Int.mul_one, H])
-#align int.eq_one_of_mul_eq_self_right Int.eq_one_of_mul_eq_self_right
--/
+theorem eq_one_of_hMul_eq_self_right {a b : ℤ} (Hpos : b ≠ 0) (H : b * a = b) : a = 1 :=
+  Int.eq_of_hMul_eq_hMul_left Hpos (by rw [Int.hMul_one, H])
+#align int.eq_one_of_mul_eq_self_right Int.eq_one_of_hMul_eq_self_right
 
 end Int
 

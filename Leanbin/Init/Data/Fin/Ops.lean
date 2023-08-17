@@ -108,11 +108,9 @@ theorem add_def (a b : Fin n) : (a + b).val = (a.val + b.val) % n :=
 #align fin.add_def Fin.add_def
 -/
 
-#print Fin.mul_def /-
-theorem mul_def (a b : Fin n) : (a * b).val = a.val * b.val % n :=
+theorem hMul_def (a b : Fin n) : (a * b).val = a.val * b.val % n :=
   show (Fin.mul a b).val = a.val * b.val % n by cases a <;> cases b <;> simp [Fin.mul]
-#align fin.mul_def Fin.mul_def
--/
+#align fin.mul_def Fin.hMul_def
 
 #print Fin.sub_def /-
 theorem sub_def (a b : Fin n) : (a - b).val = (a.val + (n - b.val)) % n := by

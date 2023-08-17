@@ -763,14 +763,12 @@ protected theorem add_right_neg (a : ℤ) : a + -a = 0 := by rw [Int.add_comm, I
 /-! multiplication -/
 
 
-#print Int.mul_comm /-
-protected theorem mul_comm : ∀ a b : ℤ, a * b = b * a
+protected theorem hMul_comm : ∀ a b : ℤ, a * b = b * a
   | of_nat m, of_nat n => by simp [Nat.mul_comm]
   | of_nat m, -[n+1] => by simp [Nat.mul_comm]
   | -[m+1], of_nat n => by simp [Nat.mul_comm]
   | -[m+1], -[n+1] => by simp [Nat.mul_comm]
-#align int.mul_comm Int.mul_comm
--/
+#align int.mul_comm Int.hMul_comm
 
 #print Int.ofNat_mul_negOfNat /-
 theorem ofNat_mul_negOfNat (m : ℕ) : ∀ n, ofNat m * negOfNat n = negOfNat (m * n)
@@ -781,7 +779,7 @@ theorem ofNat_mul_negOfNat (m : ℕ) : ∀ n, ofNat m * negOfNat n = negOfNat (m
 
 #print Int.negOfNat_mul_ofNat /-
 theorem negOfNat_mul_ofNat (m n : ℕ) : negOfNat m * ofNat n = negOfNat (m * n) := by
-  rw [Int.mul_comm]; simp [of_nat_mul_neg_of_nat, Nat.mul_comm]
+  rw [Int.hMul_comm]; simp [of_nat_mul_neg_of_nat, Nat.mul_comm]
 #align int.neg_of_nat_mul_of_nat Int.negOfNat_mul_ofNat
 -/
 
@@ -794,15 +792,14 @@ theorem negSucc_mul_negOfNat (m : ℕ) : ∀ n, -[m+1] * negOfNat n = ofNat (suc
 
 #print Int.negOfNat_mul_negSucc /-
 theorem negOfNat_mul_negSucc (m n : ℕ) : negOfNat n * -[m+1] = ofNat (n * succ m) := by
-  rw [Int.mul_comm]; simp [neg_succ_of_nat_mul_neg_of_nat, Nat.mul_comm]
+  rw [Int.hMul_comm]; simp [neg_succ_of_nat_mul_neg_of_nat, Nat.mul_comm]
 #align int.neg_of_nat_mul_neg_succ_of_nat Int.negOfNat_mul_negSucc
 -/
 
 attribute [local simp] of_nat_mul_neg_of_nat neg_of_nat_mul_of_nat neg_succ_of_nat_mul_neg_of_nat
   neg_of_nat_mul_neg_succ_of_nat
 
-#print Int.mul_assoc /-
-protected theorem mul_assoc : ∀ a b c : ℤ, a * b * c = a * (b * c)
+protected theorem hMul_assoc : ∀ a b c : ℤ, a * b * c = a * (b * c)
   | of_nat m, of_nat n, of_nat k => by simp [Nat.mul_assoc]
   | of_nat m, of_nat n, -[k+1] => by simp [Nat.mul_assoc]
   | of_nat m, -[n+1], of_nat k => by simp [Nat.mul_assoc]
@@ -811,21 +808,16 @@ protected theorem mul_assoc : ∀ a b c : ℤ, a * b * c = a * (b * c)
   | -[m+1], of_nat n, -[k+1] => by simp [Nat.mul_assoc]
   | -[m+1], -[n+1], of_nat k => by simp [Nat.mul_assoc]
   | -[m+1], -[n+1], -[k+1] => by simp [Nat.mul_assoc]
-#align int.mul_assoc Int.mul_assoc
--/
+#align int.mul_assoc Int.hMul_assoc
 
-#print Int.mul_zero /-
-protected theorem mul_zero : ∀ a : ℤ, a * 0 = 0
+protected theorem hMul_zero : ∀ a : ℤ, a * 0 = 0
   | of_nat m => rfl
   | -[m+1] => rfl
-#align int.mul_zero Int.mul_zero
--/
+#align int.mul_zero Int.hMul_zero
 
-#print Int.zero_mul /-
-protected theorem zero_mul (a : ℤ) : 0 * a = 0 :=
-  Int.mul_comm a 0 ▸ Int.mul_zero a
-#align int.zero_mul Int.zero_mul
--/
+protected theorem zero_hMul (a : ℤ) : 0 * a = 0 :=
+  Int.hMul_comm a 0 ▸ Int.hMul_zero a
+#align int.zero_mul Int.zero_hMul
 
 #print Int.negOfNat_eq_subNatNat_zero /-
 theorem negOfNat_eq_subNatNat_zero : ∀ n, negOfNat n = subNatNat 0 n
@@ -850,7 +842,7 @@ theorem ofNat_mul_subNatNat (m n k : ℕ) : ofNat m * subNatNat n k = subNatNat 
     rw [sub_nat_nat_of_le h, sub_nat_nat_of_le h']; simp
     rw [Nat.mul_sub_left_distrib]
   have h₂ : of_nat 0 = 0 := rfl
-  subst h₀; simp [h₂, Int.zero_mul, Nat.zero_mul]
+  subst h₀; simp [h₂, Int.zero_hMul, Nat.zero_mul]
 #align int.of_nat_mul_sub_nat_nat Int.ofNat_mul_subNatNat
 -/
 
@@ -914,7 +906,7 @@ protected theorem mul_add : ∀ a b c : ℤ, a * (b + c) = a * b + a * c
 
 #print Int.add_mul /-
 protected theorem add_mul (a b c : ℤ) : (a + b) * c = a * c + b * c := by
-  rw [Int.mul_comm, Int.mul_add]; simp [Int.mul_comm]
+  rw [Int.hMul_comm, Int.mul_add]; simp [Int.hMul_comm]
 #align int.distrib_right Int.add_mul
 -/
 
@@ -1006,31 +998,25 @@ def natMod (m n : ℤ) : ℕ :=
 #align int.nat_mod Int.natMod
 -/
 
-#print Int.one_mul /-
-protected theorem one_mul : ∀ a : ℤ, (1 : ℤ) * a = a
+protected theorem one_hMul : ∀ a : ℤ, (1 : ℤ) * a = a
   | of_nat n => show ofNat (1 * n) = ofNat n by rw [Nat.one_mul]
   | -[n+1] => show -[1 * n+1] = -[n+1] by rw [Nat.one_mul]
-#align int.one_mul Int.one_mul
--/
+#align int.one_mul Int.one_hMul
 
-#print Int.mul_one /-
-protected theorem mul_one (a : ℤ) : a * 1 = a := by rw [Int.mul_comm, Int.one_mul]
-#align int.mul_one Int.mul_one
--/
+protected theorem hMul_one (a : ℤ) : a * 1 = a := by rw [Int.hMul_comm, Int.one_hMul]
+#align int.mul_one Int.hMul_one
 
-#print Int.neg_eq_neg_one_mul /-
-protected theorem neg_eq_neg_one_mul : ∀ a : ℤ, -a = -1 * a
+protected theorem neg_eq_neg_one_hMul : ∀ a : ℤ, -a = -1 * a
   | of_nat 0 => rfl
   | of_nat (n + 1) => show _ = -[1 * n + 0+1] by rw [Nat.one_mul]; rfl
   | -[n+1] => show _ = ofNat _ by rw [Nat.one_mul]; rfl
-#align int.neg_eq_neg_one_mul Int.neg_eq_neg_one_mul
--/
+#align int.neg_eq_neg_one_mul Int.neg_eq_neg_one_hMul
 
 #print Int.sign_mul_natAbs /-
 theorem sign_mul_natAbs : ∀ a : ℤ, sign a * natAbs a = a
-  | (n + 1 : ℕ) => Int.one_mul _
+  | (n + 1 : ℕ) => Int.one_hMul _
   | 0 => rfl
-  | -[n+1] => (Int.neg_eq_neg_one_mul _).symm
+  | -[n+1] => (Int.neg_eq_neg_one_hMul _).symm
 #align int.sign_mul_nat_abs Int.sign_mul_natAbs
 -/
 

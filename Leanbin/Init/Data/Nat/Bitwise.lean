@@ -194,32 +194,24 @@ def shiftl' (b : Bool) (m : ℕ) : ℕ → ℕ
 #align nat.shiftl' Nat.shiftl'
 -/
 
-#print Nat.shiftl /-
 def shiftl : ℕ → ℕ → ℕ :=
   shiftl' false
 #align nat.shiftl Nat.shiftl
--/
 
-#print Nat.shiftl_zero /-
 @[simp]
 theorem shiftl_zero (m) : shiftl m 0 = m :=
   rfl
 #align nat.shiftl_zero Nat.shiftl_zero
--/
 
-#print Nat.shiftl_succ /-
 @[simp]
 theorem shiftl_succ (m n) : shiftl m (n + 1) = bit0 (shiftl m n) :=
   rfl
 #align nat.shiftl_succ Nat.shiftl_succ
--/
 
-#print Nat.shiftr /-
 def shiftr : ℕ → ℕ → ℕ
   | m, 0 => m
   | m, n + 1 => div2 (shiftr m n)
 #align nat.shiftr Nat.shiftr
--/
 
 #print Nat.testBit /-
 def testBit (m n : ℕ) : Bool :=
@@ -315,18 +307,14 @@ theorem shiftl'_add (b m n) : ∀ k, shiftl' b m (n + k) = shiftl' b (shiftl' b 
 #align nat.shiftl'_add Nat.shiftl'_add
 -/
 
-#print Nat.shiftl_add /-
 theorem shiftl_add : ∀ m n k, shiftl m (n + k) = shiftl (shiftl m n) k :=
   shiftl'_add _
 #align nat.shiftl_add Nat.shiftl_add
--/
 
-#print Nat.shiftr_add /-
 theorem shiftr_add (m n) : ∀ k, shiftr m (n + k) = shiftr (shiftr m n) k
   | 0 => rfl
   | k + 1 => congr_arg div2 (shiftr_add k)
 #align nat.shiftr_add Nat.shiftr_add
--/
 
 #print Nat.shiftl'_sub /-
 theorem shiftl'_sub (b m) : ∀ {n k}, k ≤ n → shiftl' b m (n - k) = shiftr (shiftl' b m n) k
@@ -338,11 +326,9 @@ theorem shiftl'_sub (b m) : ∀ {n k}, k ≤ n → shiftl' b m (n - k) = shiftr 
 #align nat.shiftl'_sub Nat.shiftl'_sub
 -/
 
-#print Nat.shiftl_sub /-
 theorem shiftl_sub : ∀ (m) {n k}, k ≤ n → shiftl m (n - k) = shiftr (shiftl m n) k :=
   shiftl'_sub _
 #align nat.shiftl_sub Nat.shiftl_sub
--/
 
 #print Nat.testBit_zero /-
 @[simp]

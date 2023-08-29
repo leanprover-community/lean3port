@@ -187,15 +187,15 @@ theorem bit_zero : bit false 0 = 0 :=
 #align nat.bit_zero Nat.bit_zero
 -/
 
-#print Nat.shiftl' /-
-def shiftl' (b : Bool) (m : ℕ) : ℕ → ℕ
+#print Nat.shiftLeft' /-
+def shiftLeft' (b : Bool) (m : ℕ) : ℕ → ℕ
   | 0 => m
   | n + 1 => bit b (shiftl' n)
-#align nat.shiftl' Nat.shiftl'
+#align nat.shiftl' Nat.shiftLeft'
 -/
 
 def shiftl : ℕ → ℕ → ℕ :=
-  shiftl' false
+  shiftLeft' false
 #align nat.shiftl Nat.shiftl
 
 @[simp]
@@ -300,15 +300,15 @@ theorem div2_bit (b n) : div2 (bit b n) = n := by
 #align nat.div2_bit Nat.div2_bit
 -/
 
-#print Nat.shiftl'_add /-
-theorem shiftl'_add (b m n) : ∀ k, shiftl' b m (n + k) = shiftl' b (shiftl' b m n) k
+#print Nat.shiftLeft'_add /-
+theorem shiftLeft'_add (b m n) : ∀ k, shiftLeft' b m (n + k) = shiftLeft' b (shiftLeft' b m n) k
   | 0 => rfl
   | k + 1 => congr_arg (bit b) (shiftl'_add k)
-#align nat.shiftl'_add Nat.shiftl'_add
+#align nat.shiftl'_add Nat.shiftLeft'_add
 -/
 
 theorem shiftl_add : ∀ m n k, shiftl m (n + k) = shiftl (shiftl m n) k :=
-  shiftl'_add _
+  shiftLeft'_add _
 #align nat.shiftl_add Nat.shiftl_add
 
 theorem shiftr_add (m n) : ∀ k, shiftr m (n + k) = shiftr (shiftr m n) k
@@ -316,18 +316,18 @@ theorem shiftr_add (m n) : ∀ k, shiftr m (n + k) = shiftr (shiftr m n) k
   | k + 1 => congr_arg div2 (shiftr_add k)
 #align nat.shiftr_add Nat.shiftr_add
 
-#print Nat.shiftl'_sub /-
-theorem shiftl'_sub (b m) : ∀ {n k}, k ≤ n → shiftl' b m (n - k) = shiftr (shiftl' b m n) k
+#print Nat.shiftLeft'_sub /-
+theorem shiftLeft'_sub (b m) : ∀ {n k}, k ≤ n → shiftLeft' b m (n - k) = shiftr (shiftLeft' b m n) k
   | n, 0, h => rfl
   | n + 1, k + 1, h => by
     simp [shiftl']; rw [Nat.add_comm, shiftr_add]
     simp [shiftr, div2_bit]
     apply shiftl'_sub (Nat.le_of_succ_le_succ h)
-#align nat.shiftl'_sub Nat.shiftl'_sub
+#align nat.shiftl'_sub Nat.shiftLeft'_sub
 -/
 
 theorem shiftl_sub : ∀ (m) {n k}, k ≤ n → shiftl m (n - k) = shiftr (shiftl m n) k :=
-  shiftl'_sub _
+  shiftLeft'_sub _
 #align nat.shiftl_sub Nat.shiftl_sub
 
 #print Nat.testBit_zero /-

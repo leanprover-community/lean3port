@@ -98,19 +98,19 @@ def lxor' : ℤ → ℤ → ℤ
 #align int.lxor Int.lxor'
 -/
 
-#print Int.shiftl /-
-def shiftl : ℤ → ℤ → ℤ
+#print ShiftLeft.shiftLeft /-
+def shiftLeft : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.shiftl m n
   | (m : ℕ), -[n+1] => Nat.shiftr m (Nat.succ n)
   | -[m+1], (n : ℕ) => -[Nat.shiftLeft' true m n+1]
   | -[m+1], -[n+1] => -[Nat.shiftr m (Nat.succ n)+1]
-#align int.shiftl Int.shiftl
+#align int.shiftl ShiftLeft.shiftLeft
 -/
 
-#print Int.shiftr /-
-def shiftr (m n : ℤ) : ℤ :=
-  shiftl m (-n)
-#align int.shiftr Int.shiftr
+#print ShiftRight.shiftRight /-
+def shiftRight (m n : ℤ) : ℤ :=
+  shiftLeft m (-n)
+#align int.shiftr ShiftRight.shiftRight
 -/
 
 end Int

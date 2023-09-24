@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jannis Limperg
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
+import Init.Meta.Tactic
 
 #align_import init.meta.case_tag from "leanprover-community/lean"@"c9a9368bc0fd600d832bd56c5cb2124b8a523ef9"
 

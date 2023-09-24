@@ -6,10 +6,10 @@ Authors: Sebastian Ullrich
 The reader monad transformer for passing immutable state.
 -/
 prelude
-import Leanbin.Init.Control.Lift
-import Leanbin.Init.Control.Id
-import Leanbin.Init.Control.Alternative
-import Leanbin.Init.Control.Except
+import Init.Control.Lift
+import Init.Control.Id
+import Init.Control.Alternative
+import Init.Control.Except
 
 #align_import init.control.reader from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

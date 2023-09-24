@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura, Jeremy Avigad, Haitao Zhang
 -/
 prelude
-import Leanbin.Init.Data.Prod
-import Leanbin.Init.Funext
-import Leanbin.Init.Logic
+import Init.Data.Prod
+import Init.Funext
+import Init.Logic
 
 #align_import init.function from "leanprover-community/lean"@"03a6a6015c0b12dce7b36b4a1f7205a92dfaa592"
 

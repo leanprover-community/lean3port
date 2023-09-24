@@ -6,11 +6,11 @@ Authors: Sebastian Ullrich
 Attribute that can automatically derive typeclass instances.
 -/
 prelude
-import Leanbin.Init.Meta.Attribute
-import Leanbin.Init.Meta.InteractiveBase
-import Leanbin.Init.Meta.MkHasReflectInstance
-import Leanbin.Init.Meta.MkHasSizeofInstance
-import Leanbin.Init.Meta.MkInhabitedInstance
+import Init.Meta.Attribute
+import Init.Meta.InteractiveBase
+import Init.Meta.MkHasReflectInstance
+import Init.Meta.MkHasSizeofInstance
+import Init.Meta.MkInhabitedInstance
 
 #align_import init.meta.derive from "leanprover-community/lean"@"e77a64739870401e78ef3294bb95b8733b900cba"
 

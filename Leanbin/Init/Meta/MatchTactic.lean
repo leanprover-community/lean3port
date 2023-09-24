@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.InteractiveBase
-import Leanbin.Init.Function
+import Init.Meta.InteractiveBase
+import Init.Function
 
 #align_import init.meta.match_tactic from "leanprover-community/lean"@"82568609e2bdf56addbfad477b181b10c8f32efe"
 

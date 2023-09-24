@@ -6,10 +6,10 @@ Author: Leonardo de Moura
 Quotient types.
 -/
 prelude
-import Leanbin.Init.Data.Sigma.Basic
-import Leanbin.Init.Logic
-import Leanbin.Init.Propext
-import Leanbin.Init.Data.Setoid
+import Init.Data.Sigma.Basic
+import Init.Logic
+import Init.Propext
+import Init.Data.Setoid
 
 #align_import init.data.quot from "leanprover-community/lean"@"de855f9965c69f6818f97edaea7d937e24ef678a"
 

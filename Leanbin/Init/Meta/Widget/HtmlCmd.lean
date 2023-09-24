@@ -5,10 +5,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Leanbin.Init.Meta.Widget.Basic
-import Leanbin.Init.Meta.Lean.Parser
-import Leanbin.Init.Meta.InteractiveBase
-import Leanbin.Init.Data.Punit
+import Init.Meta.Widget.Basic
+import Init.Meta.Lean.Parser
+import Init.Meta.InteractiveBase
+import Init.Data.Punit
 
 #align_import init.meta.widget.html_cmd from "leanprover-community/lean"@"191021bf4f7656f1cb5b8c3de024ba27cf634d83"
 

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.RelationTactics
-import Leanbin.Init.Meta.Occurrences
+import Init.Meta.RelationTactics
+import Init.Meta.Occurrences
 
 #align_import init.meta.rewrite_tactic from "leanprover-community/lean"@"e83eca1fc5eda5ec3e0926a6913e02d9a574bf9e"
 

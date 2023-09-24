@@ -6,10 +6,10 @@ Authors: Leonardo de Moura, Sebastian Ullrich
 The state monad transformer.
 -/
 prelude
-import Leanbin.Init.Control.Alternative
-import Leanbin.Init.Control.Lift
-import Leanbin.Init.Control.Id
-import Leanbin.Init.Control.Except
+import Init.Control.Alternative
+import Init.Control.Lift
+import Init.Control.Id
+import Init.Control.Except
 
 #align_import init.control.state from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

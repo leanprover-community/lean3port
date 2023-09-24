@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Leanbin.Init.Meta.Widget.Basic
+import Init.Meta.Widget.Basic
 
 #align_import init.meta.widget.tactic_component from "leanprover-community/lean"@"93ae212fb944163e6df29a036182fdea83173e3f"
 

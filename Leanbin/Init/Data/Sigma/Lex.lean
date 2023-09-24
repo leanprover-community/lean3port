@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Sigma.Basic
+import Init.Data.Sigma.Basic
 import Leanbin.Init.Meta.Default
 
 #align_import init.data.sigma.lex from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"

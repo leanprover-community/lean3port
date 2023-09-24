@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Unsigned.Basic
-import Leanbin.Init.Data.Fin.Ops
+import Init.Data.Unsigned.Basic
+import Init.Data.Fin.Ops
 
 #align_import init.data.unsigned.ops from "leanprover-community/lean"@"0049a42336d64521ef60cc4c079fd4108b37680c"
 

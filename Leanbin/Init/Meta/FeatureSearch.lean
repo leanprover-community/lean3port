@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Gabriel Ebner
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.Derive
-import Leanbin.Init.Meta.MkDecEqInstance
-import Leanbin.Init.Meta.Float
+import Init.Meta.Tactic
+import Init.Meta.Derive
+import Init.Meta.MkDecEqInstance
+import Init.Meta.Float
 
 #align_import init.meta.feature_search from "leanprover-community/lean"@"885390e749e617b3ace9cd5d33759bbccc609a43"
 

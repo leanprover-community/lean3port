@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad, Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Algebra.Order
+import Init.Algebra.Order
 import Leanbin.Init.Meta.Default
 
 #align_import init.algebra.functions from "leanprover-community/lean"@"c2bcdbcbe741ed37c361a30d38e179182b989f76"
@@ -31,10 +31,10 @@ theorem max_def (a b : α) : max a b = if a ≤ b then b else a := by
 #align max_def max_def
 -/
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def min_tac_step : tactic Unit :=
   solve1 <| (((intros >> sorry) >> try sorry) >> try sorry) >> try sorry
 

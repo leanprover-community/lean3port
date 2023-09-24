@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Parikshit Khanna, Jeremy Avigad, Leonardo de Moura, Floris van Doorn
 -/
 prelude
-import Leanbin.Init.Data.List.Basic
-import Leanbin.Init.Function
+import Init.Data.List.Basic
+import Init.Function
 import Leanbin.Init.Meta.Default
-import Leanbin.Init.Data.Nat.Lemmas
-import Leanbin.Init.Meta.Interactive
-import Leanbin.Init.Meta.Smt.Rsimp
+import Init.Data.Nat.Lemmas
+import Init.Meta.Interactive
+import Init.Meta.Smt.Rsimp
 
 #align_import init.data.list.lemmas from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

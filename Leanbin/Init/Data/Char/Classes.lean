@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Gabriel Ebner
 -/
 prelude
-import Leanbin.Init.Data.Char.Basic
-import Leanbin.Init.Data.Char.Lemmas
+import Init.Data.Char.Basic
+import Init.Data.Char.Lemmas
 import Leanbin.Init.Meta.Default
 import Leanbin.Init.Data.Int.Default
 

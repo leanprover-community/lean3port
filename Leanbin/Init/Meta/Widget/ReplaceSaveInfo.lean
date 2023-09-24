@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Leanbin.Init.Meta.Widget.InteractiveExpr
+import Init.Meta.Widget.InteractiveExpr
 
 #align_import init.meta.widget.replace_save_info from "leanprover-community/lean"@"cacc7c8aa0f97341f8b50ae48c3069429f6c21de"
 

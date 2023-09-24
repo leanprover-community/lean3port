@@ -5,10 +5,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Leanbin.Init.Meta.Expr
-import Leanbin.Init.Data.List.Basic
-import Leanbin.Init.Data.Option.Basic
-import Leanbin.Init.Util
+import Init.Meta.Expr
+import Init.Data.List.Basic
+import Init.Data.Option.Basic
+import Init.Util
 
 #align_import init.meta.expr_address from "leanprover-community/lean"@"028fe70a072ea55fef6be67e376fc904330dea61"
 

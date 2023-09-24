@@ -6,8 +6,8 @@ Authors: Leonardo de Moura
 Helper tactic for constructing has_sizeof instance.
 -/
 prelude
-import Leanbin.Init.Meta.RecUtil
-import Leanbin.Init.Meta.ConstructorTactic
+import Init.Meta.RecUtil
+import Init.Meta.ConstructorTactic
 
 #align_import init.meta.mk_has_sizeof_instance from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

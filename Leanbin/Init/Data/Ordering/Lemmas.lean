@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Ordering.Basic
+import Init.Data.Ordering.Basic
 import Leanbin.Init.Meta.Default
-import Leanbin.Init.Algebra.Classes
-import Leanbin.Init.IteSimp
+import Init.Algebra.Classes
+import Init.IteSimp
 
 #align_import init.data.ordering.lemmas from "leanprover-community/lean"@"4bd314f7bd5e0c9e813fc201f1279a23f13f9f1d"
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option default_priority -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:339:40: warning: unsupported option default_priority -/
 set_option default_priority 100
 
 universe u

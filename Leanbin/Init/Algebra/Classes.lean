@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Logic
-import Leanbin.Init.Data.Ordering.Basic
+import Init.Logic
+import Init.Data.Ordering.Basic
 
 #align_import init.algebra.classes from "leanprover-community/lean"@"31f3a46d7c18d6b2255a72df4f9d62644145d83b"
 

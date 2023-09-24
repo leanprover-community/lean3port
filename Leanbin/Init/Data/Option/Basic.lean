@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Logic
-import Leanbin.Init.Control.Monad
-import Leanbin.Init.Control.Alternative
+import Init.Logic
+import Init.Control.Monad
+import Init.Control.Alternative
 
 #align_import init.data.option.basic from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

@@ -9,7 +9,7 @@ It is implemented as a subtype.
 prelude
 import Leanbin.Init.Data.List.Default
 import Leanbin.Init.Data.Subtype.Default
-import Leanbin.Init.Meta.Interactive
+import Init.Meta.Interactive
 import Leanbin.Init.Data.Fin.Default
 
 #align_import data.vector from "leanprover-community/lean"@"78b8dbdf66ac8db31afa8fe3d0d7f1d0bf1be236"

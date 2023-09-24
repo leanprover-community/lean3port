@@ -5,9 +5,9 @@ Authors: Leonardo de Moura
 -/
 prelude
 import Leanbin.Init.Control.Default
-import Leanbin.Init.Meta.SimpTactic
-import Leanbin.Init.Meta.Smt.CongruenceClosure
-import Leanbin.Init.Meta.Smt.Ematch
+import Init.Meta.SimpTactic
+import Init.Meta.Smt.CongruenceClosure
+import Init.Meta.Smt.Ematch
 
 #align_import init.meta.smt.smt_tactic from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

@@ -6,8 +6,8 @@ Authors: Leonardo de Moura
 Helper tactic for showing that a type has decidable equality.
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Data.Option.Basic
+import Init.Meta.Tactic
+import Init.Data.Option.Basic
 
 #align_import init.meta.rec_util from "leanprover-community/lean"@"e29c19c1aa04f5442d3bd035902705f50486c67a"
 

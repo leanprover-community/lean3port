@@ -6,7 +6,7 @@ Authors: Leonardo de Moura, Jeremy Avigad
 The sum type, aka disjoint union.
 -/
 prelude
-import Leanbin.Init.Logic
+import Init.Logic
 
 #align_import init.data.sum.basic from "leanprover-community/lean"@"7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb"
 

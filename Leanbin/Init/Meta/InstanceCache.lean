@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.Interactive
+import Init.Meta.Tactic
+import Init.Meta.Interactive
 
 #align_import init.meta.instance_cache from "leanprover-community/lean"@"5613ccb117f38631c316450832d7a607fe5dd20d"
 

@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 -/
 prelude
-import Leanbin.Init.Control.Monad
-import Leanbin.Init.Meta.Interactive
-import Leanbin.Init.Control.State
-import Leanbin.Init.Control.Except
-import Leanbin.Init.Control.Reader
-import Leanbin.Init.Control.Option
+import Init.Control.Monad
+import Init.Meta.Interactive
+import Init.Control.State
+import Init.Control.Except
+import Init.Control.Reader
+import Init.Control.Option
 
 #align_import init.control.lawful from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

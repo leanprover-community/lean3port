@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 -/
 prelude
-import Leanbin.Init.Data.Bool.Lemmas
-import Leanbin.Init.Data.String.Basic
-import Leanbin.Init.Meta.WellFoundedTactics
+import Init.Data.Bool.Lemmas
+import Init.Data.String.Basic
+import Init.Meta.WellFoundedTactics
 
 #align_import init.data.string.ops from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

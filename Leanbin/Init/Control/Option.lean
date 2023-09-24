@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Sebastian Ullrich
 -/
 prelude
-import Leanbin.Init.Control.Alternative
-import Leanbin.Init.Control.Lift
-import Leanbin.Init.Control.Except
+import Init.Control.Alternative
+import Init.Control.Lift
+import Init.Control.Except
 
 #align_import init.control.option from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

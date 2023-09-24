@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Mario Carneiro
 -/
 prelude
-import Leanbin.Init.Data.Nat.Lemmas
-import Leanbin.Init.Meta.WellFoundedTactics
+import Init.Data.Nat.Lemmas
+import Init.Meta.WellFoundedTactics
 
 #align_import init.data.nat.bitwise from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
@@ -346,7 +346,7 @@ theorem testBit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m :=
 #align nat.test_bit_succ Nat.testBit_succ
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:145:2: warning: unsupported: with_cases -/
+/- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:146:2: warning: unsupported: with_cases -/
 #print Nat.binaryRec_eq /-
 theorem binaryRec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)}
     (h : f false 0 z = z) (b n) : binaryRec z f (bit b n) = f b n (binaryRec z f n) :=

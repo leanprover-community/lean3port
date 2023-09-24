@@ -1,8 +1,8 @@
 prelude
-import Leanbin.Init.Control.Monad
-import Leanbin.Init.Meta.LocalContext
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.FunInfo
+import Init.Control.Monad
+import Init.Meta.LocalContext
+import Init.Meta.Tactic
+import Init.Meta.FunInfo
 
 #align_import init.meta.type_context from "leanprover-community/lean"@"6196cbe07d23c8d35ea8b35d2f9fcd219974530b"
 

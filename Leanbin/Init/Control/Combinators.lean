@@ -6,9 +6,9 @@ Authors: Jeremy Avigad, Leonardo de Moura
 Monad combinators, as in Haskell's Control.Monad.
 -/
 prelude
-import Leanbin.Init.Control.Monad
-import Leanbin.Init.Control.Alternative
-import Leanbin.Init.Data.List.Basic
+import Init.Control.Monad
+import Init.Control.Alternative
+import Init.Data.List.Basic
 
 #align_import init.control.combinators from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

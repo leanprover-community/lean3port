@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Interactive
-import Leanbin.Init.Control.Lawful
+import Init.Meta.Interactive
+import Init.Control.Lawful
 
 #align_import init.data.set from "leanprover-community/lean"@"ab343ab4edc491dbd02bed7b70295a0bb88be06f"
 

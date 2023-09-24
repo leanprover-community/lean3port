@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Options
-import Leanbin.Init.Function
-import Leanbin.Init.Data.ToString
+import Init.Meta.Options
+import Init.Function
+import Init.Data.ToString
 
 #align_import init.meta.format from "leanprover-community/lean"@"c248e38671ebca7d0513180887daf60a6433bc37"
 

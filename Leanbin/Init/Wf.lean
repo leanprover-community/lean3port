@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Nat.Basic
-import Leanbin.Init.Data.Prod
+import Init.Data.Nat.Basic
+import Init.Data.Prod
 
 #align_import init.wf from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

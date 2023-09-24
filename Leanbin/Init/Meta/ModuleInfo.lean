@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gabriel Ebner
 -/
 prelude
-import Leanbin.Init.Meta.Environment
-import Leanbin.Init.Meta.Tactic
+import Init.Meta.Environment
+import Init.Meta.Tactic
 
 #align_import init.meta.module_info from "leanprover-community/lean"@"0d2b2697d163416d759f52e417d5579685e01d9e"
 

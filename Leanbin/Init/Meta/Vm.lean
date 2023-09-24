@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Control.Option
-import Leanbin.Init.Meta.MkDecEqInstance
+import Init.Meta.Tactic
+import Init.Control.Option
+import Init.Meta.MkDecEqInstance
 
 #align_import init.meta.vm from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

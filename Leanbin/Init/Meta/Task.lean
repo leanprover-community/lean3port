@@ -1,5 +1,5 @@
 prelude
-import Leanbin.Init.Logic
+import Init.Logic
 
 #align_import init.meta.task from "leanprover-community/lean"@"e29c19c1aa04f5442d3bd035902705f50486c67a"
 

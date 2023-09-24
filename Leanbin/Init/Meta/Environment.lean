@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Declaration
-import Leanbin.Init.Meta.Exceptional
-import Leanbin.Init.Data.Option.Basic
-import Leanbin.Init.Meta.RbMap
+import Init.Meta.Declaration
+import Init.Meta.Exceptional
+import Init.Data.Option.Basic
+import Init.Meta.RbMap
 
 #align_import init.meta.environment from "leanprover-community/lean"@"1340477dccb7fbe0cf2146aa1f1995022c13cd30"
 

@@ -5,11 +5,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Leanbin.Init.Meta.Widget.Basic
-import Leanbin.Init.Meta.Widget.TacticComponent
-import Leanbin.Init.Meta.TaggedFormat
-import Leanbin.Init.Data.Punit
-import Leanbin.Init.Meta.MkDecEqInstance
+import Init.Meta.Widget.Basic
+import Init.Meta.Widget.TacticComponent
+import Init.Meta.TaggedFormat
+import Init.Data.Punit
+import Init.Meta.MkDecEqInstance
 
 #align_import init.meta.widget.interactive_expr from "leanprover-community/lean"@"b89dac0f6a0797e8031b59f3ec4f970fc11d2883"
 

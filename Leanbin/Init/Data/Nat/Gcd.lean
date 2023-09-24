@@ -5,8 +5,8 @@ Authors: Jeremy Avigad, Leonardo de Moura, Mario Carneiro
 
 -/
 prelude
-import Leanbin.Init.Data.Nat.Lemmas
-import Leanbin.Init.Meta.WellFoundedTactics
+import Init.Data.Nat.Lemmas
+import Init.Meta.WellFoundedTactics
 
 #align_import init.data.nat.gcd from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

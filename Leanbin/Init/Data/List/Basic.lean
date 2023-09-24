@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Logic
-import Leanbin.Init.Data.Nat.Basic
-import Leanbin.Init.Data.Bool.Basic
-import Leanbin.Init.Propext
+import Init.Logic
+import Init.Data.Nat.Basic
+import Init.Data.Bool.Basic
+import Init.Propext
 
 #align_import init.data.list.basic from "leanprover-community/lean"@"7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb"
 

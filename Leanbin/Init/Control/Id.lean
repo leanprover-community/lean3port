@@ -6,7 +6,7 @@ Authors: Sebastian Ullrich
 The identity monad.
 -/
 prelude
-import Leanbin.Init.Control.Lift
+import Init.Control.Lift
 
 #align_import init.control.id from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

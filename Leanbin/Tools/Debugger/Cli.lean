@@ -5,7 +5,7 @@ Authors: Leonardo de Moura
 
 Simple command line interface for debugging Lean programs and tactics.
 -/
-import Leanbin.Tools.Debugger.Util
+import Tools.Debugger.Util
 
 #align_import tools.debugger.cli from "leanprover-community/lean"@"52d6adc19c0c5cdc748d2a97e2ea9bca21037f89"
 

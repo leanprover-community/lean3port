@@ -6,11 +6,11 @@ Authors: Leonardo de Moura
 Converter monad for building simplifiers.
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.SimpTactic
-import Leanbin.Init.Meta.Interactive
-import Leanbin.Init.Meta.CongrLemma
-import Leanbin.Init.Meta.MatchTactic
+import Init.Meta.Tactic
+import Init.Meta.SimpTactic
+import Init.Meta.Interactive
+import Init.Meta.CongrLemma
+import Init.Meta.MatchTactic
 
 #align_import init.meta.converter.conv from "leanprover-community/lean"@"e83eca1fc5eda5ec3e0926a6913e02d9a574bf9e"
 

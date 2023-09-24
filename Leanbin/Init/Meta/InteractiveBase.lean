@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Option.Basic
-import Leanbin.Init.Meta.Lean.Parser
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.HasReflect
+import Init.Data.Option.Basic
+import Init.Meta.Lean.Parser
+import Init.Meta.Tactic
+import Init.Meta.HasReflect
 
 #align_import init.meta.interactive_base from "leanprover-community/lean"@"5b62a41dc8d3982ebd1ec6c243c185344c8e0e9b"
 
@@ -91,8 +91,8 @@ unsafe def list_of (p : parser α) :=
   brackets "[" "]" <| sep_by (skip_info (tk ",")) p
 #align interactive.types.list_of interactive.types.list_of
 
-/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
-/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:688:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:688:29: warning: unsupported: precedence command -/
 /-- The right-binding power 2 will terminate expressions by
     '<|>' (rbp 2), ';' (rbp 1), and ',' (rbp 0). It should be used for any (potentially)
     trailing expression parameters. -/
@@ -149,7 +149,7 @@ unsafe def only_flag : parser Bool :=
 
 end Types
 
-/- ./././Mathport/Syntax/Translate/Command.lean:687:29: warning: unsupported: precedence command -/
+/- ./././Mathport/Syntax/Translate/Command.lean:688:29: warning: unsupported: precedence command -/
 open Expr Format Tactic Types
 
 private unsafe def maybe_paren : List format → format

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Sebastian Ullrich
 -/
 prelude
-import Leanbin.Init.Control.Functor
+import Init.Control.Functor
 
 #align_import init.control.applicative from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

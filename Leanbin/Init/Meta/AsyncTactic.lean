@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Gabriel Ebner
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.Interactive
-import Leanbin.Init.Meta.InstanceCache
+import Init.Meta.Tactic
+import Init.Meta.Interactive
+import Init.Meta.InstanceCache
 
 #align_import init.meta.async_tactic from "leanprover-community/lean"@"6e4c67e71566ea02dd0d5e50b3b92312d20ba681"
 

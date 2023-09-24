@@ -6,12 +6,12 @@ Authors: Leonardo de Moura
 Helper tactic for showing that a type has decidable equality.
 -/
 prelude
-import Leanbin.Init.Meta.ContradictionTactic
-import Leanbin.Init.Meta.ConstructorTactic
-import Leanbin.Init.Meta.InjectionTactic
-import Leanbin.Init.Meta.RelationTactics
-import Leanbin.Init.Meta.RecUtil
-import Leanbin.Init.Meta.Interactive
+import Init.Meta.ContradictionTactic
+import Init.Meta.ConstructorTactic
+import Init.Meta.InjectionTactic
+import Init.Meta.RelationTactics
+import Init.Meta.RecUtil
+import Init.Meta.Interactive
 
 #align_import init.meta.mk_dec_eq_instance from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
@@ -58,7 +58,7 @@ private unsafe def apply_eq_of_heq (h : expr) : tactic Unit := do
   let ty ← infer_type pr
   assertv `h' ty pr >> skip
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
 /-- Target is of the form (decidable (C ... = C ...)) where C is a constructor -/
 private unsafe def dec_eq_same_constructor : Name → Name → Nat → tactic Unit
   | I_name, F_name, num_rec => do
@@ -138,7 +138,7 @@ unsafe def mk_dec_eq_instance_core : tactic Unit := do
   all_goals' (dec_eq_case_1 I_name F_name)
 #align tactic.mk_dec_eq_instance_core tactic.mk_dec_eq_instance_core
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
 -- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe

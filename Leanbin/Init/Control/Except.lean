@@ -6,8 +6,8 @@ Authors: Jared Roesch, Sebastian Ullrich
 The except monad transformer.
 -/
 prelude
-import Leanbin.Init.Control.Alternative
-import Leanbin.Init.Control.Lift
+import Init.Control.Alternative
+import Init.Control.Lift
 
 #align_import init.control.except from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.InteractiveBase
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.SetGetOptionTactics
+import Init.Meta.InteractiveBase
+import Init.Meta.Tactic
+import Init.Meta.SetGetOptionTactics
 
 #align_import init.meta.smt.congruence_closure from "leanprover-community/lean"@"9eae65f7144bcc692858b9dadf2e48181f4270b9"
 

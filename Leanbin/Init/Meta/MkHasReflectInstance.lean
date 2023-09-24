@@ -6,7 +6,7 @@ Authors: Sebastian Ullrich
 Helper tactic for constructing a has_reflect instance.
 -/
 prelude
-import Leanbin.Init.Meta.RecUtil
+import Init.Meta.RecUtil
 
 #align_import init.meta.mk_has_reflect_instance from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

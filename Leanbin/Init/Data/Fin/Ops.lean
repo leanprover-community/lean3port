@@ -5,7 +5,7 @@ Author: Leonardo de Moura
 -/
 prelude
 import Leanbin.Init.Data.Nat.Default
-import Leanbin.Init.Data.Fin.Basic
+import Init.Data.Fin.Basic
 
 #align_import init.data.fin.ops from "leanprover-community/lean"@"3d2e3b75617386cb32de6cbc7e1cd341c6a16adf"
 

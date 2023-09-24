@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.List.Basic
-import Leanbin.Init.Data.Char.Basic
+import Init.Data.List.Basic
+import Init.Data.Char.Basic
 
 #align_import init.data.string.basic from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.MkDecEqInstance
+import Init.Meta.MkDecEqInstance
 
 #align_import init.data.sum.instances from "leanprover-community/lean"@"32e6442d0a1c9ab6948d5aaf6dc1de98a3d282e4"
 

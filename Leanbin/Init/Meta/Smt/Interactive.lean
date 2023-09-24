@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Smt.SmtTactic
-import Leanbin.Init.Meta.InteractiveBase
-import Leanbin.Init.Meta.Smt.Rsimp
+import Init.Meta.Smt.SmtTactic
+import Init.Meta.InteractiveBase
+import Init.Meta.Smt.Rsimp
 
 #align_import init.meta.smt.interactive from "leanprover-community/lean"@"fb0b2a8d50453c4a5c63503d5d58746fe9f5deb8"
 

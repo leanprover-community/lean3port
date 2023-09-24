@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Core
+import Init.Core
 
 #align_import init.data.bool.basic from "leanprover-community/lean"@"de855f9965c69f6818f97edaea7d937e24ef678a"
 

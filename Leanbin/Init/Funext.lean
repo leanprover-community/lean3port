@@ -6,8 +6,8 @@ Author: Jeremy Avigad
 Extensional equality for functions, and a proof of function extensionality from quotients.
 -/
 prelude
-import Leanbin.Init.Data.Quot
-import Leanbin.Init.Logic
+import Init.Data.Quot
+import Init.Logic
 
 #align_import init.funext from "leanprover-community/lean"@"855e0efed3137762a7ba9aca242499b3cce59406"
 

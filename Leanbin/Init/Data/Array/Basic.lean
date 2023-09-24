@@ -6,7 +6,7 @@ Authors: Leonardo de Moura, Mario Carneiro
 prelude
 import Leanbin.Init.Data.Nat.Default
 import Leanbin.Init.Data.Bool.Default
-import Leanbin.Init.IteSimp
+import Init.IteSimp
 
 #align_import init.data.array.basic from "leanprover-community/lean"@"7cb84a2a93c1e2d37b3ad5017fc5372973dbb9fb"
 

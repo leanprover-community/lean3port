@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Ordering.Basic
-import Leanbin.Init.Coe
-import Leanbin.Init.Data.ToString
+import Init.Data.Ordering.Basic
+import Init.Coe
+import Init.Data.ToString
 
 #align_import init.meta.name from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
@@ -64,7 +64,7 @@ def Name.updatePrefix : Name → Name → Name
   | mk_numeral s p, new_p => mk_numeral s new_p
 #align name.update_prefix Name.updatePrefix
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option eqn_compiler.ite -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:339:40: warning: unsupported option eqn_compiler.ite -/
 -- Without this option, we get errors when defining the following definitions.
 set_option eqn_compiler.ite false
 

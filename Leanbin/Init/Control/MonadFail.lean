@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Control.Lift
-import Leanbin.Init.Data.String.Basic
+import Init.Control.Lift
+import Init.Data.String.Basic
 
 #align_import init.control.monad_fail from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

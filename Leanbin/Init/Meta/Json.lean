@@ -6,7 +6,7 @@ Author: E.W.Ayers
 -/
 prelude
 import Leanbin.Init.Data.Default
-import Leanbin.Init.Meta.Float
+import Init.Meta.Float
 
 #align_import init.meta.json from "leanprover-community/lean"@"a17a1922c334180fca768604b2ac6735ee8d0916"
 

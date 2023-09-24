@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Logic
+import Init.Logic
 
 #align_import init.data.punit from "leanprover-community/lean"@"ab7b94ef22d18679460483c47458a58716eb47da"
 

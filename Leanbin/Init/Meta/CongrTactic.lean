@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Daniel Selsam
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.CongrLemma
-import Leanbin.Init.Meta.RelationTactics
-import Leanbin.Init.Function
+import Init.Meta.Tactic
+import Init.Meta.CongrLemma
+import Init.Meta.RelationTactics
+import Init.Function
 
 #align_import init.meta.congr_tactic from "leanprover-community/lean"@"c0792dde6a5c738ec01ca51039622828c43895d3"
 

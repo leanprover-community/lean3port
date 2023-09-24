@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Repr
-import Leanbin.Init.Data.Prod
-import Leanbin.Init.Data.Sum.Basic
+import Init.Data.Repr
+import Init.Data.Prod
+import Init.Data.Sum.Basic
 
 #align_import init.data.ordering.basic from "leanprover-community/lean"@"6e4ef51f2662e5aa53d8981e1dabf02d1785f220"
 

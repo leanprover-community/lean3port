@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.List.Basic
-import Leanbin.Init.Data.Subtype.Basic
-import Leanbin.Init.Data.Prod
+import Init.Data.List.Basic
+import Init.Data.Subtype.Basic
+import Init.Data.Prod
 
 #align_import init.coe from "leanprover-community/lean"@"3bbe26994e612b20921300c18853c1e77aad8b2d"
 

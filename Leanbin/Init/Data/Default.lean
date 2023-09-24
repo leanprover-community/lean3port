@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.Basic
+import Init.Data.Basic
 import Leanbin.Init.Data.Sigma.Default
 import Leanbin.Init.Data.Nat.Default
 import Leanbin.Init.Data.Char.Default
@@ -18,8 +18,8 @@ import Leanbin.Init.Data.Bool.Default
 import Leanbin.Init.Data.Fin.Default
 import Leanbin.Init.Data.Unsigned.Default
 import Leanbin.Init.Data.Ordering.Default
-import Leanbin.Init.Data.Option.Basic
-import Leanbin.Init.Data.Option.Instances
+import Init.Data.Option.Basic
+import Init.Data.Option.Instances
 
 #align_import init.data.default from "leanprover-community/lean"@"ea08a3fecb623590ddec06df4513e01e6a3889e5"
 

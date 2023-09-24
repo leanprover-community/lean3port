@@ -5,12 +5,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Leanbin.Init.Function
-import Leanbin.Init.Data.Option.Basic
-import Leanbin.Init.Util
-import Leanbin.Init.Meta.Tactic
-import Leanbin.Init.Meta.MkDecEqInstance
-import Leanbin.Init.Meta.Json
+import Init.Function
+import Init.Data.Option.Basic
+import Init.Util
+import Init.Meta.Tactic
+import Init.Meta.MkDecEqInstance
+import Init.Meta.Json
 
 #align_import init.meta.widget.basic from "leanprover-community/lean"@"93ae212fb944163e6df29a036182fdea83173e3f"
 

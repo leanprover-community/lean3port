@@ -5,8 +5,8 @@ Authors: Gabriel Ebner
 -/
 prelude
 import Leanbin.Init.Data.Nat.Default
-import Leanbin.Init.Data.Array.Basic
-import Leanbin.Init.Data.Nat.Lemmas
+import Init.Data.Array.Basic
+import Init.Data.Nat.Lemmas
 
 #align_import init.data.array.slice from "leanprover-community/lean"@"194cc8e2416b5969cfdab4006bb9e20cb75e5adc"
 

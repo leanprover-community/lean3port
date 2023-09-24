@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Level
-import Leanbin.Init.Control.Monad
-import Leanbin.Init.Meta.RbMap
+import Init.Meta.Level
+import Init.Control.Monad
+import Init.Meta.RbMap
 
 #align_import init.meta.expr from "leanprover-community/lean"@"569fa1a97c0a3d52ccd7286c659e42bbba8eb006"
 

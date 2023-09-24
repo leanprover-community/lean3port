@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Tactic
+import Init.Meta.Tactic
 
 #align_import init.meta.ref from "leanprover-community/lean"@"e29c19c1aa04f5442d3bd035902705f50486c67a"
 

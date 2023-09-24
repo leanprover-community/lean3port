@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Logic
-import Leanbin.Init.Data.Repr
-import Leanbin.Init.Meta.Format
-import Leanbin.Init.Meta.ContradictionTactic
-import Leanbin.Init.Meta.ConstructorTactic
-import Leanbin.Init.Meta.RelationTactics
-import Leanbin.Init.Meta.InjectionTactic
+import Init.Logic
+import Init.Data.Repr
+import Init.Meta.Format
+import Init.Meta.ContradictionTactic
+import Init.Meta.ConstructorTactic
+import Init.Meta.RelationTactics
+import Init.Meta.InjectionTactic
 
 #align_import init.meta.occurrences from "leanprover-community/lean"@"dc1a1c8540b42cad862484a7b804676de2fb2c9c"
 

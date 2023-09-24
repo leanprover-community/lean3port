@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Logic
-import Leanbin.Init.Control.Applicative
+import Init.Logic
+import Init.Control.Applicative
 
 #align_import init.control.alternative from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

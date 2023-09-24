@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Meta.Smt.CongruenceClosure
-import Leanbin.Init.Meta.Attribute
-import Leanbin.Init.Meta.SimpTactic
-import Leanbin.Init.Meta.InteractiveBase
-import Leanbin.Init.Meta.Derive
+import Init.Meta.Smt.CongruenceClosure
+import Init.Meta.Attribute
+import Init.Meta.SimpTactic
+import Init.Meta.InteractiveBase
+import Init.Meta.Derive
 
 #align_import init.meta.smt.ematch from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

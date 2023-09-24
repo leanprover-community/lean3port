@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Luke Nelson, Jared Roesch, Sebastian Ullrich, Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Core
-import Leanbin.Init.Function
-import Leanbin.Init.Meta.Name
+import Init.Core
+import Init.Function
+import Init.Meta.Name
 
 #align_import init.control.functor from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

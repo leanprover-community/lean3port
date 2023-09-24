@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Data.String.Basic
-import Leanbin.Init.Data.Bool.Basic
-import Leanbin.Init.Data.Subtype.Basic
-import Leanbin.Init.Data.Unsigned.Basic
-import Leanbin.Init.Data.Prod
-import Leanbin.Init.Data.Sum.Basic
-import Leanbin.Init.Data.Nat.Div
+import Init.Data.String.Basic
+import Init.Data.Bool.Basic
+import Init.Data.Subtype.Basic
+import Init.Data.Unsigned.Basic
+import Init.Data.Prod
+import Init.Data.Sum.Basic
+import Init.Data.Nat.Div
 
 #align_import init.data.repr from "leanprover-community/lean"@"c248e38671ebca7d0513180887daf60a6433bc37"
 

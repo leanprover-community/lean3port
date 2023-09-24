@@ -6,8 +6,8 @@ Authors: Leonardo de Moura
 Converter monad for building simplifiers.
 -/
 prelude
-import Leanbin.Init.Meta.Converter.Conv
-import Leanbin.Init.Meta.Converter.Interactive
+import Init.Meta.Converter.Conv
+import Init.Meta.Converter.Interactive
 
 #align_import init.meta.converter.default from "leanprover-community/lean"@"6669ff213268c5193e04c77a45da99404f54764d"
 

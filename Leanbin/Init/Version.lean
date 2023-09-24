@@ -1,6 +1,6 @@
 prelude
-import Leanbin.Init.Data.Nat.Basic
-import Leanbin.Init.Data.String.Basic
+import Init.Data.Nat.Basic
+import Init.Data.String.Basic
 
 #align_import init.version from "leanprover-community/lean"@"cce7990ea86a78bdb383e38ed7f9b5ba93c60ce0"
 

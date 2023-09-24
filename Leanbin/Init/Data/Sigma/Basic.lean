@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: Leonardo de Moura, Jeremy Avigad, Floris van Doorn
 -/
 prelude
-import Leanbin.Init.Logic
-import Leanbin.Init.Wf
+import Init.Logic
+import Init.Wf
 
 #align_import init.data.sigma.basic from "leanprover-community/lean"@"87932f1c56b7c05aefd2810d05e69da9500a0064"
 

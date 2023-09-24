@@ -9,9 +9,9 @@ This theory is roughly modeled after the Haskell 'layers' package https://hackag
 Please see https://hackage.haskell.org/package/layers-0.1/docs/Documentation-Layers-Overview.html for an exhaustive discussion of the different approaches to lift functions.
 -/
 prelude
-import Leanbin.Init.Function
-import Leanbin.Init.Coe
-import Leanbin.Init.Control.Monad
+import Init.Function
+import Init.Coe
+import Init.Control.Monad
 
 #align_import init.control.lift from "leanprover-community/lean"@"9af482290ef68e8aaa5ead01aa7b09b7be7019fd"
 

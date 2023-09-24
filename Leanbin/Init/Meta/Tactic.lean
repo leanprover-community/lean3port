@@ -4,22 +4,22 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura
 -/
 prelude
-import Leanbin.Init.Function
-import Leanbin.Init.Data.Option.Basic
-import Leanbin.Init.Util
-import Leanbin.Init.Control.Combinators
-import Leanbin.Init.Control.Monad
-import Leanbin.Init.Control.Alternative
-import Leanbin.Init.Control.MonadFail
-import Leanbin.Init.Data.Nat.Div
-import Leanbin.Init.Meta.Exceptional
-import Leanbin.Init.Meta.Format
-import Leanbin.Init.Meta.Environment
-import Leanbin.Init.Meta.Pexpr
-import Leanbin.Init.Data.Repr
-import Leanbin.Init.Data.String.Basic
-import Leanbin.Init.Meta.InteractionMonad
-import Leanbin.Init.Classical
+import Init.Function
+import Init.Data.Option.Basic
+import Init.Util
+import Init.Control.Combinators
+import Init.Control.Monad
+import Init.Control.Alternative
+import Init.Control.MonadFail
+import Init.Data.Nat.Div
+import Init.Meta.Exceptional
+import Init.Meta.Format
+import Init.Meta.Environment
+import Init.Meta.Pexpr
+import Init.Data.Repr
+import Init.Data.String.Basic
+import Init.Meta.InteractionMonad
+import Init.Classical
 
 #align_import init.meta.tactic from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad
 -/
 prelude
-import Leanbin.Init.Data.Nat.Basic
-import Leanbin.Init.Data.Nat.Div
+import Init.Data.Nat.Basic
+import Init.Data.Nat.Div
 import Leanbin.Init.Meta.Default
-import Leanbin.Init.Algebra.Functions
+import Init.Algebra.Functions
 
 #align_import init.data.nat.lemmas from "leanprover-community/lean"@"38b59111b2b4e6c572582b27e8937e92fc70ac02"
 
@@ -130,7 +130,7 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
 #align nat.zero_mul Nat.zero_mul
 -/
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:336:4: warning: unsupported (TODO): `[tacs] -/
+/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def sort_add :=
   sorry
 

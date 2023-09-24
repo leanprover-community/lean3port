@@ -6,8 +6,8 @@ Authors: Jeremy Avigad
 The order relation on the integers.
 -/
 prelude
-import Leanbin.Init.Data.Int.Basic
-import Leanbin.Init.Data.Ordering.Basic
+import Init.Data.Int.Basic
+import Init.Data.Ordering.Basic
 
 #align_import init.data.int.order from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad, Mario Carneiro
 -/
 prelude
-import Leanbin.Init.Data.Subtype.Basic
-import Leanbin.Init.Funext
+import Init.Data.Subtype.Basic
+import Init.Funext
 
 #align_import init.classical from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 

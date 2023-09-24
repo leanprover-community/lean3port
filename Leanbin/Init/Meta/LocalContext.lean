@@ -1,7 +1,7 @@
 prelude
-import Leanbin.Init.Meta.Name
-import Leanbin.Init.Meta.Expr
-import Leanbin.Init.Data.Option.Basic
+import Init.Meta.Name
+import Init.Meta.Expr
+import Init.Data.Option.Basic
 
 #align_import init.meta.local_context from "leanprover-community/lean"@"5107c602f15393cd855e877109e07d9ac05d6134"
 

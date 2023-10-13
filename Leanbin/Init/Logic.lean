@@ -1320,9 +1320,11 @@ end
 instance {α : Sort u} [DecidableEq α] (a b : α) : Decidable (a ≠ b) :=
   Implies.decidable
 
+#print Bool.false_ne_true /-
 theorem Bool.false_ne_true : false = true → False :=
   fun.
 #align bool.ff_ne_tt Bool.false_ne_true
+-/
 
 #print IsDecEq /-
 def IsDecEq {α : Sort u} (p : α → α → Bool) : Prop :=

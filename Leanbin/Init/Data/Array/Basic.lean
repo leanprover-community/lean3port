@@ -240,7 +240,7 @@ def toList (a : Array' n α) : List α :=
 #align array.to_list Array'.toList
 
 theorem push_back_idx {j n} (h₁ : j < n + 1) (h₂ : j ≠ n) : j < n :=
-  Nat.lt_of_le_and_ne (Nat.le_of_lt_succ h₁) h₂
+  Nat.lt_of_le_of_ne (Nat.le_of_lt_succ h₁) h₂
 #align array.push_back_idx Array'.push_back_idx
 
 /-- `push_back a v` pushes value `v` to the end of the array. Has builtin VM implementation. -/

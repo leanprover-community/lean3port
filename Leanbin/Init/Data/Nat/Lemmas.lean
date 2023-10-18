@@ -298,16 +298,16 @@ protected theorem le_total {m n : ℕ} : m ≤ n ∨ n ≤ m :=
 #align nat.le_total Nat.le_total
 -/
 
-#print Nat.lt_of_le_and_ne /-
-protected theorem lt_of_le_and_ne {m n : ℕ} (h1 : m ≤ n) : m ≠ n → m < n :=
+#print Nat.lt_of_le_of_ne /-
+protected theorem lt_of_le_of_ne {m n : ℕ} (h1 : m ≤ n) : m ≠ n → m < n :=
   Or.resolve_right (Or.symm (Nat.eq_or_lt_of_le h1))
-#align nat.lt_of_le_and_ne Nat.lt_of_le_and_ne
+#align nat.lt_of_le_and_ne Nat.lt_of_le_of_ne
 -/
 
 #print Nat.lt_iff_le_not_le /-
 protected theorem lt_iff_le_not_le {m n : ℕ} : m < n ↔ m ≤ n ∧ ¬n ≤ m :=
   ⟨fun hmn => ⟨Nat.le_of_lt hmn, fun hnm => Nat.lt_irrefl _ (Nat.lt_of_le_of_lt hnm hmn)⟩,
-    fun ⟨hmn, hnm⟩ => Nat.lt_of_le_and_ne hmn fun heq => hnm (HEq ▸ Nat.le_refl _)⟩
+    fun ⟨hmn, hnm⟩ => Nat.lt_of_le_of_ne hmn fun heq => hnm (HEq ▸ Nat.le_refl _)⟩
 #align nat.lt_iff_le_not_le Nat.lt_iff_le_not_le
 -/
 
@@ -434,7 +434,7 @@ protected theorem add_le_add_iff_right {k n m : ℕ} : n + k ≤ m + k ↔ n ≤
 #print Nat.lt_of_add_lt_add_left /-
 protected theorem lt_of_add_lt_add_left {k n m : ℕ} (h : k + n < k + m) : n < m :=
   let h' := Nat.le_of_lt h
-  Nat.lt_of_le_and_ne (Nat.le_of_add_le_add_left h') fun heq =>
+  Nat.lt_of_le_of_ne (Nat.le_of_add_le_add_left h') fun heq =>
     Nat.lt_irrefl (k + m) (by rw [HEq] at h ; assumption)
 #align nat.lt_of_add_lt_add_left Nat.lt_of_add_lt_add_left
 -/
@@ -1011,10 +1011,10 @@ protected theorem sub_self_add (n m : ℕ) : n - (n + m) = 0 :=
 #align nat.sub_self_add Nat.sub_self_add
 -/
 
-#print Nat.le_sub_iff_right /-
-protected theorem le_sub_iff_right {x y k : ℕ} (h : k ≤ y) : x ≤ y - k ↔ x + k ≤ y := by
+#print Nat.le_sub_iff_add_le /-
+protected theorem le_sub_iff_add_le {x y k : ℕ} (h : k ≤ y) : x ≤ y - k ↔ x + k ≤ y := by
   rw [← Nat.add_sub_cancel x k, Nat.sub_le_sub_iff_right h, Nat.add_sub_cancel]
-#align nat.le_sub_iff_right Nat.le_sub_iff_right
+#align nat.le_sub_iff_right Nat.le_sub_iff_add_le
 -/
 
 #print Nat.sub_lt_of_pos_le /-
@@ -1109,10 +1109,10 @@ theorem succ_sub_sub_succ (n m k : ℕ) : succ n - m - succ k = n - m - k := by
 #align nat.succ_sub_sub_succ Nat.succ_sub_sub_succ
 -/
 
-#print Nat.sub.right_comm /-
-protected theorem sub.right_comm (m n k : ℕ) : m - n - k = m - k - n := by
+#print Nat.sub_right_comm /-
+protected theorem Nat.sub_right_comm (m n k : ℕ) : m - n - k = m - k - n := by
   rw [Nat.sub_sub, Nat.sub_sub, Nat.add_comm]
-#align nat.sub.right_comm Nat.sub.right_comm
+#align nat.sub.right_comm Nat.sub_right_comm
 -/
 
 #print Nat.succ_sub /-
@@ -1625,7 +1625,7 @@ theorem le_div_iff_mul_le {x y k : ℕ} (Hk : 0 < k) : x ≤ y / k ↔ x * k ≤
     · simp [Nat.zero_mul, Nat.zero_le]
     ·
       rw [← add_one, Nat.add_le_add_iff_right, IH (y - k) (Nat.sub_lt_of_pos_le _ _ Hk h), add_one,
-        succ_mul, Nat.le_sub_iff_right h]
+        succ_mul, Nat.le_sub_iff_add_le h]
 #align nat.le_div_iff_mul_le Nat.le_div_iff_mul_le
 -/
 
@@ -1782,10 +1782,10 @@ protected theorem div_div_eq_div_mul (m n k : ℕ) : m / n / k = m / (n * k) :=
 #align nat.div_div_eq_div_mul Nat.div_div_eq_div_mul
 -/
 
-#print Nat.mul_div_mul /-
-protected theorem mul_div_mul {m : ℕ} (n k : ℕ) (H : 0 < m) : m * n / (m * k) = n / k := by
+#print Nat.mul_div_mul_left /-
+protected theorem mul_div_mul_left {m : ℕ} (n k : ℕ) (H : 0 < m) : m * n / (m * k) = n / k := by
   rw [← Nat.div_div_eq_div_mul, Nat.mul_div_cancel_left _ H]
-#align nat.mul_div_mul Nat.mul_div_mul
+#align nat.mul_div_mul Nat.mul_div_mul_left
 -/
 
 #print Nat.div_lt_self /-
@@ -1908,10 +1908,10 @@ theorem dvd_iff_mod_eq_zero {m n : ℕ} : m ∣ n ↔ n % m = 0 :=
 #align nat.dvd_iff_mod_eq_zero Nat.dvd_iff_mod_eq_zero
 -/
 
-#print Nat.decidableDvd /-
-instance decidableDvd : @DecidableRel ℕ (· ∣ ·) := fun m n =>
+#print Nat.decidable_dvd /-
+instance decidable_dvd : @DecidableRel ℕ (· ∣ ·) := fun m n =>
   decidable_of_decidable_of_iff (by infer_instance) dvd_iff_mod_eq_zero.symm
-#align nat.decidable_dvd Nat.decidableDvd
+#align nat.decidable_dvd Nat.decidable_dvd
 -/
 
 protected theorem mul_div_cancel' {m n : ℕ} (H : n ∣ m) : n * (m / n) = m :=

@@ -45,9 +45,9 @@ unsafe def transitivity (md := semireducible) : tactic Unit :=
 unsafe def relation_lhs_rhs (e : expr) : tactic (Name × expr × expr) := do
   let const c _ ← return e.get_app_fn
   let env ← get_env
-  let some (Arity, lhs_pos, rhs_pos) ← return <| env.relation_info c
+  let some (Function.OfArity, lhs_pos, rhs_pos) ← return <| env.relation_info c
   let args ← return <| get_app_args e
-  guard (args = Arity)
+  guard (args = Function.OfArity)
   let some lhs ← return <| args.get? lhs_pos
   let some rhs ← return <| args.get? rhs_pos
   return (c, lhs, rhs)

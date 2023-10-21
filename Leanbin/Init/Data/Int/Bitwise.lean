@@ -42,7 +42,7 @@ def testBit : ℤ → ℕ → Bool
 
 #print Int.natBitwise /-
 def natBitwise (f : Bool → Bool → Bool) (m n : ℕ) : ℤ :=
-  cond (f false false) -[Nat.bitwise' (fun x y => not (f x y)) m n+1] (Nat.bitwise' f m n)
+  cond (f false false) -[Nat.bitwise (fun x y => not (f x y)) m n+1] (Nat.bitwise f m n)
 #align int.nat_bitwise Int.natBitwise
 -/
 
@@ -64,38 +64,38 @@ def lnot : ℤ → ℤ
 
 #print Int.lor /-
 def lor : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.lor' m n
-  | (m : ℕ), -[n+1] => -[Nat.ldiff' n m+1]
-  | -[m+1], (n : ℕ) => -[Nat.ldiff' m n+1]
-  | -[m+1], -[n+1] => -[Nat.land' m n+1]
+  | (m : ℕ), (n : ℕ) => Nat.lor m n
+  | (m : ℕ), -[n+1] => -[Nat.ldiff n m+1]
+  | -[m+1], (n : ℕ) => -[Nat.ldiff m n+1]
+  | -[m+1], -[n+1] => -[Nat.land m n+1]
 #align int.lor Int.lor
 -/
 
 #print Int.land /-
 def land : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.land' m n
-  | (m : ℕ), -[n+1] => Nat.ldiff' m n
-  | -[m+1], (n : ℕ) => Nat.ldiff' n m
-  | -[m+1], -[n+1] => -[Nat.lor' m n+1]
+  | (m : ℕ), (n : ℕ) => Nat.land m n
+  | (m : ℕ), -[n+1] => Nat.ldiff m n
+  | -[m+1], (n : ℕ) => Nat.ldiff n m
+  | -[m+1], -[n+1] => -[Nat.lor m n+1]
 #align int.land Int.land
 -/
 
-#print Int.ldiff' /-
-def ldiff' : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.ldiff' m n
-  | (m : ℕ), -[n+1] => Nat.land' m n
-  | -[m+1], (n : ℕ) => -[Nat.lor' m n+1]
-  | -[m+1], -[n+1] => Nat.ldiff' n m
-#align int.ldiff Int.ldiff'
+#print Int.ldiff /-
+def ldiff : ℤ → ℤ → ℤ
+  | (m : ℕ), (n : ℕ) => Nat.ldiff m n
+  | (m : ℕ), -[n+1] => Nat.land m n
+  | -[m+1], (n : ℕ) => -[Nat.lor m n+1]
+  | -[m+1], -[n+1] => Nat.ldiff n m
+#align int.ldiff Int.ldiff
 -/
 
-#print Int.lxor' /-
-def lxor' : ℤ → ℤ → ℤ
-  | (m : ℕ), (n : ℕ) => Nat.lxor' m n
-  | (m : ℕ), -[n+1] => -[Nat.lxor' m n+1]
-  | -[m+1], (n : ℕ) => -[Nat.lxor' m n+1]
-  | -[m+1], -[n+1] => Nat.lxor' m n
-#align int.lxor Int.lxor'
+#print Int.xor /-
+def xor : ℤ → ℤ → ℤ
+  | (m : ℕ), (n : ℕ) => Nat.xor m n
+  | (m : ℕ), -[n+1] => -[Nat.xor m n+1]
+  | -[m+1], (n : ℕ) => -[Nat.xor m n+1]
+  | -[m+1], -[n+1] => Nat.xor m n
+#align int.lxor Int.xor
 -/
 
 #print ShiftLeft.shiftLeft /-

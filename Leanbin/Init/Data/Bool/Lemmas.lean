@@ -281,23 +281,23 @@ theorem Bool.decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q)
 #align to_bool_congr Bool.decide_congr
 -/
 
-#print Bool.or_coe_iff /-
+#print Bool.coe_or_iff /-
 @[simp]
-theorem Bool.or_coe_iff (a b : Bool) : a || b ↔ a ∨ b := by cases a <;> cases b <;> exact by decide
-#align bor_coe_iff Bool.or_coe_iff
+theorem Bool.coe_or_iff (a b : Bool) : a || b ↔ a ∨ b := by cases a <;> cases b <;> exact by decide
+#align bor_coe_iff Bool.coe_or_iff
 -/
 
-#print Bool.and_coe_iff /-
+#print Bool.coe_and_iff /-
 @[simp]
-theorem Bool.and_coe_iff (a b : Bool) : a && b ↔ a ∧ b := by cases a <;> cases b <;> exact by decide
-#align band_coe_iff Bool.and_coe_iff
+theorem Bool.coe_and_iff (a b : Bool) : a && b ↔ a ∧ b := by cases a <;> cases b <;> exact by decide
+#align band_coe_iff Bool.coe_and_iff
 -/
 
-#print Bool.xor_coe_iff /-
+#print Bool.coe_xor_iff /-
 @[simp]
-theorem Bool.xor_coe_iff (a b : Bool) : xor a b ↔ Xor' a b := by
+theorem Bool.coe_xor_iff (a b : Bool) : xor a b ↔ Xor' a b := by
   cases a <;> cases b <;> exact by decide
-#align bxor_coe_iff Bool.xor_coe_iff
+#align bxor_coe_iff Bool.coe_xor_iff
 -/
 
 #print Bool.ite_eq_true_distrib /-

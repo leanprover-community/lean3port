@@ -1209,7 +1209,6 @@ protected theorem min_zero (a : ℕ) : min a 0 = 0 :=
 #align nat.min_zero Nat.min_zero
 -/
 
-#print Nat.min_succ_succ /-
 -- Distribute succ over min
 theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
   have f : x ≤ y → min (succ x) (succ y) = succ (min x y) := fun p =>
@@ -1222,7 +1221,6 @@ theorem min_succ_succ (x y : ℕ) : min (succ x) (succ y) = succ (min x y) :=
       _ = succ (min x y) := congr_arg succ (Eq.symm (if_neg p))
   Decidable.byCases f g
 #align nat.min_succ_succ Nat.min_succ_succ
--/
 
 #print Nat.sub_eq_sub_min /-
 theorem sub_eq_sub_min (n m : ℕ) : n - m = n - min n m :=

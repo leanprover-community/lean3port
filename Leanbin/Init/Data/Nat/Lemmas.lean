@@ -550,21 +550,21 @@ theorem le_succ_of_pred_le {n m : ℕ} : pred n ≤ m → n ≤ succ m :=
 #align nat.le_succ_of_pred_le Nat.le_succ_of_pred_le
 -/
 
-#print Nat.le_lt_antisymm /-
-theorem le_lt_antisymm {n m : ℕ} (h₁ : n ≤ m) (h₂ : m < n) : False :=
+#print Nat.le_lt_asymm /-
+theorem le_lt_asymm {n m : ℕ} (h₁ : n ≤ m) (h₂ : m < n) : False :=
   Nat.lt_irrefl n (Nat.lt_of_le_of_lt h₁ h₂)
-#align nat.le_lt_antisymm Nat.le_lt_antisymm
+#align nat.le_lt_antisymm Nat.le_lt_asymm
 -/
 
-#print Nat.lt_le_antisymm /-
-theorem lt_le_antisymm {n m : ℕ} (h₁ : n < m) (h₂ : m ≤ n) : False :=
-  le_lt_antisymm h₂ h₁
-#align nat.lt_le_antisymm Nat.lt_le_antisymm
+#print Nat.lt_le_asymm /-
+theorem lt_le_asymm {n m : ℕ} (h₁ : n < m) (h₂ : m ≤ n) : False :=
+  le_lt_asymm h₂ h₁
+#align nat.lt_le_antisymm Nat.lt_le_asymm
 -/
 
 #print Nat.lt_asymm /-
 protected theorem lt_asymm {n m : ℕ} (h₁ : n < m) : ¬m < n :=
-  le_lt_antisymm (Nat.le_of_lt h₁)
+  le_lt_asymm (Nat.le_of_lt h₁)
 #align nat.lt_asymm Nat.lt_asymm
 -/
 

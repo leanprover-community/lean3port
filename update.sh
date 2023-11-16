@@ -25,7 +25,7 @@ sed -i.bak '
   /^require mathlib / s/@"\([^"]*\)"$/@"'$mathlib4_rev'"/
 ' lakefile.lean
 rm lakefile.lean.bak
-lake update
+MATHLIB_NO_CACHE_ON_UPDATE=1 lake update
 
 rm -rf Leanbin
 curl -qsSL https://github.com/leanprover-community/mathport/releases/download/$tag/lean3-synport.tar.gz \

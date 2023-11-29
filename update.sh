@@ -16,7 +16,7 @@ curl -qsSL {https://raw.githubusercontent.com/leanprover-community/mathport/$tag
 
 mathlib4_rev=$(
   curl -qsSL https://raw.githubusercontent.com/leanprover-community/mathport/$tag/lake-manifest.json |
-  jq -r '.packages[].git | select(.name=="mathlib") | .rev'
+  jq -r '.packages[] | select(.name=="mathlib") | .rev'
 )
 
 # We specify a suffix for `-i` for macos compatibility.

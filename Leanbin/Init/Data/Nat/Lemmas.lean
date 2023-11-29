@@ -1031,10 +1031,10 @@ protected theorem sub_one (n : ℕ) : n - 1 = pred n :=
 #align nat.sub_one Nat.sub_one
 -/
 
-#print Nat.succ_sub_one /-
-theorem succ_sub_one (n : ℕ) : succ n - 1 = n :=
+#print Nat.add_one_sub_one /-
+theorem add_one_sub_one (n : ℕ) : succ n - 1 = n :=
   rfl
-#align nat.succ_sub_one Nat.succ_sub_one
+#align nat.succ_sub_one Nat.add_one_sub_one
 -/
 
 #print Nat.succ_pred_eq_of_pos /-

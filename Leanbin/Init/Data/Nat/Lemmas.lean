@@ -190,9 +190,9 @@ protected theorem one_mul (n : ℕ) : 1 * n = n := by rw [Nat.mul_comm, Nat.mul_
 #align nat.one_mul Nat.one_mul
 -/
 
-#print Nat.succ_add_eq_succ_add /-
-theorem succ_add_eq_succ_add (n m : ℕ) : succ n + m = n + succ m := by simp [succ_add, add_succ]
-#align nat.succ_add_eq_succ_add Nat.succ_add_eq_succ_add
+#print Nat.succ_add_eq_add_succ /-
+theorem succ_add_eq_add_succ (n m : ℕ) : succ n + m = n + succ m := by simp [succ_add, add_succ]
+#align nat.succ_add_eq_succ_add Nat.succ_add_eq_add_succ
 -/
 
 #print Nat.eq_zero_of_mul_eq_zero /-

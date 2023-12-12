@@ -1437,11 +1437,9 @@ theorem lt_of_le_sub_one {a b : ℤ} (H : a ≤ b - 1) : a < b :=
 #align int.lt_of_le_sub_one Int.lt_of_le_sub_one
 -/
 
-#print Int.sign_of_succ /-
 theorem sign_of_succ (n : Nat) : sign (Nat.succ n) = 1 :=
   rfl
 #align int.sign_of_succ Int.sign_of_succ
--/
 
 #print Int.sign_eq_one_of_pos /-
 theorem sign_eq_one_of_pos {a : ℤ} (h : 0 < a) : sign a = 1 :=

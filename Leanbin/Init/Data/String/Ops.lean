@@ -35,6 +35,7 @@ theorem zero_lt_length_nextToString_of_hasNext {it : Iterator} :
 
 end Iterator
 
+/- ./././Mathport/Syntax/Translate/Command.lean:298:8: warning: using_well_founded used, estimated equivalent -/
 -- TODO(Sebastian): generalize to something like
 -- https://doc.rust-lang.org/std/primitive.str.html#method.split
 private def split_core (p : Char → Bool) : Iterator → Iterator → List String
@@ -48,7 +49,8 @@ private def split_core (p : Char → Bool) : Iterator → Iterator → List Stri
         (start.extract stop).getD "" :: split_core stop.next stop.next
       else split_core start stop.next
     else [start.nextToString]
-termination_by' ⟨_, measure_wf fun e => e.2.nextToString.length⟩
+termination_by
+  _ x => WellFounded.wrap (measure_wf fun e => e.2.nextToString.length) x
 
 #print String.split /-
 def split (p : Char → Bool) (s : String) : List String :=

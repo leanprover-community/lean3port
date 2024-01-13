@@ -1185,13 +1185,13 @@ protected theorem mul_self_sub_mul_self_eq (a b : Nat) : a * a - b * b = (a + b)
 #align nat.mul_self_sub_mul_self_eq Nat.mul_self_sub_mul_self_eq
 -/
 
-#print Nat.succ_mul_succ_eq /-
-theorem succ_mul_succ_eq (a b : Nat) : succ a * succ b = a * b + a + b + 1 :=
+#print Nat.succ_mul_succ /-
+theorem succ_mul_succ (a b : Nat) : succ a * succ b = a * b + a + b + 1 :=
   by
   rw [← add_one, ← add_one]
   simp [Nat.right_distrib, Nat.left_distrib, Nat.add_left_comm, Nat.mul_one, Nat.one_mul,
     Nat.add_assoc]
-#align nat.succ_mul_succ_eq Nat.succ_mul_succ_eq
+#align nat.succ_mul_succ_eq Nat.succ_mul_succ
 -/
 
 /-! min -/

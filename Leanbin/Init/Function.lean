@@ -91,16 +91,16 @@ infixl:2 " on " => onFun
 
 notation f " -[" op "]- " g => combine f op g
 
-#print Function.left_id /-
-theorem left_id (f : α → β) : id ∘ f = f :=
+#print Function.id_comp /-
+theorem id_comp (f : α → β) : id ∘ f = f :=
   rfl
-#align function.left_id Function.left_id
+#align function.left_id Function.id_comp
 -/
 
-#print Function.right_id /-
-theorem right_id (f : α → β) : f ∘ id = f :=
+#print Function.comp_id /-
+theorem comp_id (f : α → β) : f ∘ id = f :=
   rfl
-#align function.right_id Function.right_id
+#align function.right_id Function.comp_id
 -/
 
 #print Function.comp_apply /-
@@ -116,24 +116,28 @@ theorem comp.assoc (f : φ → δ) (g : β → φ) (h : α → β) : (f ∘ g) �
 #align function.comp.assoc Function.comp.assoc
 -/
 
-#print Function.comp.left_id /-
+/- warning: function.comp.left_id clashes with function.left_id -> Function.id_comp
+Case conversion may be inaccurate. Consider using '#align function.comp.left_id Function.id_compₓ'. -/
+#print Function.id_comp /-
 @[simp]
-theorem comp.left_id (f : α → β) : id ∘ f = f :=
+theorem Function.id_comp (f : α → β) : id ∘ f = f :=
   rfl
-#align function.comp.left_id Function.comp.left_id
+#align function.comp.left_id Function.id_comp
 -/
 
-#print Function.comp.right_id /-
+/- warning: function.comp.right_id clashes with function.right_id -> Function.comp_id
+Case conversion may be inaccurate. Consider using '#align function.comp.right_id Function.comp_idₓ'. -/
+#print Function.comp_id /-
 @[simp]
-theorem comp.right_id (f : α → β) : f ∘ id = f :=
+theorem Function.comp_id (f : α → β) : f ∘ id = f :=
   rfl
-#align function.comp.right_id Function.comp.right_id
+#align function.comp.right_id Function.comp_id
 -/
 
-#print Function.comp_const_right /-
-theorem comp_const_right (f : β → φ) (b : β) : f ∘ const α b = const α (f b) :=
+#print Function.comp_const /-
+theorem comp_const (f : β → φ) (b : β) : f ∘ const α b = const α (f b) :=
   rfl
-#align function.comp_const_right Function.comp_const_right
+#align function.comp_const_right Function.comp_const
 -/
 
 #print Function.Injective /-

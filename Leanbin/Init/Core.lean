@@ -898,6 +898,8 @@ inductive BinTree (α : Type u)
 
 attribute [elab_without_expected_type] BinTree.node BinTree.leaf
 
+/- warning: infer_instance clashes with topological_group.t3_space -> inferInstance
+Case conversion may be inaccurate. Consider using '#align infer_instance inferInstanceₓ'. -/
 #print inferInstance /-
 /-- Like `by apply_instance`, but not dependent on the tactic framework. -/
 @[reducible]

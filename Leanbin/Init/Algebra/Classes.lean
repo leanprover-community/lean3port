@@ -30,11 +30,9 @@ class IsSymmOp (α : Type u) (β : outParam (Type v)) (op : α → α → β) : 
 #align is_symm_op IsSymmOp
 -/
 
-#print IsCommutative /-
 class IsCommutative (α : Type u) (op : α → α → α) : Prop where
   comm : ∀ a b, op a b = op b a
-#align is_commutative IsCommutative
--/
+#align is_commutative IsCommutativeₓ
 
 #print isSymmOp_of_isCommutative /-
 instance (priority := 100) isSymmOp_of_isCommutative (α : Type u) (op : α → α → α)
@@ -42,23 +40,17 @@ instance (priority := 100) isSymmOp_of_isCommutative (α : Type u) (op : α → 
 #align is_symm_op_of_is_commutative isSymmOp_of_isCommutative
 -/
 
-#print IsAssociative /-
 class IsAssociative (α : Type u) (op : α → α → α) : Prop where
   and_assoc : ∀ a b c, op (op a b) c = op a (op b c)
-#align is_associative IsAssociative
--/
+#align is_associative IsAssociativeₓ
 
-#print IsLeftId /-
-class IsLeftId (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
+class Std.LawfulLeftIdentity (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_id : ∀ a, op o a = a
-#align is_left_id IsLeftId
--/
+#align is_left_id Std.LawfulLeftIdentityₓ
 
-#print IsRightId /-
-class IsRightId (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
+class Std.LawfulRightIdentity (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   right_id : ∀ a, op a o = a
-#align is_right_id IsRightId
--/
+#align is_right_id Std.LawfulRightIdentityₓ
 
 class IsLeftNull (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_null : ∀ a, op o a = o
@@ -80,10 +72,10 @@ class IsRightCancel (α : Type u) (op : α → α → α) : Prop where
 #align is_right_cancel IsRightCancel
 -/
 
-#print IsIdempotent /-
-class IsIdempotent (α : Type u) (op : α → α → α) : Prop where
+#print Std.IdempotentOp /-
+class Std.IdempotentOp (α : Type u) (op : α → α → α) : Prop where
   idempotent : ∀ a, op a a = a
-#align is_idempotent IsIdempotent
+#align is_idempotent Std.IdempotentOp
 -/
 
 class IsLeftDistrib (α : Type u) (op₁ : α → α → α) (op₂ : outParam <| α → α → α) : Prop where

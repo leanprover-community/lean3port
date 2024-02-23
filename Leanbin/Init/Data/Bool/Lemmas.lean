@@ -89,6 +89,8 @@ theorem Bool.xor_true (b : Bool) : xor b true = not b := by cases b <;> simp
 #align bxor_tt Bool.xor_true
 -/
 
+/- warning: bxor_ff clashes with bool.bxor_ff_right -> Bool.xor_false
+Case conversion may be inaccurate. Consider using '#align bxor_ff Bool.xor_falseₓ'. -/
 #print Bool.xor_false /-
 theorem Bool.xor_false (b : Bool) : xor b false = b := by cases b <;> simp
 #align bxor_ff Bool.xor_false
@@ -100,6 +102,8 @@ theorem Bool.true_xor (b : Bool) : xor true b = not b := by cases b <;> simp
 #align tt_bxor Bool.true_xor
 -/
 
+/- warning: ff_bxor clashes with bool.bxor_ff_left -> Bool.false_xor
+Case conversion may be inaccurate. Consider using '#align ff_bxor Bool.false_xorₓ'. -/
 #print Bool.false_xor /-
 theorem Bool.false_xor (b : Bool) : xor false b = b := by cases b <;> simp
 #align ff_bxor Bool.false_xor

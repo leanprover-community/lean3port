@@ -16,31 +16,31 @@ the tactic framework.
 -/
 
 
-#print if_true_right_eq_or /-
+#print if_true_right /-
 @[simp]
-theorem if_true_right_eq_or (p : Prop) [h : Decidable p] (q : Prop) :
+theorem if_true_right (p : Prop) [h : Decidable p] (q : Prop) :
     (if p then q else True) = (¬p ∨ q) := by by_cases p <;> simp [h]
-#align if_true_right_eq_or if_true_right_eq_or
+#align if_true_right_eq_or if_true_right
 -/
 
-#print if_true_left_eq_or /-
+#print if_true_left /-
 @[simp]
-theorem if_true_left_eq_or (p : Prop) [h : Decidable p] (q : Prop) :
-    (if p then True else q) = (p ∨ q) := by by_cases p <;> simp [h]
-#align if_true_left_eq_or if_true_left_eq_or
+theorem if_true_left (p : Prop) [h : Decidable p] (q : Prop) : (if p then True else q) = (p ∨ q) :=
+  by by_cases p <;> simp [h]
+#align if_true_left_eq_or if_true_left
 -/
 
-#print if_false_right_eq_and /-
+#print if_false_right /-
 @[simp]
-theorem if_false_right_eq_and (p : Prop) [h : Decidable p] (q : Prop) :
+theorem if_false_right (p : Prop) [h : Decidable p] (q : Prop) :
     (if p then q else False) = (p ∧ q) := by by_cases p <;> simp [h]
-#align if_false_right_eq_and if_false_right_eq_and
+#align if_false_right_eq_and if_false_right
 -/
 
-#print if_false_left_eq_and /-
+#print if_false_left /-
 @[simp]
-theorem if_false_left_eq_and (p : Prop) [h : Decidable p] (q : Prop) :
+theorem if_false_left (p : Prop) [h : Decidable p] (q : Prop) :
     (if p then False else q) = (¬p ∧ q) := by by_cases p <;> simp [h]
-#align if_false_left_eq_and if_false_left_eq_and
+#align if_false_left_eq_and if_false_left
 -/
 

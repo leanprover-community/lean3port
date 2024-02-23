@@ -30,19 +30,23 @@ class IsSymmOp (α : Type u) (β : outParam (Type v)) (op : α → α → β) : 
 #align is_symm_op IsSymmOp
 -/
 
-class IsCommutative (α : Type u) (op : α → α → α) : Prop where
+#print Std.Commutative /-
+class Std.Commutative (α : Type u) (op : α → α → α) : Prop where
   comm : ∀ a b, op a b = op b a
-#align is_commutative IsCommutativeₓ
+#align is_commutative Std.Commutative
+-/
 
 #print isSymmOp_of_isCommutative /-
 instance (priority := 100) isSymmOp_of_isCommutative (α : Type u) (op : α → α → α)
-    [IsCommutative α op] : IsSymmOp α α op where symm_op := IsCommutative.comm
+    [Std.Commutative α op] : IsSymmOp α α op where symm_op := Std.Commutative.comm
 #align is_symm_op_of_is_commutative isSymmOp_of_isCommutative
 -/
 
-class IsAssociative (α : Type u) (op : α → α → α) : Prop where
+#print Std.Associative /-
+class Std.Associative (α : Type u) (op : α → α → α) : Prop where
   and_assoc : ∀ a b c, op (op a b) c = op a (op b c)
-#align is_associative IsAssociativeₓ
+#align is_associative Std.Associative
+-/
 
 class Std.LawfulLeftIdentity (α : Type u) (op : α → α → α) (o : outParam α) : Prop where
   left_id : ∀ a, op o a = a

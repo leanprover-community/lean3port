@@ -146,14 +146,14 @@ theorem ofNat_zero_le (n : ℕ) : 0 ≤ (↑n : ℤ) :=
 
 #print Int.eq_ofNat_of_zero_le /-
 theorem eq_ofNat_of_zero_le {a : ℤ} (h : 0 ≤ a) : ∃ n : ℕ, a = n := by have t := le.dest_sub h;
-  simp at t ; exact t
+  simp at t; exact t
 #align int.eq_coe_of_zero_le Int.eq_ofNat_of_zero_le
 -/
 
 #print Int.eq_succ_of_zero_lt /-
 theorem eq_succ_of_zero_lt {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
   let ⟨n, (h : ↑(1 + n) = a)⟩ := le.dest h
-  ⟨n, by rw [Nat.add_comm] at h  <;> exact h.symm⟩
+  ⟨n, by rw [Nat.add_comm] at h <;> exact h.symm⟩
 #align int.eq_succ_of_zero_lt Int.eq_succ_of_zero_lt
 -/
 
@@ -242,7 +242,7 @@ protected theorem lt_irrefl (a : ℤ) : ¬a < a := fun this : a < a =>
 
 #print Int.ne_of_lt /-
 protected theorem ne_of_lt {a b : ℤ} (h : a < b) : a ≠ b := fun this : a = b =>
-  absurd (by rw [this] at h ; exact h) (Int.lt_irrefl b)
+  absurd (by rw [this] at h; exact h) (Int.lt_irrefl b)
 #align int.ne_of_lt Int.ne_of_lt
 -/
 
@@ -259,7 +259,7 @@ protected theorem lt_iff_le_and_ne (a b : ℤ) : a < b ↔ a ≤ b ∧ a ≠ b :
       have : n ≠ 0 := fun this : n = 0 => aneb (by rw [← hn, this, Int.ofNat_zero, Int.add_zero])
       have : n = Nat.succ (Nat.pred n) :=
         Eq.symm (Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero this))
-      lt.intro (by rw [this] at hn ; exact hn)
+      lt.intro (by rw [this] at hn; exact hn)
 #align int.lt_iff_le_and_ne Int.lt_iff_le_and_ne
 -/
 
@@ -280,7 +280,7 @@ protected theorem add_le_add_left {a b : ℤ} (h : a ≤ b) (c : ℤ) : c + a �
 protected theorem add_lt_add_left {a b : ℤ} (h : a < b) (c : ℤ) : c + a < c + b :=
   Iff.mpr (Int.lt_iff_le_and_ne _ _)
     (And.intro (Int.add_le_add_left (le_of_lt h) _) fun heq =>
-      Int.lt_irrefl b (by rw [Int.add_left_cancel HEq] at h ; exact h))
+      Int.lt_irrefl b (by rw [Int.add_left_cancel HEq] at h; exact h))
 #align int.add_lt_add_left Int.add_lt_add_left
 -/
 
@@ -408,7 +408,7 @@ protected theorem eq_of_sub_eq_zero {a b : ℤ} (h : a - b = 0) : a = b :=
   by
   have : 0 + b = b := by rw [Int.zero_add]
   have : a - b + b = b := by rwa [h]
-  rwa [Int.sub_eq_add_neg, Int.neg_add_cancel_right] at this 
+  rwa [Int.sub_eq_add_neg, Int.neg_add_cancel_right] at this
 #align int.eq_of_sub_eq_zero Int.eq_of_sub_eq_zero
 -/
 
@@ -471,7 +471,7 @@ section
 protected theorem le_of_add_le_add_left {a b c : ℤ} (h : a + b ≤ a + c) : b ≤ c :=
   by
   have : -a + (a + b) ≤ -a + (a + c) := Int.add_le_add_left h _
-  simp [Int.neg_add_cancel_left] at this 
+  simp [Int.neg_add_cancel_left] at this
   assumption
 #align int.le_of_add_le_add_left Int.le_of_add_le_add_left
 -/
@@ -480,7 +480,7 @@ protected theorem le_of_add_le_add_left {a b c : ℤ} (h : a + b ≤ a + c) : b 
 protected theorem lt_of_add_lt_add_left {a b c : ℤ} (h : a + b < a + c) : b < c :=
   by
   have : -a + (a + b) < -a + (a + c) := Int.add_lt_add_left h _
-  simp [Int.neg_add_cancel_left] at this 
+  simp [Int.neg_add_cancel_left] at this
   assumption
 #align int.lt_of_add_lt_add_left Int.lt_of_add_lt_add_left
 -/
@@ -509,7 +509,7 @@ protected theorem add_le_add {a b c d : ℤ} (h₁ : a ≤ b) (h₂ : c ≤ d) :
 protected theorem le_add_of_nonneg_right {a b : ℤ} (h : 0 ≤ b) : a ≤ a + b :=
   by
   have : a + b ≥ a + 0 := Int.add_le_add_left h a
-  rwa [Int.add_zero] at this 
+  rwa [Int.add_zero] at this
 #align int.le_add_of_nonneg_right Int.le_add_of_nonneg_right
 -/
 
@@ -517,7 +517,7 @@ protected theorem le_add_of_nonneg_right {a b : ℤ} (h : 0 ≤ b) : a ≤ a + b
 protected theorem le_add_of_nonneg_left {a b : ℤ} (h : 0 ≤ b) : a ≤ b + a :=
   by
   have : 0 + a ≤ b + a := Int.add_le_add_right h a
-  rwa [Int.zero_add] at this 
+  rwa [Int.zero_add] at this
 #align int.le_add_of_nonneg_left Int.le_add_of_nonneg_left
 -/
 
@@ -543,7 +543,7 @@ protected theorem add_lt_add_of_lt_of_le {a b c d : ℤ} (h₁ : a < b) (h₂ : 
 protected theorem lt_add_of_pos_right (a : ℤ) {b : ℤ} (h : 0 < b) : a < a + b :=
   by
   have : a + 0 < a + b := Int.add_lt_add_left h a
-  rwa [Int.add_zero] at this 
+  rwa [Int.add_zero] at this
 #align int.lt_add_of_pos_right Int.lt_add_of_pos_right
 -/
 
@@ -551,7 +551,7 @@ protected theorem lt_add_of_pos_right (a : ℤ) {b : ℤ} (h : 0 < b) : a < a + 
 protected theorem lt_add_of_pos_left (a : ℤ) {b : ℤ} (h : 0 < b) : a < b + a :=
   by
   have : 0 + a < b + a := Int.add_lt_add_right h a
-  rwa [Int.zero_add] at this 
+  rwa [Int.zero_add] at this
 #align int.lt_add_of_pos_left Int.lt_add_of_pos_left
 -/
 
@@ -647,13 +647,13 @@ protected theorem neg_le_neg {a b : ℤ} (h : a ≤ b) : -b ≤ -a :=
   by
   have : 0 ≤ -a + b := Int.add_left_neg a ▸ Int.add_le_add_left h (-a)
   have : 0 + -b ≤ -a + b + -b := Int.add_le_add_right this (-b)
-  rwa [Int.add_neg_cancel_right, Int.zero_add] at this 
+  rwa [Int.add_neg_cancel_right, Int.zero_add] at this
 #align int.neg_le_neg Int.neg_le_neg
 -/
 
 #print Int.le_of_neg_le_neg /-
 protected theorem le_of_neg_le_neg {a b : ℤ} (h : -b ≤ -a) : a ≤ b :=
-  suffices - -a ≤ - -b by simp [Int.neg_neg] at this ; assumption
+  suffices - -a ≤ - -b by simp [Int.neg_neg] at this; assumption
   Int.neg_le_neg h
 #align int.le_of_neg_le_neg Int.le_of_neg_le_neg
 -/
@@ -669,7 +669,7 @@ protected theorem nonneg_of_neg_nonpos {a : ℤ} (h : -a ≤ 0) : 0 ≤ a :=
 protected theorem neg_nonpos_of_nonneg {a : ℤ} (h : 0 ≤ a) : -a ≤ 0 :=
   by
   have : -a ≤ -0 := Int.neg_le_neg h
-  rwa [Int.neg_zero] at this 
+  rwa [Int.neg_zero] at this
 #align int.neg_nonpos_of_nonneg Int.neg_nonpos_of_nonneg
 -/
 
@@ -684,7 +684,7 @@ protected theorem nonpos_of_neg_nonneg {a : ℤ} (h : 0 ≤ -a) : a ≤ 0 :=
 protected theorem neg_nonneg_of_nonpos {a : ℤ} (h : a ≤ 0) : 0 ≤ -a :=
   by
   have : -0 ≤ -a := Int.neg_le_neg h
-  rwa [Int.neg_zero] at this 
+  rwa [Int.neg_zero] at this
 #align int.neg_nonneg_of_nonpos Int.neg_nonneg_of_nonpos
 -/
 
@@ -693,7 +693,7 @@ protected theorem neg_lt_neg {a b : ℤ} (h : a < b) : -b < -a :=
   by
   have : 0 < -a + b := Int.add_left_neg a ▸ Int.add_lt_add_left h (-a)
   have : 0 + -b < -a + b + -b := Int.add_lt_add_right this (-b)
-  rwa [Int.add_neg_cancel_right, Int.zero_add] at this 
+  rwa [Int.add_neg_cancel_right, Int.zero_add] at this
 #align int.neg_lt_neg Int.neg_lt_neg
 -/
 
@@ -714,7 +714,7 @@ protected theorem pos_of_neg_neg {a : ℤ} (h : -a < 0) : 0 < a :=
 protected theorem neg_neg_of_pos {a : ℤ} (h : 0 < a) : -a < 0 :=
   by
   have : -a < -0 := Int.neg_lt_neg h
-  rwa [Int.neg_zero] at this 
+  rwa [Int.neg_zero] at this
 #align int.neg_neg_of_pos Int.neg_neg_of_pos
 -/
 
@@ -729,7 +729,7 @@ protected theorem neg_of_neg_pos {a : ℤ} (h : 0 < -a) : a < 0 :=
 protected theorem neg_pos_of_neg {a : ℤ} (h : a < 0) : 0 < -a :=
   by
   have : -0 < -a := Int.neg_lt_neg h
-  rwa [Int.neg_zero] at this 
+  rwa [Int.neg_zero] at this
 #align int.neg_pos_of_neg Int.neg_pos_of_neg
 -/
 
@@ -737,7 +737,7 @@ protected theorem neg_pos_of_neg {a : ℤ} (h : a < 0) : 0 < -a :=
 protected theorem le_neg_of_le_neg {a b : ℤ} (h : a ≤ -b) : b ≤ -a :=
   by
   have h := Int.neg_le_neg h
-  rwa [Int.neg_neg] at h 
+  rwa [Int.neg_neg] at h
 #align int.le_neg_of_le_neg Int.le_neg_of_le_neg
 -/
 
@@ -745,7 +745,7 @@ protected theorem le_neg_of_le_neg {a b : ℤ} (h : a ≤ -b) : b ≤ -a :=
 protected theorem neg_le_of_neg_le {a b : ℤ} (h : -a ≤ b) : -b ≤ a :=
   by
   have h := Int.neg_le_neg h
-  rwa [Int.neg_neg] at h 
+  rwa [Int.neg_neg] at h
 #align int.neg_le_of_neg_le Int.neg_le_of_neg_le
 -/
 
@@ -753,7 +753,7 @@ protected theorem neg_le_of_neg_le {a b : ℤ} (h : -a ≤ b) : -b ≤ a :=
 protected theorem lt_neg_of_lt_neg {a b : ℤ} (h : a < -b) : b < -a :=
   by
   have h := Int.neg_lt_neg h
-  rwa [Int.neg_neg] at h 
+  rwa [Int.neg_neg] at h
 #align int.lt_neg_of_lt_neg Int.lt_neg_of_lt_neg
 -/
 
@@ -761,7 +761,7 @@ protected theorem lt_neg_of_lt_neg {a b : ℤ} (h : a < -b) : b < -a :=
 protected theorem neg_lt_of_neg_lt {a b : ℤ} (h : -a < b) : -b < a :=
   by
   have h := Int.neg_lt_neg h
-  rwa [Int.neg_neg] at h 
+  rwa [Int.neg_neg] at h
 #align int.neg_lt_of_neg_lt Int.neg_lt_of_neg_lt
 -/
 
@@ -769,7 +769,7 @@ protected theorem neg_lt_of_neg_lt {a b : ℤ} (h : -a < b) : -b < a :=
 protected theorem sub_nonneg_of_le {a b : ℤ} (h : b ≤ a) : 0 ≤ a - b :=
   by
   have h := Int.add_le_add_right h (-b)
-  rwa [Int.add_right_neg] at h 
+  rwa [Int.add_right_neg] at h
 #align int.sub_nonneg_of_le Int.sub_nonneg_of_le
 -/
 
@@ -777,7 +777,7 @@ protected theorem sub_nonneg_of_le {a b : ℤ} (h : b ≤ a) : 0 ≤ a - b :=
 protected theorem le_of_sub_nonneg {a b : ℤ} (h : 0 ≤ a - b) : b ≤ a :=
   by
   have h := Int.add_le_add_right h b
-  rwa [Int.sub_add_cancel, Int.zero_add] at h 
+  rwa [Int.sub_add_cancel, Int.zero_add] at h
 #align int.le_of_sub_nonneg Int.le_of_sub_nonneg
 -/
 
@@ -785,7 +785,7 @@ protected theorem le_of_sub_nonneg {a b : ℤ} (h : 0 ≤ a - b) : b ≤ a :=
 protected theorem sub_nonpos_of_le {a b : ℤ} (h : a ≤ b) : a - b ≤ 0 :=
   by
   have h := Int.add_le_add_right h (-b)
-  rwa [Int.add_right_neg] at h 
+  rwa [Int.add_right_neg] at h
 #align int.sub_nonpos_of_le Int.sub_nonpos_of_le
 -/
 
@@ -793,7 +793,7 @@ protected theorem sub_nonpos_of_le {a b : ℤ} (h : a ≤ b) : a - b ≤ 0 :=
 protected theorem le_of_sub_nonpos {a b : ℤ} (h : a - b ≤ 0) : a ≤ b :=
   by
   have h := Int.add_le_add_right h b
-  rwa [Int.sub_add_cancel, Int.zero_add] at h 
+  rwa [Int.sub_add_cancel, Int.zero_add] at h
 #align int.le_of_sub_nonpos Int.le_of_sub_nonpos
 -/
 
@@ -801,7 +801,7 @@ protected theorem le_of_sub_nonpos {a b : ℤ} (h : a - b ≤ 0) : a ≤ b :=
 protected theorem sub_pos_of_lt {a b : ℤ} (h : b < a) : 0 < a - b :=
   by
   have h := Int.add_lt_add_right h (-b)
-  rwa [Int.add_right_neg] at h 
+  rwa [Int.add_right_neg] at h
 #align int.sub_pos_of_lt Int.sub_pos_of_lt
 -/
 
@@ -809,7 +809,7 @@ protected theorem sub_pos_of_lt {a b : ℤ} (h : b < a) : 0 < a - b :=
 protected theorem lt_of_sub_pos {a b : ℤ} (h : 0 < a - b) : b < a :=
   by
   have h := Int.add_lt_add_right h b
-  rwa [Int.sub_add_cancel, Int.zero_add] at h 
+  rwa [Int.sub_add_cancel, Int.zero_add] at h
 #align int.lt_of_sub_pos Int.lt_of_sub_pos
 -/
 
@@ -817,7 +817,7 @@ protected theorem lt_of_sub_pos {a b : ℤ} (h : 0 < a - b) : b < a :=
 protected theorem sub_neg_of_lt {a b : ℤ} (h : a < b) : a - b < 0 :=
   by
   have h := Int.add_lt_add_right h (-b)
-  rwa [Int.add_right_neg] at h 
+  rwa [Int.add_right_neg] at h
 #align int.sub_neg_of_lt Int.sub_neg_of_lt
 -/
 
@@ -825,7 +825,7 @@ protected theorem sub_neg_of_lt {a b : ℤ} (h : a < b) : a - b < 0 :=
 protected theorem lt_of_sub_neg {a b : ℤ} (h : a - b < 0) : a < b :=
   by
   have h := Int.add_lt_add_right h b
-  rwa [Int.sub_add_cancel, Int.zero_add] at h 
+  rwa [Int.sub_add_cancel, Int.zero_add] at h
 #align int.lt_of_sub_neg Int.lt_of_sub_neg
 -/
 
@@ -833,7 +833,7 @@ protected theorem lt_of_sub_neg {a b : ℤ} (h : a - b < 0) : a < b :=
 protected theorem add_le_of_le_neg_add {a b c : ℤ} (h : b ≤ -a + c) : a + b ≤ c :=
   by
   have h := Int.add_le_add_left h a
-  rwa [Int.add_neg_cancel_left] at h 
+  rwa [Int.add_neg_cancel_left] at h
 #align int.add_le_of_le_neg_add Int.add_le_of_le_neg_add
 -/
 
@@ -841,7 +841,7 @@ protected theorem add_le_of_le_neg_add {a b c : ℤ} (h : b ≤ -a + c) : a + b 
 protected theorem le_neg_add_of_add_le {a b c : ℤ} (h : a + b ≤ c) : b ≤ -a + c :=
   by
   have h := Int.add_le_add_left h (-a)
-  rwa [Int.neg_add_cancel_left] at h 
+  rwa [Int.neg_add_cancel_left] at h
 #align int.le_neg_add_of_add_le Int.le_neg_add_of_add_le
 -/
 
@@ -849,7 +849,7 @@ protected theorem le_neg_add_of_add_le {a b c : ℤ} (h : a + b ≤ c) : b ≤ -
 protected theorem add_le_of_le_sub_left {a b c : ℤ} (h : b ≤ c - a) : a + b ≤ c :=
   by
   have h := Int.add_le_add_left h a
-  rwa [← Int.add_sub_assoc, Int.add_comm a c, Int.add_sub_cancel] at h 
+  rwa [← Int.add_sub_assoc, Int.add_comm a c, Int.add_sub_cancel] at h
 #align int.add_le_of_le_sub_left Int.add_le_of_le_sub_left
 -/
 
@@ -857,7 +857,7 @@ protected theorem add_le_of_le_sub_left {a b c : ℤ} (h : b ≤ c - a) : a + b 
 protected theorem le_sub_left_of_add_le {a b c : ℤ} (h : a + b ≤ c) : b ≤ c - a :=
   by
   have h := Int.add_le_add_right h (-a)
-  rwa [Int.add_comm a b, Int.add_neg_cancel_right] at h 
+  rwa [Int.add_comm a b, Int.add_neg_cancel_right] at h
 #align int.le_sub_left_of_add_le Int.le_sub_left_of_add_le
 -/
 
@@ -865,7 +865,7 @@ protected theorem le_sub_left_of_add_le {a b c : ℤ} (h : a + b ≤ c) : b ≤ 
 protected theorem add_le_of_le_sub_right {a b c : ℤ} (h : a ≤ c - b) : a + b ≤ c :=
   by
   have h := Int.add_le_add_right h b
-  rwa [Int.sub_add_cancel] at h 
+  rwa [Int.sub_add_cancel] at h
 #align int.add_le_of_le_sub_right Int.add_le_of_le_sub_right
 -/
 
@@ -873,7 +873,7 @@ protected theorem add_le_of_le_sub_right {a b c : ℤ} (h : a ≤ c - b) : a + b
 protected theorem le_sub_right_of_add_le {a b c : ℤ} (h : a + b ≤ c) : a ≤ c - b :=
   by
   have h := Int.add_le_add_right h (-b)
-  rwa [Int.add_neg_cancel_right] at h 
+  rwa [Int.add_neg_cancel_right] at h
 #align int.le_sub_right_of_add_le Int.le_sub_right_of_add_le
 -/
 
@@ -881,7 +881,7 @@ protected theorem le_sub_right_of_add_le {a b c : ℤ} (h : a + b ≤ c) : a ≤
 protected theorem le_add_of_neg_add_le {a b c : ℤ} (h : -b + a ≤ c) : a ≤ b + c :=
   by
   have h := Int.add_le_add_left h b
-  rwa [Int.add_neg_cancel_left] at h 
+  rwa [Int.add_neg_cancel_left] at h
 #align int.le_add_of_neg_add_le Int.le_add_of_neg_add_le
 -/
 
@@ -889,7 +889,7 @@ protected theorem le_add_of_neg_add_le {a b c : ℤ} (h : -b + a ≤ c) : a ≤ 
 protected theorem neg_add_le_of_le_add {a b c : ℤ} (h : a ≤ b + c) : -b + a ≤ c :=
   by
   have h := Int.add_le_add_left h (-b)
-  rwa [Int.neg_add_cancel_left] at h 
+  rwa [Int.neg_add_cancel_left] at h
 #align int.neg_add_le_of_le_add Int.neg_add_le_of_le_add
 -/
 
@@ -897,7 +897,7 @@ protected theorem neg_add_le_of_le_add {a b c : ℤ} (h : a ≤ b + c) : -b + a 
 protected theorem le_add_of_sub_left_le {a b c : ℤ} (h : a - b ≤ c) : a ≤ b + c :=
   by
   have h := Int.add_le_add_right h b
-  rwa [Int.sub_add_cancel, Int.add_comm] at h 
+  rwa [Int.sub_add_cancel, Int.add_comm] at h
 #align int.le_add_of_sub_left_le Int.le_add_of_sub_left_le
 -/
 
@@ -905,7 +905,7 @@ protected theorem le_add_of_sub_left_le {a b c : ℤ} (h : a - b ≤ c) : a ≤ 
 protected theorem sub_left_le_of_le_add {a b c : ℤ} (h : a ≤ b + c) : a - b ≤ c :=
   by
   have h := Int.add_le_add_right h (-b)
-  rwa [Int.add_comm b c, Int.add_neg_cancel_right] at h 
+  rwa [Int.add_comm b c, Int.add_neg_cancel_right] at h
 #align int.sub_left_le_of_le_add Int.sub_left_le_of_le_add
 -/
 
@@ -913,7 +913,7 @@ protected theorem sub_left_le_of_le_add {a b c : ℤ} (h : a ≤ b + c) : a - b 
 protected theorem le_add_of_sub_right_le {a b c : ℤ} (h : a - c ≤ b) : a ≤ b + c :=
   by
   have h := Int.add_le_add_right h c
-  rwa [Int.sub_add_cancel] at h 
+  rwa [Int.sub_add_cancel] at h
 #align int.le_add_of_sub_right_le Int.le_add_of_sub_right_le
 -/
 
@@ -921,14 +921,14 @@ protected theorem le_add_of_sub_right_le {a b c : ℤ} (h : a - c ≤ b) : a ≤
 protected theorem sub_right_le_of_le_add {a b c : ℤ} (h : a ≤ b + c) : a - c ≤ b :=
   by
   have h := Int.add_le_add_right h (-c)
-  rwa [Int.add_neg_cancel_right] at h 
+  rwa [Int.add_neg_cancel_right] at h
 #align int.sub_right_le_of_le_add Int.sub_right_le_of_le_add
 -/
 
 #print Int.le_add_of_neg_add_le_left /-
 protected theorem le_add_of_neg_add_le_left {a b c : ℤ} (h : -b + a ≤ c) : a ≤ b + c :=
   by
-  rw [Int.add_comm] at h 
+  rw [Int.add_comm] at h
   exact Int.le_add_of_sub_left_le h
 #align int.le_add_of_neg_add_le_left Int.le_add_of_neg_add_le_left
 -/
@@ -944,7 +944,7 @@ protected theorem neg_add_le_left_of_le_add {a b c : ℤ} (h : a ≤ b + c) : -b
 #print Int.le_add_of_neg_add_le_right /-
 protected theorem le_add_of_neg_add_le_right {a b c : ℤ} (h : -c + a ≤ b) : a ≤ b + c :=
   by
-  rw [Int.add_comm] at h 
+  rw [Int.add_comm] at h
   exact Int.le_add_of_sub_right_le h
 #align int.le_add_of_neg_add_le_right Int.le_add_of_neg_add_le_right
 -/
@@ -952,7 +952,7 @@ protected theorem le_add_of_neg_add_le_right {a b c : ℤ} (h : -c + a ≤ b) : 
 #print Int.neg_add_le_right_of_le_add /-
 protected theorem neg_add_le_right_of_le_add {a b c : ℤ} (h : a ≤ b + c) : -c + a ≤ b :=
   by
-  rw [Int.add_comm] at h 
+  rw [Int.add_comm] at h
   exact Int.neg_add_le_left_of_le_add h
 #align int.neg_add_le_right_of_le_add Int.neg_add_le_right_of_le_add
 -/
@@ -967,7 +967,7 @@ protected theorem le_add_of_neg_le_sub_left {a b c : ℤ} (h : -a ≤ b - c) : c
 protected theorem neg_le_sub_left_of_le_add {a b c : ℤ} (h : c ≤ a + b) : -a ≤ b - c :=
   by
   have h := Int.le_neg_add_of_add_le (Int.sub_left_le_of_le_add h)
-  rwa [Int.add_comm] at h 
+  rwa [Int.add_comm] at h
 #align int.neg_le_sub_left_of_le_add Int.neg_le_sub_left_of_le_add
 -/
 
@@ -1011,7 +1011,7 @@ protected theorem sub_le_sub {a b c d : ℤ} (hab : a ≤ b) (hcd : c ≤ d) : a
 protected theorem add_lt_of_lt_neg_add {a b c : ℤ} (h : b < -a + c) : a + b < c :=
   by
   have h := Int.add_lt_add_left h a
-  rwa [Int.add_neg_cancel_left] at h 
+  rwa [Int.add_neg_cancel_left] at h
 #align int.add_lt_of_lt_neg_add Int.add_lt_of_lt_neg_add
 -/
 
@@ -1019,7 +1019,7 @@ protected theorem add_lt_of_lt_neg_add {a b c : ℤ} (h : b < -a + c) : a + b < 
 protected theorem lt_neg_add_of_add_lt {a b c : ℤ} (h : a + b < c) : b < -a + c :=
   by
   have h := Int.add_lt_add_left h (-a)
-  rwa [Int.neg_add_cancel_left] at h 
+  rwa [Int.neg_add_cancel_left] at h
 #align int.lt_neg_add_of_add_lt Int.lt_neg_add_of_add_lt
 -/
 
@@ -1027,7 +1027,7 @@ protected theorem lt_neg_add_of_add_lt {a b c : ℤ} (h : a + b < c) : b < -a + 
 protected theorem add_lt_of_lt_sub_left {a b c : ℤ} (h : b < c - a) : a + b < c :=
   by
   have h := Int.add_lt_add_left h a
-  rwa [← Int.add_sub_assoc, Int.add_comm a c, Int.add_sub_cancel] at h 
+  rwa [← Int.add_sub_assoc, Int.add_comm a c, Int.add_sub_cancel] at h
 #align int.add_lt_of_lt_sub_left Int.add_lt_of_lt_sub_left
 -/
 
@@ -1035,7 +1035,7 @@ protected theorem add_lt_of_lt_sub_left {a b c : ℤ} (h : b < c - a) : a + b < 
 protected theorem lt_sub_left_of_add_lt {a b c : ℤ} (h : a + b < c) : b < c - a :=
   by
   have h := Int.add_lt_add_right h (-a)
-  rwa [Int.add_comm a b, Int.add_neg_cancel_right] at h 
+  rwa [Int.add_comm a b, Int.add_neg_cancel_right] at h
 #align int.lt_sub_left_of_add_lt Int.lt_sub_left_of_add_lt
 -/
 
@@ -1043,7 +1043,7 @@ protected theorem lt_sub_left_of_add_lt {a b c : ℤ} (h : a + b < c) : b < c - 
 protected theorem add_lt_of_lt_sub_right {a b c : ℤ} (h : a < c - b) : a + b < c :=
   by
   have h := Int.add_lt_add_right h b
-  rwa [Int.sub_add_cancel] at h 
+  rwa [Int.sub_add_cancel] at h
 #align int.add_lt_of_lt_sub_right Int.add_lt_of_lt_sub_right
 -/
 
@@ -1051,7 +1051,7 @@ protected theorem add_lt_of_lt_sub_right {a b c : ℤ} (h : a < c - b) : a + b <
 protected theorem lt_sub_right_of_add_lt {a b c : ℤ} (h : a + b < c) : a < c - b :=
   by
   have h := Int.add_lt_add_right h (-b)
-  rwa [Int.add_neg_cancel_right] at h 
+  rwa [Int.add_neg_cancel_right] at h
 #align int.lt_sub_right_of_add_lt Int.lt_sub_right_of_add_lt
 -/
 
@@ -1059,7 +1059,7 @@ protected theorem lt_sub_right_of_add_lt {a b c : ℤ} (h : a + b < c) : a < c -
 protected theorem lt_add_of_neg_add_lt {a b c : ℤ} (h : -b + a < c) : a < b + c :=
   by
   have h := Int.add_lt_add_left h b
-  rwa [Int.add_neg_cancel_left] at h 
+  rwa [Int.add_neg_cancel_left] at h
 #align int.lt_add_of_neg_add_lt Int.lt_add_of_neg_add_lt
 -/
 
@@ -1067,7 +1067,7 @@ protected theorem lt_add_of_neg_add_lt {a b c : ℤ} (h : -b + a < c) : a < b + 
 protected theorem neg_add_lt_of_lt_add {a b c : ℤ} (h : a < b + c) : -b + a < c :=
   by
   have h := Int.add_lt_add_left h (-b)
-  rwa [Int.neg_add_cancel_left] at h 
+  rwa [Int.neg_add_cancel_left] at h
 #align int.neg_add_lt_of_lt_add Int.neg_add_lt_of_lt_add
 -/
 
@@ -1075,7 +1075,7 @@ protected theorem neg_add_lt_of_lt_add {a b c : ℤ} (h : a < b + c) : -b + a < 
 protected theorem lt_add_of_sub_left_lt {a b c : ℤ} (h : a - b < c) : a < b + c :=
   by
   have h := Int.add_lt_add_right h b
-  rwa [Int.sub_add_cancel, Int.add_comm] at h 
+  rwa [Int.sub_add_cancel, Int.add_comm] at h
 #align int.lt_add_of_sub_left_lt Int.lt_add_of_sub_left_lt
 -/
 
@@ -1083,7 +1083,7 @@ protected theorem lt_add_of_sub_left_lt {a b c : ℤ} (h : a - b < c) : a < b + 
 protected theorem sub_left_lt_of_lt_add {a b c : ℤ} (h : a < b + c) : a - b < c :=
   by
   have h := Int.add_lt_add_right h (-b)
-  rwa [Int.add_comm b c, Int.add_neg_cancel_right] at h 
+  rwa [Int.add_comm b c, Int.add_neg_cancel_right] at h
 #align int.sub_left_lt_of_lt_add Int.sub_left_lt_of_lt_add
 -/
 
@@ -1091,7 +1091,7 @@ protected theorem sub_left_lt_of_lt_add {a b c : ℤ} (h : a < b + c) : a - b < 
 protected theorem lt_add_of_sub_right_lt {a b c : ℤ} (h : a - c < b) : a < b + c :=
   by
   have h := Int.add_lt_add_right h c
-  rwa [Int.sub_add_cancel] at h 
+  rwa [Int.sub_add_cancel] at h
 #align int.lt_add_of_sub_right_lt Int.lt_add_of_sub_right_lt
 -/
 
@@ -1099,14 +1099,14 @@ protected theorem lt_add_of_sub_right_lt {a b c : ℤ} (h : a - c < b) : a < b +
 protected theorem sub_right_lt_of_lt_add {a b c : ℤ} (h : a < b + c) : a - c < b :=
   by
   have h := Int.add_lt_add_right h (-c)
-  rwa [Int.add_neg_cancel_right] at h 
+  rwa [Int.add_neg_cancel_right] at h
 #align int.sub_right_lt_of_lt_add Int.sub_right_lt_of_lt_add
 -/
 
 #print Int.lt_add_of_neg_add_lt_left /-
 protected theorem lt_add_of_neg_add_lt_left {a b c : ℤ} (h : -b + a < c) : a < b + c :=
   by
-  rw [Int.add_comm] at h 
+  rw [Int.add_comm] at h
   exact Int.lt_add_of_sub_left_lt h
 #align int.lt_add_of_neg_add_lt_left Int.lt_add_of_neg_add_lt_left
 -/
@@ -1122,7 +1122,7 @@ protected theorem neg_add_lt_left_of_lt_add {a b c : ℤ} (h : a < b + c) : -b +
 #print Int.lt_add_of_neg_add_lt_right /-
 protected theorem lt_add_of_neg_add_lt_right {a b c : ℤ} (h : -c + a < b) : a < b + c :=
   by
-  rw [Int.add_comm] at h 
+  rw [Int.add_comm] at h
   exact Int.lt_add_of_sub_right_lt h
 #align int.lt_add_of_neg_add_lt_right Int.lt_add_of_neg_add_lt_right
 -/
@@ -1130,7 +1130,7 @@ protected theorem lt_add_of_neg_add_lt_right {a b c : ℤ} (h : -c + a < b) : a 
 #print Int.neg_add_lt_right_of_lt_add /-
 protected theorem neg_add_lt_right_of_lt_add {a b c : ℤ} (h : a < b + c) : -c + a < b :=
   by
-  rw [Int.add_comm] at h 
+  rw [Int.add_comm] at h
   exact Int.neg_add_lt_left_of_lt_add h
 #align int.neg_add_lt_right_of_lt_add Int.neg_add_lt_right_of_lt_add
 -/
@@ -1145,7 +1145,7 @@ protected theorem lt_add_of_neg_lt_sub_left {a b c : ℤ} (h : -a < b - c) : c <
 protected theorem neg_lt_sub_left_of_lt_add {a b c : ℤ} (h : c < a + b) : -a < b - c :=
   by
   have h := Int.lt_neg_add_of_add_lt (Int.sub_left_lt_of_lt_add h)
-  rwa [Int.add_comm] at h 
+  rwa [Int.add_comm] at h
 #align int.neg_lt_sub_left_of_lt_add Int.neg_lt_sub_left_of_lt_add
 -/
 
@@ -1237,7 +1237,7 @@ protected theorem hMul_lt_hMul_of_pos_left {a b c : ℤ} (h₁ : a < b) (h₂ : 
   by
   have : 0 < b - a := Int.sub_pos_of_lt h₁
   have : 0 < c * (b - a) := Int.hMul_pos h₂ this
-  rw [Int.hMul_sub] at this 
+  rw [Int.hMul_sub] at this
   exact Int.lt_of_sub_pos this
 #align int.mul_lt_mul_of_pos_left Int.hMul_lt_hMul_of_pos_left
 
@@ -1245,7 +1245,7 @@ protected theorem hMul_lt_hMul_of_pos_right {a b c : ℤ} (h₁ : a < b) (h₂ :
   by
   have : 0 < b - a := Int.sub_pos_of_lt h₁
   have : 0 < (b - a) * c := Int.hMul_pos this h₂
-  rw [Int.sub_hMul] at this 
+  rw [Int.sub_hMul] at this
   exact Int.lt_of_sub_pos this
 #align int.mul_lt_mul_of_pos_right Int.hMul_lt_hMul_of_pos_right
 
@@ -1278,13 +1278,13 @@ protected theorem hMul_le_hMul {a b c d : ℤ} (hac : a ≤ c) (hbd : b ≤ d) (
 protected theorem hMul_nonpos_of_nonneg_of_nonpos {a b : ℤ} (ha : 0 ≤ a) (hb : b ≤ 0) : a * b ≤ 0 :=
   by
   have h : a * b ≤ a * 0 := Int.hMul_le_hMul_of_nonneg_left hb ha
-  rwa [Int.hMul_zero] at h 
+  rwa [Int.hMul_zero] at h
 #align int.mul_nonpos_of_nonneg_of_nonpos Int.hMul_nonpos_of_nonneg_of_nonpos
 
 protected theorem hMul_nonpos_of_nonpos_of_nonneg {a b : ℤ} (ha : a ≤ 0) (hb : 0 ≤ b) : a * b ≤ 0 :=
   by
   have h : a * b ≤ 0 * b := Int.hMul_le_hMul_of_nonneg_right ha hb
-  rwa [Int.zero_hMul] at h 
+  rwa [Int.zero_hMul] at h
 #align int.mul_nonpos_of_nonpos_of_nonneg Int.hMul_nonpos_of_nonpos_of_nonneg
 
 protected theorem hMul_lt_hMul {a b c d : ℤ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b)
@@ -1304,13 +1304,13 @@ protected theorem hMul_lt_mul' {a b c d : ℤ} (h1 : a ≤ c) (h2 : b < d) (h3 :
 protected theorem hMul_neg_of_pos_of_neg {a b : ℤ} (ha : 0 < a) (hb : b < 0) : a * b < 0 :=
   by
   have h : a * b < a * 0 := Int.hMul_lt_hMul_of_pos_left hb ha
-  rwa [Int.hMul_zero] at h 
+  rwa [Int.hMul_zero] at h
 #align int.mul_neg_of_pos_of_neg Int.hMul_neg_of_pos_of_neg
 
 protected theorem hMul_neg_of_neg_of_pos {a b : ℤ} (ha : a < 0) (hb : 0 < b) : a * b < 0 :=
   by
   have h : a * b < 0 * b := Int.hMul_lt_hMul_of_pos_right ha hb
-  rwa [Int.zero_hMul] at h 
+  rwa [Int.zero_hMul] at h
 #align int.mul_neg_of_neg_of_pos Int.hMul_neg_of_neg_of_pos
 
 protected theorem hMul_le_hMul_of_nonpos_right {a b c : ℤ} (h : b ≤ a) (hc : c ≤ 0) :
@@ -1318,21 +1318,21 @@ protected theorem hMul_le_hMul_of_nonpos_right {a b c : ℤ} (h : b ≤ a) (hc :
   have : -c ≥ 0 := Int.neg_nonneg_of_nonpos hc
   have : b * -c ≤ a * -c := Int.hMul_le_hMul_of_nonneg_right h this
   have : -(b * c) ≤ -(a * c) := by
-    rwa [← Int.neg_hMul_eq_hMul_neg, ← Int.neg_hMul_eq_hMul_neg] at this 
+    rwa [← Int.neg_hMul_eq_hMul_neg, ← Int.neg_hMul_eq_hMul_neg] at this
   Int.le_of_neg_le_neg this
 #align int.mul_le_mul_of_nonpos_right Int.hMul_le_hMul_of_nonpos_right
 
 protected theorem hMul_nonneg_of_nonpos_of_nonpos {a b : ℤ} (ha : a ≤ 0) (hb : b ≤ 0) : 0 ≤ a * b :=
   by
   have : 0 * b ≤ a * b := Int.hMul_le_hMul_of_nonpos_right ha hb
-  rwa [Int.zero_hMul] at this 
+  rwa [Int.zero_hMul] at this
 #align int.mul_nonneg_of_nonpos_of_nonpos Int.hMul_nonneg_of_nonpos_of_nonpos
 
 protected theorem hMul_lt_hMul_of_neg_left {a b c : ℤ} (h : b < a) (hc : c < 0) : c * a < c * b :=
   have : -c > 0 := Int.neg_pos_of_neg hc
   have : -c * b < -c * a := Int.hMul_lt_hMul_of_pos_left h this
   have : -(c * b) < -(c * a) := by
-    rwa [← Int.neg_hMul_eq_neg_hMul, ← Int.neg_hMul_eq_neg_hMul] at this 
+    rwa [← Int.neg_hMul_eq_neg_hMul, ← Int.neg_hMul_eq_neg_hMul] at this
   Int.lt_of_neg_lt_neg this
 #align int.mul_lt_mul_of_neg_left Int.hMul_lt_hMul_of_neg_left
 
@@ -1340,14 +1340,14 @@ protected theorem hMul_lt_hMul_of_neg_right {a b c : ℤ} (h : b < a) (hc : c < 
   have : -c > 0 := Int.neg_pos_of_neg hc
   have : b * -c < a * -c := Int.hMul_lt_hMul_of_pos_right h this
   have : -(b * c) < -(a * c) := by
-    rwa [← Int.neg_hMul_eq_hMul_neg, ← Int.neg_hMul_eq_hMul_neg] at this 
+    rwa [← Int.neg_hMul_eq_hMul_neg, ← Int.neg_hMul_eq_hMul_neg] at this
   Int.lt_of_neg_lt_neg this
 #align int.mul_lt_mul_of_neg_right Int.hMul_lt_hMul_of_neg_right
 
 protected theorem hMul_pos_of_neg_of_neg {a b : ℤ} (ha : a < 0) (hb : b < 0) : 0 < a * b :=
   by
   have : 0 * b < a * b := Int.hMul_lt_hMul_of_neg_right ha hb
-  rwa [Int.zero_hMul] at this 
+  rwa [Int.zero_hMul] at this
 #align int.mul_pos_of_neg_of_neg Int.hMul_pos_of_neg_of_neg
 
 protected theorem hMul_self_le_hMul_self {a b : ℤ} (h1 : 0 ≤ a) (h2 : a ≤ b) : a * a ≤ b * b :=
@@ -1504,26 +1504,26 @@ protected theorem eq_zero_or_eq_zero_of_mul_eq_zero {a b : ℤ} (h : a * b = 0) 
     match lt_trichotomy 0 b with
     | Or.inl hlt₂ => by
       have : 0 < a * b := Int.hMul_pos hlt₁ hlt₂
-      rw [h] at this 
+      rw [h] at this
       exact absurd this (lt_irrefl _)
     | Or.inr (Or.inl heq₂) => Or.inr heq₂.symm
     | Or.inr (Or.inr hgt₂) =>
       by
       have : 0 > a * b := Int.hMul_neg_of_pos_of_neg hlt₁ hgt₂
-      rw [h] at this 
+      rw [h] at this
       exact absurd this (lt_irrefl _)
   | Or.inr (Or.inl heq₁) => Or.inl heq₁.symm
   | Or.inr (Or.inr hgt₁) =>
     match lt_trichotomy 0 b with
     | Or.inl hlt₂ => by
       have : 0 > a * b := Int.hMul_neg_of_neg_of_pos hgt₁ hlt₂
-      rw [h] at this 
+      rw [h] at this
       exact absurd this (lt_irrefl _)
     | Or.inr (Or.inl heq₂) => Or.inr heq₂.symm
     | Or.inr (Or.inr hgt₂) =>
       by
       have : 0 < a * b := Int.hMul_pos_of_neg_of_neg hgt₁ hgt₂
-      rw [h] at this 
+      rw [h] at this
       exact absurd this (lt_irrefl _)
 #align int.eq_zero_or_eq_zero_of_mul_eq_zero Int.eq_zero_or_eq_zero_of_mul_eq_zero
 -/

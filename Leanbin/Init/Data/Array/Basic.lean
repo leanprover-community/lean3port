@@ -113,7 +113,7 @@ theorem of_beqAux_eq_true [∀ i, DecidableEq (α i)] {a b : DArray n α} :
   | i + 1, h₁, h₂, j, h₃ =>
     by
     have h₂' : read a ⟨i, h₁⟩ = read b ⟨i, h₁⟩ ∧ DArray.beqAux a b i _ = tt := by
-      simp [DArray.beqAux] at h₂ ; assumption
+      simp [DArray.beqAux] at h₂; assumption
     have h₁' : i ≤ n := le_of_lt h₁
     have ih :
       ∀ (j : Nat) (h' : j < i),
@@ -137,11 +137,11 @@ theorem of_beqAux_eq_false [∀ i, DecidableEq (α i)] {a b : DArray n α} :
     ∀ (i : Nat) (h : i ≤ n),
       DArray.beqAux a b i h = false →
         ∃ (j : Nat) (h' : j < i), a.read ⟨j, lt_of_lt_of_le h' h⟩ ≠ b.read ⟨j, lt_of_lt_of_le h' h⟩
-  | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂ ; contradiction
+  | 0, h₁, h₂ => by simp [DArray.beqAux] at h₂; contradiction
   | i + 1, h₁, h₂ =>
     by
     have h₂' : read a ⟨i, h₁⟩ ≠ read b ⟨i, h₁⟩ ∨ DArray.beqAux a b i _ = ff := by
-      simp [DArray.beqAux] at h₂ ; assumption
+      simp [DArray.beqAux] at h₂; assumption
     cases' h₂' with h h
     · exists i; exists Nat.lt_succ_self _; exact h
     · have h₁' : i ≤ n := le_of_lt h₁

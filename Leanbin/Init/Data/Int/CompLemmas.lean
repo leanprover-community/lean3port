@@ -42,8 +42,8 @@ protected theorem zero_ne_neg_of_ne {a : ℤ} (h : 0 ≠ a) : 0 ≠ -a :=
 #print Int.neg_ne_of_pos /-
 protected theorem neg_ne_of_pos {a b : ℤ} : 0 < a → 0 < b → -a ≠ b := fun h₁ h₂ h =>
   by
-  rw [← h] at h₂ 
-  change 0 < a at h₁ 
+  rw [← h] at h₂
+  change 0 < a at h₁
   have := le_of_lt h₁
   exact absurd (le_of_lt h₁) (not_le_of_gt (Int.neg_of_neg_pos h₂))
 #align int.neg_ne_of_pos Int.neg_ne_of_pos

@@ -398,7 +398,7 @@ theorem subNatNat_elim (m n : ℕ) (P : ℕ → ℕ → ℤ → Prop) (hp : ∀ 
       apply hp
     · intro heq
       have h : m ≤ n := Nat.le_of_lt (Nat.lt_of_sub_eq_succ HEq)
-      rw [Nat.sub_eq_iff_eq_add h] at heq 
+      rw [Nat.sub_eq_iff_eq_add h] at heq
       rw [HEq, Nat.add_comm]
       apply hn
   delta sub_nat_nat
@@ -935,7 +935,7 @@ protected theorem add_left_comm (a b c : ℤ) : a + (b + c) = b + (a + c) := by
 protected theorem add_left_cancel {a b c : ℤ} (h : a + b = a + c) : b = c :=
   by
   have : -a + (a + b) = -a + (a + c) := by rw [h]
-  rwa [← Int.add_assoc, ← Int.add_assoc, Int.add_left_neg, Int.zero_add, Int.zero_add] at this 
+  rwa [← Int.add_assoc, ← Int.add_assoc, Int.add_left_neg, Int.zero_add, Int.zero_add] at this
 #align int.add_left_cancel Int.add_left_cancel
 -/
 

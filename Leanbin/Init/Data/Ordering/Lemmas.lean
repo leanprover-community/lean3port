@@ -11,7 +11,7 @@ import Init.IteSimp
 
 #align_import init.data.ordering.lemmas from "leanprover-community/lean"@"4bd314f7bd5e0c9e813fc201f1279a23f13f9f1d"
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:339:40: warning: unsupported option default_priority -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option default_priority -/
 set_option default_priority 100
 
 universe u

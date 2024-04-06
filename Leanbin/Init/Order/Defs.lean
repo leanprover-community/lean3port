@@ -11,7 +11,7 @@ import Init.Algebra.Classes
 
 #align_import init.algebra.order from "leanprover-community/lean"@"c2bcdbcbe741ed37c361a30d38e179182b989f76"
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:339:40: warning: unsupported option default_priority -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option default_priority -/
 /- Make sure instances defined in this file have lower priority than the ones
    defined for concrete structures -/
 /- Make sure instances defined in this file have lower priority than the ones
@@ -22,7 +22,7 @@ universe u
 
 variable {α : Type u}
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:339:40: warning: unsupported option auto_param.check_exists -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option auto_param.check_exists -/
 set_option auto_param.check_exists false
 
 section Preorder

@@ -48,11 +48,9 @@ theorem eq_false {a : Prop} (h : ¬a) : a = False :=
 #align eq_false_intro eq_false
 -/
 
-#print Iff.to_eq /-
 theorem Iff.to_eq {a b : Prop} (h : a ↔ b) : a = b :=
   propext h
 #align iff.to_eq Iff.to_eq
--/
 
 #print iff_eq_eq /-
 theorem iff_eq_eq {a b : Prop} : (a ↔ b) = (a = b) :=

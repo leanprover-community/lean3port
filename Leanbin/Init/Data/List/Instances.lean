@@ -12,10 +12,10 @@ open List
 
 universe u v
 
-attribute [local simp] join List.ret
+attribute [local simp] join List.pure
 
 instance : Monad List where
-  pure := @List.ret
+  pure := @List.pure
   map := @List.map
   bind := @List.bind
 

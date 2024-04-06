@@ -160,7 +160,8 @@ theorem eq_succ_of_zero_lt {a : ℤ} (h : 0 < a) : ∃ n : ℕ, a = n.succ :=
 #print Int.lt_add_succ /-
 theorem lt_add_succ (a : ℤ) (n : ℕ) : a < a + ↑(Nat.succ n) :=
   le.intro
-    (show a + 1 + n = a + Nat.succ n by simp [Int.coe_nat_eq, Int.add_comm, Int.add_left_comm]; rfl)
+    (show a + 1 + n = a + Nat.succ n by
+      simp [Int.natCast_eq_ofNat, Int.add_comm, Int.add_left_comm]; rfl)
 #align int.lt_add_succ Int.lt_add_succ
 -/
 

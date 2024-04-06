@@ -471,11 +471,11 @@ protected def bind {α : Type u} {β : Type v} (a : List α) (b : α → List β
 #align list.bind List.bind
 -/
 
-#print List.ret /-
+#print List.pure /-
 @[inline]
-protected def ret {α : Type u} (a : α) : List α :=
+protected def pure {α : Type u} (a : α) : List α :=
   [a]
-#align list.ret List.ret
+#align list.ret List.pure
 -/
 
 #print List.lt /-

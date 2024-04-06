@@ -64,7 +64,7 @@ def Name.updatePrefix : Name → Name → Name
   | mk_numeral s p, new_p => mk_numeral s new_p
 #align name.update_prefix Name.updatePrefix
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:339:40: warning: unsupported option eqn_compiler.ite -/
+/- ./././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option eqn_compiler.ite -/
 -- Without this option, we get errors when defining the following definitions.
 set_option eqn_compiler.ite false
 

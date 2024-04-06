@@ -465,7 +465,7 @@ unsafe def rw_rules : parser rw_rules_t :=
         rw_rules_t.mk <$>
           sep_by (skip_info (tk ",")) (set_goal_info_pos <| rw_rule_p (parser.pexpr 0)) <*>
       (some <$> cur_pos <* set_goal_info_pos (tk "]")) <|>
-    rw_rules_t.mk <$> List.ret <$> rw_rule_p texpr <*> return none
+    rw_rules_t.mk <$> List.pure <$> rw_rule_p texpr <*> return none
 #align tactic.interactive.rw_rules tactic.interactive.rw_rules
 
 private unsafe def rw_core (rs : parse rw_rules) (loca : parse location) (cfg : RewriteCfg) :

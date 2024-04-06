@@ -5,7 +5,7 @@ Authors: Jeremy Avigad
 -/
 prelude
 import Init.Data.Nat.Lemmas
-import Init.Data.Nat.Gcd
+import Init.Data.Nat.GCD
 
 #align_import init.data.int.basic from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"
 
@@ -43,23 +43,19 @@ instance : ToString Int :=
 
 namespace Int
 
-#print Int.coe_nat_eq /-
-protected theorem coe_nat_eq (n : ℕ) : ↑n = Int.ofNat n :=
+#print Int.natCast_eq_ofNat /-
+protected theorem natCast_eq_ofNat (n : ℕ) : ↑n = Int.ofNat n :=
   rfl
-#align int.coe_nat_eq Int.coe_nat_eq
+#align int.coe_nat_eq Int.natCast_eq_ofNat
 -/
 
-#print Int.zero /-
 protected def zero : ℤ :=
   ofNat 0
 #align int.zero Int.zero
--/
 
-#print Int.one /-
 protected def one : ℤ :=
   ofNat 1
 #align int.one Int.one
--/
 
 instance : Zero ℤ :=
   ⟨Int.zero⟩
@@ -475,17 +471,17 @@ theorem natAbs_ofNat (n : ℕ) : natAbs ↑n = n :=
 #align int.nat_abs_of_nat Int.natAbs_ofNat
 -/
 
-#print Int.eq_zero_of_natAbs_eq_zero /-
-theorem eq_zero_of_natAbs_eq_zero : ∀ {a : ℤ}, natAbs a = 0 → a = 0
+#print Int.natAbs_eq_zero /-
+theorem natAbs_eq_zero : ∀ {a : ℤ}, natAbs a = 0 → a = 0
   | of_nat m, H => congr_arg ofNat H
   | -[m'+1], H => absurd H (succ_ne_zero _)
-#align int.eq_zero_of_nat_abs_eq_zero Int.eq_zero_of_natAbs_eq_zero
+#align int.eq_zero_of_nat_abs_eq_zero Int.natAbs_eq_zero
 -/
 
-#print Int.natAbs_pos_of_ne_zero /-
-theorem natAbs_pos_of_ne_zero {a : ℤ} (h : a ≠ 0) : 0 < natAbs a :=
-  (Nat.eq_zero_or_pos _).resolve_left <| mt eq_zero_of_natAbs_eq_zero h
-#align int.nat_abs_pos_of_ne_zero Int.natAbs_pos_of_ne_zero
+#print Int.natAbs_pos /-
+theorem natAbs_pos {a : ℤ} (h : a ≠ 0) : 0 < natAbs a :=
+  (Nat.eq_zero_or_pos _).resolve_left <| mt natAbs_eq_zero h
+#align int.nat_abs_pos_of_ne_zero Int.natAbs_pos
 -/
 
 #print Int.natAbs_zero /-

@@ -14,19 +14,15 @@ universe u
 
 namespace Subtype
 
-#print Subtype.exists_of_subtype /-
 theorem exists_of_subtype {α : Type u} {p : α → Prop} : { x // p x } → ∃ x, p x
   | ⟨a, h⟩ => ⟨a, h⟩
 #align subtype.exists_of_subtype Subtype.exists_of_subtype
--/
 
 variable {α : Type u} {p : α → Prop}
 
-#print Subtype.tag_irrelevant /-
 theorem tag_irrelevant {a : α} (h1 h2 : p a) : mk a h1 = mk a h2 :=
   rfl
 #align subtype.tag_irrelevant Subtype.tag_irrelevant
--/
 
 #print Subtype.eq /-
 protected theorem eq : ∀ {a1 a2 : { x // p x }}, val a1 = val a2 → a1 = a2
@@ -50,9 +46,10 @@ end Subtype
 
 open Subtype
 
-#print Subtype.inhabited /-
-def Subtype.inhabited {α : Type u} {p : α → Prop} {a : α} (h : p a) : Inhabited { x // p x } :=
+#print Subtype.instInhabitedSubtype /-
+def Subtype.instInhabitedSubtype {α : Type u} {p : α → Prop} {a : α} (h : p a) :
+    Inhabited { x // p x } :=
   ⟨⟨a, h⟩⟩
-#align subtype.inhabited Subtype.inhabited
+#align subtype.inhabited Subtype.instInhabitedSubtype
 -/
 

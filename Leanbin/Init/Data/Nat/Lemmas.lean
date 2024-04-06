@@ -7,7 +7,7 @@ prelude
 import Init.Data.Nat.Basic
 import Init.Data.Nat.Div
 import Leanbin.Init.Meta.Default
-import Init.Algebra.Functions
+import Init.Order.LinearOrder
 
 #align_import init.data.nat.lemmas from "leanprover-community/lean"@"38b59111b2b4e6c572582b27e8937e92fc70ac02"
 

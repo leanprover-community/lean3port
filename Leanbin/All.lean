@@ -1,6 +1,6 @@
 import Data.Buffer
 import Data.Buffer.Parser
-import Data.Dlist
+import Data.DList.Defs
 import Data.Vector
 import Smt.Arith
 import Smt.Array

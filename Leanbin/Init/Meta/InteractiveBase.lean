@@ -140,7 +140,7 @@ unsafe def opt_pexpr_list :=
 #align interactive.types.opt_pexpr_list interactive.types.opt_pexpr_list
 
 unsafe def pexpr_list_or_texpr :=
-  pexpr_list <|> List.ret <$> texpr
+  pexpr_list <|> List.pure <$> texpr
 #align interactive.types.pexpr_list_or_texpr interactive.types.pexpr_list_or_texpr
 
 unsafe def only_flag : parser Bool :=
@@ -178,14 +178,14 @@ private unsafe
       | q( ident_ ) => return [ "id" ]
       | q( parser.pexpr $ ( v ) ) => return [ "expr" ]
       | q( small_nat ) => return [ "n" ]
-      | q( tk $ ( c ) ) => List.ret <$> to_fmt <$> eval_expr String c
+      | q( tk $ ( c ) ) => List.pure <$> to_fmt <$> eval_expr String c
       | q( cur_pos ) => return [ ]
       | q( pure _ ) => return [ ]
       | q( _ <$> $ ( p ) ) => parser_desc_aux p
       | q( skip_info $ ( p ) ) => parser_desc_aux p
       | q( _ <$ $ ( p ) ) => parser_desc_aux p
       | q( set_goal_info_pos $ ( p ) ) => parser_desc_aux p
-      | q( with_desc $ ( desc ) $ ( p ) ) => List.ret <$> eval_expr format desc
+      | q( with_desc $ ( desc ) $ ( p ) ) => List.pure <$> eval_expr format desc
       |
         q( $ ( p₁ ) <*> $ ( p₂ ) )
         =>

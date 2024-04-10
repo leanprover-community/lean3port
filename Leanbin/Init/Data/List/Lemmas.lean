@@ -233,9 +233,9 @@ theorem mem_append_right {a : α} (l₁ : List α) {l₂ : List α} (h : a ∈ l
 #align list.mem_append_right List.mem_append_right
 -/
 
-#print List.not_bex_nil /-
-theorem not_bex_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
-#align list.not_bex_nil List.not_bex_nil
+#print List.not_exists_mem_nil /-
+theorem not_exists_mem_nil (p : α → Prop) : ¬∃ x ∈ @nil α, p x := fun ⟨x, hx, px⟩ => hx
+#align list.not_bex_nil List.not_exists_mem_nil
 -/
 
 #print List.forall_mem_nil /-
@@ -243,12 +243,13 @@ theorem forall_mem_nil (p : α → Prop) : ∀ x ∈ @nil α, p x := fun x => Fa
 #align list.ball_nil List.forall_mem_nil
 -/
 
-#print List.bex_cons /-
-theorem bex_cons (p : α → Prop) (a : α) (l : List α) : (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
+#print List.exists_mem_cons /-
+theorem exists_mem_cons (p : α → Prop) (a : α) (l : List α) :
+    (∃ x ∈ a :: l, p x) ↔ p a ∨ ∃ x ∈ l, p x :=
   ⟨fun ⟨x, h, px⟩ => by simp at h; cases' h with h h; · cases h; exact Or.inl px;
     · exact Or.inr ⟨x, h, px⟩, fun o =>
     o.elim (fun pa => ⟨a, mem_cons_self _ _, pa⟩) fun ⟨x, h, px⟩ => ⟨x, mem_cons_of_mem _ h, px⟩⟩
-#align list.bex_cons List.bex_cons
+#align list.bex_cons List.exists_mem_cons
 -/
 
 theorem forall_mem_cons (p : α → Prop) (a : α) (l : List α) :

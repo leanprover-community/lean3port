@@ -41,9 +41,9 @@ instance binTreeToList : Coe (BinTree α) (List α) :=
   ⟨BinTree.toList⟩
 #align list.bin_tree_to_list List.binTreeToList
 
-#print List.decidableBex /-
-instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
-  | [] => isFalse (by simp [List.not_bex_nil])
+#print List.decidableExistsMem /-
+instance decidableExistsMem : ∀ l : List α, Decidable (∃ x ∈ l, p x)
+  | [] => isFalse (by simp [List.not_exists_mem_nil])
   | x :: xs =>
     if h₁ : p x then isTrue ⟨x, mem_cons_self _ _, h₁⟩
     else
@@ -61,17 +61,17 @@ instance decidableBex : ∀ l : List α, Decidable (∃ x ∈ l, p x)
             · rw [h] at hp; contradiction
             · refine' absurd _ h₂
               exact ⟨y, h, hp⟩)
-#align list.decidable_bex List.decidableBex
+#align list.decidable_bex List.decidableExistsMem
 -/
 
-#print List.decidableBall /-
-instance decidableBall (l : List α) : Decidable (∀ x ∈ l, p x) :=
+#print List.decidableForallMem /-
+instance decidableForallMem (l : List α) : Decidable (∀ x ∈ l, p x) :=
   if h : ∃ x ∈ l, ¬p x then
     isFalse <|
       let ⟨x, h, np⟩ := h
       fun al => np (al x h)
   else isTrue fun x hx => if h' : p x then h' else False.elim <| h ⟨x, hx, h'⟩
-#align list.decidable_ball List.decidableBall
+#align list.decidable_ball List.decidableForallMem
 -/
 
 end List

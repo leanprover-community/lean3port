@@ -524,11 +524,9 @@ class Append (α : Type u) where
 #align has_append Append
 -/
 
-#print AndThen' /-
-class AndThen' (α : Type u) (β : Type v) (σ : outParam <| Type w) where
+class AndThen (α : Type u) (β : Type v) (σ : outParam <| Type w) where
   andthen : α → β → σ
-#align has_andthen AndThen'
--/
+#align has_andthen AndThenₓ
 
 #print Union /-
 class Union (α : Type u) where
@@ -609,7 +607,7 @@ class Pow (α : Type u) (β : Type v) where
 #align has_pow Pow
 -/
 
-export AndThen' (andthen)
+export AndThen (andthen)
 
 export Pow (pow)
 
@@ -705,29 +703,22 @@ instance : One Nat :=
 instance : Add Nat :=
   ⟨Nat.add⟩
 
-#print Std.Priority.default /-
 def Std.Priority.default : Nat :=
   1000
 #align std.priority.default Std.Priority.default
--/
 
-#print Std.Priority.max /-
 def Std.Priority.max : Nat :=
   4294967295
 #align std.priority.max Std.Priority.max
--/
 
 namespace Nat
 
-#print Nat.prio /-
 protected def prio :=
   Std.Priority.default + 100
 #align nat.prio Nat.prio
--/
 
 end Nat
 
-#print Std.Prec.max /-
 /-
   Global declarations of right binding strength
 
@@ -739,23 +730,18 @@ end Nat
 def Std.Prec.max : Nat :=
   1024
 #align std.prec.max Std.Prec.max
--/
 
-#print Std.Prec.arrow /-
 -- the strength of application, identifiers, (, [, etc.
 def Std.Prec.arrow : Nat :=
   25
 #align std.prec.arrow Std.Prec.arrow
--/
 
-#print Std.Prec.maxPlus /-
 /-- This def is "max + 10". It can be used e.g. for postfix operations that should
 be stronger than application.
 -/
 def Std.Prec.maxPlus : Nat :=
   Std.Prec.max + 10
 #align std.prec.max_plus Std.Prec.maxPlus
--/
 
 #print SizeOf /-
 -- input with \sy or \-1 or \inv
@@ -878,7 +864,6 @@ theorem Nat.add_zero (n : Nat) : n + 0 = n :=
 #align nat_add_zero Nat.add_zero
 -/
 
-#print BinTree /-
 /-- Auxiliary datatype for #[ ... ] notation.
     #[1, 2, 3, 4] is notation for
 
@@ -894,7 +879,6 @@ inductive BinTree (α : Type u)
   | leaf (val : α) : BinTree
   | node (left right : BinTree) : BinTree
 #align bin_tree BinTree
--/
 
 attribute [elab_without_expected_type] BinTree.node BinTree.leaf
 

@@ -1640,11 +1640,11 @@ unsafe def seq_focus' (tac1 : tactic Unit) (tacs2 : List (tactic Unit)) : tactic
   set_goals (gs' ++ gs)
 #align tactic.seq_focus' tactic.seq_focus'
 
-unsafe instance andthen_seq : AndThen' (tactic Unit) (tactic Unit) (tactic Unit) :=
+unsafe instance andthen_seq : AndThen (tactic Unit) (tactic Unit) (tactic Unit) :=
   ⟨seq'⟩
 #align tactic.andthen_seq tactic.andthen_seq
 
-unsafe instance andthen_seq_focus : AndThen' (tactic Unit) (List (tactic Unit)) (tactic Unit) :=
+unsafe instance andthen_seq_focus : AndThen (tactic Unit) (List (tactic Unit)) (tactic Unit) :=
   ⟨seq_focus'⟩
 #align tactic.andthen_seq_focus tactic.andthen_seq_focus
 

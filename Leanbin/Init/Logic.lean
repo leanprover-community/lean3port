@@ -29,20 +29,16 @@ def flip {α : Sort u} {β : Sort v} {φ : Sort w} (f : α → β → φ) : β �
 #align flip flip
 -/
 
-#print Implies /-
 /-- implication -/
 def Implies (a b : Prop) :=
   a → b
 #align implies Implies
--/
 
-#print Implies.trans /-
 /-- Implication `→` is transitive. If `P → Q` and `Q → R` then `P → R`. -/
 @[trans]
 theorem Implies.trans {p q r : Prop} (h₁ : Implies p q) (h₂ : Implies q r) : Implies p r :=
   fun hp => h₂ (h₁ hp)
 #align implies.trans Implies.trans
--/
 
 #print trivial /-
 theorem trivial : True :=
@@ -79,11 +75,9 @@ theorem not_false : ¬False :=
 #align not_false not_false
 -/
 
-#print NonContradictory /-
 def NonContradictory (a : Prop) : Prop :=
   ¬¬a
 #align non_contradictory NonContradictory
--/
 
 #print not_not_intro /-
 theorem not_not_intro {a : Prop} (ha : a) : ¬¬a := fun hna : ¬a => absurd ha hna
@@ -156,19 +150,15 @@ theorem congr_arg {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) :
 #align congr_arg congr_arg
 -/
 
-#print trans_rel_left /-
 theorem trans_rel_left {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) :
     r a c :=
   h₂ ▸ h₁
 #align trans_rel_left trans_rel_left
--/
 
-#print trans_rel_right /-
 theorem trans_rel_right {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : a = b) (h₂ : r b c) :
     r a c :=
   h₁.symm ▸ h₂
 #align trans_rel_right trans_rel_right
--/
 
 #print of_eq_true /-
 theorem of_eq_true {p : Prop} (h : p = True) : p :=
@@ -705,22 +695,26 @@ theorem and_comm : a ∧ b ↔ b ∧ a :=
 #align and.comm and_comm
 -/
 
-#print and_comm' /-
-theorem and_comm' (a b : Prop) : a ∧ b ↔ b ∧ a :=
+/- warning: and_comm clashes with and.comm -> and_comm
+Case conversion may be inaccurate. Consider using '#align and_comm and_commₓ'. -/
+#print and_comm /-
+theorem and_comm (a b : Prop) : a ∧ b ↔ b ∧ a :=
   and_comm
-#align and_comm and_comm'
+#align and_comm and_comm
 -/
 
+/- warning: and.assoc clashes with and_assoc -> and_assoc
+Case conversion may be inaccurate. Consider using '#align and.assoc and_assocₓ'. -/
 #print and_assoc /-
 theorem and_assoc : (a ∧ b) ∧ c ↔ a ∧ b ∧ c :=
   Iff.intro (fun ⟨⟨ha, hb⟩, hc⟩ => ⟨ha, ⟨hb, hc⟩⟩) fun ⟨ha, ⟨hb, hc⟩⟩ => ⟨⟨ha, hb⟩, hc⟩
 #align and.assoc and_assoc
 -/
 
-#print and_assoc' /-
-theorem and_assoc' (a b : Prop) : (a ∧ b) ∧ c ↔ a ∧ b ∧ c :=
+#print and_assoc /-
+theorem and_assoc (a b : Prop) : (a ∧ b) ∧ c ↔ a ∧ b ∧ c :=
   and_assoc
-#align and_assoc and_assoc'
+#align and_assoc and_assoc
 -/
 
 #print and_left_comm /-
@@ -820,10 +814,12 @@ theorem or_comm : a ∨ b ↔ b ∨ a :=
 #align or.comm or_comm
 -/
 
-#print or_comm' /-
-theorem or_comm' (a b : Prop) : a ∨ b ↔ b ∨ a :=
+/- warning: or_comm clashes with or.comm -> or_comm
+Case conversion may be inaccurate. Consider using '#align or_comm or_commₓ'. -/
+#print or_comm /-
+theorem or_comm (a b : Prop) : a ∨ b ↔ b ∨ a :=
   or_comm
-#align or_comm or_comm'
+#align or_comm or_comm
 -/
 
 #print or_assoc /-
@@ -833,10 +829,12 @@ theorem or_assoc : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
 #align or.assoc or_assoc
 -/
 
-#print or_assoc' /-
-theorem or_assoc' (a b : Prop) : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
+/- warning: or_assoc clashes with or.assoc -> or_assoc
+Case conversion may be inaccurate. Consider using '#align or_assoc or_assocₓ'. -/
+#print or_assoc /-
+theorem or_assoc (a b : Prop) : (a ∨ b) ∨ c ↔ a ∨ b ∨ c :=
   or_assoc
-#align or_assoc or_assoc'
+#align or_assoc or_assoc
 -/
 
 /- warning: or.left_comm clashes with or_left_comm -> or_left_comm
@@ -1227,7 +1225,6 @@ theorem not_and_iff_or_not (p q : Prop) [d₁ : Decidable p] [d₂ : Decidable q
 #align decidable.not_and_iff_or_not Decidable.not_and_iff_or_not
 -/
 
-#print Decidable.not_or_iff_and_not /-
 theorem not_or_iff_and_not (p q) [d₁ : Decidable p] [d₂ : Decidable q] : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
   Iff.intro
     (fun h =>
@@ -1239,7 +1236,6 @@ theorem not_or_iff_and_not (p q) [d₁ : Decidable p] [d₂ : Decidable q] : ¬(
         | is_false h₂ => ⟨h₁, h₂⟩)
     fun ⟨np, nq⟩ h => Or.elim h np nq
 #align decidable.not_or_iff_and_not Decidable.not_or_iff_and_not
--/
 
 end Decidable
 
@@ -1494,14 +1490,12 @@ theorem if_neg {c : Prop} [h : Decidable c] (hnc : ¬c) {α : Sort u} {t e : α}
 #align if_neg if_neg
 -/
 
-#print if_t_t /-
 @[simp]
 theorem if_t_t (c : Prop) [h : Decidable c] {α : Sort u} (t : α) : ite c t t = t :=
   match h with
   | is_true hc => rfl
   | is_false hnc => rfl
 #align if_t_t if_t_t
--/
 
 #print imp_of_if_pos /-
 theorem imp_of_if_pos {c t e : Prop} [Decidable c] (h : ite c t e) : c → t := fun hc =>

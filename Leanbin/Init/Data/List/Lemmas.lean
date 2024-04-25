@@ -210,7 +210,7 @@ theorem eq_or_mem_of_mem_cons {a y : α} {l : List α} : a ∈ y :: l → a = y 
 #print List.mem_append /-
 @[simp]
 theorem mem_append {a : α} {s t : List α} : a ∈ s ++ t ↔ a ∈ s ∨ a ∈ t := by
-  induction s <;> simp [*, or_assoc']
+  induction s <;> simp [*, or_assoc]
 #align list.mem_append List.mem_append
 -/
 

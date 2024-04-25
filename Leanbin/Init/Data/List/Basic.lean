@@ -239,15 +239,15 @@ def span (p : α → Prop) [DecidablePred p] : List α → List α × List α
     else ([], a :: xs)
 #align list.span List.spanₓ
 
-#print List.findIndex /-
-def findIndex (p : α → Prop) [DecidablePred p] : List α → Nat
+#print List.findIdx /-
+def findIdx (p : α → Prop) [DecidablePred p] : List α → Nat
   | [] => 0
   | a :: l => if p a then 0 else succ (find_index l)
-#align list.find_index List.findIndex
+#align list.find_index List.findIdx
 -/
 
 def indexOf [DecidableEq α] (a : α) : List α → Nat :=
-  findIndex (Eq a)
+  findIdx (Eq a)
 #align list.index_of List.indexOfₓ
 
 def removeAll [DecidableEq α] (xs ys : List α) : List α :=

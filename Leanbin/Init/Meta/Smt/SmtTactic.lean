@@ -333,7 +333,7 @@ unsafe def seq (tac1 : smt_tactic Unit) (tac2 : smt_tactic Unit) : smt_tactic Un
   set_goals (new_ss ++ ss) (new_ts ++ ts)
 #align smt_tactic.seq smt_tactic.seq
 
-unsafe instance : AndThen' (smt_tactic Unit) (smt_tactic Unit) (smt_tactic Unit) :=
+unsafe instance : AndThen (smt_tactic Unit) (smt_tactic Unit) (smt_tactic Unit) :=
   ⟨seq⟩
 
 unsafe def focus1 {α} (tac : smt_tactic α) : smt_tactic α := do

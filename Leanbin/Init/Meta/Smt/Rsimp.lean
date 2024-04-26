@@ -112,7 +112,7 @@ unsafe def explicit_size : expr → tactic Nat
 #align rsimp.explicit_size rsimp.explicit_size
 
 /-- Choose smallest element (with respect to explicit_size) in `e`s equivalence class. -/
-unsafe def choose (ccs : cc_state) (e : expr) : tactic expr := do
+unsafe def choose (ccs : Mathlib.Tactic.CC.CCState) (e : expr) : tactic expr := do
   let sz ← explicit_size e
   let p ←
     ccs.mfold_eqc e (e, sz) fun p e' =>
@@ -131,7 +131,7 @@ unsafe def mk_repr_map :=
   expr_map.mk expr
 #align rsimp.mk_repr_map rsimp.mk_repr_map
 
-unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
+unsafe def to_repr_map (ccs : Mathlib.Tactic.CC.CCState) : tactic repr_map :=
   ccs.roots.foldlM
     (fun S e => do
       let r ← choose ccs e
@@ -139,7 +139,7 @@ unsafe def to_repr_map (ccs : cc_state) : tactic repr_map :=
     mk_repr_map
 #align rsimp.to_repr_map rsimp.to_repr_map
 
-unsafe def rsimplify (ccs : cc_state) (e : expr) (m : Option repr_map := none) :
+unsafe def rsimplify (ccs : Mathlib.Tactic.CC.CCState) (e : expr) (m : Option repr_map := none) :
     tactic (expr × expr) := do
   let m ←
     match m with
@@ -167,8 +167,8 @@ open SmtTactic
 private def tagged_proof.rsimp : Unit :=
   ()
 
-unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) : tactic cc_state :=
-  do
+unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) :
+    tactic Mathlib.Tactic.CC.CCState := do
   focus1 <|
       using_smt_with { emAttr := cfg } do
         add_lemmas_from_facts
@@ -177,14 +177,15 @@ unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) 
         done >> return cc_state.mk <|> to_cc_state
 #align rsimp.collect_implied_eqs rsimp.collect_implied_eqs
 
-unsafe def rsimplify_goal (ccs : cc_state) (m : Option repr_map := none) : tactic Unit := do
+unsafe def rsimplify_goal (ccs : Mathlib.Tactic.CC.CCState) (m : Option repr_map := none) :
+    tactic Unit := do
   let t ← target
   let (new_t, pr) ← rsimplify ccs t m
   try (replace_target new_t pr `` id_tag.rsimp)
 #align rsimp.rsimplify_goal rsimp.rsimplify_goal
 
-unsafe def rsimplify_at (ccs : cc_state) (h : expr) (m : Option repr_map := none) : tactic Unit :=
-  do
+unsafe def rsimplify_at (ccs : Mathlib.Tactic.CC.CCState) (h : expr) (m : Option repr_map := none) :
+    tactic Unit := do
   when (expr.is_local_constant h = ff)
       (tactic.fail "tactic rsimplify_at failed, the given expression is not a hypothesis")
   let htype ← infer_type h

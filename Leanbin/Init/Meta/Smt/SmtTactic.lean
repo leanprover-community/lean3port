@@ -41,7 +41,7 @@ structure SmtPreConfig where
 - em_attr: is the attribute name for the hinst_lemmas
   that are used for ematching -/
 structure SmtConfig where
-  ccCfg : CcConfig := { }
+  ccCfg : Mathlib.Tactic.CC.CCConfig := { }
   emCfg : EmatchConfig := { }
   preCfg : SmtPreConfig := { }
   emAttr : Name := `ematch
@@ -143,7 +143,7 @@ unsafe axiom ematch_using : hinst_lemmas → smt_tactic Unit
 unsafe axiom mk_ematch_eqn_lemmas_for_core : Transparency → Name → smt_tactic hinst_lemmas
 #align smt_tactic.mk_ematch_eqn_lemmas_for_core smt_tactic.mk_ematch_eqn_lemmas_for_core
 
-unsafe axiom to_cc_state : smt_tactic cc_state
+unsafe axiom to_cc_state : smt_tactic Mathlib.Tactic.CC.CCState
 #align smt_tactic.to_cc_state smt_tactic.to_cc_state
 
 unsafe axiom to_em_state : smt_tactic ematch_state

@@ -211,25 +211,33 @@ namespace Tactic
 
 unsafe axiom ematch_core :
     Transparency →
-      cc_state →
-        ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state)
+      Mathlib.Tactic.CC.CCState →
+        ematch_state →
+          hinst_lemma →
+            expr → tactic (List (expr × expr) × Mathlib.Tactic.CC.CCState × ematch_state)
 #align tactic.ematch_core tactic.ematch_core
 
 unsafe axiom ematch_all_core :
     Transparency →
-      cc_state →
-        ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state)
+      Mathlib.Tactic.CC.CCState →
+        ematch_state →
+          hinst_lemma →
+            Bool → tactic (List (expr × expr) × Mathlib.Tactic.CC.CCState × ematch_state)
 #align tactic.ematch_all_core tactic.ematch_all_core
 
 unsafe def ematch :
-    cc_state →
-      ematch_state → hinst_lemma → expr → tactic (List (expr × expr) × cc_state × ematch_state) :=
+    Mathlib.Tactic.CC.CCState →
+      ematch_state →
+        hinst_lemma →
+          expr → tactic (List (expr × expr) × Mathlib.Tactic.CC.CCState × ematch_state) :=
   ematch_core reducible
 #align tactic.ematch tactic.ematch
 
 unsafe def ematch_all :
-    cc_state →
-      ematch_state → hinst_lemma → Bool → tactic (List (expr × expr) × cc_state × ematch_state) :=
+    Mathlib.Tactic.CC.CCState →
+      ematch_state →
+        hinst_lemma →
+          Bool → tactic (List (expr × expr) × Mathlib.Tactic.CC.CCState × ematch_state) :=
   ematch_all_core reducible
 #align tactic.ematch_all tactic.ematch_all
 

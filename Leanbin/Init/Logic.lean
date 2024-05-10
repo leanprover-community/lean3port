@@ -104,12 +104,10 @@ theorem proof_irrel {a : Prop} (h₁ h₂ : a) : h₁ = h₂ :=
 #align proof_irrel proof_irrel
 -/
 
-#print id.def /-
 @[simp]
 theorem id.def {α : Sort u} (a : α) : id a = a :=
   rfl
 #align id.def id.def
--/
 
 #print Eq.mp /-
 @[inline]
@@ -200,12 +198,10 @@ def Ne {α : Sort u} (a b : α) :=
 #align ne Ne
 -/
 
-#print Ne.def /-
 @[simp]
 theorem Ne.def {α : Sort u} (a b : α) : (a ≠ b) = ¬a = b :=
   rfl
 #align ne.def Ne.def
--/
 
 namespace Ne
 
@@ -1414,10 +1410,10 @@ protected theorem Nonempty.elim {α : Sort u} {p : Prop} (h₁ : Nonempty α) (h
 #align nonempty.elim Nonempty.elim
 -/
 
-#print instNonempty /-
-instance (priority := 100) instNonempty {α : Sort u} [Inhabited α] : Nonempty α :=
+#print instNonemptyOfInhabited /-
+instance (priority := 100) instNonemptyOfInhabited {α : Sort u} [Inhabited α] : Nonempty α :=
   ⟨default⟩
-#align nonempty_of_inhabited instNonempty
+#align nonempty_of_inhabited instNonemptyOfInhabited
 -/
 
 #print nonempty_of_exists /-

@@ -486,7 +486,7 @@ unsafe def add_ematch_eqn_lemmas_for : Name → smt_tactic Unit :=
   add_ematch_eqn_lemmas_for_core reducible
 #align smt_tactic.add_ematch_eqn_lemmas_for smt_tactic.add_ematch_eqn_lemmas_for
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `f -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:207:4: warning: unsupported notation `f -/
 unsafe def add_lemmas_from_facts_core : List expr → smt_tactic Unit
   | [] => return ()
   | f :: fs => do

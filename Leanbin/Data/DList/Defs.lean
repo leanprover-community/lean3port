@@ -8,20 +8,20 @@ Author: Leonardo de Moura
 
 universe u
 
-#print Std.DList /-
+#print Batteries.DList /-
 /-- A difference list is a function that, given a list, returns the original
 contents of the difference list prepended to the given list.
 
 This structure supports `O(1)` `append` and `concat` operations on lists, making it
 useful for append-heavy uses such as logging and pretty printing.
 -/
-structure Std.DList (α : Type u) where
+structure Batteries.DList (α : Type u) where
   apply : List α → List α
   invariant : ∀ l, apply l = apply [] ++ l
-#align dlist Std.DList
+#align dlist Batteries.DList
 -/
 
-namespace Std.DList
+namespace Batteries.DList
 
 open Function
 
@@ -29,117 +29,122 @@ variable {α : Type u}
 
 local notation:arg "♯" => by abstract intros; simp
 
-#print Std.DList.ofList /-
+#print Batteries.DList.ofList /-
 /-- Convert a list to a dlist -/
-def Std.DList.ofList (l : List α) : Std.DList α :=
+def Batteries.DList.ofList (l : List α) : Batteries.DList α :=
   ⟨append l, ♯⟩
-#align dlist.of_list Std.DList.ofList
+#align dlist.of_list Batteries.DList.ofList
 -/
 
-#print Std.DList.lazy_ofList /-
+#print Batteries.DList.lazy_ofList /-
 /-- Convert a lazily-evaluated list to a dlist -/
-def Std.DList.lazy_ofList (l : Thunk (List α)) : Std.DList α :=
+def Batteries.DList.lazy_ofList (l : Thunk (List α)) : Batteries.DList α :=
   ⟨fun xs => l () ++ xs, ♯⟩
-#align dlist.lazy_of_list Std.DList.lazy_ofList
+#align dlist.lazy_of_list Batteries.DList.lazy_ofList
 -/
 
-#print Std.DList.toList /-
+#print Batteries.DList.toList /-
 /-- Convert a dlist to a list -/
-def Std.DList.toList : Std.DList α → List α
+def Batteries.DList.toList : Batteries.DList α → List α
   | ⟨xs, _⟩ => xs []
-#align dlist.to_list Std.DList.toList
+#align dlist.to_list Batteries.DList.toList
 -/
 
-#print Std.DList.empty /-
+#print Batteries.DList.empty /-
 /-- Create a dlist containing no elements -/
-def Std.DList.empty : Std.DList α :=
+def Batteries.DList.empty : Batteries.DList α :=
   ⟨id, ♯⟩
-#align dlist.empty Std.DList.empty
+#align dlist.empty Batteries.DList.empty
 -/
 
 local notation:arg a "::_" => List.cons a
 
-#print Std.DList.singleton /-
+#print Batteries.DList.singleton /-
 /-- Create dlist with a single element -/
-def Std.DList.singleton (x : α) : Std.DList α :=
+def Batteries.DList.singleton (x : α) : Batteries.DList α :=
   ⟨x::_, ♯⟩
-#align dlist.singleton Std.DList.singleton
+#align dlist.singleton Batteries.DList.singleton
 -/
 
 attribute [local simp] Function.comp
 
-#print Std.DList.cons /-
+#print Batteries.DList.cons /-
 /-- `O(1)` Prepend a single element to a dlist -/
-def Std.DList.cons (x : α) : Std.DList α → Std.DList α
+def Batteries.DList.cons (x : α) : Batteries.DList α → Batteries.DList α
   | ⟨xs, h⟩ => ⟨x::_ ∘ xs, by abstract intros; simp; rw [← h]⟩
-#align dlist.cons Std.DList.cons
+#align dlist.cons Batteries.DList.cons
 -/
 
-#print Std.DList.push /-
+#print Batteries.DList.push /-
 /-- `O(1)` Append a single element to a dlist -/
-def Std.DList.push (x : α) : Std.DList α → Std.DList α
+def Batteries.DList.push (x : α) : Batteries.DList α → Batteries.DList α
   | ⟨xs, h⟩ => ⟨xs ∘ x::_, by abstract intros; simp; rw [h, h [x]]; simp⟩
-#align dlist.concat Std.DList.push
+#align dlist.concat Batteries.DList.push
 -/
 
-#print Std.DList.append /-
+#print Batteries.DList.append /-
 /-- `O(1)` Append dlists -/
-protected def Std.DList.append : Std.DList α → Std.DList α → Std.DList α
+protected def Batteries.DList.append : Batteries.DList α → Batteries.DList α → Batteries.DList α
   | ⟨xs, h₁⟩, ⟨ys, h₂⟩ => ⟨xs ∘ ys, by intros; simp; rw [h₂, h₁, h₁ (ys List.nil)]; simp⟩
-#align dlist.append Std.DList.append
+#align dlist.append Batteries.DList.append
 -/
 
-instance : Append (Std.DList α) :=
-  ⟨Std.DList.append⟩
+instance : Append (Batteries.DList α) :=
+  ⟨Batteries.DList.append⟩
 
-attribute [local simp] of_list to_list Empty singleton cons concat Std.DList.append
+attribute [local simp] of_list to_list Empty singleton cons concat Batteries.DList.append
 
-#print Std.DList.toList_ofList /-
-theorem Std.DList.toList_ofList (l : List α) : Std.DList.toList (Std.DList.ofList l) = l := by
-  cases l <;> simp
-#align dlist.to_list_of_list Std.DList.toList_ofList
+#print Batteries.DList.toList_ofList /-
+theorem Batteries.DList.toList_ofList (l : List α) :
+    Batteries.DList.toList (Batteries.DList.ofList l) = l := by cases l <;> simp
+#align dlist.to_list_of_list Batteries.DList.toList_ofList
 -/
 
-#print Std.DList.ofList_toList /-
-theorem Std.DList.ofList_toList (l : Std.DList α) : Std.DList.ofList (Std.DList.toList l) = l :=
+#print Batteries.DList.ofList_toList /-
+theorem Batteries.DList.ofList_toList (l : Batteries.DList α) :
+    Batteries.DList.ofList (Batteries.DList.toList l) = l :=
   by
   cases' l with xs
   have h : append (xs []) = xs := by intros; funext x; simp [l_invariant x]
   simp [h]
-#align dlist.of_list_to_list Std.DList.ofList_toList
+#align dlist.of_list_to_list Batteries.DList.ofList_toList
 -/
 
-#print Std.DList.toList_empty /-
-theorem Std.DList.toList_empty : Std.DList.toList (@Std.DList.empty α) = [] := by simp
-#align dlist.to_list_empty Std.DList.toList_empty
--/
-
-#print Std.DList.toList_singleton /-
-theorem Std.DList.toList_singleton (x : α) : Std.DList.toList (Std.DList.singleton x) = [x] := by
+#print Batteries.DList.toList_empty /-
+theorem Batteries.DList.toList_empty : Batteries.DList.toList (@Batteries.DList.empty α) = [] := by
   simp
-#align dlist.to_list_singleton Std.DList.toList_singleton
+#align dlist.to_list_empty Batteries.DList.toList_empty
 -/
 
-#print Std.DList.toList_append /-
-theorem Std.DList.toList_append (l₁ l₂ : Std.DList α) :
-    Std.DList.toList (l₁ ++ l₂) = Std.DList.toList l₁ ++ Std.DList.toList l₂ :=
-  show Std.DList.toList (Std.DList.append l₁ l₂) = Std.DList.toList l₁ ++ Std.DList.toList l₂ by
-    cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
-#align dlist.to_list_append Std.DList.toList_append
+#print Batteries.DList.toList_singleton /-
+theorem Batteries.DList.toList_singleton (x : α) :
+    Batteries.DList.toList (Batteries.DList.singleton x) = [x] := by simp
+#align dlist.to_list_singleton Batteries.DList.toList_singleton
 -/
 
-#print Std.DList.toList_cons /-
-theorem Std.DList.toList_cons (x : α) (l : Std.DList α) :
-    Std.DList.toList (Std.DList.cons x l) = x :: Std.DList.toList l := by cases l <;> simp
-#align dlist.to_list_cons Std.DList.toList_cons
+#print Batteries.DList.toList_append /-
+theorem Batteries.DList.toList_append (l₁ l₂ : Batteries.DList α) :
+    Batteries.DList.toList (l₁ ++ l₂) = Batteries.DList.toList l₁ ++ Batteries.DList.toList l₂ :=
+  show
+    Batteries.DList.toList (Batteries.DList.append l₁ l₂) =
+      Batteries.DList.toList l₁ ++ Batteries.DList.toList l₂
+    by cases l₁ <;> cases l₂ <;> simp <;> rw [l₁_invariant]
+#align dlist.to_list_append Batteries.DList.toList_append
 -/
 
-#print Std.DList.toList_push /-
-theorem Std.DList.toList_push (x : α) (l : Std.DList α) :
-    Std.DList.toList (Std.DList.push x l) = Std.DList.toList l ++ [x] := by
+#print Batteries.DList.toList_cons /-
+theorem Batteries.DList.toList_cons (x : α) (l : Batteries.DList α) :
+    Batteries.DList.toList (Batteries.DList.cons x l) = x :: Batteries.DList.toList l := by
+  cases l <;> simp
+#align dlist.to_list_cons Batteries.DList.toList_cons
+-/
+
+#print Batteries.DList.toList_push /-
+theorem Batteries.DList.toList_push (x : α) (l : Batteries.DList α) :
+    Batteries.DList.toList (Batteries.DList.push x l) = Batteries.DList.toList l ++ [x] := by
   cases l <;> simp <;> rw [l_invariant]
-#align dlist.to_list_concat Std.DList.toList_push
+#align dlist.to_list_concat Batteries.DList.toList_push
 -/
 
-end Std.DList
+end Batteries.DList
 

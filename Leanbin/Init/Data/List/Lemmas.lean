@@ -360,9 +360,9 @@ theorem length_take_le (n) (l : List α) : length (take n l) ≤ n := by simp [m
 #align list.length_take_le List.length_take_le
 -/
 
-#print List.length_removeNth /-
-theorem length_removeNth :
-    ∀ (l : List α) (i : ℕ), i < length l → length (removeNth l i) = length l - 1
+#print List.length_eraseIdx /-
+theorem length_eraseIdx :
+    ∀ (l : List α) (i : ℕ), i < length l → length (eraseIdx l i) = length l - 1
   | [], _, h => rfl
   | x :: xs, 0, h => by simp [remove_nth]
   | x :: xs, i + 1, h => by
@@ -371,7 +371,7 @@ theorem length_removeNth :
         rw [length_remove_nth xs i this,
           Nat.sub_add_cancel (lt_of_le_of_lt (Nat.zero_le _) this)] <;>
       rfl
-#align list.length_remove_nth List.length_removeNth
+#align list.length_remove_nth List.length_eraseIdx
 -/
 
 @[simp]

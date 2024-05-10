@@ -130,11 +130,11 @@ protected theorem zero_mul : ∀ n : ℕ, 0 * n = 0
 #align nat.zero_mul Nat.zero_mul
 -/
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def sort_add :=
   sorry
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.succ_mul /-
 theorem succ_mul : ∀ n m : ℕ, succ n * m = n * m + m
   | n, 0 => rfl
@@ -145,7 +145,7 @@ theorem succ_mul : ∀ n m : ℕ, succ n * m = n * m + m
 #align nat.succ_mul Nat.succ_mul
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.right_distrib /-
 protected theorem right_distrib : ∀ n m k : ℕ, (n + m) * k = n * k + m * k
   | n, m, 0 => rfl
@@ -155,7 +155,7 @@ protected theorem right_distrib : ∀ n m k : ℕ, (n + m) * k = n * k + m * k
 #align nat.right_distrib Nat.right_distrib
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic _private.285555777.sort_add -/
 #print Nat.left_distrib /-
 protected theorem left_distrib : ∀ n m k : ℕ, n * (m + k) = n * m + n * k
   | 0, m, k => by simp [Nat.zero_mul]

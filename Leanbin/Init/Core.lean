@@ -129,7 +129,7 @@ def Not (a : Prop) :=
 #align not Not
 -/
 
-/- ./././Mathport/Syntax/Translate/Command.lean:377:30: infer kinds are unsupported in Lean 4: refl [] -/
+/- ././././Mathport/Syntax/Translate/Command.lean:377:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print Eq /-
 inductive Eq {α : Sort u} (a : α) : α → Prop
   | refl : Eq a
@@ -158,7 +158,7 @@ quot.lift f _ (quot.mk a) ~~> f a
 
 init_quot
 
-/- ./././Mathport/Syntax/Translate/Command.lean:377:30: infer kinds are unsupported in Lean 4: refl [] -/
+/- ././././Mathport/Syntax/Translate/Command.lean:377:30: infer kinds are unsupported in Lean 4: refl [] -/
 #print HEq /-
 /-- Heterogeneous equality.
 

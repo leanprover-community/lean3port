@@ -96,8 +96,8 @@ unsafe def is_psigma_mk : expr → tactic (expr × expr)
   | _ => failed
 #align well_founded_tactics.is_psigma_mk well_founded_tactics.is_psigma_mk
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def process_lex : tactic Unit → tactic Unit
   | tac => do
     let t ← target >>= whnf
@@ -130,7 +130,7 @@ private unsafe def collect_sizeof_lemmas (e : expr) : tactic simp_lemmas :=
       | _ => return s
     else return s
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
 private unsafe def unfold_sizeof_loop : tactic Unit := do
   dunfold_target [`` SizeOf.sizeOf, `` SizeOf.sizeOf] { failIfUnchanged := ff }
   let S ← target >>= collect_sizeof_lemmas
@@ -193,8 +193,8 @@ private unsafe def sort_args (args : List expr) : List expr :=
 private def tagged_proof.wf : Unit :=
   ()
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
 -- PLEASE REPORT THIS TO MATHPORT DEVS, THIS SHOULD NOT HAPPEN.
 -- failed to format: unknown constant 'term.pseudo.antiquot'
 unsafe
@@ -234,10 +234,10 @@ unsafe
   def check_target_is_value_lt : tactic Unit := do let q( $ ( lhs ) < $ ( rhs ) ) ← target guard lhs
 #align well_founded_tactics.check_target_is_value_lt well_founded_tactics.check_target_is_value_lt
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
-/- ./././Mathport/Syntax/Translate/Expr.lean:337:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
+/- ././././Mathport/Syntax/Translate/Expr.lean:338:4: warning: unsupported (TODO): `[tacs] -/
 unsafe def trivial_nat_lt : tactic Unit :=
   comp_val <|>
     sorry <|>

@@ -11,7 +11,7 @@ import Init.Algebra.Classes
 
 #align_import init.algebra.order from "leanprover-community/lean"@"c2bcdbcbe741ed37c361a30d38e179182b989f76"
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option default_priority -/
+/- ././././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option default_priority -/
 /- Make sure instances defined in this file have lower priority than the ones
    defined for concrete structures -/
 /- Make sure instances defined in this file have lower priority than the ones
@@ -22,7 +22,7 @@ universe u
 
 variable {α : Type u}
 
-/- ./././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option auto_param.check_exists -/
+/- ././././Mathport/Syntax/Translate/Basic.lean:340:40: warning: unsupported option auto_param.check_exists -/
 set_option auto_param.check_exists false
 
 section Preorder
@@ -33,7 +33,7 @@ section Preorder
 
 
 #print Preorder /-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic order_laws_tac -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic order_laws_tac -/
 /-- A preorder is a reflexive, transitive relation `≤` with `a < b` defined in the obvious way. -/
 class Preorder (α : Type u) extends LE α, LT α where
   le_refl : ∀ a : α, a ≤ a
@@ -317,8 +317,8 @@ def minDefault {α : Type u} [LE α] [DecidableRel ((· ≤ ·) : α → α → 
 -/
 
 #print LinearOrder /-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.interactive.reflexivity -/
 /-- A linear order is reflexive, transitive, antisymmetric and total relation `≤`.
 We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`. -/
 class LinearOrder (α : Type u) extends PartialOrder α where

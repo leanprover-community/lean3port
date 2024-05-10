@@ -88,7 +88,7 @@ def mkStdGen (s : Nat := 0) : StdGen :=
 #align mk_std_gen mkStdGen
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.comp_val -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.comp_val -/
 /-- Auxiliary function for random_nat_val.
 Generate random values until we exceed the target magnitude.
 `gen_lo` and `gen_mag` are the generator lower bound and magnitude.

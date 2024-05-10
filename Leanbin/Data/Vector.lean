@@ -157,10 +157,10 @@ def take (i : ℕ) : Vector α n → Vector α (min i n)
 #align vector.take Vector.take
 -/
 
-#print Vector.removeNth /-
-def removeNth (i : Fin n) : Vector α n → Vector α (n - 1)
-  | ⟨l, p⟩ => ⟨List.removeNth l i.1, by rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
-#align vector.remove_nth Vector.removeNth
+#print Vector.eraseIdx /-
+def eraseIdx (i : Fin n) : Vector α n → Vector α (n - 1)
+  | ⟨l, p⟩ => ⟨List.eraseIdx l i.1, by rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
+#align vector.remove_nth Vector.eraseIdx
 -/
 
 #print Vector.ofFn /-

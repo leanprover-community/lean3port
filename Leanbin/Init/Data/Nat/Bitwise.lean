@@ -346,7 +346,7 @@ theorem testBit_succ (m b n) : testBit (bit b n) (succ m) = testBit n m :=
 #align nat.test_bit_succ Nat.testBit_succ
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Lean3.lean:146:2: warning: unsupported: with_cases -/
+/- ././././Mathport/Syntax/Translate/Tactic/Lean3.lean:146:2: warning: unsupported: with_cases -/
 #print Nat.binaryRec_eq /-
 theorem binaryRec_eq {C : Nat → Sort u} {z : C 0} {f : ∀ b n, C n → C (bit b n)}
     (h : f false 0 z = z) (b n) : binaryRec z f (bit b n) = f b n (binaryRec z f n) :=
@@ -409,7 +409,7 @@ theorem bitwise_zero (f : Bool → Bool → Bool) : bitwise f 0 0 = 0 := by
 #align nat.bitwise_zero Nat.bitwise_zero
 -/
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.swap -/
+/- ././././Mathport/Syntax/Translate/Tactic/Builtin.lean:69:18: unsupported non-interactive tactic tactic.swap -/
 #print Nat.bitwise_bit /-
 @[simp]
 theorem bitwise_bit {f : Bool → Bool → Bool} (h : f false false = false) (a m b n) :

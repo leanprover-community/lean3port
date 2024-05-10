@@ -262,12 +262,12 @@ def set : List α → ℕ → α → List α
 #align list.update_nth List.set
 -/
 
-#print List.removeNth /-
-def removeNth : List α → ℕ → List α
+#print List.eraseIdx /-
+def eraseIdx : List α → ℕ → List α
   | [], _ => []
   | x :: xs, 0 => xs
   | x :: xs, i + 1 => x :: remove_nth xs i
-#align list.remove_nth List.removeNth
+#align list.remove_nth List.eraseIdx
 -/
 
 #print List.drop /-

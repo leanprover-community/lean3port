@@ -130,6 +130,8 @@ theorem le_of_ofNat_le_ofNat {m n : ℕ} (h : (↑m : ℤ) ≤ ↑n) : m ≤ n :
 #align int.le_of_coe_nat_le_coe_nat Int.le_of_ofNat_le_ofNat
 -/
 
+/- warning: int.coe_nat_le_coe_nat_iff clashes with int.coe_nat_le -> Int.ofNat_le
+Case conversion may be inaccurate. Consider using '#align int.coe_nat_le_coe_nat_iff Int.ofNat_leₓ'. -/
 #print Int.ofNat_le /-
 theorem ofNat_le (m n : ℕ) : (↑m : ℤ) ≤ ↑n ↔ m ≤ n :=
   Iff.intro le_of_ofNat_le_ofNat ofNat_le_ofNat_of_le
@@ -182,6 +184,8 @@ theorem lt.elim {a b : ℤ} (h : a < b) {P : Prop} (h' : ∀ n : ℕ, a + ↑(Na
 #align int.lt.elim Int.lt.elim
 -/
 
+/- warning: int.coe_nat_lt_coe_nat_iff clashes with int.coe_nat_lt -> Int.ofNat_lt
+Case conversion may be inaccurate. Consider using '#align int.coe_nat_lt_coe_nat_iff Int.ofNat_ltₓ'. -/
 #print Int.ofNat_lt /-
 theorem ofNat_lt (n m : ℕ) : (↑n : ℤ) < ↑m ↔ n < m := by
   rw [lt_iff_add_one_le, ← Int.ofNat_succ, coe_nat_le_coe_nat_iff]; rfl

@@ -174,7 +174,7 @@ unsafe def collect_implied_eqs (cfg : Config := { }) (extra := hinst_lemmas.mk) 
         add_lemmas_from_facts
         add_lemmas extra
         iterate_at_most cfg (ematch >> try smt_tactic.close)
-        done >> return cc_state.mk <|> to_cc_state
+        done >> return Mathlib.Tactic.CC.CCState.mk <|> to_cc_state
 #align rsimp.collect_implied_eqs rsimp.collect_implied_eqs
 
 unsafe def rsimplify_goal (ccs : Mathlib.Tactic.CC.CCState) (m : Option repr_map := none) :

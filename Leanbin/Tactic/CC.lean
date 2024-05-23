@@ -36,13 +36,18 @@ unsafe axiom Mathlib.Tactic.CC.CCState : Type
 #align cc_state Mathlib.Tactic.CC.CCState
 -/
 
-unsafe axiom cc_state.mk_core : Mathlib.Tactic.CC.CCConfig → Mathlib.Tactic.CC.CCState
-#align cc_state.mk_core cc_state.mk_core
+#print Mathlib.Tactic.CC.CCState.mkCore /-
+unsafe axiom Mathlib.Tactic.CC.CCState.mkCore :
+    Mathlib.Tactic.CC.CCConfig → Mathlib.Tactic.CC.CCState
+#align cc_state.mk_core Mathlib.Tactic.CC.CCState.mkCore
+-/
 
+#print Mathlib.Tactic.CC.CCState.mkUsingHsCore /-
 /-- Create a congruence closure state object using the hypotheses in the current goal. -/
-unsafe axiom cc_state.mk_using_hs_core :
+unsafe axiom Mathlib.Tactic.CC.CCState.mkUsingHsCore :
     Mathlib.Tactic.CC.CCConfig → tactic Mathlib.Tactic.CC.CCState
-#align cc_state.mk_using_hs_core cc_state.mk_using_hs_core
+#align cc_state.mk_using_hs_core Mathlib.Tactic.CC.CCState.mkUsingHsCore
+-/
 
 #print Mathlib.Tactic.CC.CCState.next /-
 /-- Get the next element in the equivalence class.
@@ -51,10 +56,12 @@ unsafe axiom Mathlib.Tactic.CC.CCState.next : Mathlib.Tactic.CC.CCState → expr
 #align cc_state.next Mathlib.Tactic.CC.CCState.next
 -/
 
+#print Mathlib.Tactic.CC.CCState.rootsCore /-
 /-- Returns the root expression for each equivalence class in the graph.
 If the bool argument is set to true then it only returns roots of non-singleton classes. -/
-unsafe axiom cc_state.roots_core : Mathlib.Tactic.CC.CCState → Bool → List expr
-#align cc_state.roots_core cc_state.roots_core
+unsafe axiom Mathlib.Tactic.CC.CCState.rootsCore : Mathlib.Tactic.CC.CCState → Bool → List expr
+#align cc_state.roots_core Mathlib.Tactic.CC.CCState.rootsCore
+-/
 
 #print Mathlib.Tactic.CC.CCState.root /-
 /-- Get the root representative of the given expression. -/
@@ -79,9 +86,12 @@ unsafe axiom Mathlib.Tactic.CC.CCState.gmt : Mathlib.Tactic.CC.CCState → Nat
 #align cc_state.gmt Mathlib.Tactic.CC.CCState.gmt
 -/
 
+#print Mathlib.Tactic.CC.CCState.incGMT /-
 /-- Increment the Global Modification time. -/
-unsafe axiom cc_state.inc_gmt : Mathlib.Tactic.CC.CCState → Mathlib.Tactic.CC.CCState
-#align cc_state.inc_gmt cc_state.inc_gmt
+unsafe axiom Mathlib.Tactic.CC.CCState.incGMT :
+    Mathlib.Tactic.CC.CCState → Mathlib.Tactic.CC.CCState
+#align cc_state.inc_gmt Mathlib.Tactic.CC.CCState.incGMT
+-/
 
 #print Mathlib.Tactic.CC.CCState.isCgRoot /-
 /-- Check if `e` is the root of the congruence class. -/
@@ -102,27 +112,40 @@ unsafe axiom Mathlib.Tactic.CC.CCState.ppEqcs : Mathlib.Tactic.CC.CCState → Bo
 #align cc_state.pp_core Mathlib.Tactic.CC.CCState.ppEqcs
 -/
 
+#print Mathlib.Tactic.CC.CCState.internalize /-
 /-- Add the given expression to the graph. -/
-unsafe axiom cc_state.internalize :
+unsafe axiom Mathlib.Tactic.CC.CCState.internalize :
     Mathlib.Tactic.CC.CCState → expr → tactic Mathlib.Tactic.CC.CCState
-#align cc_state.internalize cc_state.internalize
+#align cc_state.internalize Mathlib.Tactic.CC.CCState.internalize
+-/
 
+#print Mathlib.Tactic.CC.CCState.add /-
 /-- Add the given proof term as a new rule.
 The proof term p must be an `eq _ _`, `heq _ _`, `iff _ _`, or a negation of these. -/
-unsafe axiom cc_state.add : Mathlib.Tactic.CC.CCState → expr → tactic Mathlib.Tactic.CC.CCState
-#align cc_state.add cc_state.add
+unsafe axiom Mathlib.Tactic.CC.CCState.add :
+    Mathlib.Tactic.CC.CCState → expr → tactic Mathlib.Tactic.CC.CCState
+#align cc_state.add Mathlib.Tactic.CC.CCState.add
+-/
 
+#print Mathlib.Tactic.CC.CCState.isEqv /-
 /-- Check whether two expressions are in the same equivalence class. -/
-unsafe axiom cc_state.is_eqv : Mathlib.Tactic.CC.CCState → expr → expr → tactic Bool
-#align cc_state.is_eqv cc_state.is_eqv
+unsafe axiom Mathlib.Tactic.CC.CCState.isEqv : Mathlib.Tactic.CC.CCState → expr → expr → tactic Bool
+#align cc_state.is_eqv Mathlib.Tactic.CC.CCState.isEqv
+-/
 
+#print Mathlib.Tactic.CC.CCState.isNotEqv /-
 /-- Check whether two expressions are not in the same equivalence class. -/
-unsafe axiom cc_state.is_not_eqv : Mathlib.Tactic.CC.CCState → expr → expr → tactic Bool
-#align cc_state.is_not_eqv cc_state.is_not_eqv
+unsafe axiom Mathlib.Tactic.CC.CCState.isNotEqv :
+    Mathlib.Tactic.CC.CCState → expr → expr → tactic Bool
+#align cc_state.is_not_eqv Mathlib.Tactic.CC.CCState.isNotEqv
+-/
 
+#print Mathlib.Tactic.CC.CCState.eqvProof /-
 /-- Returns a proof term that the given terms are equivalent in the given cc_state-/
-unsafe axiom cc_state.eqv_proof : Mathlib.Tactic.CC.CCState → expr → expr → tactic expr
-#align cc_state.eqv_proof cc_state.eqv_proof
+unsafe axiom Mathlib.Tactic.CC.CCState.eqvProof :
+    Mathlib.Tactic.CC.CCState → expr → expr → tactic expr
+#align cc_state.eqv_proof Mathlib.Tactic.CC.CCState.eqvProof
+-/
 
 #print Mathlib.Tactic.CC.CCState.inconsistent /-
 /--
@@ -131,44 +154,62 @@ unsafe axiom Mathlib.Tactic.CC.CCState.inconsistent : Mathlib.Tactic.CC.CCState 
 #align cc_state.inconsistent Mathlib.Tactic.CC.CCState.inconsistent
 -/
 
+#print Mathlib.Tactic.CC.CCState.proofFor /-
 /-- `proof_for cc e` constructs a proof for e if it is equivalent to true in cc_state -/
-unsafe axiom cc_state.proof_for : Mathlib.Tactic.CC.CCState → expr → tactic expr
-#align cc_state.proof_for cc_state.proof_for
+unsafe axiom Mathlib.Tactic.CC.CCState.proofFor : Mathlib.Tactic.CC.CCState → expr → tactic expr
+#align cc_state.proof_for Mathlib.Tactic.CC.CCState.proofFor
+-/
 
+#print Mathlib.Tactic.CC.CCState.refutationFor /-
 /-- `refutation_for cc e` constructs a proof for `not e` if it is equivalent to false in cc_state -/
-unsafe axiom cc_state.refutation_for : Mathlib.Tactic.CC.CCState → expr → tactic expr
-#align cc_state.refutation_for cc_state.refutation_for
+unsafe axiom Mathlib.Tactic.CC.CCState.refutationFor :
+    Mathlib.Tactic.CC.CCState → expr → tactic expr
+#align cc_state.refutation_for Mathlib.Tactic.CC.CCState.refutationFor
+-/
 
+#print Mathlib.Tactic.CC.CCState.proofForFalse /-
 /-- If the given state is inconsistent, return a proof for false. Otherwise fail. -/
-unsafe axiom cc_state.proof_for_false : Mathlib.Tactic.CC.CCState → tactic expr
-#align cc_state.proof_for_false cc_state.proof_for_false
+unsafe axiom Mathlib.Tactic.CC.CCState.proofForFalse : Mathlib.Tactic.CC.CCState → tactic expr
+#align cc_state.proof_for_false Mathlib.Tactic.CC.CCState.proofForFalse
+-/
 
 namespace Mathlib.Tactic.CC.CCState
 
-unsafe def mk : Mathlib.Tactic.CC.CCState :=
-  cc_state.mk_core { }
-#align cc_state.mk cc_state.mk
+#print Mathlib.Tactic.CC.CCState.mk /-
+unsafe def Mathlib.Tactic.CC.CCState.mk : Mathlib.Tactic.CC.CCState :=
+  Mathlib.Tactic.CC.CCState.mkCore { }
+#align cc_state.mk Mathlib.Tactic.CC.CCState.mk
+-/
 
-unsafe def mk_using_hs : tactic Mathlib.Tactic.CC.CCState :=
-  cc_state.mk_using_hs_core { }
-#align cc_state.mk_using_hs cc_state.mk_using_hs
+#print Mathlib.Tactic.CC.CCState.mkUsingHs /-
+unsafe def Mathlib.Tactic.CC.CCState.mkUsingHs : tactic Mathlib.Tactic.CC.CCState :=
+  Mathlib.Tactic.CC.CCState.mkUsingHsCore { }
+#align cc_state.mk_using_hs Mathlib.Tactic.CC.CCState.mkUsingHs
+-/
 
-unsafe def roots (s : Mathlib.Tactic.CC.CCState) : List expr :=
-  cc_state.roots_core s true
-#align cc_state.roots cc_state.roots
+#print Mathlib.Tactic.CC.CCState.roots /-
+unsafe def Mathlib.Tactic.CC.CCState.roots (s : Mathlib.Tactic.CC.CCState) : List expr :=
+  Mathlib.Tactic.CC.CCState.rootsCore s true
+#align cc_state.roots Mathlib.Tactic.CC.CCState.roots
+-/
 
 unsafe instance : has_to_tactic_format Mathlib.Tactic.CC.CCState :=
   ⟨fun s => Mathlib.Tactic.CC.CCState.ppEqcs s true⟩
 
-unsafe def eqc_of_core (s : Mathlib.Tactic.CC.CCState) : expr → expr → List expr → List expr
+#print Mathlib.Tactic.CC.CCState.eqcOfCore /-
+unsafe def Mathlib.Tactic.CC.CCState.eqcOfCore (s : Mathlib.Tactic.CC.CCState) :
+    expr → expr → List expr → List expr
   | e, f, r =>
     let n := s.next e
     if n = f then e :: r else eqc_of_core n f (e :: r)
-#align cc_state.eqc_of_core cc_state.eqc_of_core
+#align cc_state.eqc_of_core Mathlib.Tactic.CC.CCState.eqcOfCore
+-/
 
-unsafe def eqc_of (s : Mathlib.Tactic.CC.CCState) (e : expr) : List expr :=
+#print Mathlib.Tactic.CC.CCState.eqcOf /-
+unsafe def Mathlib.Tactic.CC.CCState.eqcOf (s : Mathlib.Tactic.CC.CCState) (e : expr) : List expr :=
   s.eqc_of_core e e []
-#align cc_state.eqc_of cc_state.eqc_of
+#align cc_state.eqc_of Mathlib.Tactic.CC.CCState.eqcOf
+-/
 
 #print Mathlib.Tactic.CC.CCState.inSingletonEqc /-
 unsafe def Mathlib.Tactic.CC.CCState.inSingletonEqc (s : Mathlib.Tactic.CC.CCState) (e : expr) :
@@ -177,36 +218,46 @@ unsafe def Mathlib.Tactic.CC.CCState.inSingletonEqc (s : Mathlib.Tactic.CC.CCSta
 #align cc_state.in_singlenton_eqc Mathlib.Tactic.CC.CCState.inSingletonEqc
 -/
 
-unsafe def eqc_size (s : Mathlib.Tactic.CC.CCState) (e : expr) : Nat :=
+#print Mathlib.Tactic.CC.CCState.eqcSize /-
+unsafe def Mathlib.Tactic.CC.CCState.eqcSize (s : Mathlib.Tactic.CC.CCState) (e : expr) : Nat :=
   (s.eqc_of e).length
-#align cc_state.eqc_size cc_state.eqc_size
+#align cc_state.eqc_size Mathlib.Tactic.CC.CCState.eqcSize
+-/
 
-unsafe def fold_eqc_core {α} (s : Mathlib.Tactic.CC.CCState) (f : α → expr → α) (first : expr) :
-    expr → α → α
+#print Mathlib.Tactic.CC.CCState.foldEqcCore /-
+unsafe def Mathlib.Tactic.CC.CCState.foldEqcCore {α} (s : Mathlib.Tactic.CC.CCState)
+    (f : α → expr → α) (first : expr) : expr → α → α
   | c, a =>
     let new_a := f a c
     let next := s.next c
     if next == first then new_a else fold_eqc_core next new_a
-#align cc_state.fold_eqc_core cc_state.fold_eqc_core
+#align cc_state.fold_eqc_core Mathlib.Tactic.CC.CCState.foldEqcCore
+-/
 
-unsafe def fold_eqc {α} (s : Mathlib.Tactic.CC.CCState) (e : expr) (a : α) (f : α → expr → α) : α :=
-  fold_eqc_core s f e e a
-#align cc_state.fold_eqc cc_state.fold_eqc
+#print Mathlib.Tactic.CC.CCState.foldEqc /-
+unsafe def Mathlib.Tactic.CC.CCState.foldEqc {α} (s : Mathlib.Tactic.CC.CCState) (e : expr) (a : α)
+    (f : α → expr → α) : α :=
+  Mathlib.Tactic.CC.CCState.foldEqcCore s f e e a
+#align cc_state.fold_eqc Mathlib.Tactic.CC.CCState.foldEqc
+-/
 
-unsafe def mfold_eqc {α} {m : Type → Type} [Monad m] (s : Mathlib.Tactic.CC.CCState) (e : expr)
-    (a : α) (f : α → expr → m α) : m α :=
-  fold_eqc s e (return a) fun act e => do
+#print Mathlib.Tactic.CC.CCState.foldEqcM /-
+unsafe def Mathlib.Tactic.CC.CCState.foldEqcM {α} {m : Type → Type} [Monad m]
+    (s : Mathlib.Tactic.CC.CCState) (e : expr) (a : α) (f : α → expr → m α) : m α :=
+  Mathlib.Tactic.CC.CCState.foldEqc s e (return a) fun act e => do
     let a ← act
     f a e
-#align cc_state.mfold_eqc cc_state.mfold_eqc
+#align cc_state.mfold_eqc Mathlib.Tactic.CC.CCState.foldEqcM
+-/
 
 end Mathlib.Tactic.CC.CCState
 
 open Tactic
 
-unsafe def tactic.cc_core (cfg : Mathlib.Tactic.CC.CCConfig) : tactic Unit := do
+#print Lean.MVarId.cc /-
+unsafe def Lean.MVarId.cc (cfg : Mathlib.Tactic.CC.CCConfig) : tactic Unit := do
   intros
-  let s ← cc_state.mk_using_hs_core cfg
+  let s ← Mathlib.Tactic.CC.CCState.mkUsingHsCore cfg
   let t ← target
   let s ← s.internalize t
   if s then do
@@ -227,23 +278,37 @@ unsafe def tactic.cc_core (cfg : Mathlib.Tactic.CC.CCConfig) : tactic Unit := do
                     {ccf}"
             else do
               fail "cc tactic failed"
-#align tactic.cc_core tactic.cc_core
+#align tactic.cc_core Lean.MVarId.cc
+-/
 
-unsafe def tactic.cc : tactic Unit :=
-  tactic.cc_core { }
-#align tactic.cc tactic.cc
+/- warning: tactic.cc clashes with tactic.cc_core -> Lean.MVarId.cc
+Case conversion may be inaccurate. Consider using '#align tactic.cc Lean.MVarId.ccₓ'. -/
+#print Lean.MVarId.cc /-
+unsafe def Lean.MVarId.cc : tactic Unit :=
+  Lean.MVarId.cc { }
+#align tactic.cc Lean.MVarId.cc
+-/
 
-unsafe def tactic.cc_dbg_core (cfg : Mathlib.Tactic.CC.CCConfig) : tactic Unit :=
-  save_options <| set_bool_option `trace.cc.failure true >> tactic.cc_core cfg
-#align tactic.cc_dbg_core tactic.cc_dbg_core
+/- warning: tactic.cc_dbg_core clashes with tactic.cc_core -> Lean.MVarId.cc
+Case conversion may be inaccurate. Consider using '#align tactic.cc_dbg_core Lean.MVarId.ccₓ'. -/
+#print Lean.MVarId.cc /-
+unsafe def Lean.MVarId.cc (cfg : Mathlib.Tactic.CC.CCConfig) : tactic Unit :=
+  save_options <| set_bool_option `trace.cc.failure true >> Lean.MVarId.cc cfg
+#align tactic.cc_dbg_core Lean.MVarId.cc
+-/
 
-unsafe def tactic.cc_dbg : tactic Unit :=
-  tactic.cc_dbg_core { }
-#align tactic.cc_dbg tactic.cc_dbg
+/- warning: tactic.cc_dbg clashes with tactic.cc_core -> Lean.MVarId.cc
+Case conversion may be inaccurate. Consider using '#align tactic.cc_dbg Lean.MVarId.ccₓ'. -/
+#print Lean.MVarId.cc /-
+unsafe def Lean.MVarId.cc : tactic Unit :=
+  Lean.MVarId.cc { }
+#align tactic.cc_dbg Lean.MVarId.cc
+-/
 
-unsafe def tactic.ac_refl : tactic Unit := do
+#print Lean.Meta.AC.acRflTactic /-
+unsafe def Lean.Meta.AC.acRflTactic : tactic Unit := do
   let (lhs, rhs) ← target >>= match_eq
-  let s ← return <| cc_state.mk
+  let s ← return <| Mathlib.Tactic.CC.CCState.mk
   let s ← s.internalize lhs
   let s ← s.internalize rhs
   let b ← s.is_eqv lhs rhs
@@ -251,5 +316,6 @@ unsafe def tactic.ac_refl : tactic Unit := do
       s lhs rhs >>= exact
     else do
       fail "ac_refl failed"
-#align tactic.ac_refl tactic.ac_refl
+#align tactic.ac_refl Lean.Meta.AC.acRflTactic
+-/
 

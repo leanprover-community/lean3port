@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 prelude
 import Leanbin.Init.Control.Default
 import Init.Meta.SimpTactic
-import Init.Meta.Smt.CongruenceClosure
+import Tactic.CC
 import Init.Meta.Smt.Ematch
 
 #align_import init.meta.smt.smt_tactic from "leanprover-community/lean"@"4a03bdeb31b3688c31d02d7ff8e0ff2e5d6174db"

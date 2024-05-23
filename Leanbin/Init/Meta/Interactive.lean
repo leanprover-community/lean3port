@@ -8,7 +8,7 @@ import Init.Meta.Tactic
 import Init.Meta.TypeContext
 import Init.Meta.RewriteTactic
 import Init.Meta.SimpTactic
-import Init.Meta.Smt.CongruenceClosure
+import Tactic.CC
 import Init.Control.Combinators
 import Init.Meta.InteractiveBase
 import Init.Meta.Derive
@@ -1614,19 +1614,19 @@ unsafe def transitivity (q : parse texpr ?) : tactic Unit :=
 Proves a goal with target `s = t` when `s` and `t` are equal up to the associativity and commutativity of their binary operations.
 -/
 unsafe def ac_reflexivity : tactic Unit :=
-  tactic.ac_refl
+  Lean.Meta.AC.acRflTactic
 #align tactic.interactive.ac_reflexivity tactic.interactive.ac_reflexivity
 
 /-- An abbreviation for `ac_reflexivity`.
 -/
 unsafe def ac_refl : tactic Unit :=
-  tactic.ac_refl
+  Lean.Meta.AC.acRflTactic
 #align tactic.interactive.ac_refl tactic.interactive.ac_refl
 
 /-- Tries to prove the main goal using congruence closure.
 -/
 unsafe def cc : tactic Unit :=
-  tactic.cc
+  Lean.MVarId.cc
 #align tactic.interactive.cc tactic.interactive.cc
 
 /--

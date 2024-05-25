@@ -24,7 +24,7 @@ target fetchOleans (_pkg) : Unit := Job.async do
   let libDir : FilePath := __dir__ / ".lake" / "build" / "lib"
   IO.FS.createDirAll libDir
   let oldTrace := Hash.ofString tag
-  let _ ← liftM <| buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
+  let _ ← buildFileUnlessUpToDate (libDir / oleanTarName) oldTrace do
     logInfo "Fetching oleans for Leanbin"
     untarReleaseArtifact releaseRepo tag oleanTarName libDir
   return ((), .nil)

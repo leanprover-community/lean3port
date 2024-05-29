@@ -1,7 +1,7 @@
 import Data.Buffer
 import Data.Buffer.Parser
 import Data.DList.Defs
-import Data.Vector
+import Data.Vector.Defs
 import Smt.Arith
 import Smt.Array
 import Smt.Default

@@ -59,7 +59,7 @@ instance : Singleton α (Set α) :=
 instance : Sep α (Set α) :=
   ⟨fun p s => {x | x ∈ s ∧ p x}⟩
 
-instance : IsLawfulSingleton α (Set α) :=
+instance : LawfulSingleton α (Set α) :=
   ⟨fun a => funext fun b => propext <| or_false_iff _⟩
 
 end Set

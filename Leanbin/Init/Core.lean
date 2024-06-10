@@ -663,16 +663,16 @@ attribute [match_pattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 
 export Insert (insert)
 
-#print IsLawfulSingleton /-
-class IsLawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] :
+#print LawfulSingleton /-
+class LawfulSingleton (α : Type u) (β : Type v) [EmptyCollection β] [Insert α β] [Singleton α β] :
     Prop where
   insert_emptyCollection_eq : ∀ x : α, (insert x ∅ : β) = {x}
-#align is_lawful_singleton IsLawfulSingleton
+#align is_lawful_singleton LawfulSingleton
 -/
 
 export Singleton (singleton)
 
-export IsLawfulSingleton (insert_emptyCollection_eq)
+export LawfulSingleton (insert_emptyCollection_eq)
 
 attribute [simp] insert_emptyc_eq
 

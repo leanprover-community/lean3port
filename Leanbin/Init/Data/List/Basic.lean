@@ -364,7 +364,7 @@ instance [DecidableEq α] : Insert α (List α) :=
 instance : Singleton α (List α) :=
   ⟨fun x => [x]⟩
 
-instance [DecidableEq α] : IsLawfulSingleton α (List α) :=
+instance [DecidableEq α] : LawfulSingleton α (List α) :=
   ⟨fun x => show (if x ∈ ([] : List α) then [] else [x]) = [x] from if_neg not_false⟩
 
 #print List.union /-

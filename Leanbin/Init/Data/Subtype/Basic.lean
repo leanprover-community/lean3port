@@ -46,9 +46,7 @@ end Subtype
 
 open Subtype
 
-#print Subtype.instInhabited /-
-def Subtype.instInhabited {α : Type u} {p : α → Prop} {a : α} (h : p a) : Inhabited { x // p x } :=
+def Subtype.inhabited {α : Type u} {p : α → Prop} {a : α} (h : p a) : Inhabited { x // p x } :=
   ⟨⟨a, h⟩⟩
-#align subtype.inhabited Subtype.instInhabited
--/
+#align subtype.inhabited Subtype.inhabited
 

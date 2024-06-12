@@ -1312,6 +1312,8 @@ end
 instance {α : Sort u} [DecidableEq α] (a b : α) : Decidable (a ≠ b) :=
   Implies.decidable
 
+/- warning: bool.ff_ne_tt clashes with bool.not_ff -> Bool.false_ne_true
+Case conversion may be inaccurate. Consider using '#align bool.ff_ne_tt Bool.false_ne_trueₓ'. -/
 #print Bool.false_ne_true /-
 theorem Bool.false_ne_true : false = true → False :=
   fun.

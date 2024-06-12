@@ -285,16 +285,18 @@ theorem Bool.decide_congr {p q : Prop} [Decidable p] [Decidable q] (h : p ↔ q)
 #align to_bool_congr Bool.decide_congr
 -/
 
-#print Bool.coe_or_iff /-
+#print Bool.or_eq_true_iff /-
 @[simp]
-theorem Bool.coe_or_iff (a b : Bool) : a || b ↔ a ∨ b := by cases a <;> cases b <;> exact by decide
-#align bor_coe_iff Bool.coe_or_iff
+theorem Bool.or_eq_true_iff (a b : Bool) : a || b ↔ a ∨ b := by
+  cases a <;> cases b <;> exact by decide
+#align bor_coe_iff Bool.or_eq_true_iff
 -/
 
-#print Bool.coe_and_iff /-
+#print Bool.and_eq_true_iff /-
 @[simp]
-theorem Bool.coe_and_iff (a b : Bool) : a && b ↔ a ∧ b := by cases a <;> cases b <;> exact by decide
-#align band_coe_iff Bool.coe_and_iff
+theorem Bool.and_eq_true_iff (a b : Bool) : a && b ↔ a ∧ b := by
+  cases a <;> cases b <;> exact by decide
+#align band_coe_iff Bool.and_eq_true_iff
 -/
 
 #print Bool.coe_xor_iff /-

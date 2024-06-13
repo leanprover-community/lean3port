@@ -627,19 +627,19 @@ protected theorem mul_le_mul_of_nonneg_right {a b c : ℕ} (h₁ : a ≤ b) : a 
 #align nat.mul_le_mul_of_nonneg_right Nat.mul_le_mul_of_nonneg_right
 -/
 
-protected theorem mul_lt_mul {a b c d : ℕ} (hac : a < c) (hbd : b ≤ d) (pos_b : 0 < b) :
-    a * b < c * d :=
+protected theorem mul_lt_mul_of_lt_of_le' {a b c d : ℕ} (hac : a < c) (hbd : b ≤ d)
+    (pos_b : 0 < b) : a * b < c * d :=
   calc
     a * b < c * b := Nat.mul_lt_mul_of_pos_right hac pos_b
     _ ≤ c * d := Nat.mul_le_mul_of_nonneg_left hbd
-#align nat.mul_lt_mul Nat.mul_lt_mulₓ
+#align nat.mul_lt_mul Nat.mul_lt_mul_of_lt_of_le'ₓ
 
-protected theorem mul_lt_mul' {a b c d : ℕ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 < c) :
+protected theorem mul_lt_mul_of_le_of_lt {a b c d : ℕ} (h1 : a ≤ c) (h2 : b < d) (h3 : 0 < c) :
     a * b < c * d :=
   calc
     a * b ≤ c * b := Nat.mul_le_mul_of_nonneg_right h1
     _ < c * d := Nat.mul_lt_mul_of_pos_left h2 h3
-#align nat.mul_lt_mul' Nat.mul_lt_mul'ₓ
+#align nat.mul_lt_mul' Nat.mul_lt_mul_of_le_of_ltₓ
 
 #print Nat.mul_le_mul /-
 -- TODO: there are four variations, depending on which variables we assume to be nonneg
@@ -1790,7 +1790,7 @@ protected theorem mul_div_mul_left {m : ℕ} (n k : ℕ) (H : 0 < m) : m * n / (
 theorem div_lt_self {n m : Nat} : 0 < n → 1 < m → n / m < n :=
   by
   intro h₁ h₂
-  have := Nat.mul_lt_mul h₂ (le_refl _) h₁
+  have := Nat.mul_lt_mul_of_lt_of_le' h₂ (le_refl _) h₁
   rw [Nat.one_mul, Nat.mul_comm] at this
   exact (Nat.div_lt_iff_lt_mul <| lt_trans (by comp_val) h₂).2 this
 #align nat.div_lt_self Nat.div_lt_self

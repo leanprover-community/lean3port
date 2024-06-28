@@ -785,12 +785,16 @@ theorem Or.imp (h₂ : a → c) (h₃ : b → d) : a ∨ b → c ∨ d :=
   Or.ndrec (fun h => Or.inl (h₂ h)) fun h => Or.inr (h₃ h)
 #align or.imp Or.impₓ
 
+/- warning: or.imp_left clashes with or_of_or_of_imp_left -> Or.imp_left
+Case conversion may be inaccurate. Consider using '#align or.imp_left Or.imp_leftₓ'. -/
 #print Or.imp_left /-
 theorem Or.imp_left (h : a → b) : a ∨ c → b ∨ c :=
   Or.imp h id
 #align or.imp_left Or.imp_left
 -/
 
+/- warning: or.imp_right clashes with or_of_or_of_imp_right -> Or.imp_right
+Case conversion may be inaccurate. Consider using '#align or.imp_right Or.imp_rightₓ'. -/
 #print Or.imp_right /-
 theorem Or.imp_right (h : a → b) : c ∨ a → c ∨ b :=
   Or.imp id h
@@ -1090,6 +1094,7 @@ theorem exists_congr {α : Sort u} {p q : α → Prop} (h : ∀ a, p a ↔ q a) 
 #align exists_congr exists_congr
 -/
 
+#print existsUnique_congr /-
 @[congr]
 theorem existsUnique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p₁ x ↔ p₂ x) :
     ExistsUnique p₁ ↔ ∃! x, p₂ x :=
@@ -1097,6 +1102,7 @@ theorem existsUnique_congr {α : Sort u} {p₁ p₂ : α → Prop} (h : ∀ x, p
     exists_congr
     fun x => and_congr (h x) (forall_congr' fun y => imp_congr (h y) Iff.rfl)
 #align exists_unique_congr existsUnique_congr
+-/
 
 #print forall_not_of_not_exists /-
 theorem forall_not_of_not_exists {α : Sort u} {p : α → Prop} : (¬∃ x, p x) → ∀ x, ¬p x :=

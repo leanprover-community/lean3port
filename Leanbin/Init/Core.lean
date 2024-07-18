@@ -647,17 +647,13 @@ infixl:50 " ⊇ " => Superset
 
 infixl:50 " ⊃ " => Ssuperset
 
-#print bit0 /-
 def bit0 {α : Type u} [s : Add α] (a : α) : α :=
   a + a
 #align bit0 bit0
--/
 
-#print bit1 /-
 def bit1 {α : Type u} [s₁ : One α] [s₂ : Add α] (a : α) : α :=
   bit0 a + 1
 #align bit1 bit1
--/
 
 attribute [match_pattern] Zero.zero One.one bit0 bit1 Add.add Neg.neg Mul.mul
 
@@ -882,8 +878,6 @@ inductive BinTree (α : Type u)
 
 attribute [elab_without_expected_type] BinTree.node BinTree.leaf
 
-/- warning: infer_instance clashes with topological_group.t3_space -> inferInstance
-Case conversion may be inaccurate. Consider using '#align infer_instance inferInstanceₓ'. -/
 #print inferInstance /-
 /-- Like `by apply_instance`, but not dependent on the tactic framework. -/
 @[reducible]

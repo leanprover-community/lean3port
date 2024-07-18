@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 prelude
 import Init.Data.Option.Basic
 import Init.Meta.Tactic
-import Init.Control.Lawful
+import Control.Lawful
 
 #align_import init.data.option.instances from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"
 

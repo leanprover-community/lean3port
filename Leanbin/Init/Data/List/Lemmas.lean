@@ -5,7 +5,7 @@ Author: Parikshit Khanna, Jeremy Avigad, Leonardo de Moura, Floris van Doorn
 -/
 prelude
 import Init.Data.List.Basic
-import Init.Function
+import Logic.Function.Defs
 import Leanbin.Init.Meta.Default
 import Init.Data.Nat.Lemmas
 import Init.Meta.Interactive

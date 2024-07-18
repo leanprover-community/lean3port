@@ -5,7 +5,7 @@ Authors: Leonardo de Moura
 -/
 prelude
 import Init.Meta.Tactic
-import Init.Function
+import Logic.Function.Defs
 
 #align_import init.meta.relation_tactics from "leanprover-community/lean"@"2a048c69f9105e8964e664fb16c6c69e4aa8d467"
 

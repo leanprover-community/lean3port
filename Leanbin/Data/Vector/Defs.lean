@@ -16,158 +16,169 @@ import Leanbin.Init.Data.Fin.Default
 
 universe u v w
 
-#print Vector /-
-def Vector (α : Type u) (n : ℕ) :=
+#print Mathlib.Vector /-
+def Mathlib.Vector (α : Type u) (n : ℕ) :=
   { l : List α // l.length = n }
-#align vector Vector
+#align vector Mathlib.Vector
 -/
 
-namespace Vector
+namespace Mathlib.Vector
 
 variable {α : Type u} {β : Type v} {φ : Type w}
 
 variable {n : ℕ}
 
-instance [DecidableEq α] : DecidableEq (Vector α n) := by unfold Vector; infer_instance
+instance [DecidableEq α] : DecidableEq (Mathlib.Vector α n) := by unfold Mathlib.Vector;
+  infer_instance
 
-#print Vector.nil /-
+#print Mathlib.Vector.nil /-
 @[match_pattern]
-def nil : Vector α 0 :=
+def Mathlib.Vector.nil : Mathlib.Vector α 0 :=
   ⟨[], rfl⟩
-#align vector.nil Vector.nil
+#align vector.nil Mathlib.Vector.nil
 -/
 
-#print Vector.cons /-
+#print Mathlib.Vector.cons /-
 @[match_pattern]
-def cons : α → Vector α n → Vector α (Nat.succ n)
+def Mathlib.Vector.cons : α → Mathlib.Vector α n → Mathlib.Vector α (Nat.succ n)
   | a, ⟨v, h⟩ => ⟨a :: v, congr_arg Nat.succ h⟩
-#align vector.cons Vector.cons
+#align vector.cons Mathlib.Vector.cons
 -/
 
-#print Vector.length /-
+#print Mathlib.Vector.length /-
 @[reducible]
-def length (v : Vector α n) : ℕ :=
+def Mathlib.Vector.length (v : Mathlib.Vector α n) : ℕ :=
   n
-#align vector.length Vector.length
+#align vector.length Mathlib.Vector.length
 -/
 
 open Nat
 
-#print Vector.head /-
-def head : Vector α (Nat.succ n) → α
+#print Mathlib.Vector.head /-
+def Mathlib.Vector.head : Mathlib.Vector α (Nat.succ n) → α
   | ⟨[], h⟩ => by contradiction
   | ⟨a :: v, h⟩ => a
-#align vector.head Vector.head
+#align vector.head Mathlib.Vector.head
 -/
 
-#print Vector.head_cons /-
-theorem head_cons (a : α) : ∀ v : Vector α n, head (cons a v) = a
+#print Mathlib.Vector.head_cons /-
+theorem Mathlib.Vector.head_cons (a : α) :
+    ∀ v : Mathlib.Vector α n, Mathlib.Vector.head (Mathlib.Vector.cons a v) = a
   | ⟨l, h⟩ => rfl
-#align vector.head_cons Vector.head_cons
+#align vector.head_cons Mathlib.Vector.head_cons
 -/
 
-#print Vector.tail /-
-def tail : Vector α n → Vector α (n - 1)
+#print Mathlib.Vector.tail /-
+def Mathlib.Vector.tail : Mathlib.Vector α n → Mathlib.Vector α (n - 1)
   | ⟨[], h⟩ => ⟨[], congr_arg pred h⟩
   | ⟨a :: v, h⟩ => ⟨v, congr_arg pred h⟩
-#align vector.tail Vector.tail
+#align vector.tail Mathlib.Vector.tail
 -/
 
-#print Vector.tail_cons /-
-theorem tail_cons (a : α) : ∀ v : Vector α n, tail (cons a v) = v
+#print Mathlib.Vector.tail_cons /-
+theorem Mathlib.Vector.tail_cons (a : α) :
+    ∀ v : Mathlib.Vector α n, Mathlib.Vector.tail (Mathlib.Vector.cons a v) = v
   | ⟨l, h⟩ => rfl
-#align vector.tail_cons Vector.tail_cons
+#align vector.tail_cons Mathlib.Vector.tail_cons
 -/
 
-#print Vector.cons_head_tail /-
+#print Mathlib.Vector.cons_head_tail /-
 @[simp]
-theorem cons_head_tail : ∀ v : Vector α (succ n), cons (head v) (tail v) = v
+theorem Mathlib.Vector.cons_head_tail :
+    ∀ v : Mathlib.Vector α (succ n),
+      Mathlib.Vector.cons (Mathlib.Vector.head v) (Mathlib.Vector.tail v) = v
   | ⟨[], h⟩ => by contradiction
   | ⟨a :: v, h⟩ => rfl
-#align vector.cons_head_tail Vector.cons_head_tail
+#align vector.cons_head_tail Mathlib.Vector.cons_head_tail
 -/
 
-#print Vector.toList /-
-def toList (v : Vector α n) : List α :=
+#print Mathlib.Vector.toList /-
+def Mathlib.Vector.toList (v : Mathlib.Vector α n) : List α :=
   v.1
-#align vector.to_list Vector.toList
+#align vector.to_list Mathlib.Vector.toList
 -/
 
-#print Vector.get /-
-def get : ∀ v : Vector α n, Fin n → α
+#print Mathlib.Vector.get /-
+def Mathlib.Vector.get : ∀ v : Mathlib.Vector α n, Fin n → α
   | ⟨l, h⟩, i => l.nthLe i.1 (by rw [h] <;> exact i.2)
-#align vector.nth Vector.get
+#align vector.nth Mathlib.Vector.get
 -/
 
-#print Vector.append /-
-def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
+#print Mathlib.Vector.append /-
+def Mathlib.Vector.append {n m : Nat} :
+    Mathlib.Vector α n → Mathlib.Vector α m → Mathlib.Vector α (n + m)
   | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ => ⟨l₁ ++ l₂, by simp [*]⟩
-#align vector.append Vector.append
+#align vector.append Mathlib.Vector.append
 -/
 
-#print Vector.elim /-
+#print Mathlib.Vector.elim /-
 @[elab_as_elim]
-def elim {α} {C : ∀ {n}, Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩) {n : Nat} :
-    ∀ v : Vector α n, C v
+def Mathlib.Vector.elim {α} {C : ∀ {n}, Mathlib.Vector α n → Sort u} (H : ∀ l : List α, C ⟨l, rfl⟩)
+    {n : Nat} : ∀ v : Mathlib.Vector α n, C v
   | ⟨l, h⟩ =>
     match n, h with
     | _, rfl => H l
-#align vector.elim Vector.elim
+#align vector.elim Mathlib.Vector.elim
 -/
 
-#print Vector.map /-
+#print Mathlib.Vector.map /-
 -- map
-def map (f : α → β) : Vector α n → Vector β n
+def Mathlib.Vector.map (f : α → β) : Mathlib.Vector α n → Mathlib.Vector β n
   | ⟨l, h⟩ => ⟨List.map f l, by simp [*]⟩
-#align vector.map Vector.map
+#align vector.map Mathlib.Vector.map
 -/
 
-#print Vector.map_nil /-
+#print Mathlib.Vector.map_nil /-
 @[simp]
-theorem map_nil (f : α → β) : map f nil = nil :=
+theorem Mathlib.Vector.map_nil (f : α → β) :
+    Mathlib.Vector.map f Mathlib.Vector.nil = Mathlib.Vector.nil :=
   rfl
-#align vector.map_nil Vector.map_nil
+#align vector.map_nil Mathlib.Vector.map_nil
 -/
 
-#print Vector.map_cons /-
-theorem map_cons (f : α → β) (a : α) : ∀ v : Vector α n, map f (cons a v) = cons (f a) (map f v)
+#print Mathlib.Vector.map_cons /-
+theorem Mathlib.Vector.map_cons (f : α → β) (a : α) :
+    ∀ v : Mathlib.Vector α n,
+      Mathlib.Vector.map f (Mathlib.Vector.cons a v) =
+        Mathlib.Vector.cons (f a) (Mathlib.Vector.map f v)
   | ⟨l, h⟩ => rfl
-#align vector.map_cons Vector.map_cons
+#align vector.map_cons Mathlib.Vector.map_cons
 -/
 
-#print Vector.map₂ /-
-def map₂ (f : α → β → φ) : Vector α n → Vector β n → Vector φ n
+#print Mathlib.Vector.map₂ /-
+def Mathlib.Vector.map₂ (f : α → β → φ) :
+    Mathlib.Vector α n → Mathlib.Vector β n → Mathlib.Vector φ n
   | ⟨x, _⟩, ⟨y, _⟩ => ⟨List.zipWith f x y, by simp [*]⟩
-#align vector.map₂ Vector.map₂
+#align vector.map₂ Mathlib.Vector.map₂
 -/
 
-def repeat (a : α) (n : ℕ) : Vector α n :=
+def Mathlib.Vector.repeat (a : α) (n : ℕ) : Mathlib.Vector α n :=
   ⟨List.repeat a n, List.length_replicate a n⟩
-#align vector.repeat Vector.repeat
+#align vector.repeat Mathlib.Vector.repeat
 
-#print Vector.drop /-
-def drop (i : ℕ) : Vector α n → Vector α (n - i)
+#print Mathlib.Vector.drop /-
+def Mathlib.Vector.drop (i : ℕ) : Mathlib.Vector α n → Mathlib.Vector α (n - i)
   | ⟨l, p⟩ => ⟨List.drop i l, by simp [*]⟩
-#align vector.drop Vector.drop
+#align vector.drop Mathlib.Vector.drop
 -/
 
-#print Vector.take /-
-def take (i : ℕ) : Vector α n → Vector α (min i n)
+#print Mathlib.Vector.take /-
+def Mathlib.Vector.take (i : ℕ) : Mathlib.Vector α n → Mathlib.Vector α (min i n)
   | ⟨l, p⟩ => ⟨List.take i l, by simp [*]⟩
-#align vector.take Vector.take
+#align vector.take Mathlib.Vector.take
 -/
 
-#print Vector.eraseIdx /-
-def eraseIdx (i : Fin n) : Vector α n → Vector α (n - 1)
+#print Mathlib.Vector.eraseIdx /-
+def Mathlib.Vector.eraseIdx (i : Fin n) : Mathlib.Vector α n → Mathlib.Vector α (n - 1)
   | ⟨l, p⟩ => ⟨List.eraseIdx l i.1, by rw [l.length_remove_nth i.1] <;> rw [p] <;> exact i.2⟩
-#align vector.remove_nth Vector.eraseIdx
+#align vector.remove_nth Mathlib.Vector.eraseIdx
 -/
 
-#print Vector.ofFn /-
-def ofFn : ∀ {n}, (Fin n → α) → Vector α n
-  | 0, f => nil
-  | n + 1, f => cons (f 0) (of_fn fun i => f i.succ)
-#align vector.of_fn Vector.ofFn
+#print Mathlib.Vector.ofFn /-
+def Mathlib.Vector.ofFn : ∀ {n}, (Fin n → α) → Mathlib.Vector α n
+  | 0, f => Mathlib.Vector.nil
+  | n + 1, f => Mathlib.Vector.cons (f 0) (of_fn fun i => f i.succ)
+#align vector.of_fn Mathlib.Vector.ofFn
 -/
 
 section Accum
@@ -176,84 +187,93 @@ open Prod
 
 variable {σ : Type}
 
-#print Vector.mapAccumr /-
-def mapAccumr (f : α → σ → σ × β) : Vector α n → σ → σ × Vector β n
+#print Mathlib.Vector.mapAccumr /-
+def Mathlib.Vector.mapAccumr (f : α → σ → σ × β) : Mathlib.Vector α n → σ → σ × Mathlib.Vector β n
   | ⟨x, px⟩, c =>
     let res := List.mapAccumr f x c
     ⟨res.1, res.2, by simp [*]⟩
-#align vector.map_accumr Vector.mapAccumr
+#align vector.map_accumr Mathlib.Vector.mapAccumr
 -/
 
-#print Vector.mapAccumr₂ /-
-def mapAccumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) :
-    Vector α n → Vector β n → σ → σ × Vector φ n
+#print Mathlib.Vector.mapAccumr₂ /-
+def Mathlib.Vector.mapAccumr₂ {α β σ φ : Type} (f : α → β → σ → σ × φ) :
+    Mathlib.Vector α n → Mathlib.Vector β n → σ → σ × Mathlib.Vector φ n
   | ⟨x, px⟩, ⟨y, py⟩, c =>
     let res := List.mapAccumr₂ f x y c
     ⟨res.1, res.2, by simp [*]⟩
-#align vector.map_accumr₂ Vector.mapAccumr₂
+#align vector.map_accumr₂ Mathlib.Vector.mapAccumr₂
 -/
 
 end Accum
 
-#print Vector.eq /-
-protected theorem eq {n : ℕ} : ∀ a1 a2 : Vector α n, toList a1 = toList a2 → a1 = a2
+#print Mathlib.Vector.eq /-
+protected theorem Mathlib.Vector.eq {n : ℕ} :
+    ∀ a1 a2 : Mathlib.Vector α n, Mathlib.Vector.toList a1 = Mathlib.Vector.toList a2 → a1 = a2
   | ⟨x, h1⟩, ⟨_, h2⟩, rfl => rfl
-#align vector.eq Vector.eq
+#align vector.eq Mathlib.Vector.eq
 -/
 
-#print Vector.eq_nil /-
-protected theorem eq_nil (v : Vector α 0) : v = nil :=
-  v.Eq nil (List.eq_nil_of_length_eq_zero v.2)
-#align vector.eq_nil Vector.eq_nil
+#print Mathlib.Vector.eq_nil /-
+protected theorem Mathlib.Vector.eq_nil (v : Mathlib.Vector α 0) : v = Mathlib.Vector.nil :=
+  v.Eq Mathlib.Vector.nil (List.eq_nil_of_length_eq_zero v.2)
+#align vector.eq_nil Mathlib.Vector.eq_nil
 -/
 
-#print Vector.toList_mk /-
+#print Mathlib.Vector.toList_mk /-
 @[simp]
-theorem toList_mk (v : List α) (P : List.length v = n) : toList (Subtype.mk v P) = v :=
+theorem Mathlib.Vector.toList_mk (v : List α) (P : List.length v = n) :
+    Mathlib.Vector.toList (Subtype.mk v P) = v :=
   rfl
-#align vector.to_list_mk Vector.toList_mk
+#align vector.to_list_mk Mathlib.Vector.toList_mk
 -/
 
-#print Vector.toList_nil /-
+#print Mathlib.Vector.toList_nil /-
 @[simp]
-theorem toList_nil : toList nil = @List.nil α :=
+theorem Mathlib.Vector.toList_nil : Mathlib.Vector.toList Mathlib.Vector.nil = @List.nil α :=
   rfl
-#align vector.to_list_nil Vector.toList_nil
+#align vector.to_list_nil Mathlib.Vector.toList_nil
 -/
 
-#print Vector.toList_length /-
+#print Mathlib.Vector.toList_length /-
 @[simp]
-theorem toList_length (v : Vector α n) : (toList v).length = n :=
+theorem Mathlib.Vector.toList_length (v : Mathlib.Vector α n) :
+    (Mathlib.Vector.toList v).length = n :=
   v.2
-#align vector.to_list_length Vector.toList_length
+#align vector.to_list_length Mathlib.Vector.toList_length
 -/
 
-#print Vector.toList_cons /-
+#print Mathlib.Vector.toList_cons /-
 @[simp]
-theorem toList_cons (a : α) (v : Vector α n) : toList (cons a v) = a :: toList v := by cases v; rfl
-#align vector.to_list_cons Vector.toList_cons
+theorem Mathlib.Vector.toList_cons (a : α) (v : Mathlib.Vector α n) :
+    Mathlib.Vector.toList (Mathlib.Vector.cons a v) = a :: Mathlib.Vector.toList v := by cases v;
+  rfl
+#align vector.to_list_cons Mathlib.Vector.toList_cons
 -/
 
-#print Vector.toList_append /-
+#print Mathlib.Vector.toList_append /-
 @[simp]
-theorem toList_append {n m : Nat} (v : Vector α n) (w : Vector α m) :
-    toList (append v w) = toList v ++ toList w := by cases v; cases w; rfl
-#align vector.to_list_append Vector.toList_append
+theorem Mathlib.Vector.toList_append {n m : Nat} (v : Mathlib.Vector α n) (w : Mathlib.Vector α m) :
+    Mathlib.Vector.toList (Mathlib.Vector.append v w) =
+      Mathlib.Vector.toList v ++ Mathlib.Vector.toList w :=
+  by cases v; cases w; rfl
+#align vector.to_list_append Mathlib.Vector.toList_append
 -/
 
-#print Vector.toList_drop /-
+#print Mathlib.Vector.toList_drop /-
 @[simp]
-theorem toList_drop {n m : ℕ} (v : Vector α m) : toList (drop n v) = List.drop n (toList v) := by
+theorem Mathlib.Vector.toList_drop {n m : ℕ} (v : Mathlib.Vector α m) :
+    Mathlib.Vector.toList (Mathlib.Vector.drop n v) = List.drop n (Mathlib.Vector.toList v) := by
   cases v; rfl
-#align vector.to_list_drop Vector.toList_drop
+#align vector.to_list_drop Mathlib.Vector.toList_drop
 -/
 
-#print Vector.toList_take /-
+#print Mathlib.Vector.toList_take /-
 @[simp]
-theorem toList_take {n m : ℕ} (v : Vector α m) : toList (take n v) = List.take n (toList v) := by
+theorem Mathlib.Vector.toList_take {n m : ℕ} (v : Mathlib.Vector α m) :
+    Mathlib.Vector.toList (Mathlib.Vector.take n v) = List.take n (Mathlib.Vector.toList v) := by
   cases v; rfl
-#align vector.to_list_take Vector.toList_take
+#align vector.to_list_take Mathlib.Vector.toList_take
 -/
 
-end Vector
+end Mathlib.Vector
 

@@ -13,7 +13,7 @@ import Init.Propext
 import Init.CcLemmas
 import Init.Funext
 import Init.Control.Combinators
-import Init.Function
+import Logic.Function.Defs
 import Init.Classical
 import Init.Util
 import Init.Coe

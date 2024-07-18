@@ -9,7 +9,7 @@ import Init.Control.Functor
 import Init.Control.Alternative
 import Init.Control.Monad
 import Init.Control.Lift
-import Init.Control.Lawful
+import Control.Lawful
 import Init.Control.State
 import Init.Control.Id
 import Init.Control.Except

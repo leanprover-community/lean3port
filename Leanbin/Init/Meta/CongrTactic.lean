@@ -7,7 +7,7 @@ prelude
 import Init.Meta.Tactic
 import Init.Meta.CongrLemma
 import Init.Meta.RelationTactics
-import Init.Function
+import Logic.Function.Defs
 
 #align_import init.meta.congr_tactic from "leanprover-community/lean"@"c0792dde6a5c738ec01ca51039622828c43895d3"
 

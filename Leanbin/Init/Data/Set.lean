@@ -5,7 +5,7 @@ Authors: Leonardo de Moura
 -/
 prelude
 import Init.Meta.Interactive
-import Init.Control.Lawful
+import Control.Lawful
 
 #align_import init.data.set from "leanprover-community/lean"@"ab343ab4edc491dbd02bed7b70295a0bb88be06f"
 

@@ -5,7 +5,7 @@ Authors: Leonardo de Moura, Jeremy Avigad
 -/
 prelude
 import Init.Data.Ordering.Basic
-import Init.Function
+import Logic.Function.Defs
 import Init.Meta.Name
 import Init.Meta.Format
 import Init.Control.Monad

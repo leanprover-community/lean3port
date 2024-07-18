@@ -285,6 +285,8 @@ theorem negSucc_add_ofNat (m n : Nat) : -[m+1] + ofNat n = subNatNat n (succ m) 
 #align int.neg_succ_of_nat_add_of_nat Int.negSucc_add_ofNat
 -/
 
+/- warning: int.neg_succ_of_nat_add_neg_succ_of_nat clashes with int.neg_add_neg -> Int.negSucc_add_negSucc
+Case conversion may be inaccurate. Consider using '#align int.neg_succ_of_nat_add_neg_succ_of_nat Int.negSucc_add_negSuccₓ'. -/
 #print Int.negSucc_add_negSucc /-
 theorem negSucc_add_negSucc (m n : Nat) : -[m+1] + -[n+1] = -[succ (m + n)+1] :=
   rfl
@@ -471,6 +473,8 @@ theorem natAbs_ofNat (n : ℕ) : natAbs ↑n = n :=
 #align int.nat_abs_of_nat Int.natAbs_ofNat
 -/
 
+/- warning: int.eq_zero_of_nat_abs_eq_zero clashes with int.nat_abs_eq_zero -> Int.natAbs_eq_zero
+Case conversion may be inaccurate. Consider using '#align int.eq_zero_of_nat_abs_eq_zero Int.natAbs_eq_zeroₓ'. -/
 #print Int.natAbs_eq_zero /-
 theorem natAbs_eq_zero : ∀ {a : ℤ}, natAbs a = 0 → a = 0
   | of_nat m, H => congr_arg ofNat H

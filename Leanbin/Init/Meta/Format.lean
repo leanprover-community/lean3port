@@ -5,7 +5,7 @@ Authors: Leonardo de Moura
 -/
 prelude
 import Init.Meta.Options
-import Init.Function
+import Logic.Function.Defs
 import Init.Data.ToString
 
 #align_import init.meta.format from "leanprover-community/lean"@"c248e38671ebca7d0513180887daf60a6433bc37"

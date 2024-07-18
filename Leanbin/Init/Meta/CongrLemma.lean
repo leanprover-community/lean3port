@@ -6,7 +6,7 @@ Authors: Leonardo de Moura
 prelude
 import Init.Meta.Tactic
 import Init.Meta.Format
-import Init.Function
+import Logic.Function.Defs
 
 #align_import init.meta.congr_lemma from "leanprover-community/lean"@"49194b4458c682842a21a1f8675e174b440af055"
 

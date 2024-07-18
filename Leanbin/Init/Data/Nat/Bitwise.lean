@@ -149,20 +149,16 @@ def bit (b : Bool) : ℕ → ℕ :=
 #align nat.bit Nat.bit
 -/
 
-#print Nat.bit0_val /-
 theorem bit0_val (n : Nat) : bit0 n = 2 * n :=
   calc
     n + n = 0 + n + n := by rw [Nat.zero_add]
     _ = n * 2 := rfl
     _ = 2 * n := Nat.mul_comm _ _
 #align nat.bit0_val Nat.bit0_val
--/
 
-#print Nat.bit1_val /-
 theorem bit1_val (n : Nat) : bit1 n = 2 * n + 1 :=
   congr_arg succ (bit0_val _)
 #align nat.bit1_val Nat.bit1_val
--/
 
 #print Nat.bit_val /-
 theorem bit_val (b n) : bit b n = 2 * n + cond b 1 0 := by cases b; apply bit0_val; apply bit1_val

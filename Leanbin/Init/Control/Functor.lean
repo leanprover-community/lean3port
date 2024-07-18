@@ -5,7 +5,7 @@ Authors: Luke Nelson, Jared Roesch, Sebastian Ullrich, Leonardo de Moura
 -/
 prelude
 import Init.Core
-import Init.Function
+import Logic.Function.Defs
 import Init.Meta.Name
 
 #align_import init.control.functor from "leanprover-community/lean"@"e611ee5c2bd410148bcd493c58cb17498d667175"

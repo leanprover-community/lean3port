@@ -5,7 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: E.W.Ayers
 -/
 prelude
-import Init.Function
+import Logic.Function.Defs
 import Init.Data.Option.Basic
 import Init.Util
 import Init.Meta.Tactic

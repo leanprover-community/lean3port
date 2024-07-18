@@ -11,109 +11,103 @@ import Leanbin.Init.Meta.Default
 
 attribute [simp] cond or and not xor
 
-#print Bool.cond_self /-
 @[simp]
-theorem Bool.cond_self.{u} {α : Type u} (b : Bool) (a : α) : cond b a a = a := by cases b <;> simp
-#align cond_a_a Bool.cond_self
--/
+theorem cond_a_a.{u} {α : Type u} (b : Bool) (a : α) : cond b a a = a := by cases b <;> simp
+#align cond_a_a cond_a_a
 
-#print Bool.and_self /-
+#print and_self /-
 @[simp]
-theorem Bool.and_self (b : Bool) : (b && b) = b := by cases b <;> simp
-#align band_self Bool.and_self
+theorem and_self (b : Bool) : (b && b) = b := by cases b <;> simp
+#align band_self and_self
 -/
 
-#print Bool.and_true /-
+#print and_true /-
 @[simp]
-theorem Bool.and_true (b : Bool) : (b && true) = b := by cases b <;> simp
-#align band_tt Bool.and_true
+theorem and_true (b : Bool) : (b && true) = b := by cases b <;> simp
+#align band_tt and_true
 -/
 
-#print Bool.and_false /-
+#print and_false /-
 @[simp]
-theorem Bool.and_false (b : Bool) : (b && false) = false := by cases b <;> simp
-#align band_ff Bool.and_false
+theorem and_false (b : Bool) : (b && false) = false := by cases b <;> simp
+#align band_ff and_false
 -/
 
-#print Bool.true_and /-
+#print true_and /-
 @[simp]
-theorem Bool.true_and (b : Bool) : (true && b) = b := by cases b <;> simp
-#align tt_band Bool.true_and
+theorem true_and (b : Bool) : (true && b) = b := by cases b <;> simp
+#align tt_band true_and
 -/
 
-#print Bool.false_and /-
+#print false_and /-
 @[simp]
-theorem Bool.false_and (b : Bool) : (false && b) = false := by cases b <;> simp
-#align ff_band Bool.false_and
+theorem false_and (b : Bool) : (false && b) = false := by cases b <;> simp
+#align ff_band false_and
 -/
 
-#print Bool.or_self /-
+#print or_self /-
 @[simp]
-theorem Bool.or_self (b : Bool) : (b || b) = b := by cases b <;> simp
-#align bor_self Bool.or_self
+theorem or_self (b : Bool) : (b || b) = b := by cases b <;> simp
+#align bor_self or_self
 -/
 
-#print Bool.or_true /-
+#print or_true /-
 @[simp]
-theorem Bool.or_true (b : Bool) : (b || true) = true := by cases b <;> simp
-#align bor_tt Bool.or_true
+theorem or_true (b : Bool) : (b || true) = true := by cases b <;> simp
+#align bor_tt or_true
 -/
 
-#print Bool.or_false /-
+#print or_false /-
 @[simp]
-theorem Bool.or_false (b : Bool) : (b || false) = b := by cases b <;> simp
-#align bor_ff Bool.or_false
+theorem or_false (b : Bool) : (b || false) = b := by cases b <;> simp
+#align bor_ff or_false
 -/
 
-#print Bool.true_or /-
+#print true_or /-
 @[simp]
-theorem Bool.true_or (b : Bool) : (true || b) = true := by cases b <;> simp
-#align tt_bor Bool.true_or
+theorem true_or (b : Bool) : (true || b) = true := by cases b <;> simp
+#align tt_bor true_or
 -/
 
-#print Bool.false_or /-
+#print false_or /-
 @[simp]
-theorem Bool.false_or (b : Bool) : (false || b) = b := by cases b <;> simp
-#align ff_bor Bool.false_or
+theorem false_or (b : Bool) : (false || b) = b := by cases b <;> simp
+#align ff_bor false_or
 -/
 
-#print Bool.xor_self /-
+/- warning: bxor_self clashes with xor_self -> xor_self
+Case conversion may be inaccurate. Consider using '#align bxor_self xor_selfₓ'. -/
+#print xor_self /-
 @[simp]
-theorem Bool.xor_self (b : Bool) : xor b b = false := by cases b <;> simp
-#align bxor_self Bool.xor_self
+theorem xor_self (b : Bool) : xor b b = false := by cases b <;> simp
+#align bxor_self xor_self
 -/
 
-#print Bool.xor_true /-
+/- warning: bxor_tt clashes with xor_true -> xor_true
+Case conversion may be inaccurate. Consider using '#align bxor_tt xor_trueₓ'. -/
+#print xor_true /-
 @[simp]
-theorem Bool.xor_true (b : Bool) : xor b true = not b := by cases b <;> simp
-#align bxor_tt Bool.xor_true
+theorem xor_true (b : Bool) : xor b true = not b := by cases b <;> simp
+#align bxor_tt xor_true
 -/
 
-/- warning: bxor_ff clashes with bool.bxor_ff_right -> Bool.xor_false
-Case conversion may be inaccurate. Consider using '#align bxor_ff Bool.xor_falseₓ'. -/
-#print Bool.xor_false /-
-theorem Bool.xor_false (b : Bool) : xor b false = b := by cases b <;> simp
-#align bxor_ff Bool.xor_false
+/- warning: bxor_ff clashes with xor_false -> xor_false
+Case conversion may be inaccurate. Consider using '#align bxor_ff xor_falseₓ'. -/
+#print xor_false /-
+theorem xor_false (b : Bool) : xor b false = b := by cases b <;> simp
+#align bxor_ff xor_false
 -/
 
-#print Bool.true_xor /-
 @[simp]
-theorem Bool.true_xor (b : Bool) : xor true b = not b := by cases b <;> simp
-#align tt_bxor Bool.true_xor
--/
+theorem true_xor (b : Bool) : xor true b = not b := by cases b <;> simp
+#align tt_bxor true_xor
 
-/- warning: ff_bxor clashes with bool.bxor_ff_left -> Bool.false_xor
-Case conversion may be inaccurate. Consider using '#align ff_bxor Bool.false_xorₓ'. -/
-#print Bool.false_xor /-
-theorem Bool.false_xor (b : Bool) : xor false b = b := by cases b <;> simp
-#align ff_bxor Bool.false_xor
--/
+theorem false_xor (b : Bool) : xor false b = b := by cases b <;> simp
+#align ff_bxor false_xor
 
-#print Bool.not_not /-
 @[simp]
-theorem Bool.not_not (b : Bool) : not (not b) = b := by cases b <;> simp
-#align bnot_bnot Bool.not_not
--/
+theorem not_not (b : Bool) : not (not b) = b := by cases b <;> simp
+#align bnot_bnot not_not
 
 #print Bool.true_eq_false_eq_False /-
 theorem Bool.true_eq_false_eq_False : ¬true = false := by contradiction
@@ -306,18 +300,14 @@ theorem Bool.coe_xor_iff (a b : Bool) : xor a b ↔ Xor' a b := by
 #align bxor_coe_iff Bool.coe_xor_iff
 -/
 
-#print Bool.ite_eq_true_distrib /-
 @[simp]
-theorem Bool.ite_eq_true_distrib (c : Prop) [Decidable c] (a b : Bool) :
+theorem ite_eq_true_distrib (c : Prop) [Decidable c] (a b : Bool) :
     ((if c then a else b) = true) = if c then a = true else b = true := by by_cases c <;> simp [*]
-#align ite_eq_tt_distrib Bool.ite_eq_true_distrib
--/
+#align ite_eq_tt_distrib ite_eq_true_distrib
 
-#print Bool.ite_eq_false_distrib /-
 @[simp]
-theorem Bool.ite_eq_false_distrib (c : Prop) [Decidable c] (a b : Bool) :
+theorem ite_eq_false_distrib (c : Prop) [Decidable c] (a b : Bool) :
     ((if c then a else b) = false) = if c then a = false else b = false := by
   by_cases c <;> simp [*]
-#align ite_eq_ff_distrib Bool.ite_eq_false_distrib
--/
+#align ite_eq_ff_distrib ite_eq_false_distrib
 

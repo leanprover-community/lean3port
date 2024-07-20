@@ -1322,7 +1322,7 @@ instance {α : Sort u} [DecidableEq α] (a b : α) : Decidable (a ≠ b) :=
 Case conversion may be inaccurate. Consider using '#align bool.ff_ne_tt Bool.false_ne_trueₓ'. -/
 #print Bool.false_ne_true /-
 theorem Bool.false_ne_true : false = true → False :=
-  fun.
+  nofun
 #align bool.ff_ne_tt Bool.false_ne_true
 -/
 

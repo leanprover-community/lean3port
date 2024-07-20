@@ -137,7 +137,7 @@ theorem succ_pos (n : ℕ) : 0 < succ n :=
 
 #print Nat.not_succ_le_zero /-
 theorem not_succ_le_zero : ∀ n : ℕ, succ n ≤ 0 → False :=
-  fun.
+  nofun
 #align nat.not_succ_le_zero Nat.not_succ_le_zero
 -/
 
